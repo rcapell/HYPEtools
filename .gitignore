@@ -1,0 +1,10 @@
+
+# exclude files and folders relating to my RStudio project:
+
+.Rproj.user/
+.Rhistory
+.RData
+script_package_dev.R
+RHYPE.Rproj
+.Rbuildignore
+roxygen_template.txt

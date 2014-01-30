@@ -1,0 +1,27 @@
+\name{ReadCropData}
+\alias{ReadCropData}
+\title{Read a 'CropData.txt' file}
+\usage{
+ReadCropData(filename = "BranchData.txt")
+}
+\arguments{
+  \item{filename}{Path to and file name of the Xobs file to
+  import. Windows users: Note that Paths are separated by
+  '/', not '\\'.}
+}
+\value{
+\code{ReadCropData} returns a data frame.
+}
+\description{
+This is a convenience wrapper function to import a CropData
+file as data frame into R.
+}
+\details{
+\code{ReadCropData} is just \code{read.table(file =
+filename, header = T)}, mainly added to provide a
+comparable function to the other RHYPE imports.
+}
+\examples{
+\dontrun{ReadCropData("CropData.txt")}
+}
+

@@ -200,3 +200,97 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
   
   return(xobs)
 }
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadGeoData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a 'GeoData.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to import a GeoData file as data frame into R.
+#' 
+#' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#'  
+#' @details
+#' \code{ReadGeoData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
+#' function to the other RHYPE imports.
+#' 
+#' @return
+#' \code{ReadGeoData} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{ReadGeoData("GeoData.txt")}
+#' 
+
+
+ReadGeoData <- function(filename = "GeoData.txt") {
+  te <- read.table(file = filename, header = T)
+}
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadBranchData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a 'BranchData.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to import a BranchData file as data frame into R.
+#' 
+#' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#'  
+#' @details
+#' \code{ReadBranchData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
+#' function to the other RHYPE imports.
+#' 
+#' @return
+#' \code{ReadBranchData} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{ReadBranchData("BranchData.txt")}
+#' 
+
+
+ReadBranchData <- function(filename = "BranchData.txt") {
+  te <- read.table(file = filename, header = T)
+}
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadCropData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a 'CropData.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to import a CropData file as data frame into R.
+#' 
+#' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#'  
+#' @details
+#' \code{ReadCropData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
+#' function to the other RHYPE imports.
+#' 
+#' @return
+#' \code{ReadCropData} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{ReadCropData("CropData.txt")}
+#' 
+
+
+ReadCropData <- function(filename = "BranchData.txt") {
+  te <- read.table(file = filename, header = T)
+}
