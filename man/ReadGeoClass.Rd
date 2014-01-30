@@ -1,0 +1,33 @@
+\name{ReadGeoClass}
+\alias{ReadGeoClass}
+\title{Read a 'GeoClass.txt' File}
+\usage{
+ReadGeoClass(filename = "GeoClass.txt", headrow = 3)
+}
+\arguments{
+  \item{filename}{Path to and file name of the GeoClass
+  file to import. Windows users: Note that Paths are
+  separated by '/', not '\\'.}
+
+  \item{headrow}{Row number with header information,
+  defaults to 3 (i.e., two comment rows preceding the
+  header).}
+}
+\value{
+\code{ReadGeoClass} returns a data frame.
+}
+\description{
+This is a convenience wrapper function to import a GeoClass
+file as data frame into R. GeoClass files contain
+definitions of SLC (\bold{S}oil and \bold{L}and use
+\bold{C}lass) classes.
+}
+\details{
+\code{ReadGeoClass} is a convenience wrapper function of
+\code{\link{read.table}}, with treatment of leading comment
+rows and a column header.
+}
+\examples{
+\dontrun{ReadGeoClass("Geoclass.txt")}
+}
+
