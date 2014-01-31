@@ -1,0 +1,27 @@
+\name{ReadPar}
+\alias{ReadPar}
+\title{Read a 'par.txt' file}
+\usage{
+ReadPar(filename = "par.txt")
+}
+\arguments{
+  \item{filename}{Path to and file name of the parameter
+  file to import. Windows users: Note that Paths are
+  separated by '/', not '\\'.}
+}
+\value{
+\code{ReadPar} returns a list with one vector for each row
+in 'par.txt'. HYPE parameter names (first entries in
+'par.txt') are returned as vector names.
+}
+\description{
+Import a HYPE parameter file as list into R.
+}
+\details{
+\code{ReadPar} does not check for comment lines in
+'par.txt' files, the file structure is imported unchanged.
+}
+\examples{
+\dontrun{ReadPar("par.txt")}
+}
+
