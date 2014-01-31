@@ -5,9 +5,9 @@
 ReadGeoData(filename = "GeoData.txt")
 }
 \arguments{
-  \item{filename}{Path to and file name of the Xobs file to
-  import. Windows users: Note that Paths are separated by
-  '/', not '\\'.}
+  \item{filename}{Path to and file name of the GeoData file
+  to import. Windows users: Note that Paths are separated
+  by '/', not '\\'.}
 }
 \value{
 \code{ReadGeoData} returns a data frame.

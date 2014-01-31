@@ -4,6 +4,11 @@
 #     - ReadGeoClass()
 #     - ReadBasinOutput()
 #     - ReadXobs()
+#     - ReadGeoData()
+#     - ReadBranchData()
+#     - ReadCropData()
+#     - ReadPar()
+#     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 
@@ -103,14 +108,15 @@ ReadBasinOutput <- function(filename, dt.format="%Y-%m-%d", outformat="df") {
   # convert date column to character to avoid problems with factor levels in the date conversion
   x[, 1] <- as.character(x[, 1])
   
-  # convert to posix string
+  # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
   if (dt.format == "%Y-%m") {
     xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
     x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
       print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
   } else if (dt.format == "%Y%m") {
     xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
-    try(na.fail(xd))
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
   } else if (dt.format == "%Y") {
     xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
     x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
@@ -214,7 +220,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 #' @description
 #' This is a convenience wrapper function to import a GeoData file as data frame into R.
 #' 
-#' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
+#' @param filename Path to and file name of the GeoData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #'  
 #' @details
@@ -244,7 +250,7 @@ ReadGeoData <- function(filename = "GeoData.txt") {
 #' @description
 #' This is a convenience wrapper function to import a BranchData file as data frame into R.
 #' 
-#' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
+#' @param filename Path to and file name of the Branchdata file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #'  
 #' @details
@@ -276,7 +282,7 @@ ReadBranchData <- function(filename = "BranchData.txt") {
 #' @description
 #' This is a convenience wrapper function to import a CropData file as data frame into R.
 #' 
-#' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
+#' @param filename Path to and file name of the CropData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #'  
 #' @details
@@ -293,4 +299,49 @@ ReadBranchData <- function(filename = "BranchData.txt") {
 
 ReadCropData <- function(filename = "BranchData.txt") {
   te <- read.table(file = filename, header = T)
+}
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a 'par.txt' file
+#'
+#' @description
+#' Import a HYPE parameter file as list into R.
+#' 
+#' @param filename Path to and file name of the parameter file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#'  
+#' @details
+#' \code{ReadPar} does not check for comment lines in 'par.txt' files, the file structure is imported unchanged.
+#' 
+#' @return
+#' \code{ReadPar} returns a list with one vector for each row in 'par.txt'. HYPE parameter names (first entries in 'par.txt') 
+#' are returned as vector names.
+#' 
+#' 
+#' 
+#' @examples
+#' \dontrun{ReadPar("par.txt")}
+#' 
+
+ReadPar <- function (filename = "par.txt") {
+  ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
+  # read par file into a character vector (one string per row in file)
+  x <- scan(filename, what = "", sep = "\n")
+  # split string elements along whitespaces, returns list of character vectors
+  x <- strsplit(x, "[[:space:]]+")
+  # assign first vector elements as list element names
+  names(x) <- sapply(x, `[[`, 1)
+  # remove first vector elements
+  x <- lapply(x, `[`, -1)
+  # convert list elements to numeric, if possible, catch conversion errors and return non-numeric strings untouched (typically comment lines)
+  lapply(y, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) return(x)))
 }

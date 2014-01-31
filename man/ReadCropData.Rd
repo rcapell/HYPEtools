@@ -5,9 +5,9 @@
 ReadCropData(filename = "BranchData.txt")
 }
 \arguments{
-  \item{filename}{Path to and file name of the Xobs file to
-  import. Windows users: Note that Paths are separated by
-  '/', not '\\'.}
+  \item{filename}{Path to and file name of the CropData
+  file to import. Windows users: Note that Paths are
+  separated by '/', not '\\'.}
 }
 \value{
 \code{ReadCropData} returns a data frame.

@@ -5,9 +5,9 @@
 ReadBranchData(filename = "BranchData.txt")
 }
 \arguments{
-  \item{filename}{Path to and file name of the Xobs file to
-  import. Windows users: Note that Paths are separated by
-  '/', not '\\'.}
+  \item{filename}{Path to and file name of the Branchdata
+  file to import. Windows users: Note that Paths are
+  separated by '/', not '\\'.}
 }
 \value{
 \code{ReadBranchData} returns a data frame.
