@@ -5,13 +5,13 @@
 WritePar(x, filename = "par.txt")
 }
 \arguments{
-  \item{The}{object to be written, a list with named vector
-  elements, as an object returned from
+  \item{x}{The object to be written, a list with named
+  vector elements, as an object returned from
   \code{\link{ReadPar}}.}
 
-  \item{A}{character string naming a file to write to.
-  Windows users: Note that Paths are separated by '/', not
-  '\\'.}
+  \item{filename}{A character string naming a file to write
+  to. Windows users: Note that Paths are separated by '/',
+  not '\\'.}
 }
 \description{
 \code{WritePar} prints its required argument \code{x} to a

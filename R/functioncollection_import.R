@@ -236,7 +236,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 
 
 ReadGeoData <- function(filename = "GeoData.txt") {
-  te <- read.table(file = filename, header = T)
+  read.table(file = filename, header = T)
 }
 
 
