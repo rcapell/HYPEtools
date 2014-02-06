@@ -7,11 +7,11 @@ WriteGeoData(x, filename = "GeoData.txt")
 \arguments{
   \item{x}{The object to be written, a dataframe, as an
   object returned from \code{\link{ReadGeoData}}. No
-  \code{NA}s allowed.}
+  \code{NA}s in parameter values allowed.}
 
-  \item{filename}{Path to and file name of the GeoData file
-  to import. Windows users: Note that Paths are separated
-  by '/', not '\\'.}
+  \item{filename}{A character string naming a file to write
+  to. Windows users: Note that Paths are separated by '/',
+  not '\\'.}
 }
 \description{
 This is a convenience wrapper function to export a

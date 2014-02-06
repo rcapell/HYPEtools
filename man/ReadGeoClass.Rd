@@ -14,7 +14,8 @@ ReadGeoClass(filename = "GeoClass.txt", headrow = 3)
   header).}
 }
 \value{
-\code{ReadGeoClass} returns a data frame.
+\code{ReadGeoClass} returns a data frame with added
+attribute 'comment'.
 }
 \description{
 This is a convenience wrapper function to import a GeoClass
@@ -25,7 +26,10 @@ definitions of SLC (\bold{S}oil and \bold{L}and use
 \details{
 \code{ReadGeoClass} is a convenience wrapper function of
 \code{\link{read.table}}, with treatment of leading comment
-rows and a column header.
+rows and a column header. Comment rows are imported as
+strings in \code{attribute} 'comment'. HYPE column headers
+are converted during import to eliminate invalid characters
+(e.g. '-') and saved to \code{attribute} 'header'.
 }
 \examples{
 \dontrun{ReadGeoClass("Geoclass.txt")}

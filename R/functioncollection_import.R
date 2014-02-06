@@ -30,20 +30,28 @@
 #' 
 #' @details
 #' \code{ReadGeoClass} is a convenience wrapper function of \code{\link{read.table}}, with treatment of leading 
-#' comment rows and a column header.
+#' comment rows and a column header. Comment rows are imported as strings in \code{attribute} 'comment'. HYPE column headers are 
+#' converted during import to  eliminate invalid characters (e.g. '-') and saved to \code{attribute} 'header'.
 #' 
 #' @return
-#' \code{ReadGeoClass} returns a data frame.
+#' \code{ReadGeoClass} returns a data frame with added attribute 'comment'.
 #' 
 #' @examples
 #' \dontrun{ReadGeoClass("Geoclass.txt")}
 #' 
 
 ReadGeoClass<-function(filename = "GeoClass.txt", headrow = 3) { 
+    
   # read in the data in the file, skipping the comments and header
   x <- read.table(filename, header = T, skip = headrow - 1, comment.char = "", fill = T)
   # clean header from remnant of comment caharacter in txt file
   names(x)[1] <- gsub("X.", "", names(x)[1])
+  
+  # update with new attributes to hold comment rows
+  xattr <- readLines(filename, n = headrow)
+  attr(x, which = "comment") <- xattr[1:headrow - 1]
+  attr(x, which = "header") <- xattr[headrow]
+  
   return(x)
 }
 
@@ -337,7 +345,7 @@ ReadPar <- function (filename = "par.txt") {
   # read par file into a character vector (one string per row in file)
   x <- scan(filename, what = "", sep = "\n")
   # split string elements along whitespaces, returns list of character vectors
-  x <- strsplit(x, "[[:space:]]+")
+  x <- strsplit(x, split = "[[:space:]]+")
   # assign first vector elements as list element names
   names(x) <- sapply(x, `[[`, 1)
   # remove first vector elements
