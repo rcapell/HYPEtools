@@ -17,7 +17,7 @@ This is a convenience wrapper function to export a
 'GeoClass.txt' file from R.
 }
 \details{
-\code{WriteGeoData} exports a GeoClass dataframe with
+\code{WriteGeoClass} exports a GeoClass dataframe with
 formatting options adjusted for the output to be read by
 HYPE. HYPE accepts comment rows with a leading '!' in the
 beginning rows of a GeoClass file. The export function
