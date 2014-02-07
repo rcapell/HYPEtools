@@ -8,7 +8,8 @@
 #     - ReadBranchData()
 #     - ReadCropData()
 #     - ReadPar()
-#     - 
+#     - ReadMapOutput()
+#     -
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 
@@ -44,7 +45,7 @@ ReadGeoClass<-function(filename = "GeoClass.txt", headrow = 3) {
     
   # read in the data in the file, skipping the comments and header
   x <- read.table(filename, header = T, skip = headrow - 1, comment.char = "", fill = T)
-  # clean header from remnant of comment caharacter in txt file
+  # clean header from remnant of comment character in txt file
   names(x)[1] <- gsub("X.", "", names(x)[1])
   
   # update with new attributes to hold comment rows
@@ -89,11 +90,13 @@ ReadGeoClass<-function(filename = "GeoClass.txt", headrow = 3) {
 #' 
 #' @return
 #' \code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
-#' is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed.
+#' is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed. 
+#' Variable units ar imported as string \code{attribute} 'unit'. If a matrix is returned, this attribute will not be preserved.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and possibly converting to string representations during the process).
+#' 
 #' 
 #' @examples
 #' \dontrun{ReadBasinOutput("0000001.txt")}
@@ -135,7 +138,11 @@ ReadBasinOutput <- function(filename, dt.format="%Y-%m-%d", outformat="df") {
       print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
   }
   
-  # handling of argument 'outformat'
+  # update with new attribute to hold measurement units
+  xattr <- readLines(filename, n = 2)
+  attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")
+  
+  # handling of argument 'outformat', 
   if(outformat == "matrix" | outformat == "m") {
     
     return(as.matrix(cbind(DATE = as.numeric(x[, 1]), x[, -1])))
@@ -353,3 +360,45 @@ ReadPar <- function (filename = "par.txt") {
   # convert list elements to numeric, if possible, catch conversion errors and return non-numeric strings untouched (typically comment lines)
   lapply(y, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) return(x)))
 }
+
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadMapOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a Map Output File
+#'
+#' @description
+#' This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') as data frame into R.
+#' 
+#' @param filename Path to and file name of the basin output file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'.
+#' 
+#' @details
+#' \code{ReadMapOutput} is a convenience wrapper function of \code{\link{read.table}}, with treatment of a leading 
+#' comment row in HYPE's output file. The comment row is imported as string \code{attribute} 'comment'.
+#' 
+#' @return
+#' \code{ReadMapOutput} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{ReadMapOutput("mapCOUT.txt")}
+#' 
+
+ReadMapOutput <- function(filename) {
+    
+  x <- read.table(filename, header = T, sep = ",", na.strings = "-9999", skip = 1)      
+  
+  # update with new attribute to hold comment row
+  attr(x, which = "comment") <- readLines(filename, n = 1)
+  
+  return(x)
+}
+
+

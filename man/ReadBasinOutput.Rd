@@ -22,7 +22,9 @@ ReadBasinOutput(filename, dt.format = "\%Y-\%m-\%d", outformat = "df")
 see argument 'outformat'. In the matrix case, date-time
 information is converted to numeric POSIX representations
 (seconds since 1970-01-01). This will lead to NAs if
-Date-time conversion failed.
+Date-time conversion failed. Variable units ar imported as
+string \code{attribute} 'unit'. If a matrix is returned,
+this attribute will not be preserved.
 }
 \description{
 This is a convenience wrapper function to import a basin
