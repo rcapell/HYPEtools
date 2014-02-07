@@ -96,9 +96,10 @@ WriteGeoData <- function(x, filename = "GeoData.txt") {
 }
 
 
-
-
-
+## DEBUG
+# filename <- "Gd.txt"
+# x <- fgd
+# rm(x, fgd)
 
 
 
@@ -215,12 +216,12 @@ WriteBranchData <- function(x, filename = "BranchData.txt") {
   # which columns are of type factor or character (strings)
   facts <- sapply(x, function(z) {is.factor(z)})
   chars <- sapply(x, function(z) {is.character(z)})
-  lc <- length(which(chars))
   lf <- length(which(facts))
+  lc <- length(which(chars))
   
   # select and convert factor columns to a character matrix, if factors exist
   if (lf > 0) {
-    facmat <- as.matrix(sapply(x[, facts], as.character))
+    facmat <- apply(as.matrix(x[, facts]), 2, as.character)
     # test if the longest string in any column is longer than 50 characters, return with warning
     if (max(apply(facmat, 2, function (z) max(nchar(z)))) > maxChar) {
       warning("String with more than 50 characters in exported data detected. This will lead to an error in HYPE.")
