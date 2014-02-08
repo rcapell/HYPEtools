@@ -9,7 +9,7 @@ ReadXobs(filename = "Xobs.txt", dt.format = "\%Y-\%m-\%d", nrows = -1)
   import. Windows users: Note that Paths are separated by
   '/', not '\\'.}
 
-  \item{dt.format}{Date-time format string as in
+  \item{dt.format}{Date-time \code{format} string as in
   \code{\link{strptime}}.}
 
   \item{nrows}{Number of rows to import. A value of

@@ -14,7 +14,7 @@ ConvertDischarge(q, area)
 }
 \description{
 \code{ConvertDischarge} converts volumetric discharge to
-specific discharge from a unit area.
+specific discharge (unit area discharge).
 }
 \details{
 \code{ConvertDischarge} is a simple conversion function,
@@ -23,6 +23,8 @@ most likely to be used in combination with
 discharge from \eqn{m^3 s^{-1}} to \eqn{mm y^{-1}}
 }
 \examples{
-\dontrun{WritePar(mypar)}
+\dontrun{ConvertDischarge(6, 400000000)
+apply(data[, -c(1:2)], 2, ConvertDischarge, data$AREA)
+}
 }
 

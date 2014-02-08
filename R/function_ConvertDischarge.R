@@ -4,7 +4,7 @@
 #' Calculate Specific Discharge
 #'
 #' @description
-#' \code{ConvertDischarge} converts volumetric discharge to specific discharge from a unit area.
+#' \code{ConvertDischarge} converts volumetric discharge to specific discharge (unit area discharge).
 #' 
 #' @param q An object of type \code{numeric}, containing volumetric discharge in \eqn{m^3 s^{-1}}, 
 #' typically HYPE variables COUT or ROUT.

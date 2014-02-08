@@ -9,7 +9,8 @@
 #     - ReadCropData()
 #     - ReadPar()
 #     - ReadMapOutput()
-#     -
+#     - ReadTimeOutput()
+#     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 
@@ -79,7 +80,7 @@ ReadGeoClass<-function(filename = "GeoClass.txt", headrow = 3) {
 #' 
 #' @param filename Path to and file name of the basin output file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
-#' @param dt.format Date-time format string as in \code{\link{strptime}}. Incomplete format strings for monthly 
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
 #' and annual values allowed, e.g. '\%Y'.
 #' @param outformat Format of the returned object. Character string, either \code{'dataframe'} or \code{'matrix'}, 
 #' can be abbreviated.
@@ -102,7 +103,7 @@ ReadGeoClass<-function(filename = "GeoClass.txt", headrow = 3) {
 #' \dontrun{ReadBasinOutput("0000001.txt")}
 #' 
 
-ReadBasinOutput <- function(filename, dt.format="%Y-%m-%d", outformat="df") {
+ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") {
   
   # check validity of outformat argument
   if (outformat != "df" & outformat != "m" & outformat != "dataframe" & outformat != "matrix") {
@@ -174,7 +175,7 @@ ReadBasinOutput <- function(filename, dt.format="%Y-%m-%d", outformat="df") {
 #' 
 #' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
-#' @param dt.format Date-time format string as in \code{\link{strptime}}. 
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
 #' @param nrows Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
 #' to import.
 #'  
@@ -400,5 +401,92 @@ ReadMapOutput <- function(filename) {
   
   return(x)
 }
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadTimeOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a Time Output File
+#'
+#' @description
+#' This is a convenience wrapper function to import a time output file as data frame or matrix into R.
+#' 
+#' @param filename Path to and file name of the time output file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'.
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
+#' and annual values allowed, e.g. '\%Y'.
+#' 
+#' @details
+#' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
+#' POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
+#' 
+#' @return
+#' \code{ReadTimeOutput} returns a data frame. Information on the output variable is stored in attribute \code{comment}, a vector 
+#' of subid integers in attribute \code{subid}.
+#' 
+#' @note
+#' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+#' side effects when working with the imported data (and possibly converting to string representations during the process).
+#' 
+#' 
+#' @examples
+#' \dontrun{ReadTimeOutput("timeCCIN.txt, dt.format = "%Y-%m"")}
+#' 
+
+ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
+    
+  x <- read.table(filename, header = T, na.strings = "-9999", skip = 1)      
+  names(x) <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
+  
+  # update with new attributes to hold comment row and subids (column headers will have a leading X)
+  xattr <- readLines(filename, n = 2)
+  attr(x, which = "comment") <- xattr[1]
+  attr(x, which = "subid") <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
+  
+  
+  ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
+  ## handles errors which might occur if the date string differs from the specified format, on error, strings are returned.
+  
+  # convert date column to character to avoid problems with factor levels in the date conversion
+  x[, 1] <- as.character(x[, 1])
+  
+  # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
+  if (dt.format == "%Y-%m") {
+    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  } else if (dt.format == "%Y%m") {
+    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  } else if (dt.format == "%Y") {
+    xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  } else {
+    xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  }
+  
+  return(x)
+}
+
+
+## DEBUG
+# ReadBasinOutput(filename=te)
+# dt.format <- "%Y-%m-%d"
+# outformat <- "df"
+# filename <- "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-01-10_koppling_SHYPE2012B_HBVsv/res_daily_thomas_hadley/0042041.txt"
+# rm(te, x, xd, ReadBasinOutput, dt.format, filename)
+
+
+
+
 
 

@@ -9,7 +9,7 @@ ReadBasinOutput(filename, dt.format = "\%Y-\%m-\%d", outformat = "df")
   file to import. Windows users: Note that Paths are
   separated by '/', not '\\'.}
 
-  \item{dt.format}{Date-time format string as in
+  \item{dt.format}{Date-time \code{format} string as in
   \code{\link{strptime}}. Incomplete format strings for
   monthly and annual values allowed, e.g. '\%Y'.}
 
