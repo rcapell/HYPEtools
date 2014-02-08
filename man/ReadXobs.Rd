@@ -17,10 +17,10 @@ ReadXobs(filename = "Xobs.txt", dt.format = "\%Y-\%m-\%d", nrows = -1)
   the number of rows to import.}
 }
 \value{
-\code{ReadXobs} returns a data frame with two additional
-attributes \code{variable} and \code{subid}, each
-containing a vector with column-wise information. The two
-are merged in the column names. A third attribute
+\code{ReadXobs} returns a data frame with three additional
+attributes: \code{variable} and \code{subid} each
+containing a vector with column-wise information (exept the
+first column with date/time). A third attribute
 \code{comment} contains the content of the Xobs file
 comment row as single string.
 }
@@ -31,9 +31,9 @@ file as data frame into R.
 \details{
 \code{ReadXobs} is a convenience wrapper function of
 \code{\link{read.table}}, with conversion of date-time
-strings to POSIX time representations. Variable names and
-SUBIDs are returned as attributes (see \code{\link{attr}}
-on how to access these).
+strings to POSIX time representations. Variable names,
+SUBIDs, and comments are returned as attributes (see
+\code{\link{attr}} on how to access these).
 }
 \note{
 For the conversion of date/time strings, time zone "GMT" is

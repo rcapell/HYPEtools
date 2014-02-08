@@ -10,6 +10,7 @@
 #     - ReadPar()
 #     - ReadMapOutput()
 #     - ReadTimeOutput()
+#     - ReadPTQobs()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -181,11 +182,12 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #'  
 #' @details
 #' \code{ReadXobs} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
-#' POSIX time representations. Variable names and SUBIDs are returned as attributes (see \code{\link{attr}} on how to access these).
+#' POSIX time representations. Variable names, SUBIDs, and comments are returned as attributes (see \code{\link{attr}} on 
+#' how to access these).
 #' 
 #' @return
-#' \code{ReadXobs} returns a data frame with two additional attributes \code{variable} and \code{subid}, each containing a 
-#' vector with column-wise information. The two are merged in the column names. A third attribute \code{comment} contains 
+#' \code{ReadXobs} returns a data frame with three additional attributes: \code{variable} and \code{subid} each containing a 
+#' vector with column-wise information (exept the first column with date/time). A third attribute \code{comment} contains 
 #' the content of the Xobs file comment row as single string.
 #' 
 #' @note
@@ -208,8 +210,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
   # update with new attributes to hold subids and obs-variables for all columns
   xattr <- readLines(filename,n=3)
   attr(xobs, which = "comment") <- xattr[1]
-  attr(xobs, which = "variable") <- strsplit(xattr[2], split = "\t")[[1]]
-  attr(xobs, which = "subid") <- as.integer(strsplit(xattr[3], split = "\t")[[1]])
+  attr(xobs, which = "variable") <- strsplit(xattr[2], split = "\t")[[1]][-1]
+  attr(xobs, which = "subid") <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
   
   # update header, composite of variable and subid
   names(xobs) <- paste(attr(xobs, "variable"), attr(xobs, "subid"), sep = "_")
@@ -478,15 +480,65 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
 }
 
 
-## DEBUG
-# ReadBasinOutput(filename=te)
-# dt.format <- "%Y-%m-%d"
-# outformat <- "df"
-# filename <- "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-01-10_koppling_SHYPE2012B_HBVsv/res_daily_thomas_hadley/0042041.txt"
-# rm(te, x, xd, ReadBasinOutput, dt.format, filename)
 
 
 
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPTQobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files
+#'
+#' @description
+#' Tmport precipitation, temperature, or discharge observation files as data frame into R.
+#' 
+#' @param filename Path to and file name of the file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
+#' @param nrows Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
+#' to import.
+#'  
+#' @details
+#' \code{ReadPTQobs} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
+#' POSIX time representations. SUBIDs are returned as integer attribute \code{subid} 
+#' (see \code{\link{attr}} on how to access it).
+#' 
+#' @return
+#' \code{ReadPTQobs} returns a data frame with an additional attribute \code{subid}.
+#' 
+#' @note
+#' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+#' side effects when working with the imported data (and possibly converting to string representations during the process).
+#' 
+#' @examples
+#' \dontrun{ReadPTQobs("Tobs.txt")}
+#' 
+
+
+ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
+  
+  # read the data
+  x <- read.table(filename, header = T, na.strings = "-9999", nrows = nrows)
+  
+  # make an object of a new s3 class, KEPT FOR FUTURE REF, ACTIVATE IF METHODS TO BE WRITTEN, E.G. SUMMARY
+  # class(te) <- c("xobs", "data.frame")
+  
+  # update with new attributes to hold subids and obs-variables for all columns
+  xattr <- readLines(filename, n = 1)
+  attr(x, which = "subid") <- as.integer(strsplit(xattr[1], split = "\t")[[1]][-1])
+  
+  # date conversion 
+  xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+  x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+    print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
+    }
+  )
+  
+  return(x)
+}
 
 
 
