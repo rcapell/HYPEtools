@@ -215,8 +215,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
   attr(xobs, which = "subid") <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
   
   # update header, composite of variable and subid
-  names(xobs) <- paste(attr(xobs, "variable"), attr(xobs, "subid"), sep = "_")
-  names(xobs)[1] <- "date"
+  names(xobs) <- c("date", paste(attr(xobs, "variable"), attr(xobs, "subid"), sep = "_"))
   
   # date conversion 
   xd <- as.POSIXct(strptime(xobs[, 1], format = dt.format), tz = "GMT")
