@@ -290,7 +290,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
     }
     
     ## export variable line
-    if (is.na(variable)) {
+    if (length(variable == 1) & is.na(variable[1])) {
       # variable argument is empty
       if(!is.null(attr(x, which = "variable"))) {
         # attribute variable exists
@@ -300,21 +300,29 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
           writeLines(tmp, con = fcon)
         } else {
           # mismatch in length, stop with error
+          close(fcon)
           stop("Length of attribute 'variable' does not match number of variables in export object.\n 
                Check consistency, e.g. with attr(x, 'variable') and names(x)[-1].")
         }
-        } else {
-          # attribute variable does not exist, stop with error
-          stop("'variable' argument not given and 'variable' attribute not existing in export object.")
+      } else {
+        # attribute variable does not exist, stop with error
+        close(fcon)
+        stop("'variable' argument not given and 'variable' attribute not existing in export object.")
       }
     } else {
-      # export the variable argument with padded 'name' string and newline
-      tmp <- paste(c("name", variable), collapse ="\t")
-      writeLines(tmp, con = fcon)
+      # export the variable argument with padded 'name' string and newline, if length matches no. of observation data cols in x
+      if (length("variable") == ncol(x) - 1) {
+        tmp <- paste(c("name", variable), collapse ="\t")
+        writeLines(tmp, con = fcon)
+      } else {
+        # mismatch in length, stop with error
+        close(fcon)
+        stop("Length of argument 'variable' does not match number of variables in export object.")
+      }
     }
     
     ## export subid line
-    if (is.na(subid)) {
+    if (length(subid == 1) & is.na(subid[1])) {
       # subid argument is empty
       if(!is.null(attr(x, which = "subid"))) {
         # attribute subid exists
@@ -324,17 +332,25 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
           writeLines(tmp, con = fcon)
         } else {
           # mismatch in length, stop with error
+          close(fcon)
           stop("Length of attribute 'subid' does not match number of variables in export object.\n 
                Check consistency, e.g. with attr(x, 'subid') and names(x)[-1].")
         }
         } else {
           # attribute subid does not exist, stop with error
+          close(fcon)
           stop("'subid' argument not given and 'subid' attribute not existing in export object.")
       }
     } else {
-      # export the subid argument with padded 0 and newline
-      tmp <- paste(as.character(c(0, subid)), collapse = "\t")
-      writeLines(tmp, con = fcon)
+      # export the subid argument with padded 0 and newline, if length matches no. of observation data cols in x
+      if (length(subid) == ncol(x) - 1) {
+        tmp <- paste(as.character(c(0, subid)), collapse = "\t")
+        writeLines(tmp, con = fcon)
+      } else {
+        # mismatch in length, stop with error
+        close(fcon)
+        stop("Length of argument 'subid' does not match number of variables in export object.")
+      }
     }
     
     close(fcon)
@@ -359,7 +375,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
     
     ## second consistency check: variables and SUBIDs identical and in the same order?
     # select export data to compare with, either from function argument or from attribute of x
-    if (!is.na(variable)) {
+    if (!is.na(variable[1])) {
       exportVar <- variable
     } else {
       if (!is.null(attr(x, "variable"))) {
@@ -369,7 +385,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
       }
     }
     
-    if (!is.na(subid)) {
+    if (!is.na(subid[1])) {
       exportSbd <- subid
     } else {
       if (!is.null(attr(x, "subid"))) {
@@ -445,74 +461,17 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
 # attributes(x)
 # attr(x, "variable") <- attr(x, "variable")[-1]
 # names(x)
-# WriteXobs(x, filename = filename, append = F)
+#WriteXobs(x, filename = filename, append = F, subid = c(2689,1432,1022,668,122,40706,40682,40672,4128,40555,2473,40350,1740))
+#subid <- c(2689,1432,1022,668,122,40706,40682,40672,4128,40555,2473,40350,1740)
 # WriteXobs(x = x, filename = filename, append = T, lastDate = as.POSIXct(strptime("1959-12-11", format = "%Y-%m-%d", tz = "GMT")))
 # WriteXobs(x = x, filename = filename, append = T, lastDate = as.POSIXct(strptime("1960-12-11", format = "%Y-%m-%d", tz = "GMT")))
 # 
 # lastDate <- as.POSIXct(strptime("1959-12-01", format = "%Y-%m-%d", tz = "GMT"))
 # 
 # 
-# install.packages("sqldf")
-# library(sqldf)
-# read.csv.sql(pobsloc, sql = "select count(*) from file", sep = "\t", eol ="\n")
-# 
-# You could also use the sqldf package and use an SQL command to count the
-# records:
-#   
-#   > datafile = "../data/myfile.csv"
-# > read.csv.sql(datafile,"select count(*) from file")
-# count(*)
-# 1   163840
-# Warning message:
-#   closing unused connection 3 (../data/myfile.csv)
-# 
-# install.packages("R.utils")
-# library(R.utils)
-# countLines() in the R.utils package
-# countLines(pobsloc)
-# 
-# te <- c(1:10)
-# tef <- function(x) {
-#   x[1] = 100
-#   "tttttt"
-# }
-# tef(te)
-# te
 
 
 
 
 
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.CheckCharLengthDf~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-## internal function to test if string columns elements are longer than a number of characters
-# x: a dataframe to be tested
-# maxChar: maximum number of characters
-.CheckCharLengthDf <- function (x, maxChar) {
-  ## test if string columns elements are longer than 50 characters, which is the maximum accepted for BranchData by HYPE
-  
-  # which columns are of type factor or character (strings)
-  facts <- sapply(x, function(z) {is.factor(z)})
-  chars <- sapply(x, function(z) {is.character(z)})
-  lf <- length(which(facts))
-  lc <- length(which(chars))
-  
-  # select and convert factor columns to a character matrix, if factors exist
-  if (lf > 0) {
-    facmat <- apply(as.matrix(x[, facts]), 2, as.character)
-    # test if the longest string in any column is longer than 50 characters, return with warning
-    if (max(apply(facmat, 2, function (z) max(nchar(z)))) > maxChar) {
-      warning("String with more than 50 characters in exported data detected. This will lead to an error in HYPE.")
-    }
-  }
-  # select and convert character columns to a character matrix, if characters exist
-  if (lc > 0) {
-    chamat <- as.matrix(x[, chars])
-    # test if the longest string in any column is longer than 50 characters, return with warning
-    if (max(apply(chamat, 2, function (z) max(nchar(z)))) > maxChar) {
-      warning("String with more than 50 characters in exported data detected. This will lead to an error in HYPE.")
-    }  
-  }
-}
