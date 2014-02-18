@@ -6,7 +6,13 @@ WriteXobs(x, filename = "Xobs.txt", append = F, comment = NA,
   variable = NA, subid = NA, lastDate = NA, timestep = "d")
 }
 \arguments{
-  \item{x}{ed from \code{\link{ReadXobs}}.}
+  \item{x}{A data frame, e.g. an object originally imported
+  with \code{\link{ReadXobs}}. Date-time information in the
+  first column and measured values in the remaining
+  columns. Column names are ignored on export, but if
+  attributes \code{comment}, \code{variable} , and
+  \code{subid} are available, these can be exported as Xobs
+  headers (see also arguments of the same names below).}
 
   \item{filename}{A character string naming a file to write
   to. Windows users: Note that Paths are separated by '/',
@@ -49,8 +55,8 @@ to an Xobs file.
 }
 \details{
 \code{WriteXobs} writes a 'Xobs.txt' file, typically
-originating from an imported and modified 'Xobs.txt'. Xobs
-files contain a three-row header, with a comment line
+originating from an imported and modified 'Xobs.txt'. HYPE
+Xobs files contain a three-row header, with a comment line
 first, next a line of variables, and then a line of subids.
 Objects imported with \code{\link{ReadXobs}} include
 attributes holding this information, and \code{WriteXobs}

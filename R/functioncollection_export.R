@@ -215,7 +215,10 @@ WriteBranchData <- function(x, filename = "BranchData.txt") {
 #' @description
 #' \code{WriteXobs} writes or appends an observation data set to an Xobs file.
 #' 
-#' @param x ed from \code{\link{ReadXobs}}.
+#' @param x A data frame, e.g. an object originally imported with \code{\link{ReadXobs}}. Date-time information in the first 
+#' column and measured values in the remaining columns. Column names are ignored on export, but if attributes \code{comment}, 
+#' \code{variable} , and \code{subid} are available, these can be exported as Xobs headers (see also arguments of the same names 
+#' below).
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param append Logical. If \code{TRUE}, \code{x} will be appended to file \code{filename}. File must exist and 
@@ -233,7 +236,7 @@ WriteBranchData <- function(x, filename = "BranchData.txt") {
 #' 
 #' @details
 #' \code{WriteXobs} writes a 'Xobs.txt' file, typically originating from an imported and modified 'Xobs.txt'.
-#' Xobs files contain a three-row header, with a comment line first, next a line of variables, and then a line of subids. 
+#' HYPE Xobs files contain a three-row header, with a comment line first, next a line of variables, and then a line of subids. 
 #' Objects imported with \code{\link{ReadXobs}} include attributes holding this information, and \code{WriteXobs} will use this
 #' information. Otherwise, these attributes can be added to objects prior to calling code{WriteXobs}, or passed as function 
 #' arguments.
@@ -251,9 +254,9 @@ WriteBranchData <- function(x, filename = "BranchData.txt") {
 #' Both \code{variable} and \code{subid} do not include elements for the first column in the Xobs file/object, in accordance 
 #' with \code{\link{ReadXobs}}. These elements will be added by the function.
 #' 
-#' There is no automatic checking of last observation dates in existing 'Xobs' files when appending because the internal
-#' functions available are time-consuming for large files. Google results for 'R read last line in text file' lead to 
-#' platform-dependent solutions using e.g. 'gawk' or 'wc'.
+#' There is no automatic checking of last observation dates in existing 'Xobs' files when appending because R internal
+#' functions available are time-consuming for large files. Google results for 'R read last line in text file' point to 
+#' platform-dependent solutions using e.g. 'tail', 'gawk', or 'wc'.
 #' 
 #' @examples
 #' \dontrun{WriteXobs(myxobs)}
