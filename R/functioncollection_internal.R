@@ -84,3 +84,59 @@
   }
 }
 
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.ReadBasinOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+# internal function to read a single basin output file, the exported import function wraps a multi-import from a directory
+# path around it.
+# filename: file location of basin file to import
+# dt.format: format string as in strptime
+# outformat: can be matrix or dataframe
+.ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") {
+  
+  # check validity of outformat argument
+  if (outformat != "df" & outformat != "m" & outformat != "dataframe" & outformat != "matrix") {
+    stop("Argument 'outformat' invalid.")
+  }
+  
+  x <- read.table(filename, header = F, na.strings = "-9999", skip = 2)      
+  names(x) <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
+  
+  
+  ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
+  ## handles errors which might occur if the date string differs from the specified format, on error, strings are returned.
+  
+  # convert date column to character to avoid problems with factor levels in the date conversion
+  x[, 1] <- as.character(x[, 1])
+  
+  # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
+  if (dt.format == "%Y-%m") {
+    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  } else if (dt.format == "%Y%m") {
+    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  } else if (dt.format == "%Y") {
+    xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  } else {
+    xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  }
+  
+  # update with new attribute to hold measurement units
+  xattr <- readLines(filename, n = 2)
+  attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")
+  
+  # handling of argument 'outformat', 
+  if(outformat == "matrix" | outformat == "m") {
+    
+    return(as.matrix(cbind(DATE = as.numeric(x[, 1]), x[, -1])))
+  } else return(x)
+}

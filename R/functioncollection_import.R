@@ -44,7 +44,7 @@
 #' \dontrun{ReadGeoClass("Geoclass.txt")}
 #' 
 
-ReadGeoClass<-function(filename = "GeoClass.txt", headrow = 3) { 
+ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) { 
     
   # read in the data in the file, skipping the comments and header
   x <- read.table(filename, header = T, skip = headrow - 1, comment.char = "", fill = T)
