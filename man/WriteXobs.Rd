@@ -85,10 +85,11 @@ accordance with \code{\link{ReadXobs}}. These elements will
 be added by the function.
 
 There is no automatic checking of last observation dates in
-existing 'Xobs' files when appending because the internal
+existing 'Xobs' files when appending because R internal
 functions available are time-consuming for large files.
-Google results for 'R read last line in text file' lead to
-platform-dependent solutions using e.g. 'gawk' or 'wc'.
+Google results for 'R read last line in text file' point to
+platform-dependent solutions using e.g. 'tail', 'gawk', or
+'wc'.
 }
 \examples{
 \dontrun{WriteXobs(myxobs)}

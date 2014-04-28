@@ -1,0 +1,2 @@
+! Waterstage extracted from Wiski with Aegir 2013-01-24. The data contains classified data for the last years.																																																																																																																																														
+name	wstr	wstr	wstr	wstr	wstr	wstr	wstr	wstr	wstr	wstr	wstr	wstr	wstr
