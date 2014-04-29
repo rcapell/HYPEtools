@@ -3,7 +3,8 @@
 #
 #     - .CheckcharLengthDf()
 #     - .FindUpstrSbd()
-#     - 
+#     - .
+#     - .ReadBasinOutput() => SEEMS OUT OF DATE, EXISTS AS ReadBasinOutput() in functioncollection_export.R
 #     - 
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -83,6 +84,34 @@
     return(list(subid = sbd, upstr.df = res))
   }
 }
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.CreateLabelsFromBreaks~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+
+
+# Internal function to make pretty label expressions from a given vector of breakpoints, which is used to convert 
+# a continuous scale to a discrete one. Used for map plot function legends.
+# breaks: vector of breakpoints
+.CreateLabelsFromBreaks <- function(breaks) {
+  # create first element as an expression which uses the value given in breaks
+  lab.legend <- as.expression(bquote("" <= .(breaks[2])))
+  # create following elements analoguously
+  for (i in 2:length(breaks)-2) {
+    lab.legend[i] <- as.expression(bquote("" >= .(breaks[i]) - .(breaks[i+1])))
+  }
+  # create the last element
+  lab.legend[length(breaks)-1] <- as.expression(bquote("" >= .(breaks[length(breaks)-1])))
+  
+  return(lab.legend)
+}
+
+
 
 
 
