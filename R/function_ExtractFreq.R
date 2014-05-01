@@ -53,7 +53,7 @@ ExtractFreq <- function(data){
     res1 <- data.frame(prob=prbs, quantile = quantile(data, probs=prbs, na.rm=T, names=F))
     res2 <- length(na.omit(data))
   }
-  # cembination of results in a list to return from function
+  # combination of results in a list to return from function
   outdata <- list(probs.res = res1, no.obs = res2)
   return(outdata)
 }

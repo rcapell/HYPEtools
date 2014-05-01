@@ -1,0 +1,80 @@
+\name{PlotMapOutput}
+\alias{PlotMapOutput}
+\title{Plot function for HYPE map results.}
+\usage{
+PlotMapOutput(data, map, map.subid.column, var.name, plot.scale = T,
+  plot.legend = T, legend.pos = "right", legend.title = "",
+  col.ramp.fun = "auto", col.breaks = NA)
+}
+\arguments{
+  \item{data}{Map results, data frame object with two
+  columns, first column containing SUBIDs and second column
+  containing model results. See details.}
+
+  \item{map.subid.column}{}
+
+  \item{map}{A \code{SpatialPolygonsDataFrame} object,
+  typically an imported SUBID map, requires package
+  \code{rgdal}.}
+
+  \item{var.name}{Character string. HYPE variable name}
+
+  \item{plot.scale}{Logical, plot a scale bar and a North
+  arrow in the lower right corner. NOTE: works only with
+  projected maps based on meter units, not geographical
+  projections}
+
+  \item{plot.legend}{Logical, plot a legend along with the
+  map. Uses function \code{\link{legend}}.}
+
+  \item{legend.pos}{Legend position, keyword string. One of
+  \code{"left"}, \code{"topleft"}, \code{"top"},
+  \code{"topright"}, \code{"right"}, \code{"bottomright"},
+  \code{"bottom"}, \code{"bottomleft"}.}
+
+  \item{legend.title}{Character string. An optional title
+  for the legend.}
+
+  \item{col.ramp.fun}{Color ramp palette to use for the
+  map. One of the following: \itemize{ \item \code{"auto"}
+  to allow for automatic selection from pre-defined color
+  ramp palettes based on argument \code{var.name} \item One
+  of the pre-defined palette functions for HYPE output
+  variables: \code{"ColNitr"} for nitrogen,
+  \code{"ColPhos"} for phosphorus, \code{"ColPrec"} for
+  precipitation, \code{"ColTemp"} for temperatures,
+  \code{"ColQ"} for runoff, or user-calculated differences:
+  \code{"ColDiff"} (see details) \item A color ramp palette
+  function, e.g. as returned from a call to
+  \code{\link{colorRampPalette}} }}
+
+  \item{col.breaks}{Break points for discretisation of
+  model result values into classes. Numeric vector of break
+  points, will be interpreted as right-closed, i.e upper
+  boundaries included in class. Lowest class boundary
+  included in lowest class as well. Meaningful results
+  require the lowest and uppermost breaks to bracket all
+  model result values, otherwise there will be unclassified
+  white spots on the map plot. Only necessary if a
+  user-defined \code{col.ramp.fun} is supplied (otherwise a
+  generic classification with 10 classes based on 10%
+  quantiles will be applied), but can optionally be
+  combined with one of the pre-defined palettes.}
+}
+\description{
+Draw HYPE map results, with pretty scale discretisations
+and color ramp defaults. Data typically imported using
+\code{\link{ReadMapOutput}}.
+}
+\details{
+\code{PlotMapOutput} plots HYPE results from 'map[variable
+name].txt' files. \code{data} arguments must contain the
+variable of interest in the second column. For multicolumn
+map results, i.e. with several time periods, pass index
+selections to \code{data}, e.g. \code{mymapresult[, c(1,
+3)]}.
+}
+\examples{
+\dontrun{require(rgdal); PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids", var.name = "CCTN"))}
+}
+
