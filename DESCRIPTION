@@ -10,5 +10,7 @@ Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
     "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut") )
 Depends:
     R (>= 2.15.1)
+Imports:
+    sp
 License: LGPL-3
 LazyData: true

@@ -4,14 +4,15 @@
 \usage{
 PlotMapOutput(data, map, map.subid.column, var.name, plot.scale = T,
   plot.legend = T, legend.pos = "right", legend.title = "",
-  col.ramp.fun = "auto", col.breaks = NA)
+  legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NA,
+  par.mar = rep(0, 4) + 0.1)
 }
 \arguments{
   \item{data}{Map results, data frame object with two
   columns, first column containing SUBIDs and second column
   containing model results. See details.}
 
-  \item{map.subid.column}{}
+  \item{map.subid.column}{Integer, the column index of}
 
   \item{map}{A \code{SpatialPolygonsDataFrame} object,
   typically an imported SUBID map, requires package
@@ -34,6 +35,10 @@ PlotMapOutput(data, map, map.subid.column, var.name, plot.scale = T,
 
   \item{legend.title}{Character string. An optional title
   for the legend.}
+
+  \item{legend.inset}{Inset distance(s) from the margins as
+  a fraction of the plot region. See \code{\link{legend}}
+  and details below.}
 
   \item{col.ramp.fun}{Color ramp palette to use for the
   map. One of the following: \itemize{ \item \code{"auto"}
@@ -60,6 +65,10 @@ PlotMapOutput(data, map, map.subid.column, var.name, plot.scale = T,
   generic classification with 10 classes based on 10%
   quantiles will be applied), but can optionally be
   combined with one of the pre-defined palettes.}
+
+  \item{par.mar}{Plot margins as in \code{\link{par}}
+  argument \code{mar}. Defaults to a nearly margin-less
+  plot.}
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations
@@ -73,8 +82,19 @@ variable of interest in the second column. For multicolumn
 map results, i.e. with several time periods, pass index
 selections to \code{data}, e.g. \code{mymapresult[, c(1,
 3)]}.
+
+Legends are positioned by keyword, defaulting to the right
+side of the map. Depending on the form of the displayed
+area and the size of the legend, there might be no optimal
+place inside the plot area. In that case, the legend can be
+moved to the outer margins by specifying negative inset
+values for details on inset specification see \code{inset}
+in \code{\link{legend}}. Make sure to also adapt the plot
+margin sizes appropriately through \code{par.mar}, see
+\code{mar} in \code{\link{par}}.
 }
 \examples{
-\dontrun{require(rgdal); PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids", var.name = "CCTN"))}
+\dontrun{require(rgdal)
+PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids", var.name = "CCTN"))}
 }
 

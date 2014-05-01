@@ -173,7 +173,7 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Color ramp palettes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 
-.ColNitr <- colorRampPalette(c("#dfdf94", "#6b0601"))
+.ColNitr <- colorRampPalette(c("#fff5a8", "#6b0601"))
 .ColPhos <- colorRampPalette(c("#dcf5e9", "#226633"))
 .ColPrec <- colorRampPalette(c("#e3e7e8", "#00508c"))
 .ColTemp <- colorRampPalette(c("#ff0000", "#ff8000", "#ffff00", "#f0f0f0", "#80ffff", "#0080ff", "#0000ff"))

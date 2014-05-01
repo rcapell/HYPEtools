@@ -2,7 +2,11 @@
 
 
 #' @export
-
+#' 
+#' @import sp
+# @importClassesFrom sp SpatialPolygonsDataFrame SpatialPolygons
+# @importMethodsFrom sp plot.SpatialPolygons
+#' 
 #' @title
 #' Plot function for HYPE map results.
 #'
@@ -12,7 +16,7 @@
 #' 
 #' @param data Map results, data frame object with two columns, first column containing SUBIDs and 
 #' second column containing model results. See details.
-#' @param map.subid.column  
+#' @param map.subid.column Integer, the column index of
 #' @param map A \code{SpatialPolygonsDataFrame} object, typically an imported SUBID map, requires package \code{rgdal}.
 #' @param var.name Character string. HYPE variable name
 #' @param plot.scale Logical, plot a scale bar and a North arrow in the lower right corner. NOTE: works only with projected maps 
@@ -21,6 +25,7 @@
 #' @param legend.pos Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"top"}, \code{"topright"}, 
 #' \code{"right"}, \code{"bottomright"}, \code{"bottom"}, \code{"bottomleft"}.
 #' @param legend.title Character string. An optional title for the legend.
+#' @param legend.inset Inset distance(s) from the margins as a fraction of the plot region. See \code{\link{legend}} and details below.
 #' @param col.ramp.fun Color ramp palette to use for the map. One of the following: \itemize{
 #' \item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes based on argument \code{var.name}
 #' \item One of the pre-defined palette functions for HYPE output variables: \code{"ColNitr"} for nitrogen, \code{"ColPhos"} for 
@@ -34,29 +39,33 @@
 #' unclassified white spots on the map plot. Only necessary if a user-defined \code{col.ramp.fun} is supplied (otherwise a generic
 #' classification with 10 classes based on 10% quantiles will be applied), but can optionally 
 #' be combined with one of the pre-defined palettes.
+#' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
 #' 
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files. \code{data} arguments must contain the variable 
 #' of interest in the second column. For multicolumn map results, i.e. with several time periods, pass index selections to 
 #' \code{data}, e.g. \code{mymapresult[, c(1, 3)]}.
 #' 
+#' Legends are positioned by keyword, defaulting to the right side of the map. Depending on the form of the displayed area and 
+#' the size of the legend, there might be no optimal place inside the plot area. In that case, the legend can be moved to the 
+#' outer margins by specifying negative inset values for details on inset specification see \code{inset} in \code{\link{legend}}. Make sure to 
+#' also adapt the plot margin sizes appropriately through \code{par.mar}, see \code{mar} in \code{\link{par}}.
+#' 
 #' @examples
-#' \dontrun{require(rgdal); PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids", var.name = "CCTN"))}
+#' \dontrun{require(rgdal)
+#' PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids", var.name = "CCTN"))}
 #' 
 
 
 PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T, plot.legend = T, legend.pos = "right", legend.title = "", 
-                          col.ramp.fun = "auto", col.breaks = NA) {
+                          legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NA, par.mar = rep(0, 4) + .1) {
   
   # load required libraries
-  require(rgdal)
+  #require(rgdal)
   
   # input argument checks
   stopifnot(is.data.frame(data), dim(data)[2] == 2, class(map)=="SpatialPolygonsDataFrame", exists("var.name"), 
             is.na(col.breaks) || is.numeric(col.breaks))
-  
-  # pre-defined break point vectors (defining them all is unnecessary but makes it easier to change and extend)
-  breaks.TN <- c(0, 250, 500, 1000, 2500, 5000, max(res[,2]))
   
   
   # data preparation and conditional assignment of color ramp functions and break point vectors 
@@ -80,42 +89,42 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T,
       if (!is.na(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- seq(min(data[, 2]), max(data[, 2]), length.out = 10)
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
     } else if (col.ramp.fun == "ColPhos") {
       crfun <- .ColPhos
       if (!is.na(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- seq(min(data[, 2]), max(data[, 2]), length.out = 10)
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
     } else if (col.ramp.fun == "ColTemp") {
       crfun <- .ColTemp
       if (!is.na(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- seq(min(data[, 2]), max(data[, 2]), length.out = 10)
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
     } else if (col.ramp.fun == "ColPrec") {
       crfun <- .ColPrec
       if (!is.na(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- seq(min(data[, 2]), max(data[, 2]), length.out = 10)
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
     } else if (col.ramp.fun == "ColQ") {
       crfun <- .ColQ
       if (!is.na(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- seq(min(data[, 2]), max(data[, 2]), length.out = 10)
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
     } else if (col.ramp.fun == "ColDiff") {
       crfun <- .ColDiff
       if (!is.na(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- seq(min(data[, 2]), max(data[, 2]), length.out = 10)
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
       
     } else if (col.ramp.fun == "auto") {
@@ -139,7 +148,7 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T,
         legend.title <- expression(paste("Air Temp. ("*degree, "C)"))
       } else {
         crfun <- .ColDiff
-        cbrks <- seq(min(data[, 2]), max(data[, 2]), length.out = 10)
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
     }
   } else {
@@ -147,20 +156,24 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T,
     stop("Invalid 'col.ramp.fun' argument. Neither a function nor a character string.")
   }
   
-  ## translate modelled variable to fixed colour mapping (this should become a separate function)
   
-  data[,3] <- cut(data[, 2], breaks = cbrks, include.lowest = T)
-  data[,4] <- data[,3]
-  levels(data[,4]) <- crfun(length(cbrks) - 1)
-  data[,4] <- as.character(data[,4])
-  names(data)[3:4] <- c("group", "color")
+  # discretise the modeled values in data into classed groups, add to data as new column (of type factor)
+  data[, 3] <- cut(data[, 2], breaks = cbrks, include.lowest = T)
+  # replace the factor levels with color codes using the color ramp function assigned above
+  levels(data[, 3]) <- crfun(length(cbrks) - 1)
+  # convert to character to make it conform to plotting requirements below
+  data[, 3] <- as.character(data[, 3])
+  # give it a name
+  names(data)[3] <- "color"
   
-  # add data to subid map table, merge by SUBID
+  # add data to subid map table (in data slot, indicated by @), merge by SUBID
   map@data <- data.frame(map@data, data[match(map@data[, map.subid.column], data[,1]),])
   
   
   #x11(width = 4.5, height = 9)
-  par(mar = rep(0, 4) + .1, xaxs = "i", yaxs = "i", lend = 1)
+  # par settings: lend set to square line endings because the legend below works with very thick lines 
+  # instead of boxes (a box size limitation work-around); xpd set to allow for plotting a legend on the margins
+  par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T)
   plot(map, col = map$color, border = NA)
   bbx <- bbox(map)
   .Scalebar(x = bbx[1,2] - 1.5 * (if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}), 
@@ -171,14 +184,14 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T,
               yb = bbx[2,1] + diff(bbx[2, ]) * .02, 
               len = diff(bbx[1,])/70, cex.lab = .8)
   legend(legend.pos, legend = .CreateLabelsFromBreaks(cbrks), 
-         col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", cex = .8, title = legend.title)
+         col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", cex = .8, title = legend.title, inset = legend.inset)
   
-  # invisible unless assigned: return 
-  #invisible()
+  # invisible unless assigned: return the color codes for all values in data
+  invisible(data[, 3])
 }
 
 
-# # DEBUG
+# DEBUG
 # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTN.txt")
 # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTP.txt")
 # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCOUT.txt")
@@ -195,6 +208,8 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T,
 # col.ramp.fun <- "auto"
 # col.ramp.fun <- colorRampPalette(c("yellow", "green"))
 # col.breaks <- NA
+# par.mar <- rep(0, 4) + .1
+# legend.inset <- c(0,0)
 # 
 # # re-set map data
 # map@data <- map@data[, 1:7]
