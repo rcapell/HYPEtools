@@ -7,7 +7,6 @@
 #     - .Scalebar()
 #     - .NorthArrow()
 #     - .ColNITR(), .ColPHOS(), .ColPREC(), .ColTEMP(), .ColCOUT(), .Coldiff()
-#     - .ReadBasinOutput() => SEEMS OUT OF DATE, EXISTS AS ReadBasinOutput() in functioncollection_export.R
 #     - 
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -61,7 +60,7 @@
 
 
 
-# internal function to create upstream subid list, used in find.upstream.subids with 'lapply' on all subids in gd
+# internal function to create upstream subid list, used in AllUpstreamSubids with 'lapply' on all subids in gd
 # sbd: subid for which upstreams are searched
 # dtf: df data frame above
 .FindUpstrSbd <- function(sbd, dtf) {
@@ -175,62 +174,10 @@
 
 .ColNitr <- colorRampPalette(c("#fff5a8", "#6b0601"))
 .ColPhos <- colorRampPalette(c("#dcf5e9", "#226633"))
-.ColPrec <- colorRampPalette(c("#e3e7e8", "#00508c"))
-.ColTemp <- colorRampPalette(c("#ff0000", "#ff8000", "#ffff00", "#f0f0f0", "#80ffff", "#0080ff", "#0000ff"))
+.ColPrec <- colorRampPalette(c("#e0e7e8", "#00508c"))
+.ColTemp <- colorRampPalette(c("#0000ff", "#0080ff", "#80ffff", "#f0f0f0", "#ffff00", "#ff8000", "#ff0000"))
 .ColQ <- colorRampPalette(c("#ede7ff", "#2300ff"))
-.ColDiff <- colorRampPalette(c("#2892c7", "#d5f6d0", "#e81515"))
+.ColDiffTemp <- colorRampPalette(c("#2892c7", "#d5f6d0", "#e81515"))
+.ColDiffGeneric <- colorRampPalette(c("#e81515", "#d5f6d0", "#2892c7"))
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.ReadBasinOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-# internal function to read a single basin output file, the exported import function wraps a multi-import from a directory
-# path around it.
-# filename: file location of basin file to import
-# dt.format: format string as in strptime
-# outformat: can be matrix or dataframe
-.ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") {
-  
-  # check validity of outformat argument
-  if (outformat != "df" & outformat != "m" & outformat != "dataframe" & outformat != "matrix") {
-    stop("Argument 'outformat' invalid.")
-  }
-  
-  x <- read.table(filename, header = F, na.strings = "-9999", skip = 2)      
-  names(x) <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
-  
-  
-  ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
-  ## handles errors which might occur if the date string differs from the specified format, on error, strings are returned.
-  
-  # convert date column to character to avoid problems with factor levels in the date conversion
-  x[, 1] <- as.character(x[, 1])
-  
-  # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
-  if (dt.format == "%Y-%m") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-  } else if (dt.format == "%Y%m") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-  } else if (dt.format == "%Y") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-  } else {
-    xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-  }
-  
-  # update with new attribute to hold measurement units
-  xattr <- readLines(filename, n = 2)
-  attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")
-  
-  # handling of argument 'outformat', 
-  if(outformat == "matrix" | outformat == "m") {
-    
-    return(as.matrix(cbind(DATE = as.numeric(x[, 1]), x[, -1])))
-  } else return(x)
-}

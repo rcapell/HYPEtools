@@ -2,7 +2,7 @@
 \alias{PlotMapOutput}
 \title{Plot function for HYPE map results.}
 \usage{
-PlotMapOutput(data, map, map.subid.column, var.name, plot.scale = T,
+PlotMapOutput(data, map, map.subid.column, var.name = "", plot.scale = T,
   plot.legend = T, legend.pos = "right", legend.title = "",
   legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NA,
   par.mar = rep(0, 4) + 0.1)
@@ -12,13 +12,17 @@ PlotMapOutput(data, map, map.subid.column, var.name, plot.scale = T,
   columns, first column containing SUBIDs and second column
   containing model results. See details.}
 
-  \item{map.subid.column}{Integer, the column index of}
-
   \item{map}{A \code{SpatialPolygonsDataFrame} object,
   typically an imported SUBID map, requires package
   \code{rgdal}.}
 
-  \item{var.name}{Character string. HYPE variable name}
+  \item{map.subid.column}{Integer, index of the column in
+  the \code{map} data slot that holds the SUBID indices.}
+
+  \item{var.name}{Character string. HYPE variable name to
+  be plotted. Mandatory for automatic color ramp selection
+  of pre-defined HYPE variables (\code{col.ramp.fun =
+  "auto"}). Not case-sensitive. See details.}
 
   \item{plot.scale}{Logical, plot a scale bar and a North
   arrow in the lower right corner. NOTE: works only with
@@ -45,13 +49,16 @@ PlotMapOutput(data, map, map.subid.column, var.name, plot.scale = T,
   to allow for automatic selection from pre-defined color
   ramp palettes based on argument \code{var.name} \item One
   of the pre-defined palette functions for HYPE output
-  variables: \code{"ColNitr"} for nitrogen,
-  \code{"ColPhos"} for phosphorus, \code{"ColPrec"} for
-  precipitation, \code{"ColTemp"} for temperatures,
-  \code{"ColQ"} for runoff, or user-calculated differences:
-  \code{"ColDiff"} (see details) \item A color ramp palette
-  function, e.g. as returned from a call to
-  \code{\link{colorRampPalette}} }}
+  variables or user-calculated differences between model
+  results:
+
+  \code{"ColNitr"} for nitrogen, \code{"ColPhos"} for
+  phosphorus, \code{"ColPrec"} for precipitation,
+  \code{"ColTemp"} for temperatures, \code{"ColQ"} for
+  runoff, \code{"ColDiffTemp"} for temperature differences,
+  \code{"ColDiffGeneric"} for generic differences (see
+  details) \item A color ramp palette function, e.g. as
+  returned from a call to \code{\link{colorRampPalette}} }}
 
   \item{col.breaks}{Break points for discretisation of
   model result values into classes. Numeric vector of break
@@ -72,16 +79,22 @@ PlotMapOutput(data, map, map.subid.column, var.name, plot.scale = T,
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations
-and color ramp defaults. Data typically imported using
-\code{\link{ReadMapOutput}}.
+and color ramp defaults.
 }
 \details{
 \code{PlotMapOutput} plots HYPE results from 'map[variable
-name].txt' files. \code{data} arguments must contain the
-variable of interest in the second column. For multicolumn
-map results, i.e. with several time periods, pass index
-selections to \code{data}, e.g. \code{mymapresult[, c(1,
-3)]}.
+name].txt' files, typically imported using
+\code{\link{ReadMapOutput}}. \code{data} arguments
+\strong{must} contain the variable of interest in the
+second column. For multicolumn map results, i.e. with
+several time periods, pass index selections to \code{data},
+e.g. \code{mymapresult[, c(1, 3)]}.
+
+Mapped variables are visualised using color-coded data
+intervals. \code{PlotMapOutput} uses several in-built color
+ramp functions suitable for some common HYPE result
+variables as listed under argument \code{col.ramp.fun}. and
+provides
 
 Legends are positioned by keyword, defaulting to the right
 side of the map. Depending on the form of the displayed

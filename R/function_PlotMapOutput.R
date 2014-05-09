@@ -12,13 +12,13 @@
 #'
 #' @description
 #' Draw HYPE map results, with pretty scale discretisations and color ramp defaults. 
-#' Data typically imported using \code{\link{ReadMapOutput}}.
 #' 
 #' @param data Map results, data frame object with two columns, first column containing SUBIDs and 
 #' second column containing model results. See details.
-#' @param map.subid.column Integer, the column index of
 #' @param map A \code{SpatialPolygonsDataFrame} object, typically an imported SUBID map, requires package \code{rgdal}.
-#' @param var.name Character string. HYPE variable name
+#' @param map.subid.column Integer, index of the column in the \code{map} data slot that holds the SUBID indices.
+#' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
+#' HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.
 #' @param plot.scale Logical, plot a scale bar and a North arrow in the lower right corner. NOTE: works only with projected maps 
 #' based on meter units, not geographical projections
 #' @param plot.legend Logical, plot a legend along with the map. Uses function \code{\link{legend}}.
@@ -28,9 +28,11 @@
 #' @param legend.inset Inset distance(s) from the margins as a fraction of the plot region. See \code{\link{legend}} and details below.
 #' @param col.ramp.fun Color ramp palette to use for the map. One of the following: \itemize{
 #' \item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes based on argument \code{var.name}
-#' \item One of the pre-defined palette functions for HYPE output variables: \code{"ColNitr"} for nitrogen, \code{"ColPhos"} for 
-#' phosphorus, \code{"ColPrec"} for precipitation, \code{"ColTemp"} for temperatures, \code{"ColQ"} for runoff, 
-#' or user-calculated differences: \code{"ColDiff"} (see details)
+#' \item One of the pre-defined palette functions for HYPE output variables or user-calculated differences between model results: 
+#' 
+#' \code{"ColNitr"} for nitrogen, \code{"ColPhos"} for phosphorus, \code{"ColPrec"} for precipitation, \code{"ColTemp"} for 
+#' temperatures, \code{"ColQ"} for runoff, \code{"ColDiffTemp"} for temperature differences,  \code{"ColDiffGeneric"} for generic
+#' differences (see details)
 #' \item A color ramp palette function, e.g. as returned from a call to \code{\link{colorRampPalette}}
 #' }
 #' @param col.breaks Break points for discretisation of model result values into classes. Numeric vector of break points, will be
@@ -42,9 +44,12 @@
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
 #' 
 #' @details
-#' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files. \code{data} arguments must contain the variable 
-#' of interest in the second column. For multicolumn map results, i.e. with several time periods, pass index selections to 
-#' \code{data}, e.g. \code{mymapresult[, c(1, 3)]}.
+#' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
+#' \code{data} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with 
+#' several time periods, pass index selections to \code{data}, e.g. \code{mymapresult[, c(1, 3)]}. 
+#' 
+#' Mapped variables are visualised using color-coded data intervals. \code{PlotMapOutput} uses several in-built color ramp functions 
+#' suitable for some common HYPE result variables as listed under argument \code{col.ramp.fun}. and provides 
 #' 
 #' Legends are positioned by keyword, defaulting to the right side of the map. Depending on the form of the displayed area and 
 #' the size of the legend, there might be no optimal place inside the plot area. In that case, the legend can be moved to the 
@@ -57,14 +62,14 @@
 #' 
 
 
-PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T, plot.legend = T, legend.pos = "right", legend.title = "", 
+PlotMapOutput <- function(data, map, map.subid.column, var.name = "", plot.scale = T, plot.legend = T, legend.pos = "right", legend.title = "", 
                           legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NA, par.mar = rep(0, 4) + .1) {
   
   # load required libraries
   #require(rgdal)
   
   # input argument checks
-  stopifnot(is.data.frame(data), dim(data)[2] == 2, class(map)=="SpatialPolygonsDataFrame", exists("var.name"), 
+  stopifnot(is.data.frame(data), dim(data)[2] == 2, class(map)=="SpatialPolygonsDataFrame", 
             is.na(col.breaks) || is.numeric(col.breaks))
   
   
@@ -119,8 +124,16 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T,
       } else {
         cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
-    } else if (col.ramp.fun == "ColDiff") {
-      crfun <- .ColDiff
+    } else if (col.ramp.fun == "ColDiffTemp") {
+      crfun <- .ColDiffTemp
+      if (!is.na(col.breaks)) {
+        cbrks <- col.breaks
+      } else {
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
+      }
+      
+    } else if (col.ramp.fun == "ColDiffGeneric") {
+      crfun <- .ColDiffGeneric
       if (!is.na(col.breaks)) {
         cbrks <- col.breaks
       } else {
@@ -132,22 +145,22 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T,
       # at the end a generic "catch the rest" treatment for undefined variables
       if (toupper(var.name) == "CCTN") {
         crfun <- .ColNitr
-        cbrks <- c(0, 100, 250, 500, 1000, 2500, 5000, ifelse(max(data[,2]) > 5000, max(data[,2]), 10000))
+        cbrks <- c(0, 100, 250, 500, 1000, 2500, 5000, ifelse(max(data[,2]) > 5000, max(data[,2]) + 1, 10000))
         legend.title <- expression(paste("Total N (", mu, "g l"^"-1", ")"))
       } else if (toupper(var.name) == "CCTP") {
         crfun <- .ColPhos
-        cbrks <- c(0, 25, 50, 100, 150, 200, 250, ifelse(max(data[,2]) > 250, max(data[,2]), 1000))
+        cbrks <- c(0, 25, 50, 100, 150, 200, 250, ifelse(max(data[,2]) > 250, max(data[,2]) + 1, 1000))
         legend.title <- expression(paste("Total P (", mu, "g l"^"-1", ")"))
       } else if (toupper(var.name) == "COUT") {
         crfun <- .ColQ
-        cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(data[,2]) > 500, max(data[,2]), 2000))
+        cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(data[,2]) > 500, max(data[,2]) + 1, 2000))
         legend.title <- expression(paste("Q (m"^3, "s"^"-1", ")"))
       } else if (toupper(var.name) == "TEMP") {
         crfun <- .ColTemp
-        cbrks <- c(-10, -7.5, -5. -2.5, 0, 2.5, 5, 7.5, ifelse(max(data[,2]) > 7.5, max(data[,2]), 30))
+        cbrks <- c(-10, -7.5, -5, -2.5, 0, 2.5, 5, 7.5, ifelse(max(data[,2]) > 7.5, max(data[,2]) + 1, 30))
         legend.title <- expression(paste("Air Temp. ("*degree, "C)"))
       } else {
-        crfun <- .ColDiff
+        crfun <- .ColDiffGeneric
         cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
       }
     }
@@ -192,26 +205,26 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name, plot.scale = T,
 
 
 # DEBUG
-# data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTN.txt")
+data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTN.txt")
 # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTP.txt")
 # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCOUT.txt")
 # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapTEMP.txt")
-# map <- readOGR(dsn = "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/S-HYPE2012B/gis", layer = "SHYPE2012B_aro_y")
-# # Clean map from Norwegian area
-# map <- map[map$SUBIDnew < 51000, ]
-# map.subid.column <- 3
-# var.name <- "CCTN"
-# plot.scale <- T
-# plot.legend <- T
-# legend.pos <- "right"
-# legend.title <- "" 
-# col.ramp.fun <- "auto"
-# col.ramp.fun <- colorRampPalette(c("yellow", "green"))
-# col.breaks <- NA
-# par.mar <- rep(0, 4) + .1
-# legend.inset <- c(0,0)
-# 
-# # re-set map data
-# map@data <- map@data[, 1:7]
-# rm(data, map, map.subid.column, var.name, plot.scale, plot.legend, legend.pos, legend.title, col.ramp.fun, col.breaks, .CreateLabelsFromBreaks, cbrks, crfun,
-#    .ColNitr, .NorthArrow, .Scalebar, bbx)
+map <- readOGR(dsn = "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/S-HYPE2012B/gis", layer = "SHYPE2012B_aro_y")
+# Clean map from Norwegian area
+map <- map[map$SUBIDnew < 51000, ]
+map.subid.column <- 3
+var.name <- "CCTN"
+plot.scale <- T
+plot.legend <- T
+legend.pos <- "right"
+legend.title <- "" 
+col.ramp.fun <- "auto"
+col.ramp.fun <- colorRampPalette(c("yellow", "green"))
+col.breaks <- NA
+par.mar <- rep(0, 4) + .1
+legend.inset <- c(0,0)
+
+# re-set map data
+map@data <- map@data[, 1:7]
+rm(data, map, map.subid.column, var.name, plot.scale, plot.legend, legend.pos, legend.title, col.ramp.fun, col.breaks, .CreateLabelsFromBreaks, cbrks, crfun,
+   .ColNitr, .NorthArrow, .Scalebar, bbx)
