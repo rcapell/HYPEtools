@@ -143,7 +143,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
   
   # update with new attribute to hold measurement units
   xattr <- readLines(filename, n = 2)
-  attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")
+  attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")[[1]]
   
   # handling of argument 'outformat', 
   if(outformat == "matrix" | outformat == "m") {
@@ -471,11 +471,12 @@ ReadMapOutput <- function(filename, colnames = NA) {
 ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
     
   x <- read.table(filename, header = T, na.strings = "-9999", skip = 1)      
-  names(x) <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
+  
   
   # update with new attributes to hold comment row and subids (column headers will have a leading X)
   xattr <- readLines(filename, n = 2)
-  attr(x, which = "comment") <- xattr[1]
+  # the strsplit on comment is only needed if the file to import was saved in excel before, and lots of empty cells added to the comment line
+  attr(x, which = "comment") <- strsplit(xattr[1],split = "\t")[[1]][1]
   attr(x, which = "subid") <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
   
   
@@ -507,8 +508,9 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
   return(x)
 }
 
-
-
+## DEBUG
+# filename <- "../timeCCTN.txt"
+# dt.format <- "%Y"
 
 
 

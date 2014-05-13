@@ -205,26 +205,26 @@ PlotMapOutput <- function(data, map, map.subid.column, var.name = "", plot.scale
 
 
 # DEBUG
-data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTN.txt")
-# data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTP.txt")
-# data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCOUT.txt")
-# data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapTEMP.txt")
-map <- readOGR(dsn = "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/S-HYPE2012B/gis", layer = "SHYPE2012B_aro_y")
-# Clean map from Norwegian area
-map <- map[map$SUBIDnew < 51000, ]
-map.subid.column <- 3
-var.name <- "CCTN"
-plot.scale <- T
-plot.legend <- T
-legend.pos <- "right"
-legend.title <- "" 
-col.ramp.fun <- "auto"
-col.ramp.fun <- colorRampPalette(c("yellow", "green"))
-col.breaks <- NA
-par.mar <- rep(0, 4) + .1
-legend.inset <- c(0,0)
-
-# re-set map data
-map@data <- map@data[, 1:7]
-rm(data, map, map.subid.column, var.name, plot.scale, plot.legend, legend.pos, legend.title, col.ramp.fun, col.breaks, .CreateLabelsFromBreaks, cbrks, crfun,
-   .ColNitr, .NorthArrow, .Scalebar, bbx)
+# data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTN.txt")
+# # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTP.txt")
+# # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCOUT.txt")
+# # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapTEMP.txt")
+# map <- readOGR(dsn = "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/S-HYPE2012B/gis", layer = "SHYPE2012B_aro_y")
+# # Clean map from Norwegian area
+# map <- map[map$SUBIDnew < 51000, ]
+# map.subid.column <- 3
+# var.name <- "CCTN"
+# plot.scale <- T
+# plot.legend <- T
+# legend.pos <- "right"
+# legend.title <- "" 
+# col.ramp.fun <- "auto"
+# col.ramp.fun <- colorRampPalette(c("yellow", "green"))
+# col.breaks <- NA
+# par.mar <- rep(0, 4) + .1
+# legend.inset <- c(0,0)
+# 
+# # re-set map data
+# map@data <- map@data[, 1:7]
+# rm(data, map, map.subid.column, var.name, plot.scale, plot.legend, legend.pos, legend.title, col.ramp.fun, col.breaks, .CreateLabelsFromBreaks, cbrks, crfun,
+#    .ColNitr, .NorthArrow, .Scalebar, bbx)

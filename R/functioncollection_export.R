@@ -474,3 +474,121 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
 
 
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteBasinOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Write a basin output '[SUBID].txt' file
+#'
+#' @description
+#' Function to export a basin output file from R.
+#' 
+#' @param x The object to be written, a dataframe with \code{unit} attribute, as an object returned from \code{\link{ReadBasinOutput}}.
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'.
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
+#' and annual values allowed, e.g. '\%Y'.
+#'  
+#' @details
+#' \code{WriteBasinOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's basin output files.
+#  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
+#' 
+#' @examples
+#' \dontrun{WriteBasinOutput(x = mybasin, filename = "000001.txt")}
+#' 
+
+
+
+WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
+  
+  # create and open a file connection to write header to
+  conn <- file(description = filename, open = "a")
+  # write header lines
+  writeLines(paste(names(x), collapse = "\t"), con = conn)
+  writeLines(paste(attr(x, "unit"), collapse = "\t"), con = conn)
+  # close the connection
+  close(conn)
+  
+  # attempt to format the date column if it is POSIX (double number) to the given format string, otherwise return unchanged with a warning
+  if (is.double(x[, 1])) {
+    x[,1] <- format(x[,1], format = dt.format)
+  } else {
+    warning("Date column not formatting failed. Exported unchanged.")
+  }
+  
+  # export the object, omitting header
+  write.table(x, file = filename, append = T, sep = "\t", row.names = F, col.names = F, na = "-9999", quote = F)
+  
+}
+
+
+## DEBUG
+# te <- ReadBasinOutput(filename=filename)
+# WriteBasinOutput(te, filename = "test3.txt")
+# dt.format <- "%Y-%m-%d"
+# outformat <- "df"
+# filename <- "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-01-10_koppling_SHYPE2012B_HBVsv/res_daily_thomas_hadley/0042041.txt"
+# rm(te, x, xd, ReadBasinOutput, dt.format, filename)
+
+
+
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteTimeOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Write a 'timeXXXX.txt' file
+#'
+#' @description
+#' Function to export a time output file from R.
+#' 
+#' @param x The object to be written, a dataframe with \code{comment} and \code{subid} attributes, as an object returned from 
+#' \code{\link{ReadTimeOutput}}.
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'.
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
+#' and annual values allowed, e.g. '\%Y'.
+#'  
+#' @details
+#' \code{WriteTimeOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's time output files.
+#  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
+#' 
+#' @examples
+#' \dontrun{WriteTimeOutput(x = myCCTN, filename = "timeCCTN.txt")}
+#' 
+
+WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
+  
+  # create and open a file connection to write header to
+  conn <- file(description = filename, open = "a")
+  # write header lines
+  writeLines(attr(x, "comment"), con = conn)
+  writeLines(paste(c("DATE", attr(x, "subid")), collapse = "\t"), con = conn)
+  # close the connection
+  close(conn)
+  
+  # attempt to format the date column if it is POSIX (double number) to the given format string, otherwise return unchanged with a warning
+  if (is.double(x[, 1])) {
+    x[,1] <- format(x[,1], format = dt.format)
+  } else {
+    warning("Date column not formatting failed. Exported unchanged.")
+  }
+  
+  # export the object, omitting header
+  write.table(x, file = filename, append = T, sep = "\t", row.names = F, col.names = F, na = "-9999", quote = F)
+  
+}
+
+
+# te <- ReadTimeOutput("../timeCCTN.txt", dt.format="%Y")
+# WriteTimeOutput(te, "test2.txt", dt.format="%Y")
+# x[,1]
+# dt.format <- "%Y"
+# filename <- "test.txt"
