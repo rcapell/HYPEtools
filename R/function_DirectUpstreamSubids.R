@@ -10,39 +10,48 @@
 #' Find Direct Upstream SUBIDs, with Flow Fractions
 #'
 #' @description
-#' Function to find all SUBIDs of \bold{direct} upstream sub-catchments for one or all 
+#' Function to find \bold{direct} upstream SUBIDs including flow fractions for MAINDOWN/BRANCHDOWN splits for a single
+#' sub-catchment or all sub-catchments in a GeoData-like data frame. Can be used for a
+#' single sub-catchmentone or all 
 #' sub-catchments in a GeoData file, connected through 'maindown' and 'branchid' 
 #' SUBIDs. Includes extraction of the appropriate flow fractions for each connection.
 #' 
 #'
-#' @param subid SUBID of a target sub-catchment (must exist in \code{gd}), defaults to 
+#' @param subid Integer, SUBID of a target sub-catchment (must exist in \code{gd}), defaults to 
 #' \code{NULL}. If non-\code{NULL}, \code{DirectUpstreamSubids} 
-#' returns only the upstream SUBIDs for this sub-catchment, otherwise for all in \code{gd}.
+#' returns the direct upstream SUBIDs for this sub-catchment, otherwise for all sub-catchments in \code{gd}.
 #' 
-#' @param gd A data frame, an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
+#' @param gd Data frame, typically an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
 #' 
-#' @param bd A data frame, an imported 'BranchData.txt' file. Optional argument, defaults to 
+#' @param bd Data frame, typically an imported 'BranchData.txt' file. Optional argument, defaults to 
 #' an empty placeholder. See 'Details'.
 #' 
 #' @details
-#' \code{DirectUpstreamSubids} matches \bold{direct} upstream SUBIDs to a target SUBID, or 
-#' all SUBIDs in an imported GeoData file. Strictly speaking, it only requires a data frame 
-#' with tow columns 'SUBID' and 'MAINDOWN' as \code{gd}, and optionally a data frame with four 
-#' columns 'BRANCHID', 'SOURCEID', 'MAINPART', and 'MAXQMAIN' as input, butwill select these 
-#' columns from imported files automatically.
+#' \code{DirectUpstreamSubids} identifies \bold{direct} upstream SUBIDs for a user-provided target SUBID or 
+#' for all SUBIDs given in a data frame \code{gd}, typically an imported GeoData file. 
+#' 
+#' A sub-catchment in HYPE can have several upstream sub-catchments. If there are more than one upstream sub-catchments, 
+#' the downstream sub-catchment is a confluence. HYPE stores these connections in the GeoData file, in downstream direction, 
+#' given as downstream SUBID in column 'MAINDOWN'. Bifurcations, i.e. splits in downstream direction, are also possible to model in HYPE.
+#' These additional downstream connections are provided in the BranchData file, together with flow fractions to each downstream sUBID.
+#' 
+#' Formally, \code{gd} can be any data frame which contains columns 'SUBID' and 'MAINDOWN' (not case-sensitive), and \code{bd} any 
+#' data frame which contains four columns 'BRANCHID', 'SOURCEID', 'MAINPART', and 'MAXQMAIN'. Typically, these are HYPE data files 
+#' imported through \code{\link{ReadGeoData}} and \code{\link{ReadBranchData}}. See HYPE documentation for further details on connections
+#' Between SUBIDs in the model.
 #' 
 #' 
 #' @return
-#' \code{DirectUpstreamSubids} always returns a \link{list}:
-#' \itemize{
-#'  \item If argument \code{subid} is non-\code{NULL}, returns a list with two elements: 
-#'  \code{subid} contains the target SUBID, \code{upstr.df} contains a data frame with columns 
+#' \code{DirectUpstreamSubids} always returns a \link{list}. If argument \code{subid} is non-\code{NULL}, a list with two elements is returned: 
+#'  \code{subid} contains an integer giving the target SUBID and \code{upstr.df} contains a data frame with columns 
 #'  \code{upstream} (upstream SUBID), \code{is.main} (logical, \code{TRUE} if it is a MAINDOWN connection), 
-#'  \code{fraction} (fraction of flow going into the target SUBID), and \code{limit} (maximum flow 
-#'  contribution to target SUBID).
-#'  \item Otherwise returns a list with list elements as detailed above.
-#' }
+#'  \code{fraction} (fraction of flow going into the target SUBID), and \code{limit} (maximum flow contribution to target SUBID).
+#'  
+#'  If no specific SUBID was provided, \code{DirectUpstreamSubids} returns a list with elements each containing the list described above, i.e.
+#'  with an integer element (SUBID) and a data frame element (upstream connections).
 #' 
+#' @seealso
+#' \code{\link{AllUpstreamSubids}}, which returns all upstream SUBIDs, i.e. the full upstream network up to the headwaters, for a given SUBID.
 #' 
 #' @examples
 #' \dontrun{DirectUpstreamSubids(subid = 1, gd = mygeodata)}
@@ -65,7 +74,7 @@ DirectUpstreamSubids <- function(subid = NULL,
   df <- merge(gd[, c(geocol.sub, geocol.md)], bd[, c(brcol.sr, brcol.br, brcol.mp, brcol.mx)], by.x = 1, by.y = 1, all = T, sort = F)
   
   
-  # if no target subid is given as argument, apply the internal function on all subids in gd
+  # if no target subid is given as argument, apply internal function to find upstream subids on all subids in gd
   if (is.null(subid)){
     res <- lapply(df[, 1], .FindUpstrSbd, dtf = df)
     # name entries in the list with 'X' + subid
@@ -79,3 +88,5 @@ DirectUpstreamSubids <- function(subid = NULL,
   }
 }
 
+## DEBUG
+# te <- DirectUpstreamSubids(subid = NULL, gd = gd)

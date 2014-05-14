@@ -24,7 +24,6 @@
 # x: a dataframe to be tested
 # maxChar: maximum number of characters
 .CheckCharLengthDf <- function (x, maxChar) {
-  ## test if string columns elements are longer than 50 characters, which is the maximum accepted for BranchData by HYPE
   
   # which columns are of type factor or character (strings)
   facts <- sapply(x, function(z) {is.factor(z)})
@@ -60,9 +59,9 @@
 
 
 
-# internal function to create upstream subid list, used in AllUpstreamSubids with 'lapply' on all subids in gd
+# internal function to create upstream subid list, used in DirectUpstreamSubids with 'lapply' on all subids in gd
 # sbd: subid for which upstreams are searched
-# dtf: df data frame above
+# dtf: df data frame which contains columns subid, maindown, branchid, mainpart, maxqmain
 .FindUpstrSbd <- function(sbd, dtf) {
   # look for subid in maindown and branchid columns, concatenate positions
   mup <- dtf[which(dtf[,2] == sbd), c(1, 4, 5)]

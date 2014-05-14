@@ -6,14 +6,15 @@ ExtractFreq(data)
 }
 \arguments{
   \item{data}{either a numeric vector or an all-numeric
-  data frame (\code{NA}s allowed)}
+  dataframe (\code{NA}s allowed) which holds the variables
+  for which quantiles are computed.}
 }
 \value{
-\code{ExtractFreq} returns a list object with two elements:
-\itemize{ \item probs.res: a dataframe with probabilities
-(first column) and quantiles of indata (other columns)
-\item no.obs: a numeric vector with no. of observations for
-each indata column }
+\code{ExtractFreq} returns a dataframe with probabilities
+in the first column, and quantiles of data in the following
+columns. Number of observations per variable in \code{data}
+are given in an attribute \code{n.obs} (see
+\code{\link{attributes}}).
 }
 \description{
 This function calculates quantiles suitable for duration

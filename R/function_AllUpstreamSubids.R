@@ -29,24 +29,15 @@
 #' @examples
 #' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
 
-# ------------------------------
-# AllUpstreamSubids(subid,geodata,branchdata)
-# 
-# - Function to find the upstream SUBIDs of a given HYPE SUBID (including itself but not including potential irrigation links or groundwater flows)
-#   -'subid' = the ID of the subbasin for which the value is desired
-#   -'geodata' = dataframe with the GeoData.txt information
-#   -'branchdata' = dataframe with the BranchData.txt information (if applicable)
-#   - output is a list of upstream subbasin ids to the given subid
-#   - Written for HYPE 4.3.1 (with separate BranchData file)
 
 AllUpstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   
   # identify relevant column positions in geodata and branchdata
-  geocol.md <- which(colnames(gd) == "maindown" | colnames(gd) == "MAINDOWN")
-  geocol.sub <- which(colnames(gd) == "subid" | colnames(gd) == "SUBID")
+  geocol.md <- which(tolower(colnames(gd)) == "maindown")
+  geocol.sub <- which(tolower(colnames(gd)) == "subid")
   if (!is.null(bd)) {
-    brcol.br <- which(colnames(bd) == "branchid" | colnames(bd) == "BRANCHID")
-    brcol.sr <- which(colnames(bd) == "sourceid" | colnames(bd) == "SOURCEID")   
+    brcol.br <- which(tolower(colnames(bd)) == "branchid")
+    brcol.sr <- which(tolower(colnames(bd)) == "sourceid")   
   }
   
   # internal helper function, used with sapply() in while loop below, finds direct upstream subids in geodata and branchdata

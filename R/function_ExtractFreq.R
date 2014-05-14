@@ -8,8 +8,8 @@
 #' This function calculates quantiles suitable for duration curves of environmental time series data.
 #' 
 #'
-#' @param data either a numeric vector or 
-#' an all-numeric data frame (\code{NA}s allowed)
+#' @param data either a numeric vector or an all-numeric dataframe (\code{NA}s allowed) which holds the variables for which
+#' quantiles are computed.
 #'
 #' 
 #' @details
@@ -18,11 +18,8 @@
 #' \code{NA}s are allowed in the input data. For the results to be meaningful, input should represent equally-spaced time series.
 #' 
 #' @return
-#' \code{ExtractFreq} returns a list object with two elements:
-#' \itemize{
-#'  \item probs.res: a dataframe with probabilities (first column) and quantiles of indata (other columns)
-#'  \item no.obs: a numeric vector with no. of observations for each indata column
-#' }
+#' \code{ExtractFreq} returns a dataframe with probabilities in the first column, and quantiles of data in the following columns. 
+#' Number of observations per variable in \code{data} are given in an attribute \code{n.obs} (see \code{\link{attributes}}).
 #' 
 #' 
 #' @examples
@@ -35,25 +32,30 @@ ExtractFreq <- function(data){
   prbs <- c(0, 0.0001, 0.001, seq(0.01,0.99,by = .01), 0.999, 0.9999, 1)
   # condition: several variables in data
   if (is.data.frame(data)) {
+    # condition: several variables in data
     # preparation of return variables
     nc <- ncol(data)
-    res1 <- matrix(nrow=length(prbs), ncol=nc+1)
-    res1 <- as.data.frame(res1)
-    res1[,1] <- prbs
+    res <- matrix(nrow=length(prbs), ncol=nc+1)
+    res <- as.data.frame(res)
+    res[,1] <- prbs
     names(res1) <- c("prob", names(data))
-    res2 <- NA
+    n.obs <- NA
     # column-wise calculation of quantiles and number of observations
     for (i in 1:nc) {
-      res1[,i+1] <- quantile(data[,i], probs=prbs, na.rm=T, names=F)
-      res2[i] <- length(na.omit(data[,i]))
+      res[,i+1] <- quantile(data[,i], probs=prbs, na.rm=T, names=F)
+      n.obs[i] <- length(na.omit(data[,i]))
     }
+  } else {
+    # condition: vector variable in data
+    res <- data.frame(prob=prbs, quantile = quantile(data, probs=prbs, na.rm=T, names=F))
+    n.obs <- length(na.omit(data))
   }
-  # condition: vector variable in data
-  else {
-    res1 <- data.frame(prob=prbs, quantile = quantile(data, probs=prbs, na.rm=T, names=F))
-    res2 <- length(na.omit(data))
-  }
-  # combination of results in a list to return from function
-  outdata <- list(probs.res = res1, no.obs = res2)
-  return(outdata)
+  # add number of observations as new attribute to result dataframe
+  attr(res, which = "n.obs") <- n.obs
+  return(res)
 }
+
+
+## DEBUG
+# data <- data.frame(x=rnorm(1000), y=runif(1000), z=rgamma(1000, shape=.5))
+# data <- rnorm(1000)
