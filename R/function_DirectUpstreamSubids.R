@@ -11,10 +11,7 @@
 #'
 #' @description
 #' Function to find \bold{direct} upstream SUBIDs including flow fractions for MAINDOWN/BRANCHDOWN splits for a single
-#' sub-catchment or all sub-catchments in a GeoData-like data frame. Can be used for a
-#' single sub-catchmentone or all 
-#' sub-catchments in a GeoData file, connected through 'maindown' and 'branchid' 
-#' SUBIDs. Includes extraction of the appropriate flow fractions for each connection.
+#' sub-catchment or all sub-catchments in a GeoData-like data frame. 
 #' 
 #'
 #' @param subid Integer, SUBID of a target sub-catchment (must exist in \code{gd}), defaults to 
