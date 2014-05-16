@@ -3,8 +3,8 @@
 \title{Plot function for HYPE map results.}
 \usage{
 PlotMapOutput(data, map, map.subid.column, var.name = "", plot.scale = T,
-  plot.legend = T, legend.pos = "right", legend.title = "",
-  legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NA,
+  plot.legend = T, legend.pos = "right", legend.title = NULL,
+  legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NULL,
   par.mar = rep(0, 4) + 0.1)
 }
 \arguments{
@@ -37,8 +37,11 @@ PlotMapOutput(data, map, map.subid.column, var.name = "", plot.scale = T,
   \code{"topright"}, \code{"right"}, \code{"bottomright"},
   \code{"bottom"}, \code{"bottomleft"}.}
 
-  \item{legend.title}{Character string. An optional title
-  for the legend.}
+  \item{legend.title}{Character string or mathematical
+  expression. An optional title for the legend. If none is
+  provided here, \code{var.name} is used as legend title
+  string. For select HYPE variables, pretty legend titles
+  are in-built.}
 
   \item{legend.inset}{Numeric, inset distance(s) from the
   margins as a fraction of the plot region. See
@@ -47,15 +50,16 @@ PlotMapOutput(data, map, map.subid.column, var.name = "", plot.scale = T,
   \item{col.ramp.fun}{Color ramp palette to use for the
   map. One of the following: \itemize{ \item \code{"auto"}
   to allow for automatic selection from pre-defined color
-  ramp palettes based on argument \code{var.name} \item One
-  of the pre-defined palette functions for HYPE output
-  variables or user-calculated differences between model
-  results: \code{"ColNitr"} for nitrogen, \code{"ColPhos"}
-  for phosphorus, \code{"ColPrec"} for precipitation,
+  ramp palettes and break points based on argument
+  \code{var.name}, see details \item One of the pre-defined
+  palette functions for HYPE output variables or
+  user-calculated differences between model results:
+  \code{"ColNitr"} for nitrogen, \code{"ColPhos"} for
+  phosphorus, \code{"ColPrec"} for precipitation,
   \code{"ColTemp"} for temperatures, \code{"ColQ"} for
   runoff, \code{"ColDiffTemp"} for temperature differences,
-  \code{"ColDiffGeneric"} for generic differences (see
-  details) \item A color ramp palette function, e.g. as
+  \code{"ColDiffGeneric"} for generic differences, see
+  details \item A color ramp palette function, e.g. as
   returned from a call to \code{\link{colorRampPalette}} }}
 
   \item{col.breaks}{A numeric vector, specifying break
@@ -66,11 +70,10 @@ PlotMapOutput(data, map, map.subid.column, var.name = "", plot.scale = T,
   Meaningful results require the lowest and uppermost
   breaks to bracket all model result values, otherwise
   there will be unclassified white spots on the map plot.
-  Only necessary if a user-defined \code{col.ramp.fun} is
-  supplied (otherwise a generic classification with 10
-  classes based on 10% quantiles will be applied), but can
-  optionally be combined with one of the pre-defined
-  palettes.}
+  Not mandatory, can optionally be combined with one of the
+  pre-defined palettes, including \code{"auto"} selection.
+  Per default, a generic classification will be applied
+  (see details).}
 
   \item{par.mar}{Plot margins as in \code{\link{par}}
   argument \code{mar}. Defaults to a nearly margin-less
@@ -78,7 +81,7 @@ PlotMapOutput(data, map, map.subid.column, var.name = "", plot.scale = T,
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations
-and color ramp defaults.
+and color ramp defaults for select HYPE variables.
 }
 \details{
 \code{PlotMapOutput} plots HYPE results from 'map[variable
@@ -105,22 +108,29 @@ zero. Two further ramps provided are suitable to represent
 calculated differences, e.g. between two model runs, a
 generic ramp with reds on the low end and blues on the high
 end, and a temperature-specific one in reversed order.
+
 Break points between color classes of in-built or
 user-provided color ramp palettes can optionally be
 provided in argument \code{col.breaks}. This is
 perticularly useful when specific pretty class boundaries
 are needed, e.g. for publication figures. Per default,
-break points are calculated based on percentiles of HYPE
-results in \code{data}.
+break points for internal single color ramps and
+user-provided ramps are calculated based on 10% percentiles
+of HYPE results given in \code{data}. Default break points
+for internal color ramp \code{"ColDiffGeneric"} are based
+on an equal distance classification of log-scaled
+\code{data} ranges, centered around zero. For internal
+color ramp \code{"ColDiffTemp"}, they are breaks in an
+interval from -7.5 to 7.5 K.
 
 For select common HYPE variables, given in argument
 \code{var.name}, an automatic color ramp selection
-including pretty breaks is built into \code{PlotMapOutput}.
-These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic
-selection is activated by chosing keyword \code{"auto"} in
-\code{col.ramp.fun}. All other HYPE variables will be
-plotted using a generic color ramp palette and generic
-break points.
+including pretty breaks and legend titles is built into
+\code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and
+'TEMP'. Automatic selection is activated by chosing keyword
+\code{"auto"} in \code{col.ramp.fun}. All other HYPE
+variables will be plotted using a generic color ramp
+palette and generic break points.
 
 Legends are positioned by keyword, defaulting to the right
 side of the map. Depending on the form of the displayed
@@ -135,6 +145,6 @@ through \code{par.mar}, see \code{mar} in
 }
 \examples{
 \dontrun{require(rgdal)
-PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids", var.name = "CCTN"))}
+PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")}
 }
 

@@ -101,7 +101,7 @@
 # breaks: vector of breakpoints
 .CreateLabelsFromBreaks <- function(breaks) {
   # create first element as an expression which uses the value given in breaks
-  lab.legend <- as.expression(bquote("" <= .(round(breaks[2], 2))))
+  lab.legend <- as.expression(bquote("" < .(round(breaks[2], 2))))
   # create following elements analoguously
   for (i in 2:(length(breaks)-2)) {
     lab.legend[i] <- as.expression(bquote("" >= .(round(breaks[i], 2)) - .(round(breaks[i+1], 2))))
