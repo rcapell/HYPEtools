@@ -23,7 +23,7 @@ CleanSLClasses(gd, gc, m1.file = NULL, m1.class = "s",
 
   \item{m1.class}{Character string, either "soil" or
   "landuse", can be abbreviated. Gives the type of transfer
-  class table. See Details.}
+  class table for method 1 cleaning. See Details.}
 
   \item{m1.clean}{A logical vector of length 2 which
   indicates if cleaning should be performed for area
@@ -34,9 +34,9 @@ CleanSLClasses(gd, gc, m1.file = NULL, m1.class = "s",
   indicates if areas below cleaning threshold should be
   moved to similar areas according to precedence in the
   transfer table (\code{TRUE}) or to the largest area of
-  available transfer classes (\code{FALSE}). For area
-  fraction thresholds (position 1) and absolute area
-  thresholds (position 2).}
+  available transfer classes (\code{FALSE}). Area fraction
+  thresholds (position 1) and absolute area thresholds
+  (position 2).}
 
   \item{m2.frac}{Numeric, area fraction threshold for
   method 2 cleaning, i.e. addition of small SLCs to largest

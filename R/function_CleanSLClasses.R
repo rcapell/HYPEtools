@@ -15,13 +15,14 @@
 #' 
 #' @param m1.file Character string, path and file name of the soil or landuse class transfer table, a tab-separated text file. Format see details.
 #' 
-#' @param m1.class Character string, either "soil" or "landuse", can be abbreviated. Gives the type of transfer class table. See Details.
+#' @param m1.class Character string, either "soil" or "landuse", can be abbreviated. Gives the type of transfer class table for method 1 cleaning. 
+#' See Details.
 #' 
 #' @param m1.clean A logical vector of length 2 which indicates if cleaning should be performed for area fraction thresholds (position 1) and 
 #' absolute area thresholds (position 2).
 #' 
 #' @param m1.precedence A logical vector of length 2 which indicates if areas below cleaning threshold should be moved to similar areas according to 
-#' precedence in the transfer table (\code{TRUE}) or to the largest area of available transfer classes (\code{FALSE}). For area fraction thresholds 
+#' precedence in the transfer table (\code{TRUE}) or to the largest area of available transfer classes (\code{FALSE}). Area fraction thresholds 
 #' (position 1) and absolute area thresholds (position 2).
 #' 
 #' @param m2.frac Numeric, area fraction threshold for method 2 cleaning, i.e. addition of small SLCs to largest SLC in each SUBID without considering
@@ -322,7 +323,7 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
   
   ############################
   ## Conditional: Rigid cleaning with thresholds
-  if (!is.null(m2.frac) && !is.null(m2.abs)) {
+  if (!is.null(m2.frac) || !is.null(m2.abs)) {
     
     # Conditional: cleaning for area fraction threshold
     if (!is.null(m2.frac)) {
@@ -357,7 +358,7 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
           largest <- which.max(x)
           x[largest] <- sum(x[x < fracthres & x > 0])
           # all but the largest are filled with 0
-          x[-largest][x[-largest] < fracthres & x[-largest] > 0] <- 0 
+          x[-largest][x[-largest] < fracthres[-largest] & x[-largest] > 0] <- 0 
         # remaining case: the largest SLC is not below threshold, the largest SLC does not need to be tracked and omitted
         } else {
           x[which.max(x)] <- x[which.max(x)] + sum(x[x < fracthres & x > 0])
@@ -385,7 +386,7 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
       }
       
       # error check: area must be positive and must not contain NAs
-      if (any(m2.abs < 0, na.rm = T) || length(m2.abs) != length(na.omit(m2.frac))) {
+      if (any(m2.abs < 0, na.rm = T) || length(m2.abs) != length(na.omit(m2.abs))) {
         stop("Absolute area threshold(s) given in 'm2.abs' must be x > 0 and must not contain NAs.")
       }
       
@@ -418,7 +419,7 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
           largest <- which.max(x.abs)
           x.frac[largest] <- sum(x.frac[x.abs < absthres & x.abs > 0])
           # all but the largest are filled with 0
-          x.frac[-largest][x.abs[-largest] < absthres & x.abs[-largest] > 0] <- 0 
+          x.frac[-largest][x.abs[-largest] < absthres[-largest] & x.abs[-largest] > 0] <- 0 
           # remaining case: the largest SLC is not below threshold, the largest SLC does not need to be tracked and omitted
         } else {
           x.frac[which.max(x.abs)] <- x.frac[which.max(x.abs)] + sum(x.frac[x.abs < absthres & x.abs > 0])
