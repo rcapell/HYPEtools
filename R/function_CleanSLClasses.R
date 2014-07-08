@@ -10,7 +10,7 @@
 #' @param gd Data frame containing columns with SUBIDs, SUBID areas in m^2, and SLC fractions, typically a 'GeoData.txt' file 
 #' imported with \code{\link{ReadGeoData}}.
 #' 
-#' @param gc Data frame containing columns with SLCs and corresponding soil and landuse group IDs, typically a 'GeoClass.txt' 
+#' @param gc Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}.
 #' 
 #' @param m1.file Character string, path and file name of the soil or landuse class transfer table, a tab-separated text file. Format see details. 
@@ -87,7 +87,8 @@
 #' \code{CleanSLClasses} returns the GeoData data frame passed to the function in argument \code{gd} with cleaned SLC class columns. 
 #' 
 #' @examples
-#' \dontrun{my.gd <- ReadGeoData("GeoData.txt")
+#' \dontrun{
+#' my.gd <- ReadGeoData("GeoData.txt")
 #' my.gc <- ReadGeoClass("GeoClass.txt")
 #' # Clean-up using method 1 only, between soil classes, and based on area fractions only
 #' CleanSLClasses(gd = my.gd, gc = my.gc, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))

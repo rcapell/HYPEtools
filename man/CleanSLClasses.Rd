@@ -13,7 +13,7 @@ CleanSLClasses(gd, gc, m1.file = NULL, m1.class = "s",
   \code{\link{ReadGeoData}}.}
 
   \item{gc}{Data frame containing columns with SLCs and
-  corresponding soil and landuse group IDs, typically a
+  corresponding landuse and soil class IDs, typically a
   'GeoClass.txt' file imported with
   \code{\link{ReadGeoClass}}.}
 
@@ -152,7 +152,8 @@ thresholds will be moved to the largest SLC in the given
 SUBID without considering any similarity between classes.
 }
 \examples{
-\dontrun{my.gd <- ReadGeoData("GeoData.txt")
+\dontrun{
+my.gd <- ReadGeoData("GeoData.txt")
 my.gc <- ReadGeoClass("GeoClass.txt")
 # Clean-up using method 1 only, between soil classes, and based on area fractions only
 CleanSLClasses(gd = my.gd, gc = my.gc, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))

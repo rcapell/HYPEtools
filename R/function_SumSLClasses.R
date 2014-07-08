@@ -22,7 +22,8 @@
 #' \code{SumSLClasses} a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
 #' 
 #' @examples
-#' \dontrun{my.gd <- ReadGeoData("GeoData.txt")
+#' \dontrun{
+#' my.gd <- ReadGeoData("GeoData.txt")
 #' SumSLClasses(gd = my.gd, plot.box = F)
 #' }
 #' 

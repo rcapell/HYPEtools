@@ -29,7 +29,8 @@ with a boxplot output option, and allows to quickly control
 if SLCs of all SUBIDs in a GeoData data frame sum up to 1.
 }
 \examples{
-\dontrun{my.gd <- ReadGeoData("GeoData.txt")
+\dontrun{
+my.gd <- ReadGeoData("GeoData.txt")
 SumSLClasses(gd = my.gd, plot.box = F)
 }
 }

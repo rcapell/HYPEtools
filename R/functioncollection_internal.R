@@ -170,7 +170,7 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Color ramp palettes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-
+# color ramp palettes with strong saturation and value gradients, for quantitative differences
 .ColNitr <- colorRampPalette(c("#fff5a8", "#6b0601"))
 .ColPhos <- colorRampPalette(c("#dcf5e9", "#226633"))
 .ColPrec <- colorRampPalette(c("#e0e7e8", "#00508c"))
@@ -179,4 +179,9 @@
 .ColDiffTemp <- colorRampPalette(c("#2892c7", "#d5f6d0", "#e81515"))
 .ColDiffGeneric <- colorRampPalette(c("#e81515", "#d5f6d0", "#2892c7"))
 
-
+# color ramp palettes with dominant color and saturation gradient, for qualitative differences
+.ColBlues <- colorRampPalette(c("#0a0a96", "#a3a3db"))
+.ColReds <- colorRampPalette(c("#f77497", "#670101"))
+.ColGreens <- colorRampPalette(c("#04eb04", "#004400"))
+.ColYOB <- colorRampPalette(c("#ffe851", "#da531d", "#5b1e00"))
+.ColPurples <- colorRampPalette(c("#da62ed", "#300275"))
