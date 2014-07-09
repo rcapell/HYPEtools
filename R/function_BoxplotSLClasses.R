@@ -195,6 +195,14 @@ BoxplotSLClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, 
   ## add legend
   # number of soil classes, number of land use classes
   nsoil <- length(unique(gc[, 3]))
-  legend(x = nslc * 1.01, y = mean(usr.cur[3:4]), legend = lab.legend, col = c(legend.lu, rep("black", nsoil)), pch = c(rep(15, length(legend.lu)), 0:(nsoil - 1)), 
+  # legend y position, conditional on axis scaling
+  if (log == "y") {
+    legend.y <- 10^(mean(usr.cur[3:4]))
+  } else {
+    legend.y <- mean(usr.cur[3:4])
+  }
+  # legend plot
+  legend(x = nslc * 1.01, y = legend.y, legend = lab.legend, col = c(legend.lu, rep("black", nsoil)), 
+         pch = c(rep(15, length(legend.lu)), 0:(nsoil - 1)), 
          inset = , bty = "n", pt.bg = "grey", cex = .9, pt.cex = 1, yjust = .5)  
 }

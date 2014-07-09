@@ -188,15 +188,18 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
     # each element is a data frame with soil or land use types and SLCs in order of transfer preference
     list.transfer <- list()
     for (i in 1:nrow(ind.thr)) {
-      # get current SLC from threshold index (not all SLCs might be in there if transfer rules only exist for a subset)
+      # get current SLC and fix class from threshold index (not all SLCs might be in there if transfer rules only exist for a subset)
+      # fix class is the soil/landuse class ID within which the current transfer is performed (e.g. a land use class if m1.class = "s")
       slc.cur <- ind.thr[i, 2]
       ## current transfer soil or land use classes, including the currently evaluated class which can reoccur in case of lakes and SLCs with crops,
       ## but omitting the current SLC class (it would not make sense to reassign the area to itself)
       # get current class and transfer class(es)
       trans.cur <- as.numeric(na.omit(as.numeric(transfer.classes[which(transfer.classes[, 1] == ind.thr[i, 1]), -c(2:3)])))
+      # element in ind.gc which is the current slc class
+      gcslc.cur <- which(ind.gc[, 2] == slc.cur)
       # get current transfer SLCs (soils within same land use class or vice versa, but not the current SLC itself)
-      trslc.cur <- ind.gc[-which(ind.gc[, 1] == slc.cur), ][which(ind.gc[-which(ind.gc[, 1] == slc.cur), 3] == ind.gc[which(ind.gc[, 1] == slc.cur), 3]), 1:2]
-      #trslc.cur <- ind.thr[-i, ][which(ind.thr[-i, 3] == ind.thr[i, 3]), 1:2]
+      trslc.cur <- ind.gc[-gcslc.cur, ][which(ind.gc[-gcslc.cur, 3] == ind.gc[gcslc.cur, 3]), 1:2]
+      # conditional: if transfer slcs were found, merge them with actual user-defined transfer classes 
       if (nrow(trslc.cur) > 0) {
         
         # clean transfer SLCs from soil or land use classes which are not in current transfer class vector
