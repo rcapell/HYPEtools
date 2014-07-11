@@ -12,9 +12,9 @@ PlotMapOutput(data, map, map.subid.column, var.name = "", plot.scale = T,
   columns, first column containing SUBIDs and second column
   containing model results. See details.}
 
-  \item{map}{A \code{SpatialPolygonsDataFrame} object,
-  typically an imported SUBID map, requires package
-  \code{rgdal}.}
+  \item{map}{A \code{SpatialPolygonsDataFrame} object.
+  Typically an imported SUBID shape file, shape file import
+  requires package \code{rgdal}.}
 
   \item{map.subid.column}{Integer, index of the column in
   the \code{map} data slot that holds the SUBID indices.}
@@ -112,16 +112,16 @@ end, and a temperature-specific one in reversed order.
 Break points between color classes of in-built or
 user-provided color ramp palettes can optionally be
 provided in argument \code{col.breaks}. This is
-perticularly useful when specific pretty class boundaries
+particularly useful when specific pretty class boundaries
 are needed, e.g. for publication figures. Per default,
 break points for internal single color ramps and
-user-provided ramps are calculated based on 10% percentiles
-of HYPE results given in \code{data}. Default break points
-for internal color ramp \code{"ColDiffGeneric"} are based
-on an equal distance classification of log-scaled
-\code{data} ranges, centered around zero. For internal
-color ramp \code{"ColDiffTemp"}, they are breaks in an
-interval from -7.5 to 7.5 K.
+user-provided ramps are calculated based on 10\%
+percentiles of HYPE results given in \code{data}. Default
+break points for internal color ramp
+\code{"ColDiffGeneric"} are based on an equal distance
+classification of log-scaled \code{data} ranges, centered
+around zero. For internal color ramp \code{"ColDiffTemp"},
+they are breaks in an interval from -7.5 to 7.5 K.
 
 For select common HYPE variables, given in argument
 \code{var.name}, an automatic color ramp selection

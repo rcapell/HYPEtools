@@ -9,7 +9,8 @@ Description: This package contains functions to handle and analyse input and
 Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
     "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut") )
 Depends:
-    R (>= 2.15.1)
+    R (>= 2.15.1),
+    pbapply
 Imports:
     sp
 License: LGPL-3
