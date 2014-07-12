@@ -65,6 +65,9 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
     us <- unique(c(us, this.us))
   }
   
+  # add outlet SUBID to result vector
+  us <- c(subid, us)
+  
   # try to write to clipboard, with error recovery
   if (write.arcgis == T){
     tryCatch(writeClipboard(paste(paste("\"SUBID\" =", us, 'OR'), collapse=" ")), error = function(e) {

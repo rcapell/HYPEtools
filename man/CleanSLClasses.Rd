@@ -4,7 +4,7 @@
 \usage{
 CleanSLClasses(gd, gc, m1.file = NULL, m1.class = "s",
   m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), m2.frac = NULL,
-  m2.abs = NULL, signif.digits = 3, verbose = T)
+  m2.abs = NULL, signif.digits = 3, verbose = T, progbar = T)
 }
 \arguments{
   \item{gd}{Data frame containing columns with SUBIDs,
@@ -52,12 +52,18 @@ CleanSLClasses(gd, gc, m1.file = NULL, m1.class = "s",
   \item{m2.abs}{Numeric, see \code{m2.frac}. Threshold(s)
   for absolute areas in \eqn{m^{2}}{m^2}.}
 
-  \item{signif.digits}{Number of significant digits to
-  round cleaned SLCs to. See also \code{link{signif}}. Set
-  to \code{NULL} to prevent rounding.}
+  \item{signif.digits}{Integer, number of significant
+  digits to round cleaned SLCs to. See also
+  \code{\link{signif}}. Set to \code{NULL} to prevent
+  rounding.}
 
   \item{verbose}{Logical, print some information during
   runtime.}
+
+  \item{progbar}{Logical, display a progress bar while
+  calculating SLC class fractions. Adds overhead to
+  calculation time but useful when \code{subid} is
+  \code{NULL} or contains many SUBIDs.}
 }
 \value{
 \code{CleanSLClasses} returns the GeoData data frame passed

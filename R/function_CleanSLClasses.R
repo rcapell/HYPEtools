@@ -1,5 +1,7 @@
-
 #' @export
+#' 
+#' @import pbapply
+#' 
 #' @title
 #' Clean Soil-Landuse classes (SLCs) from small fractions
 #'
@@ -33,9 +35,12 @@
 #' 
 #' @param m2.abs Numeric, see \code{m2.frac}. Threshold(s) for absolute areas in \eqn{m^{2}}{m^2}.
 #' 
-#' @param signif.digits Number of significant digits to round cleaned SLCs to. See also \code{link{signif}}. Set to \code{NULL} to prevent rounding. 
+#' @param signif.digits Integer, number of significant digits to round cleaned SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
 #' 
 #' @param verbose Logical, print some information during runtime.
+
+#' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
+#' is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
 #' \code{CleanSLClasses} performs a clean-up of small SLC fractions in an imported GeoData file. Small SLCs are eliminated either by moving their 
@@ -96,7 +101,7 @@
 #' 
 
 CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), 
-                            m2.frac = NULL, m2.abs = NULL, signif.digits = 3, verbose = T) {
+                            m2.frac = NULL, m2.abs = NULL, signif.digits = 3, verbose = T, progbar = T) {
   
   
   
@@ -269,12 +274,17 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
         return(x)
       }
       
-      # apply row-wise to slc data frame, THIS LINE IS A MAIN COMPUTATION
-      slc <- as.data.frame(t(apply(slc, 1, IntTransferArea, lt = list.transfer, thr = ind.thr, prec = m1.precedence[1])))
-      
       if (verbose) {
-        cat("\nClean-up using method 1 with area fractions completed.\n")
+        cat("\nClean-up using method 1 with area fractions.\n")
       }
+      
+      # apply row-wise to slc data frame, THIS LINE IS A MAIN COMPUTATION
+      if (progbar) {
+        slc <- as.data.frame(t(pbapply(slc, 1, IntTransferArea, lt = list.transfer, thr = ind.thr, prec = m1.precedence[1])))
+      } else {
+        slc <- as.data.frame(t(apply(slc, 1, IntTransferArea, lt = list.transfer, thr = ind.thr, prec = m1.precedence[1])))
+      }
+      
       
       # for function efficiency statistic: total number of SLC instances in GeoData after cleaning
       n.m1.frac <- length(c(as.matrix(slc))[c(as.matrix(slc)) != 0])
@@ -335,12 +345,17 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
         return(x.frac)
       }
       
-      # apply row-wise to combined slc/slc.abs data frame, THIS LINE IS A MAIN COMPUTATION
-      slc <- as.data.frame(t(apply(cbind(slc, slc.abs), 1, IntTransferAreaAbs, lt = list.transfer, thr = ind.thr, prec = m1.precedence[2])))
-      
       if (verbose) {
-        cat("\nClean-up using method 1 with absolute areas completed.\n")
+        cat("\nClean-up using method 1 with absolute areas.\n")
       }
+      
+      # apply row-wise to combined slc/slc.abs data frame, THIS LINE IS A MAIN COMPUTATION
+      if (progbar) {
+        slc <- as.data.frame(t(pbapply(cbind(slc, slc.abs), 1, IntTransferAreaAbs, lt = list.transfer, thr = ind.thr, prec = m1.precedence[2])))  
+      } else {
+        slc <- as.data.frame(t(apply(cbind(slc, slc.abs), 1, IntTransferAreaAbs, lt = list.transfer, thr = ind.thr, prec = m1.precedence[2])))  
+      }
+      
       
       # for function efficiency statistic: total number of SLC instances in GeoData after cleaning
       n.m1.abs <- length(c(as.matrix(slc))[c(as.matrix(slc)) != 0])
@@ -396,8 +411,15 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
         return(x)
       }
       
+      if (verbose) {
+        cat("\nClean-up using method 2 with area fractions.\n")
+      }
       # apply row-wise to slc data frame, THIS LINE IS A MAIN COMPUTATION
-      slc <- as.data.frame(t(apply(slc, 1, IntTransferRigid, fracthres = frc)))
+      if (progbar) {
+        slc <- as.data.frame(t(pbapply(slc, 1, IntTransferRigid, fracthres = frc)))
+      } else {
+        slc <- as.data.frame(t(apply(slc, 1, IntTransferRigid, fracthres = frc)))
+      }
       
       if (verbose) {
         cat("\nClean-up using method 2 with area fractions completed.\n")
@@ -457,11 +479,15 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
         return(x.frac)
       }
       
-      # apply row-wise to slc data frame, THIS LINE IS A MAIN COMPUTATION
-      slc <- as.data.frame(t(apply(cbind(slc, slc.abs), 1, IntTransferRigidAbs, absthres = abso)))
-      
       if (verbose) {
-        cat("\nClean-up using method 2 with absolute areas completed.\n")
+        cat("\nClean-up using method 2 with absolute areas.\n")
+      }
+      
+      # apply row-wise to slc data frame, THIS LINE IS A MAIN COMPUTATION
+      if (progbar) {
+        slc <- as.data.frame(t(pbapply(cbind(slc, slc.abs), 1, IntTransferRigidAbs, absthres = abso)))
+      } else {
+        slc <- as.data.frame(t(apply(cbind(slc, slc.abs), 1, IntTransferRigidAbs, absthres = abso)))
       }
       
       # for function efficiency statistic: total number of SLC instances in GeoData after cleaning

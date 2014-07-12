@@ -24,11 +24,12 @@ SumUpstreamArea(subid = NULL, gd, bd = NULL, progbar = F)
 \value{
 \code{SumUpstreamAreas} returns a data frame with two
 columns containing SUBIDs and total upstream areas (in area
-unit as provided in \code{gd}).
+units as provided in \code{gd}). Upstream areas include
+areas of outlet SUBIDs.
 }
 \description{
-Function to calculatate upstream areas of a vector of
-SUBIDs or all SUBIDs in a GeoData table.
+Function to calculate upstream areas of a vector of SUBIDs
+or all SUBIDs in a GeoData table.
 }
 \details{
 \code{SumUpstreamAreas} sums upstream areas of all
@@ -37,7 +38,7 @@ case of stream bifurcations but not including potential
 irrigation links or groundwater flows.
 }
 \examples{
-\dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+\dontrun{SumUpstreamAreas(gd = mygeodata, progbar = T)}
 }
 \seealso{
 \code{\link{AllUpstreamSubids}}

@@ -6,7 +6,7 @@
 #' Calculate upstream area sums
 #'
 #' @description
-#' Function to calculatate upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table.
+#' Function to calculate upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table.
 #'
 #' @param subid Integer vector of SUBIDs to calculate upstream areas for (must exist in \code{gd}). If \code{NULL}, upstream areas for all 
 #' SUBIDs will be calculated.
@@ -23,13 +23,14 @@
 #' but not including potential irrigation links or groundwater flows.
 #' 
 #' @return
-#' \code{SumUpstreamAreas} returns a data frame with two columns containing SUBIDs and total upstream areas (in area unit as provided in \code{gd}).
+#' \code{SumUpstreamAreas} returns a data frame with two columns containing SUBIDs and total upstream areas (in area units as provided in \code{gd}). 
+#' Upstream areas include areas of outlet SUBIDs.
 #' 
 #' @seealso
 #' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+#' \dontrun{SumUpstreamAreas(gd = mygeodata, progbar = T)}
 
 SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, progbar = F) {
   
