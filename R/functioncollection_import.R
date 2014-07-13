@@ -178,7 +178,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
-#' @param nrows Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
+#' @param nrows Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
 #' to import.
 #'  
 #' @details

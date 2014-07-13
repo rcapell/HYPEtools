@@ -12,8 +12,8 @@ ReadXobs(filename = "Xobs.txt", dt.format = "\%Y-\%m-\%d", nrows = -1)
   \item{dt.format}{Date-time \code{format} string as in
   \code{\link{strptime}}.}
 
-  \item{nrows}{Number of rows to import. A value of
-  \code{-1} indicates all rows, a positive integer gives
+  \item{nrows}{Integer, number of rows to import. A value
+  of \code{-1} indicates all rows, a positive integer gives
   the number of rows to import.}
 }
 \value{
