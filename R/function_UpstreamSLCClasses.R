@@ -63,7 +63,7 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
   
   
   
-  # get upstream SUBIDs for all SUBIDs in subid
+  # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of sapply if subid is long
   cat("\nFinding upstream SUBIDs.\n")
   if (progbar) {
@@ -77,7 +77,7 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
   WeightedSLC <- function(x, g, p.sbd, p.slc, p.area) {
     
     # extract dataframe with areas and slc classes of SUBIDs in x 
-    df.slc <- gd[gd[, p.sbd] %in% x, c(p.area, p.slc)]
+    df.slc <- g[g[, p.sbd] %in% x, c(p.area, p.slc)]
     
     # area-weighted mean of all SLC columns
     res <- c(UPSTREAMAREA = sum(df.slc[, 1]), apply(df.slc[, -1], 2, weighted.mean, w = df.slc[, 1]))
@@ -87,9 +87,9 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
   # conditional: use the progress bar version of sapply if subid is long
   cat("\nCalculating upstream SLCs.\n")
   if (progbar) {
-    up.slc <- cbind(SUBID = subid, as.data.frame(t(pbsapply(subid, WeightedSLC, g = gd, p.sbd = pos.sbd, p.slc = pos.slc, p.area = pos.area))))
+    up.slc <- cbind(SUBID = subid, as.data.frame(t(pbsapply(up.sbd, WeightedSLC, g = gd, p.sbd = pos.sbd, p.slc = pos.slc, p.area = pos.area))))
   } else {
-    up.slc <- cbind(SUBID = subid, as.data.frame(t(sapply(subid, WeightedSLC, g = gd, p.sbd = pos.sbd, p.slc = pos.slc, p.area = pos.area))))
+    up.slc <- cbind(SUBID = subid, as.data.frame(t(sapply(up.sbd, WeightedSLC, g = gd, p.sbd = pos.sbd, p.slc = pos.slc, p.area = pos.area))))
   }
   
   
