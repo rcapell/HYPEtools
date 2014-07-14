@@ -99,7 +99,7 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
   }
   
   # rename SLCs to clarify they are upstream fractions
-  names(up.slc[, -c(1:2)]) <- paste("UP", names(up.slc[, -c(1:2)]), sep = "")
+  names(up.slc)[-c(1:2)] <- paste("UP", names(up.slc)[-c(1:2)], sep = "")
   
   # return result
   return(up.slc)
