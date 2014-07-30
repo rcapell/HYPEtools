@@ -38,6 +38,9 @@ SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, progbar = F) {
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
   pos.area <- which(toupper(names(gd)) == "AREA")
   
+  # force type numeric on area to avoid integer overflow, just a safety measure
+  gd[, pos.area] <- as.numeric(gd[, pos.area])
+  
   # check if gd contains necessary information
   if (length(pos.sbd) == 0) {
     stop("No SUBID column found in 'gd'. Exiting.")

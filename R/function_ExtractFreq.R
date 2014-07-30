@@ -38,7 +38,7 @@ ExtractFreq <- function(data){
     res <- matrix(nrow=length(prbs), ncol=nc+1)
     res <- as.data.frame(res)
     res[,1] <- prbs
-    names(res1) <- c("prob", names(data))
+    names(res) <- c("prob", names(data))
     n.obs <- NA
     # column-wise calculation of quantiles and number of observations
     for (i in 1:nc) {

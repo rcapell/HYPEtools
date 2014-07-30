@@ -19,7 +19,7 @@
 #' 
 #' 
 #' @return
-#' \code{SumSLClasses} a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
+#' \code{SumSLClasses} returns a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
 #' 
 #' @examples
 #' \dontrun{

@@ -523,7 +523,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
 #' Read 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files
 #'
 #' @description
-#' Tmport precipitation, temperature, or discharge observation files as data frame into R.
+#' Import precipitation, temperature, or discharge observation files as data frame into R.
 #' 
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 

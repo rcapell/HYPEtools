@@ -21,7 +21,7 @@ ReadPTQobs(filename, dt.format = "\%Y-\%m-\%d", nrows = -1)
 attribute \code{subid}.
 }
 \description{
-Tmport precipitation, temperature, or discharge observation
+Import precipitation, temperature, or discharge observation
 files as data frame into R.
 }
 \details{

@@ -16,8 +16,8 @@ SumSLClasses(gd, plot.box = T, ...)
   \code{\link{boxplot}}.}
 }
 \value{
-\code{SumSLClasses} a vector of SLC sums, invisibly if
-\code{plot.box} is \code{TRUE}.
+\code{SumSLClasses} returns a vector of SLC sums, invisibly
+if \code{plot.box} is \code{TRUE}.
 }
 \description{
 \code{SumSLClasses} sums all SLC classes for each SUBID in

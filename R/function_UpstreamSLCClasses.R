@@ -64,12 +64,12 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
   
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
-  # conditional: use the progress bar version of sapply if subid is long
+  # conditional: use the progress bar version of lapply if subid is long
   cat("\nFinding upstream SUBIDs.\n")
   if (progbar) {
-    up.sbd <- pbsapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
+    up.sbd <- pblapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   } else {
-    up.sbd <- sapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
+    up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   }
   
   # internal function to calculate area-weighted SLC fraction for one group of upstream SLC classes (one element in up.sbd)
