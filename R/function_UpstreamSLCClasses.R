@@ -61,7 +61,8 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
     subid <- gd[, pos.sbd]
   }
   
-  
+  # safety measure: force type of area to numeric to precent integer overflow when summing below
+  gd[, pos.area] <- as.numeric(gd[, pos.area])
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if subid is long
@@ -79,8 +80,11 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
     # extract dataframe with areas and slc classes of SUBIDs in x 
     df.slc <- g[g[, p.sbd] %in% x, c(p.area, p.slc)]
     
+    
     # area-weighted mean of all SLC columns
     res <- c(UPSTREAMAREA = sum(df.slc[, 1]), apply(df.slc[, -1], 2, weighted.mean, w = df.slc[, 1]))
+    
+    return(res)
   }
   
   # apply area-weighted SLC mean function to all SUBIDs in subid

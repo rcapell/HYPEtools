@@ -29,7 +29,7 @@
 
 ExtractFreq <- function(data){
   # probabilities to be calculated
-  prbs <- c(0, 0.0001, 0.001, seq(0.01,0.99,by = .01), 0.999, 0.9999, 1)
+  prbs <- c(0, 0.00001, 0.0001, 0.001, seq(0.01,0.99,by = .01), 0.999, 0.9999, 0.99999, 1)
   # condition: several variables in data
   if (is.data.frame(data)) {
     # condition: several variables in data
