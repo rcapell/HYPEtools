@@ -59,8 +59,12 @@ PlotDurationCurve <- function(freq, ylab = "m3s", print.n.obs = FALSE, ylim = NU
   # get exceedance values from probabilities
   data <- freq
   data[, 1] <- 1 - freq[, 1]
-  # remove 0 rows with 0 quantiles which conflict with log-scaled y-axis
-  data <- data[data[, 2] > 0, ]
+  # remove 0 rows with 0 quantiles which conflict with log-scaled y-axis, throw warning to notify user
+  if (length(which(data[, 2] < 0)) > 0) {
+    data <- data[data[, 2] > 0, ]
+    warning("Quantiles where value == 0 removed prior to plotting.")
+  }
+  
   
   # set plot parameters
   par(mar = c(3,3,1,1)+.1, tcl = -0.2, mgp = c(1.8, 0.3, 0))
