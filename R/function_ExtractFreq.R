@@ -21,6 +21,8 @@
 #' \code{ExtractFreq} returns a dataframe with probabilities in the first column, and quantiles of data in the following columns. 
 #' Number of observations per variable in \code{data} are given in an attribute \code{n.obs} (see \code{\link{attributes}}).
 #' 
+#' @seealso
+#' \code{\link{PlotDurationCurve}}
 #' 
 #' @examples
 #' ExtractFreq(rnorm(1000))

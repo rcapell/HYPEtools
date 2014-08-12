@@ -1,16 +1,18 @@
 \name{PlotDurationCurve}
 \alias{PlotDurationCurve}
-\title{Plot a duration curve}
+\title{Plot duration curves}
 \usage{
 PlotDurationCurve(freq, xscale = "lin", yscale = "log",
   print.n.obs = FALSE, ylim = NULL, xlab = "Flow exceedance percentile",
-  ylab = "m3s", col = "blue", mar = c(3, 3, 1, 1) + 0.1, ...)
+  ylab = "m3s", col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) +
+  0.1)
 }
 \arguments{
-  \item{freq}{Data frame with two columns, containing
-  probabilities in the first column and data quantiles in
-  the second. Typically an object as returned by
-  \code{\link{ExtractFreq}}, or a subset thereof.}
+  \item{freq}{Data frame with at least two columns,
+  containing probabilities in the first and series of data
+  quantiles in the remaining columns. Typically an object
+  as returned by \code{\link{ExtractFreq}} or a subset
+  thereof.}
 
   \item{xscale}{Character string, keyword for x-axis
   scaling. Either \code{"lin"} for linear scaling or
@@ -25,7 +27,8 @@ PlotDurationCurve(freq, xscale = "lin", yscale = "log",
   \item{print.n.obs}{Logical. If \code{TRUE} and
   \code{freq} is a result from \code{\link{ExtractFreq}},
   the number of observations on which the quantiles are
-  based will be plotted on the outer margin.}
+  based will be plotted on the outer margin. Only active if
+  just one duration curves is plotted.}
 
   \item{ylim}{Numeric vector of length two, giving y-axis
   limits. \code{NULL} for default values.}
@@ -39,25 +42,31 @@ PlotDurationCurve(freq, xscale = "lin", yscale = "log",
   plotted unchanged.}
 
   \item{col}{Line color specification, see
-  \code{\link{par}} for details. Defaults to blue.}
+  \code{\link{par}} for details. Defaults to blue. Either a
+  single value or a vector of the same length as quantile
+  series in \code{freq}.}
+
+  \item{lty}{Line type specification, see \code{\link{par}}
+  for details. Either a single value or a vector of the
+  same length as quantile series in \code{freq}.}
+
+  \item{lwd}{Line width specification, see
+  \code{\link{par}} for details. Either a single value or a
+  vector of the same length as quantile series in
+  \code{freq}.}
 
   \item{mar}{Numeric vector of length 4, margin
   specification as in \code{\link{par}} with modified
   default. Details see there.}
-
-  \item{...}{Further graphical parameters (see
-  \code{\link{par}}) to be supplied as arguments to
-  \code{\link{lines}}, e.g. line type and width, for
-  details see there.}
 }
 \value{
 \code{PlotDurationCurve} returns a plot to the currently
 active plot device.
 }
 \description{
-Convenience wrapper function for a line \code{\link{plot}},
-with pretty defaults for axis annotation and a Gaussian
-scaling option for the x-axis.
+Convenience wrapper function for a (multiple) line
+\code{\link{plot}}, with pretty defaults for axis
+annotation and a Gaussian scaling option for the x-axis.
 }
 \details{
 

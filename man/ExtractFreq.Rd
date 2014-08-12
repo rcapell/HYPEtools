@@ -31,4 +31,7 @@ equally-spaced time series.
 \examples{
 ExtractFreq(rnorm(1000))
 }
+\seealso{
+\code{\link{PlotDurationCurve}}
+}
 
