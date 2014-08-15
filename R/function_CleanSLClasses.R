@@ -139,6 +139,8 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
   # for function efficiency statistic: total number of SLC instances in GeoData before cleaning
   n.before <- length(c(as.matrix(slc))[c(as.matrix(slc)) != 0])
   
+  # extract area from gd, force conversion to numeric to avoid integer overflow errors
+  area <- as.numeric(gd[, which(toupper(names(gd)) == "AREA")])
   
   
   ############################
@@ -299,7 +301,7 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
       }
       
       # calculate absolute areas from fractions (potentially after clean-up with area fraction threshold)
-      slc.abs <- as.data.frame(apply(slc, 2, function(x, y) {x * y}, y = gd[, which(toupper(names(gd)) == "AREA")]))
+      slc.abs <- as.data.frame(apply(slc, 2, function(x, y) {x * y}, y = area))
       
       
       # internal function to be applied row-wise on slc data frame for cleaning based on absolute areas
@@ -454,7 +456,7 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
       }
       
       # (re-)calculate absolute areas from fractions (potentially after clean-up with area fraction threshold)
-      slc.abs <- as.data.frame(apply(slc, 2, function(x, y) {x * y}, y = gd[, which(toupper(names(gd)) == "AREA")]))
+      slc.abs <- as.data.frame(apply(slc, 2, function(x, y) {x * y}, y = area))
       
       
       # Internal function to move all area fraction below threshold to largest fraction
