@@ -37,8 +37,8 @@ GroupSLCClasses(gd, gc = NULL, type = "landuse", group = NULL,
 and grouped SLC class columns.
 }
 \description{
-\code{GroupSLCClasses} calculates grouped sums of area
-fractions or absolute areas for SLC classes based on land
+\code{GroupSLCClasses} calculates grouped sums for SLC
+classes (area fractions or absolute areas) based on land
 use or soil groups in a GeoClass table, or any other
 user-provided grouping index.
 }

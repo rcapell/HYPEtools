@@ -64,6 +64,7 @@ WritePar <- function (x, filename = "par.txt") {
 #' No \code{NA}s in parameter values allowed.
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
+#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
 #'  
 #' @details
 #' \code{WriteGeoData} exports a GeoData dataframe with formatting options adjusted for the output to be read by HYPE.
@@ -76,21 +77,20 @@ WritePar <- function (x, filename = "par.txt") {
 #' 
 
 
-WriteGeoData <- function(x, filename = "GeoData.txt") {
-  # set options for number of digits and scientific notation so that HYPE-compatible decimal strings are returned
-  options(digits = 10, scipen = 0)
-  #
+WriteGeoData <- function(x, filename = "GeoData.txt", digits = 10) {
+  
+  # warn if there are NAs, which should not occur in GeoData files for HYPE
   if (!is.null(na.action(na.omit(x)))) {
     warning("NA values in exported object.")
   }
   
-  # test length of string columns elements, throws warning if any element longer than 50
+  # test length of string columns elements, throws warning if any element longer than 50, since HYPE does not read them
   .CheckCharLengthDf(x, maxChar = 50)
   
   # export
-  write.table(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE)
+  write.table(format(x, digits = digits, scientitific = F, drop0trailing = T, trim = T), file = filename, quote = FALSE, sep = "\t", row.names = FALSE)
   # reset options to defaults
-  options(digits = 7, scipen = 0)
+  #options(digits = 7, scipen = 0)
 }
 
 
@@ -191,8 +191,6 @@ WriteBranchData <- function(x, filename = "BranchData.txt") {
   
   # export
   write.table(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE)
-  # reset options to defaults
-  options(digits = 7, scipen = 0)
   
 }
 
