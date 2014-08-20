@@ -15,3 +15,8 @@ CondenseBasinResults <- function(x, in.step = "day", start.month = 10) {
   
   
 }
+
+## DEBUG
+# x <- ReadBasinOutput("D:/s-hype/2014_highresworkshop/run_sourceapp_HAROs/res/0041804.txt")
+# attributes(x)
+

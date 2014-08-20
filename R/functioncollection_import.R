@@ -94,7 +94,8 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' @return
 #' \code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
 #' is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed. 
-#' Variable units ar imported as string \code{attribute} 'unit'. If a matrix is returned, this attribute will not be preserved.
+#' Variable units ar imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'. 
+#' If a matrix is returned, this attribute will not be preserved.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
