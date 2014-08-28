@@ -8,18 +8,18 @@
 #'
 #' @description
 #' Function to find all SUBIDs of upstream sub-catchments for a single 
-#' sub-catchment in a GeoData file, connected through 'maindown' and 'branchid' 
-#' SUBIDs, i.e the full upstream catchment.
+#' sub-catchment. 
 #'
 #' @param subid SUBID of a target sub-catchment (must exist in \code{gd}). 
-#' @param gd A data frame, an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
-#' @param bd A data frame, an imported 'BranchData.txt' file. Optional argument.
+#' @param gd A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
+#' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param write.arcgis Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
 #' 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.
 #' 
 #' @details
-#' \code{AllUpstreamSubids} finds the upstream SUBIDs of a given SUBID (including itself but not 
-#' including potential irrigation links or groundwater flows).
+#' \code{AllUpstreamSubids} finds all upstream SUBIDs of a given SUBID (including itself but not 
+#' including potential irrigation links or groundwater flows) using GeoData columns 'SUBID' and 'MAINDOWN', i.e the full upstream catchment. 
+#' If a BranchData file is provided, the function will also include upstream areas which are connected through an upstream bifurcation.
 #' 
 #' 
 #' @return
@@ -68,9 +68,11 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   # add outlet SUBID to result vector
   us <- c(subid, us)
   
-  # try to write to clipboard, with error recovery
-  if (write.arcgis == T){
-    tryCatch(writeClipboard(paste(paste("\"SUBID\" =", us, 'OR'), collapse=" ")), error = function(e) {
+  # try to write arcgis select string to clipboard, with error recovery
+  if (write.arcgis == T) {
+    to.arc <- paste(paste("\"SUBID\" =", us, 'OR'), collapse=" ")
+    to.arc <- substr(to.arc, 1, nchar(to.arc) - 3)
+    tryCatch(writeClipboard(to.arc), error = function(e) {
       print("Writing to clipboard failed, this is probably not a Windows environment")})
   }
   

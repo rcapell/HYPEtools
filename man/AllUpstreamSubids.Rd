@@ -8,10 +8,12 @@ AllUpstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
   \item{subid}{SUBID of a target sub-catchment (must exist
   in \code{gd}).}
 
-  \item{gd}{A data frame, an imported 'GeoData.txt' file.
-  Mandatory argument. See 'Details'.}
+  \item{gd}{A data frame, containing 'SUBID' and 'MAINDOWN'
+  columns, e.g. an imported 'GeoData.txt' file. Mandatory
+  argument. See 'Details'.}
 
-  \item{bd}{A data frame, an imported 'BranchData.txt'
+  \item{bd}{A data frame, containing 'BRANCHID' and
+  'SOURCEID' columns, e.g. an imported 'BranchData.txt'
   file. Optional argument.}
 
   \item{write.arcgis}{Logical. If \code{TRUE}, a string
@@ -24,14 +26,16 @@ AllUpstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
 }
 \description{
 Function to find all SUBIDs of upstream sub-catchments for
-a single sub-catchment in a GeoData file, connected through
-'maindown' and 'branchid' SUBIDs, i.e the full upstream
-catchment.
+a single sub-catchment.
 }
 \details{
-\code{AllUpstreamSubids} finds the upstream SUBIDs of a
+\code{AllUpstreamSubids} finds all upstream SUBIDs of a
 given SUBID (including itself but not including potential
-irrigation links or groundwater flows).
+irrigation links or groundwater flows) using GeoData
+columns 'SUBID' and 'MAINDOWN', i.e the full upstream
+catchment. If a BranchData file is provided, the function
+will also include upstream areas which are connected
+through an upstream bifurcation.
 }
 \examples{
 \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}

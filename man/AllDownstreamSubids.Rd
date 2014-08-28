@@ -1,0 +1,53 @@
+\name{AllDownstreamSubids}
+\alias{AllDownstreamSubids}
+\title{Find All downstream SUBIDs}
+\usage{
+AllDownstreamSubids(subid, gd, outlet.id = -9999, bd = NULL,
+  write.arcgis = FALSE)
+}
+\arguments{
+  \item{subid}{SUBID of a target sub-catchment (must exist
+  in \code{gd}).}
+
+  \item{gd}{A data frame, an imported 'GeoData.txt' file.
+  Mandatory argument. See 'Details'.}
+
+  \item{outlet.id}{Integer, ID of outlets in GeoData's
+  'MAINDOWN' columns, i.e. end outlets of the model
+  domain.}
+
+  \item{bd}{A data frame, an imported 'BranchData.txt'
+  file. Optional argument. See 'Details'.}
+
+  \item{write.arcgis}{Logical. If \code{TRUE}, a string
+  containing an SQL expression suitable for ArcGIS's
+  'Select By Attributes' feature will be written to the
+  clipboard. Works just for Windows.}
+}
+\value{
+\code{AllDownstreamSubids} returns a vector of downstream
+SUBIDs to the outlet if no BranchData is provided,
+otherwise a data frame with two columns \code{downstream}
+with downstream SUBIDs and \code{is.branch} a logical
+values indicating if a downstream SUBID contains a
+bifurcation ('branch' in HYPE terms).
+}
+\description{
+Function to find all SUBIDs of downstream sub-catchments
+along the main stem for a single sub-catchment.
+}
+\details{
+\code{AllDownstreamSubids} finds the downstream SUBIDs of a
+given SUBID (including itself but not including potential
+irrigation links or groundwater flows).
+\code{AllDownstreamSubids} finds all downstream SUBIDs of a
+given SUBID along the main stem (including itself but not
+including potential irrigation links or groundwater flows)
+using GeoData columns 'SUBID' and 'MAINDOWN'. If a
+BranchData file is provided, the function will also include
+information on downstream bifurcations.
+}
+\examples{
+/dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+}
+
