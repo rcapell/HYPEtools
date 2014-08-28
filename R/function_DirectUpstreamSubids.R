@@ -43,8 +43,9 @@
 #'  \code{upstream} (upstream SUBID), \code{is.main} (logical, \code{TRUE} if it is a MAINDOWN connection), 
 #'  \code{fraction} (fraction of flow going into the target SUBID), and \code{limit} (maximum flow contribution to target SUBID).
 #'  
-#'  If no specific SUBID was provided, \code{DirectUpstreamSubids} returns a list with elements each containing the list described above, i.e.
-#'  with an integer element (SUBID) and a data frame element (upstream connections).
+#'  If no specific SUBID was provided, \code{DirectUpstreamSubids} returns a list with upstream information for all SUBIDs in argument 
+#'  \code{gd}, each list element containing the list described above, i.e. with an integer element (SUBID) and a data frame element 
+#'  (upstream connections).
 #' 
 #' @seealso
 #' \code{\link{AllUpstreamSubids}}, which returns all upstream SUBIDs, i.e. the full upstream network up to the headwaters, for a given SUBID.

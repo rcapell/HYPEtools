@@ -30,7 +30,8 @@ SUBIDs to the outlet if no BranchData is provided,
 otherwise a data frame with two columns \code{downstream}
 with downstream SUBIDs and \code{is.branch} a logical
 values indicating if a downstream SUBID contains a
-bifurcation ('branch' in HYPE terms).
+bifurcation ('branch' in HYPE terms). Downstream SUBIDs are
+ordered from the source SUBID to the final outlet.
 }
 \description{
 Function to find all SUBIDs of downstream sub-catchments

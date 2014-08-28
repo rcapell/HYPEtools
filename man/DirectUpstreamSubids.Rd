@@ -31,8 +31,9 @@ the target SUBID), and \code{limit} (maximum flow
 contribution to target SUBID).
 
 If no specific SUBID was provided,
-\code{DirectUpstreamSubids} returns a list with elements
-each containing the list described above, i.e.  with an
+\code{DirectUpstreamSubids} returns a list with upstream
+information for all SUBIDs in argument \code{gd}, each list
+element containing the list described above, i.e. with an
 integer element (SUBID) and a data frame element (upstream
 connections).
 }
