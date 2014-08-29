@@ -35,9 +35,23 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   # identify relevant column positions in geodata and branchdata
   geocol.md <- which(tolower(colnames(gd)) == "maindown")
   geocol.sub <- which(tolower(colnames(gd)) == "subid")
+  # check existence
+  if (length(geocol.md) != 1 || length(geocol.sub) != 1) {
+    stop("SUBID and/or MAINDOWN column not found in 'gd'.")
+  }
+  
   if (!is.null(bd)) {
     brcol.br <- which(tolower(colnames(bd)) == "branchid")
-    brcol.sr <- which(tolower(colnames(bd)) == "sourceid")   
+    brcol.sr <- which(tolower(colnames(bd)) == "sourceid")
+    # check existence
+    if (length(brcol.br) != 1 || length(brcol.sr) != 1) {
+      stop("BRANCHID and/or SOURCEID column not found in 'bd'.")
+    }
+  }
+  
+  # check if subid exists in gd
+  if (length(which(gd[, geocol.sub] == subid)) != 1) {
+    stop("'subid' not found in 'gd'.")
   }
   
   # internal helper function, used with sapply() in while loop below, finds direct upstream subids in geodata and branchdata
