@@ -2,7 +2,7 @@
 #' @export
 
 #' @title
-#' Find All downstream SUBIDs
+#' Find All Downstream SUBIDs
 #'
 #' @description
 #' Function to find all SUBIDs of downstream sub-catchments along the main stem for a single 
@@ -10,7 +10,6 @@
 #'
 #' @param subid SUBID of a target sub-catchment (must exist in \code{gd}). 
 #' @param gd A data frame, an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
-#' @param outlet.id Integer, ID of outlets in GeoData's 'MAINDOWN' columns, i.e. end outlets of the model domain.
 #' @param bd A data frame, an imported 'BranchData.txt' file. Optional argument. See 'Details'.
 #' @param write.arcgis Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
 #' 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.
@@ -29,9 +28,9 @@
 #' 
 #' 
 #' @examples
-#' /dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+#' /dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
 
-AllDownstreamSubids <- function(subid, gd, outlet.id = -9999, bd = NULL, write.arcgis = FALSE) {
+AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   
   # identify relevant column positions in geodata and branchdata
   geocol.md <- which(tolower(colnames(gd)) == "maindown")
@@ -44,13 +43,15 @@ AllDownstreamSubids <- function(subid, gd, outlet.id = -9999, bd = NULL, write.a
   
   ## find all downstreams on main stem
   
+  # use function OutletSubids() to find outlet ids (can be several)
+  outlet.id <- OutletSubids(gd = gd)
   # initialize loop variables
   sbd.cur <- subid
   md.cur <- gd[which(gd[, geocol.sub] == sbd.cur), geocol.md]
   ds <- sbd.cur
   
   # loop through downstream subid chain until outlet is found
-  while (md.cur != outlet.id) {
+  while (any(md.cur != outlet.id)) {
     # add current downstream to vector
     ds <- c(ds, md.cur)
     # update current downstream with downstream's downstream

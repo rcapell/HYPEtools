@@ -1,9 +1,8 @@
 \name{AllDownstreamSubids}
 \alias{AllDownstreamSubids}
-\title{Find All downstream SUBIDs}
+\title{Find All Downstream SUBIDs}
 \usage{
-AllDownstreamSubids(subid, gd, outlet.id = -9999, bd = NULL,
-  write.arcgis = FALSE)
+AllDownstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
 }
 \arguments{
   \item{subid}{SUBID of a target sub-catchment (must exist
@@ -11,10 +10,6 @@ AllDownstreamSubids(subid, gd, outlet.id = -9999, bd = NULL,
 
   \item{gd}{A data frame, an imported 'GeoData.txt' file.
   Mandatory argument. See 'Details'.}
-
-  \item{outlet.id}{Integer, ID of outlets in GeoData's
-  'MAINDOWN' columns, i.e. end outlets of the model
-  domain.}
 
   \item{bd}{A data frame, an imported 'BranchData.txt'
   file. Optional argument. See 'Details'.}
@@ -49,6 +44,6 @@ BranchData file is provided, the function will also include
 information on downstream bifurcations.
 }
 \examples{
-/dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+/dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
 }
 
