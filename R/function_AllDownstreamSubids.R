@@ -44,7 +44,7 @@ AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   ## find all downstreams on main stem
   
   # use function OutletSubids() to find outlet ids (can be several)
-  outlet.id <- OutletSubids(gd = gd)
+  outlet.id <- OutletIds(gd = gd)
   # initialize loop variables
   sbd.cur <- subid
   md.cur <- gd[which(gd[, geocol.sub] == sbd.cur), geocol.md]

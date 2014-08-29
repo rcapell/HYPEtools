@@ -1,12 +1,13 @@
 #' @export
 
 #' @title
-#' Find Outlet SUBIDs
+#' Find Outlet IDs
 #'
 #' @description
-#' Function to find all outlet SUBIDs in a GeoData file. This is typically just one number
+#' Function to find all outlet IDs in a GeoData file. This is typically just one number, but can be one or several SUBIDs if the GeoData file 
+#' originates from a HYPE sub-model set-up, e.g. created with the 'SelectAro' tool.
 #'
-#' @param gd A data frame, an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
+#' @param gd A data frame, an imported 'GeoData.txt' file. Mandatory argument.
 #' 
 #' @details
 #' \code{OutletSubids} finds all SUBIDs of a given SUBID (including itself but not 
@@ -17,10 +18,10 @@
 #' 
 #' 
 #' @examples
-#' /dontrun{OutletSubids(gd = mygeodata)}
+#' /dontrun{OutletIds(gd = mygeodata)}
 
 
-OutletSubids <- function(gd) {
+OutletIds <- function(gd) {
   
   # identify relevant columns
   geocol.md <- which(tolower(colnames(gd)) == "maindown")
