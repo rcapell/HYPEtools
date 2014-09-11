@@ -215,14 +215,14 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
   
   # read the data, skip header and comment rows
-  xobs <- read.table(filename, header = F, skip = 3, na.strings = "-9999", nrows = nrows)
+  xobs <- read.table(filename, header = F, skip = 3, na.strings = "-9999", nrows = nrows, sep = "\t")
   
   # make an object of a new s3 class, KEPT FOR FUTURE REF, ACTIVATE IF METHODS TO BE WRITTEN, E.G. SUMMARY
   # class(te) <- c("xobs", "data.frame")
     
   # update with new attributes to hold subids and obs-variables for all columns
   xattr <- readLines(filename,n=3)
-  attr(xobs, which = "comment") <- xattr[1]
+  attr(xobs, which = "comment") <- gsub("\t", "", xattr[1])
   attr(xobs, which = "variable") <- strsplit(xattr[2], split = "\t")[[1]][-1]
   attr(xobs, which = "subid") <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
   

@@ -9,8 +9,7 @@ OutletIds(gd)
   Mandatory argument.}
 }
 \value{
-\code{AllDownstreamSubids} returns a vector of outlet
-SUBIDs.
+\code{OutletSubids} returns a vector of outlet SUBIDs.
 }
 \description{
 Function to find all outlet IDs in a GeoData file. This is
@@ -24,6 +23,6 @@ set-up, e.g. created with the 'SelectAro' tool.
 links or groundwater flows).
 }
 \examples{
-/dontrun{OutletIds(gd = mygeodata)}
+\dontrun{OutletIds(gd = mygeodata)}
 }
 

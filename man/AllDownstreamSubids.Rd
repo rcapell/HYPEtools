@@ -44,6 +44,6 @@ BranchData file is provided, the function will also include
 information on downstream bifurcations.
 }
 \examples{
-/dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
+\dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
 }
 

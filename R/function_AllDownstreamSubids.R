@@ -28,7 +28,7 @@
 #' 
 #' 
 #' @examples
-#' /dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
+#' \dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
 
 AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   

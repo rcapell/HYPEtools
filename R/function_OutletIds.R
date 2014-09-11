@@ -14,11 +14,11 @@
 #' including potential irrigation links or groundwater flows).
 #' 
 #' @return
-#' \code{AllDownstreamSubids} returns a vector of outlet SUBIDs.
+#' \code{OutletSubids} returns a vector of outlet SUBIDs.
 #' 
 #' 
 #' @examples
-#' /dontrun{OutletIds(gd = mygeodata)}
+#' \dontrun{OutletIds(gd = mygeodata)}
 
 
 OutletIds <- function(gd) {
