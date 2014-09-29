@@ -30,11 +30,11 @@ BoxplotSLClasses(gd, gc, col.landuse = "rainbow", col.group = NULL,
 
   \item{col.group}{Integer vector of the same length as the
   number of land use classes given in \code{gc}. Specifies
-  a group ID for each land use class ID, in ascending
-  order. Groups and group IDs (in parentheses): \itemize{
-  \item Water, snow, and ice (1) \item Urban (2) \item
-  Forests (3) \item Agriculture and pastures (4) \item
-  Natural non-forested (5) }}
+  a land use group ID for each land use class ID, in
+  ascending order. Groups and group IDs to use (in
+  parentheses): \itemize{ \item Water, snow, and ice (1)
+  \item Urban (2) \item Forests (3) \item Agriculture and
+  pastures (4) \item Natural non-forested (5) }}
 
   \item{lab.legend}{Character string giving optional land
   use and soil class names to label the legend. Land use
@@ -60,8 +60,9 @@ BoxplotSLClasses(gd, gc, col.landuse = "rainbow", col.group = NULL,
 \code{plot.box} is \code{TRUE}.
 }
 \description{
-\code{SumSLClasses} sums all SLC classes for each SUBID in
-a GeoData data frame and optionally plots the results.
+\code{BoxplotSLClasses} plots SLC class distributions for
+all SUBIDs in a GeoData data frame as boxplots. Boxes can
+represent distributions of area fractions
 }
 \details{
 \code{BoxplotSLClasses} allows to analyse the occurrence of

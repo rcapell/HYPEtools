@@ -3,7 +3,8 @@
 #' Box plots of SLC distributions
 #'
 #' @description
-#' \code{SumSLClasses} sums all SLC classes for each SUBID in a GeoData data frame and optionally plots the results.
+#' \code{BoxplotSLClasses} plots SLC class distributions for all SUBIDs in a GeoData data frame as boxplots. Boxes can represent distributions 
+#' of area fractions
 #' 
 #' @param gd Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
 #' 
@@ -16,8 +17,8 @@
 #' generation of a pretty color palette with similar colors for land use groups. This option requires specification of land use groups in argument 
 #' \code{col.group}.
 #' 
-#' @param col.group Integer vector of the same length as the number of land use classes given in \code{gc}. Specifies a group ID for each land 
-#' use class ID, in ascending order. Groups and group IDs (in parentheses):
+#' @param col.group Integer vector of the same length as the number of land use classes given in \code{gc}. Specifies a land use group ID for 
+#' each land use class ID, in ascending order. Groups and group IDs to use (in parentheses):
 #' \itemize{
 #' \item Water, snow, and ice (1)
 #' \item Urban (2)
@@ -69,6 +70,11 @@ BoxplotSLClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, 
   # if lab.legend was specified, check for consistency with number of land use and soil classes
   if (!is.null(lab.legend) && length(lab.legend) != length(c(unique(gc[, 2]), unique(gc[,3])))) {
     stop("Length of 'lab.legend' does not match the combined number of land use and soil classes in 'gc'. Exiting.")
+  }
+  
+  # if lab.legend was not specified, fill with land use and soil class IDs from gc
+  if (is.null(lab.legend)) {
+    lab.legend <- c(paste("landuse_", sort(unique(gc[, 2])), sep = ""), paste("soil_", sort(unique(gc[, 3])), sep = ""))
   }
   
   # identify SLC columns in gd
