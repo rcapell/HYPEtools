@@ -374,7 +374,7 @@ ReadPar <- function (filename = "par.txt") {
   # remove first vector elements
   x <- lapply(x, `[`, -1)
   # convert list elements to numeric, if possible, catch conversion errors and return non-numeric strings untouched (typically comment lines)
-  lapply(y, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) return(x)))
+  lapply(x, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) return(x)))
 }
 
 
