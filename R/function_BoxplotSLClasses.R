@@ -184,8 +184,8 @@ BoxplotSLClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, 
   par(mar = mar, mgp = mgp, tcl = tcl, xaxs = xaxs, xpd = xpd)
   boxplot(slc, border = col.lu, range = 0, names = rep("", nslc), xlab= "SLC class", ylab = ylabel, xlim = c(0, nslc + 1), ylim = ylimit, 
           log = log, pars = list(boxlwd = 1.6, whisklwd = 1.6, staplelwd = 1.6, whisklty = 1))
-  mtext(seq(1, nslc, by = 2), 1, line = .05, at = seq(1,75, by = 2), cex=.8)
-  mtext(seq(2,74, by = 2), 1, line = .6, at = seq(2,74, by = 2), cex=.8)
+  mtext(seq(1, nslc, by = 2), 1, line = .05, at = seq(1, nslc, by = 2), cex=.8)
+  mtext(seq(2, nslc - 1, by = 2), 1, line = .6, at = seq(2, nslc - 1, by = 2), cex=.8)
   
   ## add identifiers for soil types
   # get plot region coordinates
