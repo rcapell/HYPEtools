@@ -31,6 +31,15 @@ names in the imported file (which are time period strings).
 Alternatively, column names can be specified as string
 vector in the \code{colnames} argument.
 }
+\note{
+HYPE results are printed to files using a user-specified
+accuracy. This accuracy is specified in 'info.txt' as a
+number of decimals to print. If large numbers are printed,
+this can result in a total number of digits which is too
+large to print. Results will then contain values of
+'****************'. \code{ReadMapOutput} will convert those
+cases to 'NaN' entries and throw a warning.
+}
 \examples{
 \dontrun{ReadMapOutput("mapCOUT.txt")}
 }

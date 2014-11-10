@@ -8,3 +8,9 @@ script_package_dev.R
 RHYPE.Rproj
 .Rbuildignore
 roxygen_template.txt
+src/countrows.o
+src/RHYPE.dll
+src-i386/countrows.o
+src-i386/RHYPE.dll
+src-x64/countrows.o
+src-x64/RHYPE.dll

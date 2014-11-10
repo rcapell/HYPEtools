@@ -83,7 +83,8 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' @param filename Path to and file name of the basin output file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-#' and annual values allowed, e.g. '\%Y'.
+#' and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
+#' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
 #' @param outformat Format of the returned object. Character string, either \code{'dataframe'} or \code{'matrix'}, 
 #' can be abbreviated.
 #' 
@@ -95,12 +96,15 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' \code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
 #' is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed. 
 #' Variable units ar imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'. 
-#' If a matrix is returned, this attribute will not be preserved.
+#' If a matrix is returned, these attributes will not be preserved.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and possibly converting to string representations during the process).
 #' 
+#' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
+#' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. Results will
+#' then contain values of '****************'. \code{ReadBasinOutput} will convert those cases to 'NaN' entries and throw a warning.
 #' 
 #' @examples
 #' \dontrun{ReadBasinOutput("0000001.txt")}
@@ -123,43 +127,71 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
   # convert date column to character to avoid problems with factor levels in the date conversion
   x[, 1] <- as.character(x[, 1])
   
-  # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
-  # add new attribute with time step information
-  if (dt.format == "%Y-%m") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-    attr(x, which = "timestep") <- "month"
-  } else if (dt.format == "%Y%m") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-    attr(x, which = "timestep") <- "month"
-  } else if (dt.format == "%Y") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-    attr(x, which = "timestep") <- "year"
-  } else {
-    xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-    # conditional: timestep attribute identified by difference between first two entries
-    tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
-    if (tdff == 24) {
-      attr(x, which = "timestep") <- "day"
+  # if user-requested, hop over date-time conversion
+  if (!is.null(dt.format)) {
+    # convert date column to posix string if possible, catch failed attempts with error condition and return string unchanged
+    # add new attribute with time step information
+    if (dt.format == "%Y-%m") {
+      xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+      x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+        print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+      attr(x, which = "timestep") <- "month"
+    } else if (dt.format == "%Y%m") {
+      xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+      x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+        print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+      attr(x, which = "timestep") <- "month"
+    } else if (dt.format == "%Y") {
+      xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+      x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+        print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+      attr(x, which = "timestep") <- "year"
     } else {
-      attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+      xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+      x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+        print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+      # conditional: timestep attribute identified by difference between first two entries
+      tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+      if (tdff == 24) {
+        attr(x, which = "timestep") <- "day"
+      } else {
+        attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+      }
     }
+  } else {
+    # add timestep attribute with placeholder value
+    attr(x, which = "timestep") <- "none"
   }
+  
   
   # update with new attribute to hold measurement units
   xattr <- readLines(filename, n = 2)
   attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")[[1]]
   
+  
+  # search data rows for occurrences of "****************", which represent values which had too many digits at the requested
+  # decimal accuracy during HYPE's Fortran export to text file
+  te <- sapply(x[, -1], FUN = is.factor)
+  # conditional: walk through columns and if type is factor, convert to numeric and convert NAs and NaNs (for "*" values)
+  if (any(te)){
+    warning(paste("Column(s)", paste(names(x)[-1][te], collapse =", "), "initially imported as factors. Internally converted to numeric, occurrences of '****************' values converted to 'NaN'."))
+    for (i in (2:(length(te)+1))[te]) {
+      if(is.factor(x[, i])) {
+        x[, i] <- as.character(x[, i])
+        if (length(which(x[, i] == "****************")) > 0){
+          x[which(x[, i] == "****************"), i] <- "NaN"
+        }
+        if (length(which(x[, i] == "-9999")) > 0){
+          x[which(x[, i] == "-9999"), i] <- "NA"
+        }
+        x[, i] <- as.numeric(x[, i])
+      }
+    }
+  }
+  
+  
   # handling of argument 'outformat', 
   if(outformat == "matrix" | outformat == "m") {
-    
     return(as.matrix(cbind(DATE = as.numeric(x[, 1]), x[, -1])))
   } else return(x)
 }
@@ -406,6 +438,11 @@ ReadPar <- function (filename = "par.txt") {
 #' @return
 #' \code{ReadMapOutput} returns a data frame.
 #' 
+#' @note
+#' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
+#' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. Results will
+#' then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NaN' entries and throw a warning.
+#' 
 #' @examples
 #' \dontrun{ReadMapOutput("mapCOUT.txt")}
 #' 
@@ -440,6 +477,26 @@ ReadMapOutput <- function(filename, colnames = NA) {
     }
   }
   
+  # search data columns for occurrences of "****************", which represent values which had too many digits at the requested
+  # decimal accuracy during HYPE's Fortran export to text file
+  te <- sapply(x[, -1], FUN = is.factor)
+  # conditional: walk through columns and if type is factor, convert to numeric and convert NAs and NaNs (for "*" values)
+  if (any(te)){
+    warning(paste("Column(s)", paste(names(x)[-1][te], collapse =", "), "initially imported as factors. Internally converted to numeric, occurrences of '****************' values converted to 'NaN'."))
+    for (i in (2:(length(te)+1))[te]) {
+      if(is.factor(x[, i])) {
+        x[, i] <- as.character(x[, i])
+        if (length(which(x[, i] == "****************")) > 0){
+          x[which(x[, i] == "****************"), i] <- "NaN"
+        }
+        if (length(which(x[, i] == "-9999")) > 0){
+          x[which(x[, i] == "-9999"), i] <- "NA"
+        }
+        x[, i] <- as.numeric(x[, i])
+      }
+    }
+  }
+  
   return(x)
 }
 
@@ -461,7 +518,9 @@ ReadMapOutput <- function(filename, colnames = NA) {
 #' @param filename Path to and file name of the time output file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-#' and annual values allowed, e.g. '\%Y'.
+#' and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
+#' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
+#'  
 #' 
 #' @details
 #' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
@@ -475,6 +534,10 @@ ReadMapOutput <- function(filename, colnames = NA) {
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and possibly converting to string representations during the process).
 #' 
+#' #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
+#' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. Results will
+#' then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NaN' entries and throw a warning.
+
 #' 
 #' @examples
 #' \dontrun{ReadTimeOutput("timeCCIN.txt, dt.format = "%Y-%m"")}
@@ -498,23 +561,47 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
   # convert date column to character to avoid problems with factor levels in the date conversion
   x[, 1] <- as.character(x[, 1])
   
-  # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
-  if (dt.format == "%Y-%m") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-  } else if (dt.format == "%Y%m") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-  } else if (dt.format == "%Y") {
-    xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-  } else {
-    xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
-    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+  # if user-requested, hop over date-time conversion
+  if (!is.null(dt.format)) {
+    # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
+    if (dt.format == "%Y-%m") {
+      xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+      x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+        print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+    } else if (dt.format == "%Y%m") {
+      xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+      x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+        print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+    } else if (dt.format == "%Y") {
+      xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+      x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+        print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+    } else {
+      xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+      x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+        print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+    }
+  }
+  
+  
+  # search data rows for occurrences of "****************", which represent values which had too many digits at the requested
+  # decimal accuracy during HYPE's Fortran export to text file
+  te <- sapply(x[, -1], FUN = is.factor)
+  # conditional: walk through columns and if type is factor, convert to numeric and convert NAs and NaNs (for "*" values)
+  if (any(te)){
+    warning(paste("Column(s)", paste(names(x)[-1][te], collapse =", "), "initially imported as factors. Internally converted to numeric, occurrences of '****************' values converted to 'NaN'."))
+    for (i in (2:(length(te)+1))[te]) {
+      if(is.factor(x[, i])) {
+        x[, i] <- as.character(x[, i])
+        if (length(which(x[, i] == "****************")) > 0){
+          x[which(x[, i] == "****************"), i] <- "NaN"
+        }
+        if (length(which(x[, i] == "-9999")) > 0){
+          x[which(x[, i] == "-9999"), i] <- "NA"
+        }
+        x[, i] <- as.numeric(x[, i])
+      }
+    }
   }
   
   return(x)

@@ -7,7 +7,8 @@ Description: This package contains functions to handle and analyse input and
     output files from the conceptual rainfall-runoff model HYPE (HYdrological
     Predictions for the Environment).
 Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
-    "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut") )
+    "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut"),
+    person("David", "Gustafsson", role = "aut") )
 Depends:
     R (>= 2.15.1),
     pbapply
