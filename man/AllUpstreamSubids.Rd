@@ -22,7 +22,8 @@ AllUpstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
   clipboard. Works just for Windows.}
 }
 \value{
-\code{AllUpstreamSubids} returns a vector of SUBIDs.
+\code{AllUpstreamSubids} returns a vector of SUBIDs,
+ordered as downstream sequence.
 }
 \description{
 Function to find all SUBIDs of upstream sub-catchments for
@@ -35,7 +36,9 @@ irrigation links or groundwater flows) using GeoData
 columns 'SUBID' and 'MAINDOWN', i.e the full upstream
 catchment. If a BranchData file is provided, the function
 will also include upstream areas which are connected
-through an upstream bifurcation.
+through an upstream bifurcation. The results can be
+directly used as 'partial model setup file' ('pmsf.txt')
+using the export function \code{\link{WritePmsf}}.
 }
 \examples{
 \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}

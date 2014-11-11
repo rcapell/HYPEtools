@@ -8,7 +8,8 @@
 #     - WriteXobs()
 #     - WriteBasinOutput()
 #     - WriteTimeOutput()
-#
+#     - WriteLakeData()
+#     - WritePmsf()
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -88,7 +89,7 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 10) {
   .CheckCharLengthDf(x, maxChar = 50)
   
   # export
-  write.table(format(x, digits = digits, scientitific = F, drop0trailing = T, trim = T), file = filename, quote = FALSE, sep = "\t", row.names = FALSE)
+  write.table(format(x, digits = digits, scientific = F, drop0trailing = T, trim = T), file = filename, quote = FALSE, sep = "\t", row.names = FALSE)
   # reset options to defaults
   #options(digits = 7, scipen = 0)
 }
@@ -591,3 +592,73 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 # x[,1]
 # dt.format <- "%Y"
 # filename <- "test.txt"
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteLakeData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Write a 'LakeData.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to export a 'LakeData.txt' file from R.
+#' 
+#' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadLakeData}}. 
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'.
+#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
+#'  
+#' @details
+#' \code{WriteLakeData} exports a LakeData dataframe with formatting options adjusted for the output to be read by HYPE.
+#' HYPE does not allow string elements with more than 50 characters in any LakeData column, the 
+#' function will return with a warning if long strings were exported.
+#' 
+#' @examples
+#' \dontrun{WriteLakeData(x = mylakedata)}
+#' 
+
+
+WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10) {
+  
+  # test length of string columns elements, throws warning if any element longer than 50, since HYPE does not read them
+  .CheckCharLengthDf(x, maxChar = 50)
+  
+  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  x[is.na(x)] <- -9999
+  
+  # export
+  write.table(format(x, digits = digits, scientific = F, drop0trailing = T, trim = T), file = filename, quote = FALSE, 
+              sep = "\t", row.names = FALSE)
+  
+}
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePmsf~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Write a 'pmsf.txt' file
+#'
+#' @description
+#' This is a small convenience function to export a 'partial model setup file' from R.
+#' 
+#' @param x The object to be written, an \code{integer} vector containing SUBIDs.
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#'  
+#' @details
+#' Pmsf files are represented as integer vectors in R. The total number of subcatchments in the file are added as first value on export. 
+#' pmsf.txt files need to be ordered as downstream sequence. 
+#' 
+#' @seealso
+#' \code{\link{AllUpstreamSubids}}, which extracts upstream SUBIDs from a GeoData dataframe.
+#' 
+#' @examples
+#' \dontrun{WritePmsf(x = mypmsf)}
+#' 
+
+WritePmsf <- function(x, filename = "../pmsf.txt") {
+  # concatenate number of subids and vector of subids and export
+  write.table(c(length(x), x), filename, col.names = FALSE, row.names = FALSE)
+}

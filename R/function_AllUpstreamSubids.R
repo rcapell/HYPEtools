@@ -16,11 +16,12 @@
 #' @details
 #' \code{AllUpstreamSubids} finds all upstream SUBIDs of a given SUBID (including itself but not 
 #' including potential irrigation links or groundwater flows) using GeoData columns 'SUBID' and 'MAINDOWN', i.e the full upstream catchment. 
-#' If a BranchData file is provided, the function will also include upstream areas which are connected through an upstream bifurcation.
+#' If a BranchData file is provided, the function will also include upstream areas which are connected through an upstream bifurcation. The 
+#' results can be directly used as 'partial model setup file' ('pmsf.txt') using the export function \code{\link{WritePmsf}}.
 #' 
 #' 
 #' @return
-#' \code{AllUpstreamSubids} returns a vector of SUBIDs.
+#' \code{AllUpstreamSubids} returns a vector of SUBIDs, ordered as downstream sequence.
 #' 
 #' 
 #' @examples
@@ -78,6 +79,9 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   
   # add outlet SUBID to result vector
   us <- c(subid, us)
+  
+  # order in downstream sequence, for direct use as pmsf file
+  us <- gd[, geocol.sub][sort(match(us, gd[, geocol.sub]))]
   
   # try to write arcgis select string to clipboard, with error recovery
   if (write.arcgis == T) {

@@ -12,6 +12,7 @@
 #     - ReadTimeOutput()
 #     - ReadPTQobs()
 #     - ReadLakeData()
+#     - ReadPmsf()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -705,3 +706,33 @@ ReadLakeData <- function(filename = "LakeData.txt") {
 }
 
 
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPmsf~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a 'pmsf.txt' file
+#'
+#' @description
+#' This is a small convenience function to import a 'partial model setup file' as integer vector into R.
+#' 
+#' @param filename Path to and file name of the pmsf file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#'  
+#' @details
+#' Pmsf.txt files imported with \code{ReadPmsf} are stripped from the first value containing the total number of subcatchments 
+#' in the file. No additional attribute is added to hold this number since it can be easily obtained using \code{\link{length}}.
+#' 
+#' @return
+#' \code{ReadPmsf} returns an integer vector.
+#' 
+#' @examples
+#' \dontrun{ReadLakeData("pmsf.txt")}
+#' 
+
+ReadPmsf <- function(filename = "pmsf.txt") {
+  x <- read.table(filename, header = T)
+  x <- as.integer(x[,1])
+  return(x)
+}
