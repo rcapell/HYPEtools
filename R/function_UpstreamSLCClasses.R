@@ -8,12 +8,12 @@
 #' @description
 #' Function to calculate SLC class fractions over all upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table.
 #'
-#' @param subid Integer vector of SUBIDs to calculate upstream areas for (must exist in \code{gd}). If \code{NULL}, upstream areas for all 
-#' SUBIDs will be calculated.
+#' @param subid Integer vector of SUBIDs to calculate upstream SUBID fractions for (must exist in \code{gd}). 
+#' If \code{NULL}, upstream areas for all SUBIDs will be calculated.
 #' 
-#' @param gd A data frame containing a column with SUBIDs and a column with areas, an imported 'GeoData.txt' file.
+#' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.
 #' 
-#' @param bd A data frame, an imported 'BranchData.txt' file. Optional argument.
+#' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' 
 # @param df.up.area A data frame as returned from \code{\link{SumUpstreamAreas}}. Two columns with SUBIDs and upstream areas. Can be provided to reduce 
 # overall computation time.

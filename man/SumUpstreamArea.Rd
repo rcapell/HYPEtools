@@ -38,7 +38,7 @@ case of stream bifurcations but not including potential
 irrigation links or groundwater flows.
 }
 \examples{
-\dontrun{SumUpstreamAreas(gd = mygeodata, progbar = T)}
+\dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
 }
 \seealso{
 \code{\link{AllUpstreamSubids}}

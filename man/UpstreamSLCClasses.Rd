@@ -7,15 +7,16 @@ UpstreamSLCClasses(subid = NULL, gd, bd = NULL, signif.digits = 3,
 }
 \arguments{
   \item{subid}{Integer vector of SUBIDs to calculate
-  upstream areas for (must exist in \code{gd}). If
-  \code{NULL}, upstream areas for all SUBIDs will be
+  upstream SUBID fractions for (must exist in \code{gd}).
+  If \code{NULL}, upstream areas for all SUBIDs will be
   calculated.}
 
   \item{gd}{A data frame containing a column with SUBIDs
-  and a column with areas, an imported 'GeoData.txt' file.}
+  and a column with areas, e.g. an imported 'GeoData.txt'
+  file.}
 
-  \item{bd}{A data frame, an imported 'BranchData.txt'
-  file. Optional argument.}
+  \item{bd}{A data frame with bifurcation connections, e.g.
+  an imported 'BranchData.txt' file. Optional argument.}
 
   \item{signif.digits}{Integer, number of significant
   digits to round upstream SLCs to. See also

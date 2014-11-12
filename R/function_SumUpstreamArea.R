@@ -30,7 +30,7 @@
 #' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{SumUpstreamAreas(gd = mygeodata, progbar = T)}
+#' \dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
 
 SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, progbar = F) {
   
