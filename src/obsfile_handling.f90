@@ -21,13 +21,14 @@
 
 !-----------------------------------------------------------------------------------------------------
 SUBROUTINE nrows(funit, infile, n)
+    ! arument declaration
     IMPLICIT NONE
     INTEGER, INTENT(out) :: n
     INTEGER, INTENT(in) :: funit
     CHARACTER(LEN = 800), INTENT(in) :: infile
     
     ! local variables
-    integer :: ios
+    INTEGER :: ios
     CHARACTER(16) :: dummy
     
     n = 0
@@ -39,7 +40,7 @@ SUBROUTINE nrows(funit, infile, n)
     END DO
     
     CLOSE(funit)
-END SUBROUTINE nrows
+END SUBROUTINE
 
     
 !-----------------------------------------------------------------------------------------------------
