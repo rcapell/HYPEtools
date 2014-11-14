@@ -2,7 +2,7 @@
 \alias{UpstreamObs}
 \title{Upstream forcing data averages}
 \usage{
-UpstreamObs(filename, subid, gd, bd)
+UpstreamObs(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T)
 }
 \arguments{
   \item{filename}{Path to and file name of the forcing data
@@ -17,16 +17,25 @@ UpstreamObs(filename, subid, gd, bd)
 
   \item{bd}{A data frame, containing 'BRANCHID' and
   'SOURCEID' columns, e.g. an imported 'BranchData.txt'
-  file. Optional argument.}
+  file. Optional argument. If provided, upstream areas will
+  include areas linked through bifurcations.}
+
+  \item{nr.obs}{Integer, number of rows in forcing data
+  file. Optional argument, computed if \code{NULL}, which
+  can be costly depending on file size. \code{UpstreamObs}
+  prints a message}
 }
 \value{
 \code{MergeXobs} returns a data frame with attributes for
 Xobs data.
 }
 \description{
-Calculate average upstream forcing for a single SUBID
+Calculate average upstream forcing time series for a single
+SUBID from area-weighted forcing in upstream subcatchments.
 }
 \details{
+#
+
 \code{MergeXobs} handles time steps of different lengths
 (e.g. daily, hourly), but requires identical time step
 lengths from both input data frames.

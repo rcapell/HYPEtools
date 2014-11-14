@@ -20,7 +20,7 @@
 !-----------------------------------------------------------------------------------------------------
 
 !-----------------------------------------------------------------------------------------------------
-SUBROUTINE nrows(funit, infile, infile_len, n)
+SUBROUTINE count_rows(funit, infile, infile_len, n)
     ! arument declaration
     IMPLICIT NONE
     INTEGER, INTENT(in) :: funit, infile_len
@@ -45,11 +45,11 @@ END SUBROUTINE
 
     
 !-----------------------------------------------------------------------------------------------------
-SUBROUTINE count_datestring_len(funit, infile, dslen, tslen)
+SUBROUTINE count_datestring_len(funit, infile, infile_len, dslen, tslen)
     
         !argument declaration
-        INTEGER, INTENT(IN)  :: funit           !<Unit for file
-        CHARACTER (LEN=*), INTENT(IN) :: infile !<Name of file to be read
+        INTEGER, INTENT(IN)  :: funit, infile_len           !<Unit for file
+        CHARACTER (LEN=infile_len), INTENT(IN) :: infile !<Name of file to be read
         INTEGER, INTENT(out) :: dslen, tslen    ! date, time string lengths
         ! local variables
         CHARACTER(LEN=1700000) line
@@ -62,7 +62,6 @@ SUBROUTINE count_datestring_len(funit, infile, dslen, tslen)
         n = 17                      ! maximum length of allowed time strings, ie yyyy-mm-dd HH:MM, plus 1
     
         DO i = 1, n
-            !print *, i, line(i:i), line(i+3:i+3), CHAR(58)
             IF (line(i:i)==CHAR(9)) THEN
                 !tab, end of date string reached
                 dslen = i - 1
@@ -87,11 +86,11 @@ END SUBROUTINE
 
 
 !-----------------------------------------------------------------------------------------------------
-SUBROUTINE count_data_cols(funit,infile, ncols,n_Result)
+SUBROUTINE count_data_cols(funit,infile, infile_len, ncols,n_Result)
 
     !Argument declarations
-    INTEGER, INTENT(IN)  :: funit           !<Unit for file
-    CHARACTER (LEN=*), INTENT(IN) :: infile !<Name of file to be read
+    INTEGER, INTENT(IN)  :: funit, infile_len           !<Unit for file
+    CHARACTER (LEN=infile_len), INTENT(IN) :: infile !<Name of file to be read
     !INTEGER, INTENT(IN)  :: nskip           !<Number of comment rows to skip in the beginning
     INTEGER, INTENT(OUT) :: ncols           !<Total number of columns
     INTEGER, INTENT(OUT) :: n_Result        !<Error number
@@ -111,7 +110,7 @@ SUBROUTINE count_data_cols(funit,infile, ncols,n_Result)
     !   ENDDO
     !ENDIF
 
-    !Read row and calculate number of columns
+    !Read header row and calculate number of columns
     READ(funit,601) line
     j=0
     linelen = LEN_TRIM(line)
@@ -129,7 +128,6 @@ SUBROUTINE count_data_cols(funit,infile, ncols,n_Result)
         ENDIF
     ENDDO
     ncols = j 
-
     CLOSE(funit)
 
 601 FORMAT(A1700000)
@@ -142,19 +140,22 @@ END SUBROUTINE count_data_cols
 
 
 !-----------------------------------------------------------------------------------------------------
-SUBROUTINE wmean(funit, infile, subid, weight, m, nc, nr, dslen, tslen, date, time, res)
+!SUBROUTINE wmean(funit, infile, infile_len, subid, weight, m, nc, nr, dslen, tslen, date, time, res)
+SUBROUTINE wmean(funit, infile, infile_len, subid, weight, m, nc, nr, dslen, tslen, res)
     ! argument declaration
-    CHARACTER(LEN = 800), INTENT(in) :: infile       ! file location string for the obs file
+    CHARACTER(LEN = infile_len), INTENT(in) :: infile       ! file location string for the obs file
     INTEGER, INTENT(in) :: subid(m)
     REAL(8), INTENT(in) :: weight(m)
-    INTEGER, INTENT(in) :: funit, m, nc, nr, dslen, tslen       ! file unit, number of subcatchments of interest, no. of cols and rows in obs file, date and time string length
-    CHARACTER(len=dslen), INTENT(out) :: date(nr)
-    CHARACTER(len=tslen), INTENT(out) :: time(nr)
-    REAL(8), INTENT(out) :: res(nr)
+    INTEGER, INTENT(in) :: funit, infile_len, m, nc, nr, dslen, tslen       ! file unit, string length of infile, number of subcatchments of interest, no. of cols and rows in obs file, date and time string length
+    !CHARACTER(len=dslen), INTENT(out) :: date(nr-1)
+    !CHARACTER(len=tslen), INTENT(out) :: time(nr-1)
+    REAL(8), INTENT(out) :: res(nr-1)
         
     ! local variables
     INTEGER :: n, pos(m), i, j, dscol          ! pos=position of subid in obs file
     CHARACTER(4) :: dummy
+    CHARACTER(10) :: ddummy
+    CHARACTER(5) :: tdummy
     INTEGER :: obsid(nc-1)
     REAL(8) :: obs(nc-1)
     REAL(8) :: wobs(m)
@@ -171,25 +172,18 @@ SUBROUTINE wmean(funit, infile, subid, weight, m, nc, nr, dslen, tslen, date, ti
         END DO
     END DO
         
-    print *, obsid(pos)
-    print *, pos
-        
     ! read file line by line and calculate weighted average, conditional on existence of time column
     IF (tslen == 0) THEN        ! just a date
         DO i = 1, nr-1
-            READ(unit = funit, fmt = *) date(i), obs(1:nc-1)
+            !READ(unit = funit, fmt = *) date(i), obs(1:nc-1)
+            READ(unit = funit, fmt = *) ddummy, obs(1:nc-1)
             wobs(:) = obs(pos) * weight(:)
             res(i) = SUM(wobs)
-            IF (i <= 10) THEN
-                !print *, obsid(pos)
-                print *, res(i)
-                !print *, wobs
-                !print *,obs(pos)
-            END IF
         END DO
     ELSE                        ! both date and time
-        DO i = 1, nr
-            READ(unit = funit, fmt = *) date(i), time(i), obs(1:nc-1)
+        DO i = 1, nr-1
+            READ(unit = funit, fmt = *) ddummy, tdummy, obs(1:nc-1)
+            !READ(unit = funit, fmt = *) date(i), time(i), obs(1:nc-1)
             wobs(:) = obs(pos) * weight(:)
             res(i) = SUM(wobs)
         END DO
