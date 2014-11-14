@@ -1,6 +1,6 @@
 
 #' @export
-#' @useDynLib RHYPE nrows
+#' @useDynLib RHYPE nrows count_data_cols
 #' @title
 #' Upstream forcing data averages
 #'
@@ -24,8 +24,17 @@
 #' @examples
 #' \dontrun{MergeXobs(x = myxobs1, y = myxobs2)}
 
-UpstreamObs <- function(filename, subid, gd, bd) {
-  nrows <- 0
-  try(.Fortran(nrows, funit = as.integer(10), infile = as.character(filename), n=as.integer(nrows)))
-  return(nrows)
+UpstreamObs <- function(filename, subid, gd, bd, nrows.obs = NULL) {
+  
+  if (is.null(nrow.obs)) {
+    
+  }
+  n <- 1
+  in.len <- nchar(filename)
+  te <- tryCatch(
+    .Fortran(nrows, funit = as.integer(10), infile = as.character(filename), infile_len = as.integer(in.len), n = as.integer(n)), 
+    error = function(e) {print("Error when calling Fortran subroutine 'nrows'.")}
+    )
+  nr <- te$n
+  return(nr)
 }

@@ -20,12 +20,12 @@
 !-----------------------------------------------------------------------------------------------------
 
 !-----------------------------------------------------------------------------------------------------
-SUBROUTINE nrows(funit, infile, n)
+SUBROUTINE nrows(funit, infile, infile_len, n)
     ! arument declaration
     IMPLICIT NONE
+    INTEGER, INTENT(in) :: funit, infile_len
+    CHARACTER(LEN = infile_len), INTENT(in) :: infile
     INTEGER, INTENT(out) :: n
-    INTEGER, INTENT(in) :: funit
-    CHARACTER(LEN = 800), INTENT(in) :: infile
     
     ! local variables
     INTEGER :: ios
@@ -34,12 +34,13 @@ SUBROUTINE nrows(funit, infile, n)
     n = 0
     OPEN(unit = 10, file = infile, status = 'old', action = 'read', form = 'formatted')
     DO
-        READ(unit = funit, fmt = *, iostat = ios) dummy
-        if (ios < 0) exit
+        !READ(unit = funit, fmt = *, iostat = ios) dummy
+        READ(unit = funit, fmt = *, END = 10)
+        !IF (ios < 0) EXIT
         n = n + 1
     END DO
-    
-    CLOSE(funit)
+10  CLOSE(funit)
+    !CLOSE(funit)
 END SUBROUTINE
 
     
