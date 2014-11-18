@@ -1,5 +1,5 @@
 
-# #' @export
+#' @export
 #' @useDynLib RHYPE count_rows count_data_cols count_datestring_len wmean
 #' @title
 #' Upstream forcing data averages
