@@ -17,8 +17,7 @@
 #' depending on file size. \code{UpstreamObs} prints a message
 #' 
 #' @details
-#' \code{MergeXobs} handles time steps of different lengths (e.g. daily, hourly), but requires identical time 
-#' step lengths from both input data frames.
+#' \code{UpstreamObs} reads potentially very large text files, function calls can be time-consuming
 #' 
 #' @return
 #' \code{MergeXobs} returns a data frame with attributes for Xobs data.
@@ -29,89 +28,132 @@
 
 UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T) {
   
+  starttime <- Sys.time()
+  message(paste("UpstreamObs start at", starttime))
+  
   # number of characters in file path, needed for dimensioning of fortran variables in called subroutines
-  in.len <- nchar(filename)
+  infile_len <- nchar(filename)
   
   # find upstream subids
   sbd <- AllUpstreamSubids(subid = subid, gd = gd, bd = bd)
   
   # identify area column position in geodata
   geocol.are <- which(tolower(colnames(gd)) == "area")
-  geocol.sub <- which(tolower(colnames(gd)) == "subid")
+  geocol.sbd <- which(tolower(colnames(gd)) == "subid")
   
   # get areas for all
-  area <- gd[gd[, geocol.sub] %in% sbd, geocol.are]
+  area <- gd[gd[, geocol.sbd] %in% sbd, geocol.are]
   
   # calculate weights from areas
-  wght <- area / sum(area)
+  weight <- area / sum(area)
+  
+  preptime <- Sys.time()
+  message(paste("Time for preparing steps", difftime(preptime, starttime, units = "secs")))
   
   # conditional on function argument: calculate number of rows in obs file
   if (is.null(nr.obs)) {
-    nr <- 1
+    nr <- 0
     te <- tryCatch(
-      .Fortran("count_rows", funit = as.integer(10), infile = as.character(filename), infile_len = as.integer(in.len), n = as.integer(nr)), 
+      .Fortran("count_rows", 
+               infile = as.character(filename), 
+               infile_len = as.integer(infile_len), 
+               nr = as.integer(nr)
+               ), 
       error = function(e) {print("Error when calling Fortran subroutine 'nrows'.")}
     )
-    nr.obs <- te$n
+    nr <- te$nr
   }
+  
+  rowtime <- Sys.time()
+  message(paste("Time for computing rows", difftime(rowtime, preptime, units = "secs")))
   
   message(paste("Number of rows in forcing data file:", nr.obs))
   
   
   # calculate number of columns in obs file
-  n <- 1
-  nc <- 1
+  ncols <- 1
   te <- tryCatch(
-    .Fortran("count_data_cols", funit = as.integer(10), infile = as.character(filename), infile_len = as.integer(in.len), ncols = as.integer(nc), n_Result = as.integer(n)), 
+    .Fortran("count_data_cols", 
+             infile = as.character(filename), 
+             infile_len = as.integer(in.len), 
+             ncols = as.integer(ncols)
+             ), 
     error = function(e) {print("Error when calling Fortran subroutine 'count_data_cols'.")}
   )
-  nc.obs <- te$ncols
+  ncols <- te$ncols
+  
+  coltime <- Sys.time()
+  message(paste("Time for computing columns", difftime(coltime, rowtime, units = "secs")))
   
   message(paste("Number of columns in forcing data file:", nc.obs))
   
   
   # calculate datestring format
-  ds <- 1
-  ts <- 1
+  dslen <- 0
+  tslen <- 0
   te <- tryCatch(
-    .Fortran("count_datestring_len", funit = as.integer(10), infile = as.character(filename), infile_len = as.integer(in.len), dslen = as.integer(ds), tslen = as.integer(ts)), 
+    .Fortran("count_datestring_len", 
+             infile = as.character(filename), 
+             infile_len = as.integer(infile_len), 
+             dslen = as.integer(dslen), 
+             tslen = as.integer(tslen)
+             ), 
     error = function(e) {print("Error when calling Fortran subroutine 'count_datestring_len'.")}
   )
-  ds.len <- te$dslen
-  ts.len <- te$tslen
+  dslen <- te$dslen
+  tslen <- te$tslen
   
-  message(paste("Date string length:", ds.len))
-  message(paste("Time string length:", ts.len))
+  dattime <- Sys.time()
+  message(paste("Time for computing datetime lengths", difftime(dattime, coltime, units = "secs")))
+  
+  message(paste("Date string length:", dslen))
+  message(paste("Time string length:", tslen))
   
   
-  # calculate area-weighted forcing data mean
-  nsbd <- length(sbd)
-  # initialise result vectors, length does not include header of obs file, therefore "- 1"
-  dt <- rep(paste(rep(" ", ds.len), collapse = ""), times = nr.obs - 1)
-  tm <- rep(paste(rep(" ", ts.len), collapse = ""), times = nr.obs - 1)
-  wm <- rep(0., times = nr.obs - 1)
-#   te <- tryCatch(
-#     .Fortran("wmean", funit = as.integer(10), infile = as.character(filename), infile_len = as.integer(in.len), subid = as.integer(sbd), weight = as.integer(wght), m = as.integer(nsbd), nc = as.integer(nc.obs), nr = as.integer(nr.obs), dslen = as.integer(ds.len), tslen = as.integer(ts.len), date = as.character(dt), time = as.character(tm), res = as.numeric(res)), 
-#     error = function(e) {print("Error when calling Fortran subroutine 'wmean'.")}
-#   )
-#   te <- tryCatch(
-#     .Fortran("wmean", funit = as.integer(10), infile = as.character(filename), infile_len = as.integer(in.len), subid = as.integer(sbd), weight = as.numeric(wght), m = as.integer(nsbd), nc = as.integer(nc.obs), nr = as.integer(nr.obs), dslen = as.integer(ds.len), tslen = as.integer(ts.len), res = as.numeric(wm)), 
-#     error = function(e) {print("Error when calling Fortran subroutine 'wmean'.")}
-#   )
-te <- .Fortran("wmean", 
-               funit = as.integer(10), 
-               infile = as.character(filename), 
-               infile_len = as.integer(in.len), 
-               subid = as.integer(sbd), 
-               weight = as.numeric(wght), 
-               m = as.integer(nsbd), 
-               nc = as.integer(nc.obs), 
-               nr = as.integer(nr.obs), 
-               dslen = as.integer(ds.len), 
-               tslen = as.integer(ts.len), 
-               #date = as.character(dt), 
-               #time = as.character(tm), 
-               res = as.numeric(wm)
-               )
-  return(data.fte$res)
+  ## calculate area-weighted forcing data mean
+  # number of subids of interest
+  m <- length(sbd)
+  # initialise result vector, length does not include header of obs file, therefore "- 1"
+  res <- rep(0, times = nr - 1)
+  out <- tryCatch(
+    .Fortran("wmean", 
+             infile = as.character(filename), 
+             infile_len = as.integer(infile_len), 
+             sbd = as.integer(sbd), 
+             weight = as.numeric(weight), 
+             m = as.integer(m), 
+             nc = as.integer(ncols), 
+             nr = as.integer(nr), 
+             tslen = as.integer(tslen), 
+             res = as.numeric(res)
+             ), 
+    error = function(e) {print("Error when calling Fortran subroutine 'wmean'.")}
+  )
+  
+  caltime <- Sys.time()
+  message(paste("Time for computing weighted mean", difftime(caltime, dattime, units = "secs")))
+
+  # read dates in first rows and construct date-time vector
+  if (dslen == 10 && tslen == 0) {
+    dt.fmt <- "%Y-%m-%d"
+  } else if (dslen == 10 && tslen == 5) {
+    dt.fmt <- "%Y-%m-%d %H:%M"
+  } else if(dslen == 8 && tslen == 0) {
+    dt.fmt <- "%Y%m%d"
+  } else if(dslen == 8 && tslen == 5) {
+    dt.fmt <- "%Y%m%d %H:%M"
+  }
+  
+  cn <- file(description = filename, open = "r")
+  te1 <- readLines(con=cn, n=1)
+  te1 <- readLines(con=cn, n=1)
+  te2 <- readLines(con=cn, n=1)
+  close(cn)
+  te1 <- as.POSIXct(strptime(substr(te1, start = 1, stop = ifelse(tslen > 0, dslen + tslen + 1, dslen)), dt.fmt, tz = "GMT"))
+  te2 <- as.POSIXct(strptime(substr(te2, start = 1, stop = ifelse(tslen > 0, dslen + tslen + 1, dslen)), dt.fmt, tz = "GMT"))
+  # calculate date vector of length of obs file (excluding the header)
+  te <- 0:(nr - 2)
+  dt <- difftime(te2, te1)
+  date <- te1 + te * dt
+  return(data.frame(DATE = date, meanobs = out$res))
 }

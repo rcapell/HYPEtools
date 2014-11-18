@@ -36,9 +36,8 @@ SUBID from area-weighted forcing in upstream subcatchments.
 \details{
 #
 
-\code{MergeXobs} handles time steps of different lengths
-(e.g. daily, hourly), but requires identical time step
-lengths from both input data frames.
+\code{UpstreamObs} reads potentially very large text files,
+function calls can be time-consuming
 }
 \examples{
 \dontrun{MergeXobs(x = myxobs1, y = myxobs2)}

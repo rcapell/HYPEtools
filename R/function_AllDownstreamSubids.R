@@ -79,11 +79,11 @@ AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
       print("Writing to clipboard failed, this is probably not a Windows environment")})
   }
   
-  # conditional: logical vector with TRUE for branched catchments if branchdata exists
+  # conditional: add logical vector with TRUE for branched catchments if branchdata exists
   if (!is.null(bd)) {
-    ds <- data.frame(downstream = ds, is.branch = ds %in% bd[, brcol.sr])
+    ds <- data.frame(downstream = as.integer(ds), is.branch = ds %in% bd[, brcol.sr])
   }
   
   # return result
-  return(ds)
+  return(as.integer(ds))
 }
