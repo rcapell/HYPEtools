@@ -17,119 +17,134 @@
 !
 !   - wmean(funit, infile, sbd, weight, m, nc, nr, dslen, tslen, date, time, res)
 !
+!
+!   To compile with Intel Fortran compiler (in Win), use this command:
+!   ifort /dll obsfile_handling.f90
+!   Then rename to RHYPE.dll and place in ..\R\win-library\3.0\RHYPE\libs\x64
 !-----------------------------------------------------------------------------------------------------
 
-    !-----------------------------------------------------------------------------------------------------
-    SUBROUTINE count_rows(infile, infile_len, nr)
-        ! arument declaration
-        IMPLICIT NONE
-        INTEGER, INTENT(in) :: infile_len
-        CHARACTER(LEN = infile_len), INTENT(in) :: infile
-        INTEGER, INTENT(out) :: nr
+!-----------------------------------------------------------------------------------------------------
+SUBROUTINE count_rows(infile, infile_len, nr)
+    !DEC$ ATTRIBUTES DLLEXPORT :: count_rows
+    !DEC$ ATTRIBUTES ALIAS : "count_rows" :: count_rows
+    ! arument declaration
+    IMPLICIT NONE
+    INTEGER, INTENT(in) :: infile_len
+    CHARACTER(LEN = infile_len), INTENT(in) :: infile
+    INTEGER, INTENT(out) :: nr
         
-        nr = 0
-        OPEN(unit = 10, file = infile, status = 'old', action = 'read', form = 'formatted')
-        DO
-            READ(10, *, END = 20)
-            nr = nr + 1
-        END DO
-    20  CLOSE(10)
+    nr = 0
+    OPEN(unit = 10, file = infile, status = 'old', action = 'read', form = 'formatted')
+    DO
+        READ(10, *, END = 20)
+        nr = nr + 1
+    END DO
+20  CLOSE(10)
     
-    END SUBROUTINE
-    
-    
+END SUBROUTINE
     
     
-    !-----------------------------------------------------------------------------------------------------
-    SUBROUTINE count_data_cols(infile, infile_len, ncols)
-    
-        !Argument declarations
-        INTEGER, INTENT(IN)  :: infile_len           !<Unit for file
-        CHARACTER (LEN=infile_len), INTENT(IN) :: infile !<Name of file to be read
-        INTEGER, INTENT(OUT) :: ncols           !<Total number of columns
-    
-        !Local variables
-        CHARACTER(LEN=1700000) line
-        INTEGER i,j
-        INTEGER linelen
-    
-        !Start of subroutine
-        OPEN(UNIT = 10,FILE = infile, STATUS = 'old', ERR=610)
     
     
-        !Read header row and calculate number of columns
-        READ(10,601) line
-        j=0
-        linelen = LEN_TRIM(line)
-        DO i = 1,linelen
-            IF(line(i:i)==CHAR(32).OR.line(i:i)==CHAR(9).OR.line(i:i)==CHAR(13).OR.line(i:i)==CHAR(10))THEN
-                !skip - space, tab, CR or LF
-            ELSE
-                IF((line(i+1:i+1)==CHAR(32).OR.line(i+1:i+1)==CHAR(9).OR.   &
-                    line(i+1:i+1)==CHAR(13).OR.line(i+1:i+1)==CHAR(10)) .AND.     & 
-                    ((line(i:i)>=CHAR(48).AND.line(i:i)<=CHAR(57)).OR.(line(i:i)>=CHAR(65)   &
-                    .AND.line(i:i)<=CHAR(90)) .OR.  &
-                    (line(i:i)>=CHAR(97).AND.line(i:i)<=CHAR(122))) ) THEN
-                    j=j+1              !this char is number or letter and next is tab,space,CR or LF
-                ENDIF
+!-----------------------------------------------------------------------------------------------------
+SUBROUTINE count_data_cols(infile, infile_len, ncols)
+    
+    !DEC$ ATTRIBUTES DLLEXPORT :: count_data_cols
+    !DEC$ ATTRIBUTES ALIAS : "count_data_cols" :: count_data_cols
+
+    !Argument declarations
+    INTEGER, INTENT(IN)  :: infile_len           !<Unit for file
+    CHARACTER (LEN=infile_len), INTENT(IN) :: infile !<Name of file to be read
+    INTEGER, INTENT(OUT) :: ncols           !<Total number of columns
+    
+    !Local variables
+    CHARACTER(LEN=1700000) line
+    INTEGER i,j
+    INTEGER linelen
+    
+    !Start of subroutine
+    OPEN(UNIT = 10,FILE = infile, STATUS = 'old', ERR=610)
+    
+    
+    !Read header row and calculate number of columns
+    READ(10,601) line
+    j=0
+    linelen = LEN_TRIM(line)
+    DO i = 1,linelen
+        IF(line(i:i)==CHAR(32).OR.line(i:i)==CHAR(9).OR.line(i:i)==CHAR(13).OR.line(i:i)==CHAR(10))THEN
+            !skip - space, tab, CR or LF
+        ELSE
+            IF((line(i+1:i+1)==CHAR(32).OR.line(i+1:i+1)==CHAR(9).OR.   &
+                line(i+1:i+1)==CHAR(13).OR.line(i+1:i+1)==CHAR(10)) .AND.     & 
+                ((line(i:i)>=CHAR(48).AND.line(i:i)<=CHAR(57)).OR.(line(i:i)>=CHAR(65)   &
+                .AND.line(i:i)<=CHAR(90)) .OR.  &
+                (line(i:i)>=CHAR(97).AND.line(i:i)<=CHAR(122))) ) THEN
+                j=j+1              !this char is number or letter and next is tab,space,CR or LF
             ENDIF
-        ENDDO
-        ncols = j 
-        CLOSE(10)
+        ENDIF
+    ENDDO
+    ncols = j 
+    CLOSE(10)
     
-    601 FORMAT(A1700000)
-        RETURN
-    610 WRITE(6,*) 'ERROR open file: ', TRIM(infile)
-        RETURN
+601 FORMAT(A1700000)
+    RETURN
+610 WRITE(6,*) 'ERROR open file: ', TRIM(infile)
+    RETURN
     
-        END SUBROUTINE count_data_cols
-    
-    
-    
-    !-----------------------------------------------------------------------------------------------------
-    SUBROUTINE count_datestring_len(infile, infile_len, dslen, tslen)
-    
-        !argument declaration
-        INTEGER, INTENT(IN)  :: infile_len           !<Unit for file
-        CHARACTER (LEN=infile_len), INTENT(IN) :: infile !<Name of file to be read
-        INTEGER, INTENT(out) :: dslen, tslen    ! date, time string lengths
-        ! local variables
-        CHARACTER(LEN=1700000) line
-        INTEGER i,n
+    END SUBROUTINE count_data_cols
     
     
-        OPEN(UNIT = 10,FILE = infile, STATUS = 'old')
-        READ(10, *) line         ! header line, skipping
-        READ(10, '(A1700000)') line
-        n = 17                      ! maximum length of allowed time strings, ie yyyy-mm-dd HH:MM, plus 1
     
-        DO i = 1, n
-            IF (line(i:i)==CHAR(9)) THEN
-                !tab, end of date string reached
+!-----------------------------------------------------------------------------------------------------
+SUBROUTINE count_datestring_len(infile, infile_len, dslen, tslen)
+    
+    !DEC$ ATTRIBUTES DLLEXPORT :: count_datestring_len
+    !DEC$ ATTRIBUTES ALIAS : "count_datestring_len" :: count_datestring_len
+
+    !argument declaration
+    INTEGER, INTENT(IN)  :: infile_len           !<Unit for file
+    CHARACTER (LEN=infile_len), INTENT(IN) :: infile !<Name of file to be read
+    INTEGER, INTENT(out) :: dslen, tslen    ! date, time string lengths
+    ! local variables
+    CHARACTER(LEN=1700000) line
+    INTEGER i,n
+    
+    
+    OPEN(UNIT = 10,FILE = infile, STATUS = 'old')
+    READ(10, *) line         ! header line, skipping
+    READ(10, '(A1700000)') line
+    n = 17                      ! maximum length of allowed time strings, ie yyyy-mm-dd HH:MM, plus 1
+    
+    DO i = 1, n
+        IF (line(i:i)==CHAR(9)) THEN
+            !tab, end of date string reached
+            dslen = i - 1
+            tslen = 0
+            EXIT
+        ELSE IF (line(i:i)==CHAR(32)) THEN
+            ! space, can be either end or space between date and time
+            IF (line(i+3:i+3)==CHAR(58)) THEN
+                ! a colon three characters on, which means there is time information
+                dslen = i - 1
+                tslen = 4
+            ELSE
                 dslen = i - 1
                 tslen = 0
                 EXIT
-            ELSE IF (line(i:i)==CHAR(32)) THEN
-                ! space, can be either end or space between date and time
-                IF (line(i+3:i+3)==CHAR(58)) THEN
-                    ! a colon three characters on, which means there is time information
-                    dslen = i - 1
-                    tslen = 4
-                ELSE
-                    dslen = i - 1
-                    tslen = 0
-                    EXIT
-                END IF
             END IF
-            CLOSE(10)
-        END DO
+        END IF
+        CLOSE(10)
+    END DO
     
-    END SUBROUTINE
+END SUBROUTINE
     
     
     
 !-----------------------------------------------------------------------------------------------------
 SUBROUTINE wmean(infile, infile_len, sbd, weight, m, nc, nr, tslen, res)
+    !DEC$ ATTRIBUTES DLLEXPORT :: wmean
+    !DEC$ ATTRIBUTES ALIAS : "wmean" :: wmean
+
     ! argument declaration
     CHARACTER(LEN = infile_len), INTENT(in) :: infile       ! file location string for the obs file
     INTEGER, INTENT(in) :: sbd(m)
@@ -187,4 +202,4 @@ SUBROUTINE wmean(infile, infile_len, sbd, weight, m, nc, nr, tslen, res)
         
     CLOSE(10)
         
-    END SUBROUTINE
+END SUBROUTINE

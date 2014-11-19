@@ -24,22 +24,27 @@ UpstreamObs(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T)
   file. Optional argument, computed if \code{NULL}, which
   can be costly depending on file size. \code{UpstreamObs}
   prints a message}
+
+  \item{verbose}{Logical, if set to \code{TRUE},
+  information about the current computational status will
+  be printed. NOT YET IMPLEMENTED.}
 }
 \value{
-\code{MergeXobs} returns a data frame with attributes for
-Xobs data.
+\code{UpstreamObs} returns a data frame with two columns,
+first column \code{DATE} containing POSIX dates and second
+column \code{meanobs} containing the area-weighted upstream
+average forcing.
 }
 \description{
 Calculate average upstream forcing time series for a single
-SUBID from area-weighted forcing in upstream subcatchments.
+SUBID from area-weighted upstream forcing data, given as
+HYPE forcing data text file.
 }
 \details{
-#
-
 \code{UpstreamObs} reads potentially very large text files,
 function calls can be time-consuming
 }
 \examples{
-\dontrun{MergeXobs(x = myxobs1, y = myxobs2)}
+\dontrun{UpstreamObs(filename = "Pobs.txt", subid = 1000, gd = mygeodata)}
 }
 

@@ -5,7 +5,8 @@
 #' Upstream forcing data averages
 #'
 #' @description
-#' Calculate average upstream forcing time series for a single SUBID from area-weighted forcing in upstream subcatchments.
+#' Calculate average upstream forcing time series for a single SUBID from area-weighted upstream forcing data, given as HYPE forcing data 
+#' text file.
 #'
 #' @param filename Path to and file name of the forcing data text file to extract from. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
@@ -15,16 +16,18 @@
 #' If provided, upstream areas will include areas linked through bifurcations.
 #' @param nr.obs Integer, number of rows in forcing data file. Optional argument, computed if \code{NULL}, which can be costly 
 #' depending on file size. \code{UpstreamObs} prints a message
+#' @param verbose Logical, if set to \code{TRUE}, information about the current computational status will be printed. NOT YET IMPLEMENTED.
 #' 
 #' @details
 #' \code{UpstreamObs} reads potentially very large text files, function calls can be time-consuming
 #' 
 #' @return
-#' \code{MergeXobs} returns a data frame with attributes for Xobs data.
+#' \code{UpstreamObs} returns a data frame with two columns, first column \code{DATE} containing POSIX dates and second column 
+#' \code{meanobs} containing the area-weighted upstream average forcing.
 #' 
 #' 
 #' @examples
-#' \dontrun{MergeXobs(x = myxobs1, y = myxobs2)}
+#' \dontrun{UpstreamObs(filename = "Pobs.txt", subid = 1000, gd = mygeodata)}
 
 UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T) {
   
@@ -48,13 +51,13 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
   weight <- area / sum(area)
   
   preptime <- Sys.time()
-  message(paste("Time for preparing steps", difftime(preptime, starttime, units = "secs")))
+  message(paste("Time for preparation steps", difftime(preptime, starttime, units = "secs")))
   
   # conditional on function argument: calculate number of rows in obs file
   if (is.null(nr.obs)) {
     nr <- 0
     te <- tryCatch(
-      .Fortran("count_rows", 
+      .Fortran(count_rows, 
                infile = as.character(filename), 
                infile_len = as.integer(infile_len), 
                nr = as.integer(nr)
@@ -62,20 +65,22 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
       error = function(e) {print("Error when calling Fortran subroutine 'nrows'.")}
     )
     nr <- te$nr
+  } else {
+    nr <- nr.obs
   }
   
   rowtime <- Sys.time()
   message(paste("Time for computing rows", difftime(rowtime, preptime, units = "secs")))
   
-  message(paste("Number of rows in forcing data file:", nr.obs))
+  message(paste("Number of rows in forcing data file:", nr))
   
   
   # calculate number of columns in obs file
-  ncols <- 1
+  ncols <- 0
   te <- tryCatch(
-    .Fortran("count_data_cols", 
+    .Fortran(count_data_cols, 
              infile = as.character(filename), 
-             infile_len = as.integer(in.len), 
+             infile_len = as.integer(infile_len), 
              ncols = as.integer(ncols)
              ), 
     error = function(e) {print("Error when calling Fortran subroutine 'count_data_cols'.")}
@@ -85,14 +90,14 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
   coltime <- Sys.time()
   message(paste("Time for computing columns", difftime(coltime, rowtime, units = "secs")))
   
-  message(paste("Number of columns in forcing data file:", nc.obs))
+  message(paste("Number of columns in forcing data file:", ncols))
   
   
   # calculate datestring format
   dslen <- 0
   tslen <- 0
   te <- tryCatch(
-    .Fortran("count_datestring_len", 
+    .Fortran(count_datestring_len, 
              infile = as.character(filename), 
              infile_len = as.integer(infile_len), 
              dslen = as.integer(dslen), 
@@ -116,7 +121,7 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
   # initialise result vector, length does not include header of obs file, therefore "- 1"
   res <- rep(0, times = nr - 1)
   out <- tryCatch(
-    .Fortran("wmean", 
+    .Fortran(wmean, 
              infile = as.character(filename), 
              infile_len = as.integer(infile_len), 
              sbd = as.integer(sbd), 
