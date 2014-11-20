@@ -96,45 +96,56 @@ SUBROUTINE count_data_cols(infile, infile_len, ncols)
     
     
 !-----------------------------------------------------------------------------------------------------
-SUBROUTINE count_datestring_len(infile, infile_len, dslen, tslen)
+SUBROUTINE count_datestring_len(infile, infile_len, dslen, tslen, lclen)
     
     !DEC$ ATTRIBUTES DLLEXPORT :: count_datestring_len
     !DEC$ ATTRIBUTES ALIAS : "count_datestring_len" :: count_datestring_len
 
     !argument declaration
-    INTEGER, INTENT(IN)  :: infile_len           !<Unit for file
-    CHARACTER (LEN=infile_len), INTENT(IN) :: infile !<Name of file to be read
-    INTEGER, INTENT(out) :: dslen, tslen    ! date, time string lengths
-    ! local variables
-    CHARACTER(LEN=1700000) line
-    INTEGER i,n
+        INTEGER, INTENT(IN)  :: infile_len           !<Unit for file
+        CHARACTER (LEN=infile_len), INTENT(IN) :: infile !<Name of file to be read
+        INTEGER, INTENT(out) :: dslen, tslen, lclen    ! date, time string lengths, leading characters before datestring
+        ! local variables
+        CHARACTER(LEN=1700000) line
+        INTEGER i,n, j
     
     
-    OPEN(UNIT = 10,FILE = infile, STATUS = 'old')
-    READ(10, *) line         ! header line, skipping
-    READ(10, '(A1700000)') line
-    n = 17                      ! maximum length of allowed time strings, ie yyyy-mm-dd HH:MM, plus 1
-    
-    DO i = 1, n
-        IF (line(i:i)==CHAR(9)) THEN
-            !tab, end of date string reached
-            dslen = i - 1
-            tslen = 0
-            EXIT
-        ELSE IF (line(i:i)==CHAR(32)) THEN
-            ! space, can be either end or space between date and time
-            IF (line(i+3:i+3)==CHAR(58)) THEN
-                ! a colon three characters on, which means there is time information
-                dslen = i - 1
-                tslen = 4
+        OPEN(UNIT = 10,FILE = infile, STATUS = 'old')
+        READ(10, *) line         ! header line, skipping
+        READ(10, '(A1700000)') line
+        n = 17                      ! maximum length of allowed time strings, ie yyyy-mm-dd HH:MM, plus 1
+        
+        ! find start of the date string, there can be leading blanks and other characters
+        lclen = 0
+        DO
+            IF (line(lclen+1:lclen+1)==CHAR(49) .OR. line(lclen+1:lclen+1)==CHAR(50)) THEN
+                EXIT
             ELSE
-                dslen = i - 1
+                lclen = lclen+1
+            END IF
+        END DO
+        
+        ! calculate date and time string lengths
+        DO i = 1+lclen, n+lclen
+            IF (line(i:i)==CHAR(9)) THEN
+                !tab, end of date string reached
+                dslen = i - 1 - lclen
                 tslen = 0
                 EXIT
+            ELSE IF (line(i:i)==CHAR(32)) THEN
+                ! space, can be either end or space between date and time
+                IF (line(i+3:i+3)==CHAR(58)) THEN
+                    ! a colon three characters on, which means there is time information
+                    dslen = i - 1 - lclen
+                    tslen = 5
+                ELSE
+                    dslen = i - 1 - lclen
+                    tslen = 0
+                    EXIT
+                END IF
             END IF
-        END IF
-        CLOSE(10)
-    END DO
+            CLOSE(10)
+        END DO
     
 END SUBROUTINE
     

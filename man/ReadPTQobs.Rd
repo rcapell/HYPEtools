@@ -30,6 +30,10 @@ files as data frame into R.
 strings to POSIX time representations. SUBIDs are returned
 as integer attribute \code{subid} (see \code{\link{attr}}
 on how to access it).
+
+This function can only be used with reasonably small data
+files. Attempts to read large files can lead to exceedance
+of R's memory space.
 }
 \note{
 For the conversion of date/time strings, time zone "GMT" is

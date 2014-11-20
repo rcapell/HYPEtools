@@ -9,7 +9,8 @@ UpstreamObs(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T)
   text file to extract from. Windows users: Note that Paths
   are separated by '/', not '\\'.}
 
-  \item{subid}{}
+  \item{subid}{Integer, giving a single SUBID for which
+  upstream forcing data are to be calculated.}
 
   \item{gd}{A data frame, containing 'SUBID' and 'MAINDOWN'
   columns, e.g. an imported 'GeoData.txt' file. Mandatory
@@ -41,8 +42,16 @@ SUBID from area-weighted upstream forcing data, given as
 HYPE forcing data text file.
 }
 \details{
+\code{UpstreamObs} reads from HYPE forcing data text files,
+primarily Pobs.txt and Tobs.txt. Depending on the model
+domain, these can be large (several GB). The function
+therefore does not import the files but uses external read
+and computation routines and only imports the averaged
+results.
+}
+\note{
 \code{UpstreamObs} reads potentially very large text files,
-function calls can be time-consuming
+function calls can be time-consuming.
 }
 \examples{
 \dontrun{UpstreamObs(filename = "Pobs.txt", subid = 1000, gd = mygeodata)}

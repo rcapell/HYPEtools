@@ -12,6 +12,7 @@ src/obsfile_handling.o
 src/obsfile_handling.obj
 src/obsfile_handling.lib
 src/obsfile_handling.exp
+src/obsfile_handling.dll
 src/RHYPE.dll
 src-i386/countrows.o
 src-i386/RHYPE.dll

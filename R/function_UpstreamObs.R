@@ -10,7 +10,7 @@
 #'
 #' @param filename Path to and file name of the forcing data text file to extract from. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
-#' @param subid
+#' @param subid Integer, giving a single SUBID for which upstream forcing data are to be calculated.
 #' @param gd A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory argument.
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument. 
 #' If provided, upstream areas will include areas linked through bifurcations.
@@ -19,12 +19,16 @@
 #' @param verbose Logical, if set to \code{TRUE}, information about the current computational status will be printed. NOT YET IMPLEMENTED.
 #' 
 #' @details
-#' \code{UpstreamObs} reads potentially very large text files, function calls can be time-consuming
+#' \code{UpstreamObs} reads from HYPE forcing data text files, primarily Pobs.txt and Tobs.txt. Depending on the model domain, these 
+#' can be large (several GB). The function therefore does not import the files but uses external read and computation routines and only 
+#' imports the averaged results.
 #' 
-#' @return
+#' @note
+#' \code{UpstreamObs} reads potentially very large text files, function calls can be time-consuming.
+#' 
+#' @return 
 #' \code{UpstreamObs} returns a data frame with two columns, first column \code{DATE} containing POSIX dates and second column 
 #' \code{meanobs} containing the area-weighted upstream average forcing.
-#' 
 #' 
 #' @examples
 #' \dontrun{UpstreamObs(filename = "Pobs.txt", subid = 1000, gd = mygeodata)}
@@ -96,23 +100,27 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
   # calculate datestring format
   dslen <- 0
   tslen <- 0
+  lclen <- 0
   te <- tryCatch(
     .Fortran(count_datestring_len, 
              infile = as.character(filename), 
              infile_len = as.integer(infile_len), 
              dslen = as.integer(dslen), 
-             tslen = as.integer(tslen)
+             tslen = as.integer(tslen),
+             lclen = as.integer(lclen)
              ), 
     error = function(e) {print("Error when calling Fortran subroutine 'count_datestring_len'.")}
   )
   dslen <- te$dslen
   tslen <- te$tslen
+  lclen <- te$lclen
   
   dattime <- Sys.time()
   message(paste("Time for computing datetime lengths", difftime(dattime, coltime, units = "secs")))
   
   message(paste("Date string length:", dslen))
   message(paste("Time string length:", tslen))
+  message(paste("Character count before date string:", lclen))
   
   
   ## calculate area-weighted forcing data mean
@@ -149,16 +157,18 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
     dt.fmt <- "%Y%m%d %H:%M"
   }
   
+  # create date information
   cn <- file(description = filename, open = "r")
   te1 <- readLines(con=cn, n=1)
   te1 <- readLines(con=cn, n=1)
   te2 <- readLines(con=cn, n=1)
   close(cn)
-  te1 <- as.POSIXct(strptime(substr(te1, start = 1, stop = ifelse(tslen > 0, dslen + tslen + 1, dslen)), dt.fmt, tz = "GMT"))
-  te2 <- as.POSIXct(strptime(substr(te2, start = 1, stop = ifelse(tslen > 0, dslen + tslen + 1, dslen)), dt.fmt, tz = "GMT"))
+  te1 <- as.POSIXct(strptime(substr(te1, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen)), dt.fmt, tz = "GMT"))
+  te2 <- as.POSIXct(strptime(substr(te2, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen)), dt.fmt, tz = "GMT"))
   # calculate date vector of length of obs file (excluding the header)
   te <- 0:(nr - 2)
   dt <- difftime(te2, te1)
   date <- te1 + te * dt
+  c("DATE", paste("X", subid, sep = ""))
   return(data.frame(DATE = date, meanobs = out$res))
 }

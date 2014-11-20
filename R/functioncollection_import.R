@@ -634,7 +634,10 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
 #' @details
 #' \code{ReadPTQobs} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
 #' POSIX time representations. SUBIDs are returned as integer attribute \code{subid} 
-#' (see \code{\link{attr}} on how to access it).
+#' (see \code{\link{attr}} on how to access it). 
+#' 
+#' This function can only be used with reasonably small data files. Attempts to 
+#' read large files can lead to exceedance of R's memory space.
 #' 
 #' @return
 #' \code{ReadPTQobs} returns a data frame with an additional attribute \code{subid}.
