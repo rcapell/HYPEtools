@@ -15,28 +15,34 @@
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument. 
 #' If provided, upstream areas will include areas linked through bifurcations.
 #' @param nr.obs Integer, number of rows in forcing data file. Optional argument, computed if \code{NULL}, which can be costly 
-#' depending on file size. \code{UpstreamObs} prints a message
-#' @param verbose Logical, if set to \code{TRUE}, information about the current computational status will be printed. NOT YET IMPLEMENTED.
+#' depending on file size. If argument \code{verbose} is \code{TRUE}, \code{UpstreamObs} prints a message containing the number of rows.
+#' @param verbose Logical, if set to \code{TRUE}, information about the current computational status will be printed to the standard output 
+#' during runtime.
 #' 
 #' @details
 #' \code{UpstreamObs} reads from HYPE forcing data text files, primarily Pobs.txt and Tobs.txt. Depending on the model domain, these 
 #' can be large (several GB). The function therefore does not import the files but uses external read and computation routines and only 
-#' imports the averaged results.
+#' imports the averaged upstream results for the target catchment given in argument \code{subid}.
 #' 
 #' @note
 #' \code{UpstreamObs} reads potentially very large text files, function calls can be time-consuming.
 #' 
 #' @return 
-#' \code{UpstreamObs} returns a data frame with two columns, first column \code{DATE} containing POSIX dates and second column 
-#' \code{meanobs} containing the area-weighted upstream average forcing.
+#' \code{UpstreamObs} returns a data frame with two columns, and one additional attribute \code{subid}, suitable for export using 
+#' \code{\link{WritePTQobs}}. First column \code{DATE} contains POSIX dates or character strings if date-time conversion failed, 
+#' conversion failure will produce a message to the standard output. The second column \code{meanobs} contains area-weighted upstream 
+#' average forcing. 
 #' 
 #' @examples
 #' \dontrun{UpstreamObs(filename = "Pobs.txt", subid = 1000, gd = mygeodata)}
 
 UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T) {
   
-  starttime <- Sys.time()
-  message(paste("UpstreamObs start at", starttime))
+  # print information
+  if (verbose) {
+    starttime <- Sys.time()
+    message(paste("UpstreamObs start at", starttime))
+  }
   
   # number of characters in file path, needed for dimensioning of fortran variables in called subroutines
   infile_len <- nchar(filename)
@@ -54,8 +60,11 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
   # calculate weights from areas
   weight <- area / sum(area)
   
-  preptime <- Sys.time()
-  message(paste("Time for preparation steps", difftime(preptime, starttime, units = "secs")))
+  # print information
+  if (verbose) {
+    preptime <- Sys.time()
+    message(paste("Time for preparation steps", difftime(preptime, starttime, units = "secs")))
+  }
   
   # conditional on function argument: calculate number of rows in obs file
   if (is.null(nr.obs)) {
@@ -73,10 +82,12 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
     nr <- nr.obs
   }
   
-  rowtime <- Sys.time()
-  message(paste("Time for computing rows", difftime(rowtime, preptime, units = "secs")))
-  
-  message(paste("Number of rows in forcing data file:", nr))
+  # print information
+  if (verbose) {
+    rowtime <- Sys.time()
+    message(paste("Time for computing rows", difftime(rowtime, preptime, units = "secs")))
+    message(paste("Number of rows in forcing data file:", nr))
+  }
   
   
   # calculate number of columns in obs file
@@ -91,10 +102,12 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
   )
   ncols <- te$ncols
   
-  coltime <- Sys.time()
-  message(paste("Time for computing columns", difftime(coltime, rowtime, units = "secs")))
-  
-  message(paste("Number of columns in forcing data file:", ncols))
+  # print information
+  if (verbose) {
+    coltime <- Sys.time()
+    message(paste("Time for computing columns", difftime(coltime, rowtime, units = "secs")))
+    message(paste("Number of columns in forcing data file:", ncols))
+  }
   
   
   # calculate datestring format
@@ -115,12 +128,15 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
   tslen <- te$tslen
   lclen <- te$lclen
   
-  dattime <- Sys.time()
-  message(paste("Time for computing datetime lengths", difftime(dattime, coltime, units = "secs")))
-  
-  message(paste("Date string length:", dslen))
-  message(paste("Time string length:", tslen))
-  message(paste("Character count before date string:", lclen))
+  # print information
+  if (verbose) {
+    dattime <- Sys.time()
+    message(paste("Time for computing datetime lengths", difftime(dattime, coltime, units = "secs")))
+    
+    message(paste("Date string length:", dslen))
+    message(paste("Time string length:", tslen))
+    message(paste("Character count before date string:", lclen))
+  }
   
   
   ## calculate area-weighted forcing data mean
@@ -143,8 +159,12 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
     error = function(e) {print("Error when calling Fortran subroutine 'wmean'.")}
   )
   
-  caltime <- Sys.time()
-  message(paste("Time for computing weighted mean", difftime(caltime, dattime, units = "secs")))
+  # print information
+  if (verbose) {
+    caltime <- Sys.time()
+    message(paste("Time for computing weighted mean", difftime(caltime, dattime, units = "secs")))
+  }
+  
 
   # read dates in first rows and construct date-time vector
   if (dslen == 10 && tslen == 0) {
@@ -157,18 +177,38 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
     dt.fmt <- "%Y%m%d %H:%M"
   }
   
-  # create date information
+  ## create date information from date entries in first two obs-file rows (hype input has regular time steps)
+  # get information from obs-file
   cn <- file(description = filename, open = "r")
   te1 <- readLines(con=cn, n=1)
   te1 <- readLines(con=cn, n=1)
   te2 <- readLines(con=cn, n=1)
   close(cn)
-  te1 <- as.POSIXct(strptime(substr(te1, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen)), dt.fmt, tz = "GMT"))
-  te2 <- as.POSIXct(strptime(substr(te2, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen)), dt.fmt, tz = "GMT"))
-  # calculate date vector of length of obs file (excluding the header)
-  te <- 0:(nr - 2)
-  dt <- difftime(te2, te1)
-  date <- te1 + te * dt
-  c("DATE", paste("X", subid, sep = ""))
-  return(data.frame(DATE = date, meanobs = out$res))
+  te1 <- substr(te1, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen))
+  te2 <- substr(te2, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen))
+  
+  # attempt to convert to date-time values
+  xd1 <- as.POSIXct(strptime(te1, dt.fmt, tz = "GMT"))
+  xd2 <- as.POSIXct(strptime(te2, dt.fmt, tz = "GMT"))
+  
+  # handle conversion errors
+  check <- list(xd1, xd2, TRUE)
+  check <- tryCatch(na.fail(check), error = function(e) {
+  print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings in first 
+        two rows of DATE column for inspection."); return(list(te1, te2, FALSE))})
+
+  # if no errors, calculate date vector of length of obs file (excluding the header), otherwise return character strings
+  if(check[[3]]) {
+    te <- 0:(nr - 2)
+    dt <- difftime(xd2, xd1)
+    date <- xd1 + te * dt
+  } else {
+    date <- c(check[[1]], check[[2]], rep("", nr - 3))
+  }
+  
+  # compose and return output
+  out <- data.frame(DATE = date, meanobs = out$res)
+  names(out) <- c("DATE", paste("X", subid, sep = ""))
+  attr(out, "subid") <- subid
+  return(out)
 }

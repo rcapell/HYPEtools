@@ -23,18 +23,23 @@ UpstreamObs(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T)
 
   \item{nr.obs}{Integer, number of rows in forcing data
   file. Optional argument, computed if \code{NULL}, which
-  can be costly depending on file size. \code{UpstreamObs}
-  prints a message}
+  can be costly depending on file size. If argument
+  \code{verbose} is \code{TRUE}, \code{UpstreamObs} prints
+  a message containing the number of rows.}
 
   \item{verbose}{Logical, if set to \code{TRUE},
   information about the current computational status will
-  be printed. NOT YET IMPLEMENTED.}
+  be printed to the standard output during runtime.}
 }
 \value{
 \code{UpstreamObs} returns a data frame with two columns,
-first column \code{DATE} containing POSIX dates and second
-column \code{meanobs} containing the area-weighted upstream
-average forcing.
+and one additional attribute \code{subid}, suitable for
+export using \code{\link{WritePTQobs}}. First column
+\code{DATE} contains POSIX dates or character strings if
+date-time conversion failed, conversion failure will
+produce a message to the standard output. The second column
+\code{meanobs} contains area-weighted upstream average
+forcing.
 }
 \description{
 Calculate average upstream forcing time series for a single
@@ -47,7 +52,8 @@ primarily Pobs.txt and Tobs.txt. Depending on the model
 domain, these can be large (several GB). The function
 therefore does not import the files but uses external read
 and computation routines and only imports the averaged
-results.
+upstream results for the target catchment given in argument
+\code{subid}.
 }
 \note{
 \code{UpstreamObs} reads potentially very large text files,

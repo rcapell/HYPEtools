@@ -1,0 +1,5 @@
+EXPORTS
+ count_data_cols_
+ count_datestring_len_
+ count_rows_
+ wmean_

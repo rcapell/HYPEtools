@@ -16,3 +16,8 @@ Imports:
     sp
 License: LGPL-3
 LazyData: true
+Packaged: 2014-11-21 15:25:14 UTC; a001921
+Author: Rene Capell [aut, cre],
+    Jafet Andersson [aut],
+    David Gustafsson [aut]
+Maintainer: Rene Capell <rene.capell@smhi.se>
