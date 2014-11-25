@@ -2,7 +2,7 @@
 \alias{WriteLakeData}
 \title{Write a 'LakeData.txt' file}
 \usage{
-WriteLakeData(x, filename = "LakeData.txt", digits = 10)
+WriteLakeData(x, filename = "LakeData.txt", digits = 10, nsmall = 0L)
 }
 \arguments{
   \item{x}{The object to be written, a dataframe, as an
@@ -13,6 +13,9 @@ WriteLakeData(x, filename = "LakeData.txt", digits = 10)
   not '\\'.}
 
   \item{digits}{Integer, number significant digits to
+  export. See \code{\link{format}}.}
+
+  \item{nsmall}{Integer, number of significant decimals to
   export. See \code{\link{format}}.}
 }
 \description{

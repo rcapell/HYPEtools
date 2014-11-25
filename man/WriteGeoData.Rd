@@ -2,7 +2,7 @@
 \alias{WriteGeoData}
 \title{Write a 'GeoData.txt' file}
 \usage{
-WriteGeoData(x, filename = "GeoData.txt", digits = 10)
+WriteGeoData(x, filename = "GeoData.txt", digits = 10, nsmall = 1)
 }
 \arguments{
   \item{x}{The object to be written, a dataframe, as an
@@ -13,7 +13,10 @@ WriteGeoData(x, filename = "GeoData.txt", digits = 10)
   to. Windows users: Note that Paths are separated by '/',
   not '\\'.}
 
-  \item{digits}{Integer, number significant digits to
+  \item{digits}{Integer, number of significant digits to
+  export. See \code{\link{format}}.}
+
+  \item{nsmall}{Integer, number of significant decimals to
   export. See \code{\link{format}}.}
 }
 \description{

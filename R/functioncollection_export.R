@@ -10,6 +10,8 @@
 #     - WriteTimeOutput()
 #     - WriteLakeData()
 #     - WritePmsf()
+#     - WritePTQobs()
+#     - 
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -65,7 +67,8 @@ WritePar <- function (x, filename = "par.txt") {
 #' No \code{NA}s in parameter values allowed.
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
-#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
+#' @param digits Integer, number of significant digits to export. See \code{\link{format}}.
+#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #'  
 #' @details
 #' \code{WriteGeoData} exports a GeoData dataframe with formatting options adjusted for the output to be read by HYPE.
@@ -78,7 +81,7 @@ WritePar <- function (x, filename = "par.txt") {
 #' 
 
 
-WriteGeoData <- function(x, filename = "GeoData.txt", digits = 10) {
+WriteGeoData <- function(x, filename = "GeoData.txt", digits = 10, nsmall = 1) {
   
   # warn if there are NAs, which should not occur in GeoData files for HYPE
   if (!is.null(na.action(na.omit(x)))) {
@@ -89,9 +92,9 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 10) {
   .CheckCharLengthDf(x, maxChar = 50)
   
   # export
-  write.table(format(x, digits = digits, scientific = F, drop0trailing = T, trim = T), file = filename, quote = FALSE, sep = "\t", row.names = FALSE)
-  # reset options to defaults
-  #options(digits = 7, scipen = 0)
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE)
+  
 }
 
 
@@ -225,7 +228,7 @@ WriteBranchData <- function(x, filename = "BranchData.txt") {
 #' variables as \code{x}. If omitted or \code{NA}, an attribute \code{variable} in \code{x} is mandatory.
 #' Will take precedence over a \code{variable} attribute of \code{x}. If \code{append} is \code{TRUE} the values are 
 #' used to test for consistency between export object and the existing file.
-#' @param subid Third row in Xobs, containing SUBIDs (numeric). Behaviour otherwise as argument \code{variable}.
+#' @param subid Third row in Xobs, containing SUBIDs (integer). Behaviour otherwise as argument \code{variable}.
 #' @param lastDate Date-time of last observation in \code{\link{POSIXct}} format. See details.
 #' @param timestep Character string, either "daily" or "hourly", giving the time step between observations. Can be 
 #' abbreviated.
@@ -606,6 +609,7 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param digits Integer, number significant digits to export. See \code{\link{format}}.
+#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #'  
 #' @details
 #' \code{WriteLakeData} exports a LakeData dataframe with formatting options adjusted for the output to be read by HYPE.
@@ -617,7 +621,7 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' 
 
 
-WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10) {
+WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10, nsmall = 0L) {
   
   # test length of string columns elements, throws warning if any element longer than 50, since HYPE does not read them
   .CheckCharLengthDf(x, maxChar = 50)
@@ -626,8 +630,8 @@ WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10) {
   x[is.na(x)] <- -9999
   
   # export
-  write.table(format(x, digits = digits, scientific = F, drop0trailing = T, trim = T), file = filename, quote = FALSE, 
-              sep = "\t", row.names = FALSE)
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE)
   
 }
 
@@ -661,4 +665,73 @@ WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10) {
 WritePmsf <- function(x, filename = "../pmsf.txt") {
   # concatenate number of subids and vector of subids and export
   write.table(c(length(x), x), filename, col.names = FALSE, row.names = FALSE)
+}
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePTQobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Write 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files
+#'
+#' @description
+#' Export precipitation, temperature, or discharge observation files from R.
+#' 
+#' @param x The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs in 
+#' remaining columns, with an additional attribute \code{subid} containing SUBIDs in column order.
+#' @param filename Path to and file name of the file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
+#' @param subid Integer vector containing SUBIDs in same order as columns in \code{x}. To be exported as header in the obs file. 
+#' Must contain the same number of SUBIDs as \code{x}. If \code{NULL}, an attribute \code{subid} in \code{x} is mandatory.
+#' An existing \code{subid} argument takes precedence over a \code{subid} attribute.
+#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
+#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+#'  
+#' @details
+#' \code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE compliant observation file. 
+#' headers are generated from attribute \code{subid} on export (see \code{\link{attr}} on how to create and access it). 
+#' 
+#' 
+#' @examples
+#' \dontrun{WritePTQobs(mytops, "Tobs.txt")}
+#' 
+
+
+WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 1, nsmall = 1, subid = NULL) {
+  
+  ## check if consistent header information is available, subid arguments take precedence before attribute
+  if(!is.null(subid)) {
+    if (length(subid) == ncol(x) - 1) {
+      header <- c("DATE", subid)
+    } else {
+      stop("Length of function argument 'subid' does not match number of subid columns in export object.")
+    }
+  } else if (!is.null(attr(x, which = "subid"))) {
+      if (length(attr(x, which = "subid")) == ncol(x) - 1) {
+        header <- c("DATE", attr(x, which = "subid"))
+      } else {
+        stop("Length of attribute 'subid' does not match number of subid columns in export object.")
+      }
+  } else {
+    stop("No information available from 'subid' argument or 'subid' attribute to construct export header.")
+  }
+  
+  # date conversion, conditional on that the date column is a posix class
+  if (any(class(x[, 1]) == "POSIXt")) {
+    xd <- format(x[, 1], format = dt.format)
+  } else {
+    warning("First column in export data frame is not of class 'POSIXt', will be exported unchanged.")
+  }
+  
+  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  x[is.na(x)] <- -9999
+  
+  # export
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE, col.names = header)
+  
 }

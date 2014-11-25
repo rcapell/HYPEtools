@@ -16,8 +16,10 @@
 #' If provided, upstream areas will include areas linked through bifurcations.
 #' @param nr.obs Integer, number of rows in forcing data file. Optional argument, computed if \code{NULL}, which can be costly 
 #' depending on file size. If argument \code{verbose} is \code{TRUE}, \code{UpstreamObs} prints a message containing the number of rows.
-#' @param verbose Logical, if set to \code{TRUE}, information about the current computational status will be printed to the standard output 
-#' during runtime.
+#' @param dry.run Logical, if \code{TRUE}, only obs file dimensions will be computed. Set argument \code{verbose} to \code{TRUE} to
+#' print them to standard output.
+#' @param verbose Logical, if \code{TRUE}, information about obs file dimensions and the current computational status will be 
+#' printed to the standard output during runtime.
 #' 
 #' @details
 #' \code{UpstreamObs} reads from HYPE forcing data text files, primarily Pobs.txt and Tobs.txt. Depending on the model domain, these 
@@ -36,7 +38,7 @@
 #' @examples
 #' \dontrun{UpstreamObs(filename = "Pobs.txt", subid = 1000, gd = mygeodata)}
 
-UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T) {
+UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, dry.run = FALSE, verbose = FALSE) {
   
   # print information
   if (verbose) {
@@ -139,76 +141,87 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose =
   }
   
   
-  ## calculate area-weighted forcing data mean
-  # number of subids of interest
-  m <- length(sbd)
-  # initialise result vector, length does not include header of obs file, therefore "- 1"
-  res <- rep(0, times = nr - 1)
-  out <- tryCatch(
-    .Fortran(wmean, 
-             infile = as.character(filename), 
-             infile_len = as.integer(infile_len), 
-             sbd = as.integer(sbd), 
-             weight = as.numeric(weight), 
-             m = as.integer(m), 
-             nc = as.integer(ncols), 
-             nr = as.integer(nr), 
-             tslen = as.integer(tslen), 
-             res = as.numeric(res)
-             ), 
-    error = function(e) {print("Error when calling Fortran subroutine 'wmean'.")}
-  )
-  
-  # print information
-  if (verbose) {
-    caltime <- Sys.time()
-    message(paste("Time for computing weighted mean", difftime(caltime, dattime, units = "secs")))
-  }
-  
-
-  # read dates in first rows and construct date-time vector
-  if (dslen == 10 && tslen == 0) {
-    dt.fmt <- "%Y-%m-%d"
-  } else if (dslen == 10 && tslen == 5) {
-    dt.fmt <- "%Y-%m-%d %H:%M"
-  } else if(dslen == 8 && tslen == 0) {
-    dt.fmt <- "%Y%m%d"
-  } else if(dslen == 8 && tslen == 5) {
-    dt.fmt <- "%Y%m%d %H:%M"
-  }
-  
-  ## create date information from date entries in first two obs-file rows (hype input has regular time steps)
-  # get information from obs-file
-  cn <- file(description = filename, open = "r")
-  te1 <- readLines(con=cn, n=1)
-  te1 <- readLines(con=cn, n=1)
-  te2 <- readLines(con=cn, n=1)
-  close(cn)
-  te1 <- substr(te1, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen))
-  te2 <- substr(te2, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen))
-  
-  # attempt to convert to date-time values
-  xd1 <- as.POSIXct(strptime(te1, dt.fmt, tz = "GMT"))
-  xd2 <- as.POSIXct(strptime(te2, dt.fmt, tz = "GMT"))
-  
-  # handle conversion errors
-  check <- list(xd1, xd2, TRUE)
-  check <- tryCatch(na.fail(check), error = function(e) {
-  print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings in first 
+  ## calculate area-weighted forcing data mean and output preparation
+  ## conditional on argument dry.run
+  if (!dry.run) {
+    
+    # number of subids of interest
+    m <- length(sbd)
+    # initialise result vector, length does not include header of obs file, therefore "- 1"
+    res <- rep(0, times = nr - 1)
+    out <- tryCatch(
+      .Fortran(wmean, 
+               infile = as.character(filename), 
+               infile_len = as.integer(infile_len), 
+               sbd = as.integer(sbd), 
+               weight = as.numeric(weight), 
+               m = as.integer(m), 
+               nc = as.integer(ncols), 
+               nr = as.integer(nr), 
+               tslen = as.integer(tslen), 
+               res = as.numeric(res)
+      ), 
+      error = function(e) {print("Error when calling Fortran subroutine 'wmean'.")}
+    )
+    
+    # print information
+    if (verbose) {
+      caltime <- Sys.time()
+      message(paste("Time for computing weighted mean", difftime(caltime, dattime, units = "secs")))
+    }
+    
+    
+    # read dates in first rows and construct date-time vector
+    if (dslen == 10 && tslen == 0) {
+      dt.fmt <- "%Y-%m-%d"
+    } else if (dslen == 10 && tslen == 5) {
+      dt.fmt <- "%Y-%m-%d %H:%M"
+    } else if(dslen == 8 && tslen == 0) {
+      dt.fmt <- "%Y%m%d"
+    } else if(dslen == 8 && tslen == 5) {
+      dt.fmt <- "%Y%m%d %H:%M"
+    }
+    
+    ## create date information from date entries in first two obs-file rows (hype input has regular time steps)
+    # get information from obs-file
+    cn <- file(description = filename, open = "r")
+    te1 <- readLines(con=cn, n=1)
+    te1 <- readLines(con=cn, n=1)
+    te2 <- readLines(con=cn, n=1)
+    close(cn)
+    te1 <- substr(te1, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen))
+    te2 <- substr(te2, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen))
+    
+    # attempt to convert to date-time values
+    xd1 <- as.POSIXct(strptime(te1, dt.fmt, tz = "GMT"))
+    xd2 <- as.POSIXct(strptime(te2, dt.fmt, tz = "GMT"))
+    
+    # handle conversion errors
+    check <- list(xd1, xd2, TRUE)
+    check <- tryCatch(na.fail(check), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings in first 
         two rows of DATE column for inspection."); return(list(te1, te2, FALSE))})
-
-  # if no errors, calculate date vector of length of obs file (excluding the header), otherwise return character strings
-  if(check[[3]]) {
-    te <- 0:(nr - 2)
-    dt <- difftime(xd2, xd1)
-    date <- xd1 + te * dt
+    
+    # if no errors, calculate date vector of length of obs file (excluding the header), otherwise return character strings
+    if(check[[3]]) {
+      te <- 0:(nr - 2)
+      dt <- difftime(xd2, xd1)
+      date <- xd1 + te * dt
+    } else {
+      date <- c(check[[1]], check[[2]], rep("", nr - 3))
+    }
+    
+    # compose and return output
+    out <- data.frame(DATE = date, meanobs = out$res)
+    names(out) <- c("DATE", paste("X", subid, sep = ""))
+    attr(out, "subid") <- subid
+    return(out)
+    
   } else {
-    date <- c(check[[1]], check[[2]], rep("", nr - 3))
+    
+    return(NULL)
+    
   }
   
-  # compose and return output
-  out <- data.frame(DATE = date, meanobs = out$res)
-  names(out) <- c("DATE", paste("X", subid, sep = ""))
-  attr(out, "subid") <- subid
-  return(out)
+  
 }

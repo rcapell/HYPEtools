@@ -2,7 +2,8 @@
 \alias{UpstreamObs}
 \title{Upstream forcing data averages}
 \usage{
-UpstreamObs(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T)
+UpstreamObs(filename, subid, gd, bd = NULL, nr.obs = NULL,
+  dry.run = FALSE, verbose = FALSE)
 }
 \arguments{
   \item{filename}{Path to and file name of the forcing data
@@ -27,9 +28,13 @@ UpstreamObs(filename, subid, gd, bd = NULL, nr.obs = NULL, verbose = T)
   \code{verbose} is \code{TRUE}, \code{UpstreamObs} prints
   a message containing the number of rows.}
 
-  \item{verbose}{Logical, if set to \code{TRUE},
-  information about the current computational status will
-  be printed to the standard output during runtime.}
+  \item{dry.run}{Logical, if \code{TRUE}, only obs file
+  dimensions will be computed. Set argument \code{verbose}
+  to \code{TRUE} to print them to standard output.}
+
+  \item{verbose}{Logical, if \code{TRUE}, information about
+  obs file dimensions and the current computational status
+  will be printed to the standard output during runtime.}
 }
 \value{
 \code{UpstreamObs} returns a data frame with two columns,

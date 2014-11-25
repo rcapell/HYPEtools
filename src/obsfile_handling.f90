@@ -38,6 +38,12 @@ SUBROUTINE count_rows(infile, infile_len, nr)
     DO
         READ(10, *, END = 20)
         nr = nr + 1
+        
+        ! allow R to interrupt
+        IF (MODULO(nr, 50) == 0) THEN
+            CALL rchkusr
+        END IF
+    
     END DO
 20  CLOSE(10)
     
@@ -84,6 +90,7 @@ SUBROUTINE count_data_cols(infile, infile_len, ncols)
         ENDIF
     ENDDO
     ncols = j 
+    
     CLOSE(10)
     
 601 FORMAT(A1700000)
@@ -198,6 +205,12 @@ SUBROUTINE wmean(infile, infile_len, sbd, weight, m, nc, nr, tslen, res)
                 wm = wm + lobs(j) * weight(j)
             END DO
             res(i) = wm
+            
+            ! allow R to interrupt
+            IF (MODULO(i, 500) == 0) THEN
+                CALL rchkusr
+           END IF
+            
         END DO
     ELSE                        ! both date and time
         DO i = 1, nr-1
@@ -208,6 +221,12 @@ SUBROUTINE wmean(infile, infile_len, sbd, weight, m, nc, nr, tslen, res)
                 wm = wm + lobs(j) * weight(j)
             END DO
             res(i) = wm
+            
+            ! allow R to interrupt
+            IF (MODULO(i, 500) == 0) THEN
+                CALL rchkusr
+            END IF
+            
         END DO
     END IF
         

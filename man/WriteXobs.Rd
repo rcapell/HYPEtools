@@ -39,7 +39,7 @@ WriteXobs(x, filename = "Xobs.txt", append = F, comment = NA,
   the existing file.}
 
   \item{subid}{Third row in Xobs, containing SUBIDs
-  (numeric). Behaviour otherwise as argument
+  (integer). Behaviour otherwise as argument
   \code{variable}.}
 
   \item{lastDate}{Date-time of last observation in
