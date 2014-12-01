@@ -97,6 +97,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' \code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
 #' is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed. 
 #' Variable units ar imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'. 
+#' The catchment's SUBID is extracted from the \code{filename} argument if possible and stored in \code{attribute} 'subid'.
 #' If a matrix is returned, these attributes will not be preserved.
 #' 
 #' @note
@@ -165,9 +166,10 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
   }
   
   
-  # update with new attribute to hold measurement units
+  # update with new attributes to hold measurement units and SUBID
   xattr <- readLines(filename, n = 2)
   attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")[[1]]
+  attr(x, which = "subid") <- gsub("[[:alpha:][:punct:]]", "", filename)
   
   
   # search data rows for occurrences of "****************", which represent values which had too many digits at the requested
