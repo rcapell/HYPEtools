@@ -16,8 +16,10 @@
 #' 
 #' @param yscale Character string, keyword for y-axis scaling. Either \code{"lin"} for linear scaling or \code{"log"} for common logarithm scaling.
 #' 
-#' @param print.n.obs Logical. If \code{TRUE} and \code{freq} is a result from \code{\link{ExtractFreq}}, the number of observations on which the quantiles 
-#' are based will be plotted on the outer margin. Only active if just one duration curves is plotted.
+#' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot, including the number of observations on which the quantiles are based for 
+#' each curve if \code{freq} is a result from \code{\link{ExtractFreq}}.
+#' 
+#' @param l.legend Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{freq}.
 #' 
 #' @param ylim  Numeric vector of length two, giving y-axis limits. \code{NULL} for default values.
 #' 
@@ -53,8 +55,9 @@
 
 
 
-PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", print.n.obs = FALSE, ylim = NULL, xlab = "Flow exceedance percentile", 
-                              ylab = "m3s", col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1) {
+PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend = FALSE, l.legend = NULL, ylim = NULL, 
+                              xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue", lty = 1, lwd = 1, 
+                              mar = c(3, 3, 1, 1) + .1) {
   
   # number of quantile series in freq
   nq <- ncol(freq) - 1
@@ -190,13 +193,21 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", print.n.obs 
     
   }
   
-  
-  # add number of observations if requested
-  if (print.n.obs && nq == 1) {
-    if (!is.null(attr(freq, which = "n.obs"))) {
-      mtext(text = paste(attr(freq, which = "n.obs"), "observations"), side = 3, adj = 1, cex = .8, font = 3)
+  # add legend if requested
+  if (add.legend) {
+    
+    # create legend labels, conditional on if user provided names manually and if number of observations for frequencies is known
+    if (is.null(l.legend)) {
+      lgnd <- names(freq)[-1]
     } else {
-      warning("Printing of number of observations requested, but attribute not available in 'freq'.")
+      lgnd <- l.legend
     }
+    
+    if (!is.null(attr(freq, which = "n.obs"))) {
+      lgnd <- paste(lgnd, " (", attr(freq, "n.obs"), " obs.)", sep = "")
+    }
+    # print legend
+    legend("topright", legend = lgnd, bty = "n", lty = 1, col = col, cex=.9)
   }
+  
 }

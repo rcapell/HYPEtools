@@ -15,7 +15,8 @@
 #' @details
 #' \code{ExtractFreq} is a convenience wrapper function, it uses \code{\link{quantile}} to calculate the quantiles 
 #' of one or more time series with a density appropriate for duration curves.
-#' \code{NA}s are allowed in the input data. For the results to be meaningful, input should represent equally-spaced time series.
+#' \code{NA}s are allowed in the input data. For the results to be meaningful, input should represent equally-spaced time series, 
+#' e.g. HYPE basin output files.
 #' 
 #' @return
 #' \code{ExtractFreq} returns a dataframe with probabilities in the first column, and quantiles of data in the following columns. 

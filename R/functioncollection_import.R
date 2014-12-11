@@ -169,7 +169,8 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
   # update with new attributes to hold measurement units and SUBID
   xattr <- readLines(filename, n = 2)
   attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")[[1]]
-  attr(x, which = "subid") <- gsub("[[:alpha:][:punct:]]", "", filename)
+  te <- strsplit(filename, "/")[[1]]
+  attr(x, which = "subid") <- gsub("[[:alpha:][:punct:]]", "", te[length(te)])
   
   
   # search data rows for occurrences of "****************", which represent values which had too many digits at the requested
@@ -204,8 +205,8 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 # ReadBasinOutput(filename=te)
 # dt.format <- "%Y-%m-%d"
 # outformat <- "df"
-# filename <- "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-01-10_koppling_SHYPE2012B_HBVsv/res_daily_thomas_hadley/0042041.txt"
-# rm(te, x, xd, ReadBasinOutput, dt.format, filename)
+# filename <- "d:/2014_soils2sea/WP5/2014-09_NorsmindeHYPE/EHYPERes/EHYPEData/res/9001282.txt"
+# rm(te, x, xd, dt.format, filename, tdff, xattr, outformat)
 
 
 

@@ -3,9 +3,9 @@
 \title{Plot duration curves}
 \usage{
 PlotDurationCurve(freq, xscale = "lin", yscale = "log",
-  print.n.obs = FALSE, ylim = NULL, xlab = "Flow exceedance percentile",
-  ylab = "m3s", col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) +
-  0.1)
+  add.legend = FALSE, l.legend = NULL, ylim = NULL,
+  xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue",
+  lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + 0.1)
 }
 \arguments{
   \item{freq}{Data frame with at least two columns,
@@ -24,11 +24,15 @@ PlotDurationCurve(freq, xscale = "lin", yscale = "log",
   scaling. Either \code{"lin"} for linear scaling or
   \code{"log"} for common logarithm scaling.}
 
-  \item{print.n.obs}{Logical. If \code{TRUE} and
-  \code{freq} is a result from \code{\link{ExtractFreq}},
-  the number of observations on which the quantiles are
-  based will be plotted on the outer margin. Only active if
-  just one duration curves is plotted.}
+  \item{add.legend}{Logical. If \code{TRUE}, a legend will
+  be added to the plot, including the number of
+  observations on which the quantiles are based for each
+  curve if \code{freq} is a result from
+  \code{\link{ExtractFreq}}.}
+
+  \item{l.legend}{Character vector. If non-NULL, legend
+  labels are read from here instead of from column names in
+  \code{freq}.}
 
   \item{ylim}{Numeric vector of length two, giving y-axis
   limits. \code{NULL} for default values.}

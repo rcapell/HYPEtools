@@ -28,8 +28,10 @@ information is converted to numeric POSIX representations
 (seconds since 1970-01-01). This will lead to NAs if
 Date-time conversion failed. Variable units ar imported as
 string \code{attribute} 'unit' and a time step keyword
-string in \code{attribute} 'timestep'. If a matrix is
-returned, these attributes will not be preserved.
+string in \code{attribute} 'timestep'. The catchment's
+SUBID is extracted from the \code{filename} argument if
+possible and stored in \code{attribute} 'subid'. If a
+matrix is returned, these attributes will not be preserved.
 }
 \description{
 This is a convenience wrapper function to import a basin
