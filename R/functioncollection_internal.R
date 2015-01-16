@@ -7,6 +7,7 @@
 #     - .Scalebar()
 #     - .NorthArrow()
 #     - .ColNITR(), .ColPHOS(), .ColPREC(), .ColTEMP(), .ColCOUT(), .Coldiff()
+#     - .FillWeek()
 #     - 
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -185,3 +186,21 @@
 .ColGreens <- colorRampPalette(c("#04eb04", "#004400"))
 .ColYOB <- colorRampPalette(c("#ffe851", "#da531d", "#5b1e00"))
 .ColPurples <- colorRampPalette(c("#da62ed", "#300275"))
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.FillWeek~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+# Internal function to fill weekly averages, written on last day of the week in a daily time series, into preceeding NAs
+# used in AnnualRegime()
+.FillWeek <- function(y) {
+  # reverse y
+  y <- rev(y)
+  # positions of non-NA values
+  ind <- which(!is.na(y))
+  # repeat the original values each 7 times, except for the last
+  y <- rep(y[ind], times = c(rep(7, times = length(ind) - 1), 1))
+  # reverse to original order again
+  y <- rev(y)
+  return(y)
+}
+

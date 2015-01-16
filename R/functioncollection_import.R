@@ -158,6 +158,8 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
         attr(x, which = "timestep") <- "day"
       } else if (tdff == 168) {
         attr(x, which = "timestep") <- "week"
+      } else if (tdff %in% c(744, 720, 696, 672)) {
+        attr(x, which = "timestep") <- "month"
       } else {
         attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
       }
