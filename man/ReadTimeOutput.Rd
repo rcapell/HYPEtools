@@ -40,7 +40,7 @@ time side effects when working with the imported data (and
 possibly converting to string representations during the
 process).
 
-#' HYPE results are printed to files using a user-specified
+HYPE results are printed to files using a user-specified
 accuracy. This accuracy is specified in 'info.txt' as a
 number of decimals to print. If large numbers are printed,
 this can result in a total number of digits which is too

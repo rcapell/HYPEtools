@@ -156,6 +156,8 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
       tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
       if (tdff == 24) {
         attr(x, which = "timestep") <- "day"
+      } else if (tdff == 168) {
+        attr(x, which = "timestep") <- "week"
       } else {
         attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
       }
@@ -538,7 +540,7 @@ ReadMapOutput <- function(filename, colnames = NA) {
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and possibly converting to string representations during the process).
 #' 
-#' #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
+#' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 #' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. Results will
 #' then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NaN' entries and throw a warning.
 

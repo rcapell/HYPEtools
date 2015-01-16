@@ -1,5 +1,6 @@
 export(AllDownstreamSubids)
 export(AllUpstreamSubids)
+export(AnnualRegime)
 export(BoxplotSLClasses)
 export(CleanSLClasses)
 export(ConvertDischarge)
