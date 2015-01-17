@@ -10,10 +10,10 @@ Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
     "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut"),
     person("David", "Gustafsson", role = "aut") )
 Depends:
-    R (>= 2.15.1),
-    pbapply
+    R (>= 2.15.1)
 Imports:
-    sp
+    sp,
+    pbapply
 License: LGPL-3
 LazyData: true
 Packaged: 2014-11-21 15:25:14 UTC; a001921

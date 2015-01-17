@@ -152,17 +152,17 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
       xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
       x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-      # conditional: timestep attribute identified by difference between first two entries
-      tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
-      if (tdff == 24) {
-        attr(x, which = "timestep") <- "day"
-      } else if (tdff == 168) {
-        attr(x, which = "timestep") <- "week"
-      } else if (tdff %in% c(744, 720, 696, 672)) {
-        attr(x, which = "timestep") <- "month"
-      } else {
-        attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
-      }
+    }
+    # conditional: timestep attribute identified by difference between first two entries
+    tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+    if (tdff == 24) {
+      attr(x, which = "timestep") <- "day"
+    } else if (tdff == 168) {
+      attr(x, which = "timestep") <- "week"
+    } else if (tdff %in% c(744, 720, 696, 672)) {
+      attr(x, which = "timestep") <- "month"
+    } else {
+      attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
     }
   } else {
     # add timestep attribute with placeholder value
@@ -589,7 +589,22 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
       x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
     }
+    # conditional: timestep attribute identified by difference between first two entries
+    tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+    if (tdff == 24) {
+      attr(x, which = "timestep") <- "day"
+    } else if (tdff == 168) {
+      attr(x, which = "timestep") <- "week"
+    } else if (tdff %in% c(744, 720, 696, 672)) {
+      attr(x, which = "timestep") <- "month"
+    } else {
+      attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+    }
+  } else {
+    # add timestep attribute with placeholder value
+    attr(x, which = "timestep") <- "none"
   }
+  
   
   
   # search data rows for occurrences of "****************", which represent values which had too many digits at the requested
