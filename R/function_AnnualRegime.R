@@ -118,7 +118,7 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
   # order results according to a user-requested starting month to reflect the hydrological year rather than the calender year
   if (start.mon != 1) {
     
-    # catch errors
+    # catch user input errors
     if (start.mon > 12 || start.mon < 1) {
       stop("start.mon not valid.")
     }
@@ -129,7 +129,9 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
     } else if (ts.out == "day") {
       sm <- paste(formatC(start.mon, width=2, flag = "0"), "-01", sep = "")
     } else if (ts.out == "week") {
-      sm <- formatC(ceiling(54 * start.mon / 12), width=2, flag = "0")
+      # look-up table for starting weeks
+      te <- data.frame(mon = 2:12, week = c(4,9,13,18,22,26,31,35,40,44,49))
+      sm <- te[which(te[, 1] == start.mon), 2]
     } else if (ts.out == "month") {
       sm <- formatC(start.mon, width=2, flag = "0")
     }
@@ -147,7 +149,7 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
   }
   
   # combine to result list
-  res <- list(mean = res_ave, minimum = res_min, maximum = res_max, p25 = res_25p, p75 = res_75p, period = c(x[1, 1], x[nrow(x), 1]))
+  res <- list(mean = res_ave, minimum = res_min, maximum = res_max, p25 = res_25p, p75 = res_75p, period = as.POSIXct(c(x[1, 1], x[nrow(x), 1]), tz="GMT"))
   
   return(res)
 }
@@ -155,12 +157,10 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
 ## DEBUG
 # x <- ReadBasinOutput("//winfs-proj/data/proj/Fouh/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/hadley/BUS/period1/res_ts/0013478.txt")
 # gd <- ReadGeoData("//winfs-proj/data/proj/Fouh/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/hadley/BUS/period1/GeoData.txt")
-# summary(x)
 # ts.in <- NULL
 # ts.out <- NULL
 # na.rm <- TRUE
 # incl.leap <- F
 # start.mon <- 10
-# remove(.FillWeek)
-#te <- AnnualRegime(x = x, ts.out = "month")
-#te$mean
+# remove(.FillWeek); remove(list = ls())
+# te <- AnnualRegime(x = x, ts.out = "month")
