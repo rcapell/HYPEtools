@@ -13,6 +13,7 @@
 #     - ReadPTQobs()
 #     - ReadLakeData()
 #     - ReadPmsf()
+#     - ReadMgmtData()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -727,7 +728,7 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 
 
 ReadLakeData <- function(filename = "LakeData.txt") {
-  read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
+  read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "")
 }
 
 
@@ -760,4 +761,41 @@ ReadPmsf <- function(filename = "pmsf.txt") {
   x <- read.table(filename, header = T)
   x <- as.integer(x[,1])
   return(x)
+}
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadMgmtData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a 'MgmtData.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to import a MgmtData file as data frame into R.
+#' 
+#' @param filename Path to and file name of the MgmtData file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#'  
+#' @details
+#' \code{ReadMgmtData} is a simple \code{\link{read.table}} wrapper, mainly added to provide a comparable 
+#' function to the other RHYPE imports. Will check for \code{NA} values in imported data and return a warning if any are found. 
+#' HYPE requires \code{NA}-free input in 'MgmtData.txt' files, but empty values are allowed in comment columns which are not read.
+#' 
+#' @return
+#' \code{ReadMgmtData} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{ReadMgmtData("MgmtData.txt")}
+#' 
+
+
+ReadMgmtData <- function(filename = "MgmtData.txt") {
+  # import
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "")
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
 }
