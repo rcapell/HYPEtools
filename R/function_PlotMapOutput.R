@@ -1,5 +1,3 @@
-# function to plot a map of common HYPE variables, with pretty discretisations and color ramp defaults
-
 
 #' @export
 #' 
