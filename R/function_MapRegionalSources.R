@@ -4,18 +4,19 @@
 #' @import sp
 #' 
 #' @title
-#' 
+#' Map regional irrigation source connection as spatial lines
 #'
 #' @description
+#' This function creates a SpatialLinesDataFrame object which visualizes regional irrigation source connections between HYPE subcatchments.
 #'
 #' @param data Dataframe with two columns, first column containing SUBIDs and 
 #' second column containing model results. See details.
 #' 
 #' @details
-#' 
+#' none yet
 #' 
 #' @note
-#' 
+#' none yet
 #' 
 #' @return 
 #' \code{} returns 

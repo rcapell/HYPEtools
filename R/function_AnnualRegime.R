@@ -47,7 +47,7 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
   if (is.null(ts.in)) {
     ts.in <- attr(x, "timestep")
     if (is.null(ts.in)) {
-      stop("No attribute 'timestep' found in 'x', and no argument 'timestep' provided.")
+      stop("No attribute 'timestep' found in 'x', and no argument 'ts_in' provided.")
     }
   }
   # check if timestep is acceptable, abort otherwise
