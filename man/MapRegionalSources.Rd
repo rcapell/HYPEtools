@@ -2,7 +2,7 @@
 \alias{MapRegionalSources}
 \title{Map regional irrigation source connection as spatial lines}
 \usage{
-MapRegionalSources()
+MapRegionalSources(data, map, map.subid.column = 1)
 }
 \arguments{
   \item{data}{Dataframe with two columns, first column

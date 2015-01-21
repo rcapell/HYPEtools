@@ -2,10 +2,10 @@
 \alias{PlotMapOutput}
 \title{Plot function for HYPE map results.}
 \usage{
-PlotMapOutput(data, map, map.subid.column, var.name = "", plot.scale = T,
-  plot.legend = T, legend.pos = "right", legend.title = NULL,
-  legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NULL,
-  par.mar = rep(0, 4) + 0.1)
+PlotMapOutput(data, map, map.subid.column = 1, var.name = "",
+  plot.scale = T, plot.legend = T, legend.pos = "right",
+  legend.title = NULL, legend.inset = c(0, 0), col.ramp.fun = "auto",
+  col.breaks = NULL, par.mar = rep(0, 4) + 0.1)
 }
 \arguments{
   \item{data}{HYPE map results, data frame object with two

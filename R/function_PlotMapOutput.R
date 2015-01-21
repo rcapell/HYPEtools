@@ -78,11 +78,8 @@
 #' 
 
 
-PlotMapOutput <- function(data, map, map.subid.column, var.name = "", plot.scale = T, plot.legend = T, legend.pos = "right", legend.title = NULL, 
+PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.scale = T, plot.legend = T, legend.pos = "right", legend.title = NULL, 
                           legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NULL, par.mar = rep(0, 4) + .1) {
-  
-  # load required libraries
-  #require(rgdal)
   
   # input argument checks
   stopifnot(is.data.frame(data), dim(data)[2] == 2, class(map)=="SpatialPolygonsDataFrame", 

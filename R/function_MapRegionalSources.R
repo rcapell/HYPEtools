@@ -24,15 +24,34 @@
 #' @examples
 #' \dontrun{}
 
-MapRegionalSources <- function () {
-  md.regs<-which(md[,"regsrcid"]>0)
-  regs.data<-md[md.regs,c("SUBID","regsrcid")]
-  rownames(regs.data)<-1:nrow(regs.data)
-  regs.data[,3]<-0; colnames(regs.data)[3]<-"Length_km"
-  tail(regs.data)
+MapRegionalSources <- function (data, map, map.subid.column = 1) {
+  
+  # input argument checks
+  stopifnot(is.data.frame(data), class(map)=="SpatialPointsDataFrame")
+  
+  
+  # column with target and regional source SUBIDs
+  col.subid <- which(toupper(names(data)) == "SUBID")
+  col.regsrcid <- which(toupper(names(data)) == "REGSRCID")
+  
+  # get row indices of regionally connected basins
+  row.rcb <- which(data[, col.regsrcid] > 0)
+  
+  # select data for mapping
+  rcb <- data[row.rcb, c(col.subid, col.regsrcid)]
+  
+  # update row names, necessary for connection to map data below
+  rownames(rcb) <- 1:nrow(rcb)
+  
+  # add a column to hold connection lengths
+  rcb <- data.frame(rcb, "Length_km" = 0)
+  
+  # 
+  
+  SpatialLines(, proj4string = map@proj4string)
   
   all.lines<-list()
-  for(i in 1:nrow(regs.data)) { #i<-2
+  for(i in 1:nrow(rcb)) { #i<-2
     sm<-match(regs.data[i,"SUBID"],sca[,"SUBID"])
     rm<-match(regs.data[i,"regsrcid"],sca[,"SUBID"])
     this.line<-Line(rbind(coordinates(subcent)[sm,],coordinates(subcent)[rm,]))
@@ -47,3 +66,8 @@ MapRegionalSources <- function () {
 }
 
 # DEBUG
+library(rgdal)
+data <- ReadMgmtData(filename="//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.0/Data/RepurposedData/Irrigation/MgmtData_2014-12-03+GhA+Dniepr.txt")
+map <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.0/Data/RepurposedData/WHIST/Current_shapefiles", layer = "SUBID_CenterPoints_TotalDomain_WGS84_20140428_degrees")
+plot(map)
+names(map@data)
