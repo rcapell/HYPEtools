@@ -13,8 +13,9 @@
 #' 
 #' @param data HYPE map results, data frame object with two columns, first column containing SUBIDs and 
 #' second column containing model results. See details.
-#' @param map A \code{SpatialPolygonsDataFrame} object. Typically an imported SUBID shape file, shape file import requires package \code{rgdal}.
-#' @param map.subid.column Integer, index of the column in the \code{map} data slot that holds the SUBID indices.
+#' @param map A \code{SpatialPolygonsDataFrame} object. Typically an imported SUBID shape file, shape file import requires additional packages, 
+#' e.g. \code{rgdal}.
+#' @param map.subid.column Integer, index of the column in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 #' HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.
 #' @param plot.scale Logical, plot a scale bar and a North arrow in the lower right corner. NOTE: works only with projected maps 

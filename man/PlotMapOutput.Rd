@@ -14,10 +14,11 @@ PlotMapOutput(data, map, map.subid.column = 1, var.name = "",
 
   \item{map}{A \code{SpatialPolygonsDataFrame} object.
   Typically an imported SUBID shape file, shape file import
-  requires package \code{rgdal}.}
+  requires additional packages, e.g. \code{rgdal}.}
 
   \item{map.subid.column}{Integer, index of the column in
-  the \code{map} data slot that holds the SUBID indices.}
+  the \code{map} 'data' \code{\link{slot}} holding SUBIDs
+  (sub-catchment IDs).}
 
   \item{var.name}{Character string. HYPE variable name to
   be plotted. Mandatory for automatic color ramp selection

@@ -2,33 +2,52 @@
 #' @export
 #' 
 #' @import sp
+#' @import pbapply
 #' 
 #' @title
 #' Map regional irrigation source connection as spatial lines
 #'
 #' @description
-#' This function creates a SpatialLinesDataFrame object which visualizes regional irrigation source connections between HYPE subcatchments.
+#' This function creates a \code{SpatialLinesDataFrame} object which contains regional irrigation connections between 
+#' source and target HYPE sub-catchments.
 #'
-#' @param data Dataframe with two columns, first column containing SUBIDs and 
-#' second column containing model results. See details.
+#' @param data Dataframe, containing a column \code{SUBID} and a column \code{REGSRCID} (not case-sensitive), which identify 
+#' irrigation target and source sub-catchments, respectively. Typically a HYPE 'MgmtData.txt' file, imported with \code{\link{ReadMgmtData}}.
+#' @param map A \code{SpatialPointsDataFrame} object providing sub-catchment locations as points. Typically an imported SUBID 
+#' centre-point shape file, shape file import requires additional packages, e.g. \code{rgdal}.
+#' @param map.subid.column Integer, index of the column in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
+#' @param progbar Logical, display a progress bar while calculating.
 #' 
 #' @details
-#' none yet
-#' 
-#' @note
-#' none yet
+#' \code{MapRegionalSources} creates a \code{SpatialLinesDataFrame} object from HYPE SUBID centerpoints using a table of SUBID pairs. Regional 
+#' irrigation sources in HYPE are transfers from outlet lakes or rivers in a source sub-catchment to the soil storage of irrigated SLC classes 
+#' (Soil, Land use, Crop) in a targed sub-catchment.
 #' 
 #' @return 
-#' \code{} returns 
+#' \code{MapRegionalSources} returns a \code{SpatialLinesDataFrame} with a data slot containing columns \code{SUBID} (irrigation target 
+#' sub-catchment),  \code{REGSRCID} (irrigation source sub-catchment), and  \code{Length_[unit]} (distance between sub-catchments) where 
+#' '[unit]' is the actual length unit of the distances. The projection of the returned object is always identical to the projection of 
+#' argument \code{map}.
 #' 
 #' @examples
-#' \dontrun{}
+#' \dontrun{MapRegionalSources(data = myMgmtData, map = mySUBIDCentrePoints)}
 
-MapRegionalSources <- function (data, map, map.subid.column = 1) {
+MapRegionalSources <- function (data, map, map.subid.column = 1, progbar = T) {
   
   # input argument checks
   stopifnot(is.data.frame(data), class(map)=="SpatialPointsDataFrame")
   
+  # check if map is projected and assign lonlat value and unit string accordingly, both used below
+  if (is.projected(map)) {
+    longlat <- FALSE
+    # extract map units from projstring
+    munit <- gsub(" ", "", strsplit(proj4string(map), "+", fixed = T)[[1]])
+    munit <- munit[grep("units", munit)]
+    munit <- gsub("units=", "", munit)
+  } else {
+    longlat <- TRUE
+    munit <- "km"
+  }
   
   # column with target and regional source SUBIDs
   col.subid <- which(toupper(names(data)) == "SUBID")
@@ -43,31 +62,46 @@ MapRegionalSources <- function (data, map, map.subid.column = 1) {
   # update row names, necessary for connection to map data below
   rownames(rcb) <- 1:nrow(rcb)
   
-  # add a column to hold connection lengths
-  rcb <- data.frame(rcb, "Length_km" = 0)
+  # add a column to hold connection lengths, 
+  rcb <- data.frame(rcb, 0)
+  names(rcb)[3] <- paste("Length", munit, sep = "_")
   
-  # 
   
-  SpatialLines(, proj4string = map@proj4string)
   
-  all.lines<-list()
-  for(i in 1:nrow(rcb)) { #i<-2
-    sm<-match(regs.data[i,"SUBID"],sca[,"SUBID"])
-    rm<-match(regs.data[i,"regsrcid"],sca[,"SUBID"])
-    this.line<-Line(rbind(coordinates(subcent)[sm,],coordinates(subcent)[rm,]))
-    this.lines<-Lines(list(this.line),ID=as.character(i))
-    all.lines[length(all.lines)+1]<-this.lines
-    regs.data[i,3]<-round(LineLength(this.line,longlat=T),3)  # longlat gives true GreatCircle distance in km, rounded to nearest meter
-    
+  ## create a SpatialLines object from centerpoint coordinate pairs of target and source SUBIDs
+  
+  # create dataframe of target-source connection to iterate through: 
+  # row indices 'map' data slot of irrigation target and source SUBIDs rcb dataframe, and character IDs for use below
+  condata <- data.frame(row.sbd = match(rcb[, col.subid], map@data[, map.subid.column]), 
+                        row.rgsrc = match(rcb[, col.regsrcid], map@data[, map.subid.column]), id = as.character(1:nrow(rcb))
+                        )
+  
+  
+  # MAIN COMPUTATION: lapply an anonymous function over all source-target connections to create a list of Lines objects
+  # Function arguments
+  # x: numeric, row index over which to lapply
+  # cnd: dataframe, condata above, with rows of source and target SUBIDs in map, and an ID
+  # mp: a SpatialPointsDataframe map
+  lineslist <- lapply(1:nrow(condata), 
+                      FUN = function (x, cnd, mp) {Lines(list(Line(rbind(coordinates(mp)[cnd[x, 1], ], coordinates(map)[cnd[x, 2], ]))), ID = cnd[x, 3])}, 
+                      cnd = condata, mp = map)
+  # apply row-wise to slc data frame, THIS LINE IS A MAIN COMPUTATION
+  if (progbar) {
+    lineslist <- pblapply(1:nrow(condata), 
+                        FUN = function (x, cnd, mp) {Lines(list(Line(rbind(coordinates(mp)[cnd[x, 1], ], coordinates(map)[cnd[x, 2], ]))), ID = cnd[x, 3])}, 
+                        cnd = condata, mp = map)
+  } else {
+    lineslist <- lapply(1:nrow(condata), 
+                        FUN = function (x, cnd, mp) {Lines(list(Line(rbind(coordinates(mp)[cnd[x, 1], ], coordinates(map)[cnd[x, 2], ]))), ID = cnd[x, 3])}, 
+                        cnd = condata, mp = map)
   }
-  regs<-SpatialLines(all.lines,proj4string=CRS(proj4))
-  regsdf<-SpatialLinesDataFrame(regs,regs.data)
   
+  # calculate vector of connection lengths for all Lines objects and add to rcb dataframe
+  rcb[, 3] <- sapply(1:nrow(condata), function(x, y, ll) {LinesLength(Ls = y[[x]], longlat = ll)}, y = lineslist, ll = longlat)
+  
+  # create Spatial result object
+  res <- SpatialLinesDataFrame(SpatialLines(lineslist, proj4string = map@proj4string), rcb)
+  
+  # return map
+  return(res)
 }
-
-# DEBUG
-library(rgdal)
-data <- ReadMgmtData(filename="//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.0/Data/RepurposedData/Irrigation/MgmtData_2014-12-03+GhA+Dniepr.txt")
-map <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.0/Data/RepurposedData/WHIST/Current_shapefiles", layer = "SUBID_CenterPoints_TotalDomain_WGS84_20140428_degrees")
-plot(map)
-names(map@data)
