@@ -1,12 +1,13 @@
-\name{WriteMgmtData}
-\alias{WriteMgmtData}
-\title{Write a 'MgmtData.txt' file}
+\name{WriteAquiferData}
+\alias{WriteAquiferData}
+\title{Write an 'AquiferData.txt' file}
 \usage{
-WriteMgmtData(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L)
+WriteAquiferData(x, filename = "AquiferData.txt", digits = 10,
+  nsmall = 0L)
 }
 \arguments{
   \item{x}{The object to be written, a dataframe, as an
-  object returned from \code{\link{ReadMgmtData}}.}
+  object returned from \code{\link{ReadAquiferData}}.}
 
   \item{filename}{A character string naming a file to write
   to. Windows users: Note that Paths are separated by '/',
@@ -20,17 +21,17 @@ WriteMgmtData(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L)
 }
 \description{
 This is a convenience wrapper function to export a HYPE
-'MgmtData.txt' file from R.
+'AquiferData.txt' file from R.
 }
 \details{
-\code{WriteMgmtData} exports a MgmtData dataframe with
-formatting options adjusted for the output to be read by
-HYPE. HYPE requires \code{NA}-free data in all mandatory
-MgmtData column, but \code{NA}s are allowed in optional
+\code{WriteAquiferData} exports a AquiferData dataframe
+with formatting options adjusted for the output to be read
+by HYPE. HYPE requires \code{NA}-free data in all mandatory
+AquiferData column, but \code{NA}s are allowed in optional
 comment columns which are not read by HYPE. The function
 will return with a warning if \code{NA}s were exported.
 }
 \examples{
-\dontrun{WriteMgmtData(x = myMgmtdata, file = "../myhype/MgmtData.txt")}
+\dontrun{WriteAquiferData(x = myaquiferdata, file = "../myhype/AquiferData.txt")}
 }
 

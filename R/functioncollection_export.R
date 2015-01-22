@@ -12,8 +12,8 @@
 #     - WritePmsf()
 #     - WritePTQobs()
 #     - WriteMgmtData()
+#     - WriteAquiferData()
 #     - 
-#
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 
@@ -747,7 +747,7 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 1, nsmall
 #' Write a 'MgmtData.txt' file
 #'
 #' @description
-#' This is a convenience wrapper function to export a 'MgmtData.txt' file from R.
+#' This is a convenience wrapper function to export a HYPE 'MgmtData.txt' file from R.
 #' 
 #' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadMgmtData}}. 
 #' @param filename A character string naming a file to write to. Windows users: Note that 
@@ -761,11 +761,56 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 1, nsmall
 #' columns which are not read by HYPE. The function will return with a warning if \code{NA}s were exported.
 #' 
 #' @examples
-#' \dontrun{WriteMgmtData(x = myMgmtdata)}
+#' \dontrun{WriteMgmtData(x = myMgmtdata, file = "../myhype/MgmtData.txt")}
 #' 
 
 
 WriteMgmtData <- function(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L) {
+  
+  # warn if NAs in data, since HYPE does not allow empty values in 
+  # check for NAs
+  te <- apply(x, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  
+  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  x[is.na(x)] <- -9999
+  
+  # export
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE)
+  
+}
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteAquiferData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Write an 'AquiferData.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to export a HYPE 'AquiferData.txt' file from R.
+#' 
+#' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadAquiferData}}. 
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'.
+#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
+#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+#'  
+#' @details
+#' \code{WriteAquiferData} exports a AquiferData dataframe with formatting options adjusted for the output to be read by HYPE.
+#' HYPE requires \code{NA}-free data in all mandatory AquiferData column, but \code{NA}s are allowed in optional comment 
+#' columns which are not read by HYPE. The function will return with a warning if \code{NA}s were exported.
+#' 
+#' @examples
+#' \dontrun{WriteAquiferData(x = myaquiferdata, file = "../myhype/AquiferData.txt")}
+#' 
+
+
+WriteAquiferData <- function(x, filename = "AquiferData.txt", digits = 10, nsmall = 0L) {
   
   # warn if NAs in data, since HYPE does not allow empty values in 
   # check for NAs

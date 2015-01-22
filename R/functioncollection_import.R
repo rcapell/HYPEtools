@@ -14,6 +14,7 @@
 #     - ReadLakeData()
 #     - ReadPmsf()
 #     - ReadMgmtData()
+#     - ReadAquiferData()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -773,7 +774,7 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 #' Read a 'MgmtData.txt' file
 #'
 #' @description
-#' This is a convenience wrapper function to import a MgmtData file as data frame into R.
+#' This is a convenience wrapper function to import a HYPE MgmtData file as data frame into R.
 #' 
 #' @param filename Path to and file name of the MgmtData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
@@ -781,7 +782,8 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 #' @details
 #' \code{ReadMgmtData} is a simple \code{\link{read.table}} wrapper, mainly added to provide a comparable 
 #' function to the other RHYPE imports. Will check for \code{NA} values in imported data and return a warning if any are found. 
-#' HYPE requires \code{NA}-free input in 'MgmtData.txt' files, but empty values are allowed in comment columns which are not read.
+#' HYPE requires \code{NA}-free input in required 'AquiferData.txt' columns, but empty values are allowed in comment 
+#' columns which are not read.
 #' 
 #' @return
 #' \code{ReadMgmtData} returns a data frame.
@@ -794,6 +796,45 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 ReadMgmtData <- function(filename = "MgmtData.txt") {
   # import
   res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "")
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadAquiferData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read an 'AquiferData.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to import a HYPE AquiferData file as data frame into R.
+#' 
+#' @param filename Path to and file name of the AquiferData file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#' @param sep Character string, field separator as in \code{\link{read.table}}. 
+#'  
+#' @details
+#' \code{ReadAquiferData} is a simple \code{\link{read.table}} wrapper, mainly added to provide a comparable 
+#' function to other RHYPE import functions. Will check for \code{NA} values in imported data and return a warning if any are found. 
+#' HYPE requires \code{NA}-free input in required 'AquiferData.txt' columns, but empty values are allowed in comment columns 
+#' which are not read.
+#' 
+#' @return
+#' \code{ReadAquiferData} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{ReadAquiferData("../myhype/AquiferData.txt")}
+#' 
+
+
+ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t") {
+  # import
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = sep, comment.char = "")
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
   if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
