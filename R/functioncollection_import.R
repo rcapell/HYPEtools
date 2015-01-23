@@ -593,15 +593,21 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d") {
     }
     # conditional: timestep attribute identified by difference between first two entries
     tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
-    if (tdff == 24) {
-      attr(x, which = "timestep") <- "day"
-    } else if (tdff == 168) {
-      attr(x, which = "timestep") <- "week"
-    } else if (tdff %in% c(744, 720, 696, 672)) {
-      attr(x, which = "timestep") <- "month"
+    if (!is.na(tdff)) {
+      if (tdff == 24) {
+        attr(x, which = "timestep") <- "day"
+      } else if (tdff == 168) {
+        attr(x, which = "timestep") <- "week"
+      } else if (tdff %in% c(744, 720, 696, 672)) {
+        attr(x, which = "timestep") <- "month"
+      } else {
+        attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+      }
     } else {
-      attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+      # add timestep attribute with placeholder value
+      attr(x, which = "timestep") <- "none"
     }
+    
   } else {
     # add timestep attribute with placeholder value
     attr(x, which = "timestep") <- "none"
