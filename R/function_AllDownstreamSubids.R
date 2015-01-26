@@ -8,15 +8,13 @@
 #' Function to find all SUBIDs of downstream sub-catchments along the main stem for a single 
 #' sub-catchment.
 #'
-#' @param subid SUBID of a target sub-catchment (must exist in \code{gd}). 
-#' @param gd A data frame, an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
-#' @param bd A data frame, an imported 'BranchData.txt' file. Optional argument. See 'Details'.
+#' @param subid Integer, SUBID of a target sub-catchment (must exist in \code{gd}). 
+#' @param gd Dataframe, an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
+#' @param bd Dataframe, an imported 'BranchData.txt' file. Optional argument. See 'Details'.
 #' @param write.arcgis Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
 #' 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.
 #' 
 #' @details
-#' \code{AllDownstreamSubids} finds the downstream SUBIDs of a given SUBID (including itself but not 
-#' including potential irrigation links or groundwater flows).
 #' \code{AllDownstreamSubids} finds all downstream SUBIDs of a given SUBID along the main stem (including itself but not 
 #' including potential irrigation links or groundwater flows) using GeoData columns 'SUBID' and 'MAINDOWN'. If a BranchData file 
 #' is provided, the function will also include information on downstream bifurcations.
@@ -56,7 +54,7 @@ AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   
   ## find all downstreams on main stem
   
-  # use function OutletSubids() to find outlet ids (can be several)
+  # use function OutletIds() to find outlet ids (can be several)
   outlet.id <- OutletIds(gd = gd)
   # initialize loop variables
   sbd.cur <- subid
