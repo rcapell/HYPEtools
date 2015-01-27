@@ -5,14 +5,14 @@
 AllDownstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
 }
 \arguments{
-  \item{subid}{SUBID of a target sub-catchment (must exist
-  in \code{gd}).}
+  \item{subid}{Integer, SUBID of a target sub-catchment
+  (must exist in \code{gd}).}
 
-  \item{gd}{A data frame, an imported 'GeoData.txt' file.
+  \item{gd}{Dataframe, an imported 'GeoData.txt' file.
   Mandatory argument. See 'Details'.}
 
-  \item{bd}{A data frame, an imported 'BranchData.txt'
-  file. Optional argument. See 'Details'.}
+  \item{bd}{Dataframe, an imported 'BranchData.txt' file.
+  Optional argument. See 'Details'.}
 
   \item{write.arcgis}{Logical. If \code{TRUE}, a string
   containing an SQL expression suitable for ArcGIS's
@@ -33,9 +33,6 @@ Function to find all SUBIDs of downstream sub-catchments
 along the main stem for a single sub-catchment.
 }
 \details{
-\code{AllDownstreamSubids} finds the downstream SUBIDs of a
-given SUBID (including itself but not including potential
-irrigation links or groundwater flows).
 \code{AllDownstreamSubids} finds all downstream SUBIDs of a
 given SUBID along the main stem (including itself but not
 including potential irrigation links or groundwater flows)

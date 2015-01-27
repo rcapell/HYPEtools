@@ -1,17 +1,17 @@
 #' @export
 
 #' @title
-#' Find all Outlet SUBIDs
+#' Find all Outlet SUBIDs of a model domain
 #'
 #' @description
-#' Function to find all outlet SUBIDs in a GeoData file, i.e. all SUBIDs from which stream water leaves the model domain.
+#' Function to find all outlet SUBIDs of a HYPE model domain.
 #'
 #' @param gd A data frame, with two columns \code{subid} and \code{maindown}, (not case-sensitive). 
 #' Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}. 
 #' 
 #' @details
-#' \code{OutletSubids} finds all SUBIDs of one or several given SUBID (including itself but not 
-#' including potential irrigation or groundwater flow links, or secondary bifurcation outlets).
+#' \code{OutletSubids} finds all outlet SUBIDs of a model domain as provided in a 'GeoData.txt' file, i.e. all SUBIDs from which 
+#' stream water leaves the model domain.
 #' 
 #' @return
 #' \code{OutletSubids} returns a vector of outlet SUBIDs.
@@ -37,21 +37,8 @@ OutletSubids <- function(gd) {
   # get outlet id(s)
   oid <- OutletIds(gd)
   
-  ## test which ids in maindown DO NOT exist in subid, these would be the ones of interest
-  # find unique ids in maindown
-  te <- unique(gd[, geocol.md])
-  # select subids which have a maindown id that does not exist in subid column (that is the outlet id)
-  res <- te[!(te %in% gd[, geocol.sub])]
-  
-  # conditional: vector of subids provided or not. get vector of subid for which to find outlets
-  if (is.null(subid)) {
-    
-    
-    
-  } else {
-    
-    sAllDownstreamSubids()
-  }
+  # select all subids which have outlet ids downstream
+  res <- gd[gd[, geocol.md] %in% oid, geocol.sub]
   
   return(res)
 }

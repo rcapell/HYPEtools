@@ -5,24 +5,35 @@
 OutletIds(gd)
 }
 \arguments{
-  \item{gd}{A data frame, an imported 'GeoData.txt' file.
-  Mandatory argument.}
+  \item{gd}{A data frame, with two columns \code{subid} and
+  \code{maindown} (not case-sensitive). Typically a
+  'GeoData.txt' file imported using
+  \code{\link{ReadGeoData}}.}
 }
 \value{
-\code{OutletSubids} returns a vector of outlet SUBIDs.
+\code{OutletIds} returns a vector of outlet IDs.
 }
 \description{
-Function to find all outlet IDs in a GeoData file. This is
-typically just one number, but can be one or several SUBIDs
-if the GeoData file originates from a HYPE sub-model
-set-up, e.g. created with the 'SelectAro' tool.
+Function to find the identifier of model domain outlets,
+i.e. the "downstream" ID of outlet catchments, in a GeoData
+file. This is typically just one number, but can be one or
+several SUBIDs if the GeoData file originates from a HYPE
+sub-model set-up, e.g. created with the 'SelectAro'
+program.
 }
 \details{
-\code{OutletSubids} finds all SUBIDs of a given SUBID
-(including itself but not including potential irrigation
-links or groundwater flows).
+\code{OutletIds} finds the outlet IDs of a GeoData file.
+The outlet ID of a typical model is a single placeholder
+number, often e.g. '0', but there can be several outlet
+IDs, e.g. one or several SUBIDs if the GeoData file
+originates from a HYPE sub-model set-up, created with the
+'SelectAro' tool.
 }
 \examples{
 \dontrun{OutletIds(gd = mygeodata)}
+}
+\seealso{
+\code{\link{AllDownstreamSubids}},
+\code{\link{OutletSubids}}
 }
 

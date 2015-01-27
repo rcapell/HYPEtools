@@ -20,6 +20,8 @@
 #' @return
 #' \code{OutletIds} returns a vector of outlet IDs.
 #' 
+#' @seealso
+#' \code{\link{AllDownstreamSubids}}, \code{\link{OutletSubids}}
 #' 
 #' @examples
 #' \dontrun{OutletIds(gd = mygeodata)}
