@@ -1,0 +1,31 @@
+\name{HeadwaterSubids}
+\alias{HeadwaterSubids}
+\title{Find all headwater SUBIDs of a model domain}
+\usage{
+HeadwaterSubids(gd)
+}
+\arguments{
+  \item{gd}{A data frame, with two columns \code{subid} and
+  \code{maindown}, (not case-sensitive). Typically a
+  'GeoData.txt' file imported using
+  \code{\link{ReadGeoData}}.}
+}
+\value{
+\code{HeadwaterSubids} returns a vector of outlet SUBIDs.
+}
+\description{
+Function to find all headwater SUBIDs of a HYPE model
+domain.
+}
+\details{
+\code{HeadwaterSubids} finds all headwater SUBIDs of a
+model domain as provided in a 'GeoData.txt' file, i.e. all
+subcatchments which do not have any upstream subcatchments.
+}
+\examples{
+\dontrun{HeadwaterSubids(gd = mygeodata)}
+}
+\seealso{
+\code{\link{AllUpstreamSubids}}
+}
+
