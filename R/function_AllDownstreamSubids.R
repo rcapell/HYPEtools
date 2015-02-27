@@ -21,7 +21,7 @@
 #' 
 #' @return
 #' \code{AllDownstreamSubids} returns a vector of downstream SUBIDs to the outlet if no BranchData is provided, otherwise a data frame with 
-#' two columns \code{downstream} with downstream SUBIDs and \code{is.branch} a logical values indicating if a downstream SUBID contains a 
+#' two columns \code{downstream} with downstream SUBIDs and \code{is.branch} with logical values indicating if a downstream SUBID contains a 
 #' bifurcation ('branch' in HYPE terms). Downstream SUBIDs are ordered from the source SUBID to the final outlet.
 #' 
 #' 

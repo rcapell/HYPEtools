@@ -24,12 +24,12 @@ WriteXobs(x, filename = "Xobs.txt", append = F, comment = NA,
   \code{FALSE}, existing file in \code{filename} will be
   overwritten!}
 
-  \item{comment}{An object to be exported as first row
-  comment in the Xobs file. Will take precedence over a
+  \item{comment}{A character string to be exported as first
+  row comment in the Xobs file. Will take precedence over a
   \code{comment} attribute of \code{x}. Comments are only
   exported if \code{append} is \code{FALSE}.}
 
-  \item{variable}{An character vector to be exported as
+  \item{variable}{A character vector to be exported as
   second row in the Xobs file. Must contain the same number
   of variables as \code{x}. If omitted or \code{NA}, an
   attribute \code{variable} in \code{x} is mandatory. Will

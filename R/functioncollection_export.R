@@ -31,6 +31,8 @@
 #' @param x The object to be written, a list with named vector elements, as an object returned from \code{\link{ReadPar}}.
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
+#' @param digits Integer, number of significant digits to export. See \code{\link{format}}.
+#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #' 
 #' @details
 #' \code{WritePar} writes a 'par.txt' file, typically originating from an imported and modified 'par.txt'.
@@ -41,13 +43,14 @@
 
 
 
-WritePar <- function (x, filename = "par.txt") {
-  # set options for number of digits and scientific notation so that HYPE-compatible decimal strings are returned
-  options(digits = 10, scipen = 10)
-  # write list elements to file, first converts all list elements (vectors), together with their names, to strings.
-  write(sapply(names(y), function(x) paste(c(x, y[[x]]), collapse="\t")), filename)
-  # reset options to defaults
-  options(digits = 7, scipen = 0)
+WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
+  
+  # format par list contents to avoid scientific format in output
+  fx <- sapply(x, format, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T, justify = "none")
+  
+  # write formatted list elements to file, first converts all list elements (vectors) and their names to concatenated strings.
+  write(sapply(seq_along(x), function(x, y) paste(c(names(y)[x], y[[x]]), collapse="\t"), y = fx), filename)
+  
 }
 
 
@@ -223,9 +226,9 @@ WriteBranchData <- function(x, filename = "BranchData.txt") {
 #' Paths are separated by '/', not '\\'. 
 #' @param append Logical. If \code{TRUE}, \code{x} will be appended to file \code{filename}. File must exist and 
 #' have an identical column structure as \code{x}. If \code{FALSE}, existing file in \code{filename} will be overwritten!
-#' @param comment An object to be exported as first row comment in the Xobs file. Will take precedence over a \code{comment}
+#' @param comment A character string to be exported as first row comment in the Xobs file. Will take precedence over a \code{comment}
 #' attribute of \code{x}. Comments are only exported if \code{append} is \code{FALSE}.
-#' @param variable An character vector to be exported as second row in the Xobs file. Must contain the same number of 
+#' @param variable A character vector to be exported as second row in the Xobs file. Must contain the same number of 
 #' variables as \code{x}. If omitted or \code{NA}, an attribute \code{variable} in \code{x} is mandatory.
 #' Will take precedence over a \code{variable} attribute of \code{x}. If \code{append} is \code{TRUE} the values are 
 #' used to test for consistency between export object and the existing file.

@@ -2,7 +2,7 @@
 \alias{WritePar}
 \title{Write a 'par.txt' File}
 \usage{
-WritePar(x, filename = "par.txt")
+WritePar(x, filename = "par.txt", digits = 10, nsmall = 1)
 }
 \arguments{
   \item{x}{The object to be written, a list with named
@@ -12,6 +12,12 @@ WritePar(x, filename = "par.txt")
   \item{filename}{A character string naming a file to write
   to. Windows users: Note that Paths are separated by '/',
   not '\\'.}
+
+  \item{digits}{Integer, number of significant digits to
+  export. See \code{\link{format}}.}
+
+  \item{nsmall}{Integer, number of significant decimals to
+  export. See \code{\link{format}}.}
 }
 \description{
 \code{WritePar} prints its required argument \code{x} to a
