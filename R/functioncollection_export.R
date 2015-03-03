@@ -293,10 +293,13 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
         # comment attribute does not exist, export the following string
         writeLines("Exported from R", con = fcon)
       }
+    } else {
+      # export comment argument
+      writeLines(comment, con = fcon)
     }
     
     ## export variable line
-    if (length(variable == 1) & is.na(variable[1])) {
+    if (length(variable) == 1 & is.na(variable[1])) {
       # variable argument is empty
       if(!is.null(attr(x, which = "variable"))) {
         # attribute variable exists
@@ -317,7 +320,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
       }
     } else {
       # export the variable argument with padded 'name' string and newline, if length matches no. of observation data cols in x
-      if (length("variable") == ncol(x) - 1) {
+      if (length(variable) == ncol(x) - 1) {
         tmp <- paste(c("name", variable), collapse ="\t")
         writeLines(tmp, con = fcon)
       } else {
