@@ -76,24 +76,31 @@ MergeXobs <- function(x, y, x.first = TRUE, comment = "") {
     
     # remove columns from data source without precedence
     res2 <- res2[, -(as.integer(na.omit(common.cols)) + 1)]
+    
   }
   
-  # combine the results
-  res <- cbind(res, res1[, -1], res2[, -1])
+  # combine the results, catch special case where all columns are common and only a date vector is left in res2
+  if(is.data.frame(res2)) {
+    res <- cbind(res, res1[, -1], res2[, -1])
+  } else {
+    res <- cbind(res, res1[, -1])
+  }
   
   # reconstruct xobs attributes variable and subid from header
-  attr(xobsMerge1,"variable") <- sapply(strsplit(names(res), "_"), function(x){x[1]})[-1]
-  attr(xobsMerge1,"subid") <- as.integer(sapply(strsplit(names(res), "_"), function(x){x[2]})[-1])
+  attr(res,"variable") <- sapply(strsplit(names(res), "_"), function(x){x[1]})[-1]
+  attr(res,"subid") <- as.integer(sapply(strsplit(names(res), "_"), function(x){x[2]})[-1])
   
   # Comment attribute, conditional on function argument value
   if (comment == "") {
     if (x.first) {
-      attr(xobsMerge1,"comment") <- paste(paste("!Created by MergeXobs from [","] and [",sep=attr(x,"comment")),"]",sep = attr(y,"comment"))
+      attr(res,"comment") <- paste("!Created by MergeXobs, x took precedence where data overlapped. Original comments: ", 
+                                   attr(x,"comment"), " (x); ", attr(y,"comment"), " (y)", sep = "")
     } else {
-      attr(xobsMerge1,"comment") <- paste(paste("!Created by MergeXobs from [","] and [",sep=attr(y,"comment")),"]",sep=attr(x,"comment"))
+      attr(res,"comment") <- paste("!Created by MergeXobs, y took precedence where data overlapped. Original comments: ", 
+                                   attr(x,"comment"), " (x); ", attr(y,"comment"), " (y)", sep = "")
     }
   } else {
-    attr(xobsMerge1,"comment") <- comment
+    attr(res,"comment") <- comment
   }
   
   return(res)
