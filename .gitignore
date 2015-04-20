@@ -16,3 +16,4 @@ src/obsfile_handling.dll
 src/RHYPE.dll
 src-i386
 src-x64
+.Rproj.user
