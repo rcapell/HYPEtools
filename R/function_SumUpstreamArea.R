@@ -19,11 +19,11 @@
 #' is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
-#' \code{SumUpstreamAreas} sums upstream areas of all connected upstream SUBIDs, including branch connections in case of stream bifurcations 
+#' \code{SumUpstreamArea} sums upstream areas of all connected upstream SUBIDs, including branch connections in case of stream bifurcations 
 #' but not including potential irrigation links or groundwater flows.
 #' 
 #' @return
-#' \code{SumUpstreamAreas} returns a data frame with two columns containing SUBIDs and total upstream areas (in area units as provided in \code{gd}). 
+#' \code{SumUpstreamArea} returns a data frame with two columns containing SUBIDs and total upstream areas (in area units as provided in \code{gd}). 
 #' Upstream areas include areas of outlet SUBIDs.
 #' 
 #' @seealso

@@ -3,20 +3,17 @@
 #' @import pbapply
 #' 
 #' @title
-#' Calculate SLC class fractions of all upstream areas
+#' Calculate upstream sums and averages of GeoData contents
 #'
 #' @description
-#' Function to calculate SLC class fractions over all upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table.
+#' Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files. See details for 
 #'
-#' @param subid Integer vector of SUBIDs to calculate upstream SUBID fractions for (must exist in \code{gd}). 
-#' If \code{NULL}, upstream areas for all SUBIDs will be calculated.
+#' @param subid Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
+#' If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.
 #' 
 #' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.
 #' 
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
-#' 
-# @param df.up.area A data frame as returned from \code{\link{SumUpstreamArea}}. Two columns with SUBIDs and upstream areas. Can be provided to reduce 
-# overall computation time.
 #' 
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
 #' 
@@ -33,17 +30,16 @@
 #' 
 #' @seealso
 #' \code{\link{SumUpstreamArea}}
+#' \code{\link{UpstreamSLCClasses}}
 #' 
 #' @examples
-#' \dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}
+#' \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata)}
 
-UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, progbar = T) {
+UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, progbar = T) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
   pos.area <- which(toupper(names(gd)) == "AREA")
-  # extract SLC columns in gd
-  pos.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")
   
   # check if gd contains necessary information
   if (length(pos.sbd) == 0) {
@@ -51,9 +47,6 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
   }
   if (length(pos.area) == 0) {
     stop("No AREA column found in 'gd'. Exiting.")
-  }
-  if (length(pos.slc) == 0) {
-    stop("No SLC columns found in 'gd'. Exiting.")
   }
   
   # conditional: fill subid vector if not user-provided
@@ -63,6 +56,15 @@ UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, p
   
   # safety measure: force type of area to numeric to prevent integer overflow when summing below
   gd[, pos.area] <- as.numeric(gd[, pos.area])
+  
+  # create dataframe of treated geodata columns and corresponding 
+  # unknown columns will be returned unchanged
+  c("area", "latitude", "elev_mean", "elev_std", "slope_mean", "slope_std", "rivlen", "lake_depth", "loc_tp", "loc_tn", "loc_vol", "wetdep_n", "drydep_n1", "drydep_n2", "drydep_n3", "buffer", "close_w")
+  # extract SLC columns in gd
+  pos.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")
+  
+  # extract SCR columns in gd
+  pos.scr <- which(toupper(substr(names(gd), 1, 3)) == "SCR")
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if subid is long

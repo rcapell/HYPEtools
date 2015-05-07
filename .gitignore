@@ -1,7 +1,7 @@
 
 # exclude files and folders relating to my RStudio project:
 
-.Rproj.user/
+.Rproj.user
 .Rhistory
 .RData
 script_package_dev.R
@@ -16,4 +16,4 @@ src/obsfile_handling.dll
 src/RHYPE.dll
 src-i386
 src-x64
-.Rproj.user
+.gitignore
