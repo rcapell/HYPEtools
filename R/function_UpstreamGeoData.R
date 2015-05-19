@@ -35,7 +35,7 @@
 #' @examples
 #' \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata)}
 
-UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, progbar = T) {
+UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, signif.digits = 3, progbar = T) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
@@ -57,17 +57,24 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, prog
   # safety measure: force type of area to numeric to prevent integer overflow when summing below
   gd[, pos.area] <- as.numeric(gd[, pos.area])
   
-  # create dataframe of treated geodata columns and corresponding 
-  # unknown columns will be returned unchanged
-  c("area", "latitude", "elev_mean", "elev_std", "slope_mean", "slope_std", "rivlen", "lake_depth", "loc_tp", "loc_tn", "loc_vol", "wetdep_n", "drydep_n1", "drydep_n2", "drydep_n3", "buffer", "close_w")
-  # extract SLC columns in gd
-  pos.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")
+  # create vectors of treated geodata column positions for weighted means, sums, weighted standard deviations
+  # unknown/untreated columns will be returned unchanged
+  pos.wmean <- c(which(tolower(names(gd)) %in% c("elev_mean", "slope_mean", "buffer", "close_w", "latitude", "longitude")), 
+                 which(toupper(substr(names(gd), 1, 3)) == "SLC"))
+  pos.sum <- which(tolower(names(gd)) %in% c("area", "rivlen"))
+  pos.wsd.elev <- which(tolower(names(gd)) %in% c("elev_std", "elev_mean"))
+  pos.wsd.slope <- which(tolower(names(gd)) %in% c("slope_std", "slope_mean"))
+  # lake depths are special, because they will be weighted by lake area, if olake slc is provided by user
+  pos.ldepth <- which(tolower(names(gd)) %in% c("lake_depth"))
   
-  # extract SCR columns in gd
-  pos.scr <- which(toupper(substr(names(gd), 1, 3)) == "SCR")
+  #   # extract SLC columns in gd
+  #   pos.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")
+  
+  #   # extract SCR columns in gd
+  #   pos.scr <- which(toupper(substr(names(gd), 1, 3)) == "SCR")
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
-  # conditional: use the progress bar version of lapply if subid is long
+  # conditional: use the progress bar version of lapply if requested by user
   cat("\nFinding upstream SUBIDs.\n")
   if (progbar) {
     up.sbd <- pblapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
@@ -75,20 +82,27 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, prog
     up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   }
   
-  # internal function to calculate area-weighted SLC fraction for one group of upstream SLC classes (one element in up.sbd)
+  # internal function to calculate area-weighted means for one group of upstream areas (one element in up.sbd)
   # used with sapply below
-  WeightedSLC <- function(x, g, p.sbd, p.slc, p.area) {
+  # x: vector of upstream subids
+  WeightedMean <- function(x, g, p.sbd, p.wmean, p.area) {
     
-    # extract dataframe with areas and slc classes of SUBIDs in x 
-    df.slc <- g[g[, p.sbd] %in% x, c(p.area, p.slc)]
-    
+    # extract dataframe with areas and variables in x, for which to calculate weighted means
+    df.wmean <- g[g[, p.sbd] %in% x, c(p.area, p.wmean)]
     
     # area-weighted mean of all SLC columns
-    res <- c(UPSTREAMAREA = sum(df.slc[, 1]), apply(df.slc[, -1], 2, weighted.mean, w = df.slc[, 1]))
+    res <- c(UPSTREAMAREA = sum(df.wmean[, 1]), apply(df.wmean[, -1], 2, weighted.mean, w = df.wmean[, 1]))
     
     return(res)
   }
   
+  # internal function to calculate area-weighted standard deviations
+  # used with sapply below
+  WeightedSd   <- function(x, g, p.sbd, p.wsd, p.area) {
+    sqrt(weighted.mean(S^2 + M^2, N) - weighted.mean(M, N)^2)
+  }
+  
+
   # apply area-weighted SLC mean function to all SUBIDs in subid
   # conditional: use the progress bar version of sapply if subid is long
   cat("\nCalculating upstream SLCs.\n")
