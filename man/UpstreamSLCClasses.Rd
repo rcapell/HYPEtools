@@ -31,10 +31,14 @@ Function to calculate SLC class fractions over all upstream areas of a vector of
 \code{UpstreamSLCClasses} sums upstream areas of all connected upstream SUBIDs, including branch connections in case of stream bifurcations
 but not including potential irrigation links or groundwater flows.
 }
+\note{
+This function is now superseeded by \code{\link{UpstreamGeoData}}, which returns more upstream variables.
+}
 \examples{
 \dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}
 }
 \seealso{
 \code{\link{SumUpstreamArea}}
+\code{\link{UpstreamGeoData}}
 }
 

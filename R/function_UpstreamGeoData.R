@@ -3,10 +3,10 @@
 #' @import pbapply
 #' 
 #' @title
-#' Calculate upstream sums and averages of GeoData contents
+#' Calculate upstream sums and averages of selected GeoData contents
 #'
 #' @description
-#' Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files. See details for 
+#' Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files. 
 #'
 #' @param subid Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
 #' If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.
@@ -15,22 +15,31 @@
 #' 
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' 
+#' @param col.olake.slc Integer, column number with SLC class fraction of outlet lake. For weighted averaging of outlet lake depths. 
+#' NOT YET IMPLEMENTED.
+#' 
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
 #' 
 #' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
 #' is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
-#' \code{UpstreamSLCClasses} sums upstream areas of all connected upstream SUBIDs, including branch connections in case of stream bifurcations 
-#' but not including potential irrigation links or groundwater flows.
+#' \code{UpstreamGeoData} calculated upstream averages or sums of selected variables in a GeoData data frame, including branch connections 
+#' in case of stream bifurcations but not including potential irrigation links or groundwater flows.
+#' 
+#' Variables
+#' 
+#' Area-weighted average: elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, elev_std, slope_std
+#' Sum: area, rivlen
 #' 
 #' @return
-#' \code{UpstreamSLCClasses} returns a data frame with columns containing SUBIDs, total upstream areas (in area unit as provided in \code{gd}), and SLC 
-#' class fractions for upstream areas.
+#' \code{UpstreamSLCClasses} returns a data frame of the same dimension as argument \code{gd}, with updated upstream columns marked with a leading 
+#' 'UP' in the column names.
 #' 
 #' @seealso
-#' \code{\link{SumUpstreamArea}}
 #' \code{\link{UpstreamSLCClasses}}
+#' \code{\link{SumUpstreamArea}}
+#' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
 #' \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata)}
@@ -67,12 +76,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
   # lake depths are special, because they will be weighted by lake area, if olake slc is provided by user
   pos.ldepth <- which(tolower(names(gd)) %in% c("lake_depth"))
   
-  #   # extract SLC columns in gd
-  #   pos.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")
-  
-  #   # extract SCR columns in gd
-  #   pos.scr <- which(toupper(substr(names(gd), 1, 3)) == "SCR")
-  
+    
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if requested by user
   cat("\nFinding upstream SUBIDs.\n")
@@ -82,6 +86,9 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
     up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   }
   
+  
+  ### internal functions used below
+  
   # internal function to calculate area-weighted means for one group of upstream areas (one element in up.sbd)
   # used with sapply below
   # x: vector of upstream subids
@@ -90,38 +97,139 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
     # extract dataframe with areas and variables in x, for which to calculate weighted means
     df.wmean <- g[g[, p.sbd] %in% x, c(p.area, p.wmean)]
     
-    # area-weighted mean of all SLC columns
-    res <- c(UPSTREAMAREA = sum(df.wmean[, 1]), apply(df.wmean[, -1], 2, weighted.mean, w = df.wmean[, 1]))
+    # averaging only necessary if more than one subid, also avoids NaN result if stddev is 0
+    if (nrow(df.wmean) > 1) {
+      
+      # area-weighted mean of all columns
+      res <- apply(as.data.frame(df.wmean[, -1]), 2, weighted.mean, w = df.wmean[, 1])
+      
+    } else {
+      res <- as.numeric(df.wmean[, -1])
+      names(res) <- names(df.wmean)[-1]
+    }
     
     return(res)
   }
   
-  # internal function to calculate area-weighted standard deviations
+  # internal function to calculate area-weighted standard deviations, different to the above because there are just 2 weighted sd
+  # variables, slope_sd and elev_sd, and the column positions are variable-specific combinations of mean and sd (see e.g. pos.wsd.slope)
   # used with sapply below
   WeightedSd   <- function(x, g, p.sbd, p.wsd, p.area) {
-    sqrt(weighted.mean(S^2 + M^2, N) - weighted.mean(M, N)^2)
+    
+    # extract dataframe with areas and variables in x, for which to calculate weighted stdevs
+    df.wsd <- g[g[, p.sbd] %in% x, c(p.area, p.wsd)]
+    
+    # averaging only necessary if more than one subid, also avoids NaN result if stddev is 0
+    if (nrow(df.wsd) > 1) {
+      
+      # area-weighted std.dev. of variable, see also http://stackoverflow.com/questions/9222056/existing-function-to-combine-standard-deviations-in-r
+      res <- sqrt(weighted.mean(df.wsd[, 3]^2 + df.wsd[, 2]^2, df.wsd[, 1]) - weighted.mean(df.wsd[, 2], df.wsd[, 1])^2)
+      
+    } else {
+      res <- df.wsd[, 3]
+    }
+    
+    return(res)
+  }
+  
+  # internal function to calculate sums
+  Sum <- function(x, g, p.sum, p.sbd) {
+    # extract dataframe with areas and variables in x, for which to calculate weighted stdevs
+    df.sum <- data.frame(g[g[, p.sbd] %in% x, p.sum])
+    # columnwise sum
+    res <- colSums(df.sum)
+    return(res)
   }
   
 
-  # apply area-weighted SLC mean function to all SUBIDs in subid
-  # conditional: use the progress bar version of sapply if subid is long
-  cat("\nCalculating upstream SLCs.\n")
+  # apply area-weighted mean function to all SUBIDs in variable 'subid', for all relevant variables
+  # conditional: use the progress bar version of sapply if set by function argument
+  cat("\nCalculating upstream area-weighted means.\n")
   if (progbar) {
-    up.slc <- cbind(SUBID = subid, as.data.frame(t(pbsapply(up.sbd, WeightedSLC, g = gd, p.sbd = pos.sbd, p.slc = pos.slc, p.area = pos.area))))
+    te <- pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
   } else {
-    up.slc <- cbind(SUBID = subid, as.data.frame(t(sapply(up.sbd, WeightedSLC, g = gd, p.sbd = pos.sbd, p.slc = pos.slc, p.area = pos.area))))
+    te <- sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
+  }
+  # create result dataframe, conditiononal on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
+  if(length(pos.wmean) > 1) {
+    up.wmean <- data.frame(SUBID = subid, t(te))
+  } else {
+    up.wmean <- data.frame(SUBID = subid, te)
+    names(up.wmean)[2] <- names(gd)[pos.wmean]
+  }
+  rm(te)
+  
+  # apply area-weighted sd function to all SUBIDs in variable 'subid'
+  # do separately for slope and elev, if they exist in gd
+  if (length(pos.wsd.elev) == 2) {
+    cat("\nCalculating upstream area-weighted elevation standard deviations.\n")
+    if (progbar) {
+      up.wsd.elev <- data.frame(SUBID = subid, ELEV_STD = pbsapply(up.sbd, WeightedSd, g = gd, p.sbd = pos.sbd, p.wsd = pos.wsd.elev, p.area = pos.area))
+    } else {
+      up.wsd.elev <- data.frame(SUBID = subid, ELEV_STD = sapply(up.sbd, WeightedSd, g = gd, p.sbd = pos.sbd, p.wsd = pos.wsd.elev, p.area = pos.area))
+    }
+  } else {
+    up.wsd.elev <- NULL
+  }
+  if (length(pos.wsd.slope) == 2) {
+    cat("\nCalculating upstream area-weighted slope standard deviations.\n")
+    if (progbar) {
+      up.wsd.slope <- data.frame(SUBID = subid, SLOPE_STD = pbsapply(up.sbd, WeightedSd, g = gd, p.sbd = pos.sbd, p.wsd = pos.wsd.slope, p.area = pos.area))
+    } else {
+      up.wsd.slope <- data.frame(SUBID = subid, SLOPE_STD = sapply(up.sbd, WeightedSd, g = gd, p.sbd = pos.sbd, p.wsd = pos.wsd.slope, p.area = pos.area))
+    }
+  } else {
+    up.wsd.slope <- NULL
   }
   
+  # apply sum function to all SUBIDs in variable 'subid', for all relevant variables
+  cat("\nCalculating upstream sums.\n")
+  if (progbar) {
+    te <- pbsapply(up.sbd, Sum, g = gd, p.sum = pos.sum, p.sbd = pos.sbd)
+  } else {
+    te <- sapply(up.sbd, Sum, g = gd, p.sum = pos.sum, p.sbd = pos.sbd)
+  }
+  # create result dataframe, conditiononal on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
+  if(length(pos.sum) > 1) {
+    up.sum <- data.frame(SUBID = subid, t(te))
+  } else {
+    up.sum <- data.frame(SUBID = subid, te)
+    names(up.sum)[2] <- names(gd)[pos.sum]
+  }
+  rm(te)
   
-  # round to requested number of digits
+  ## post-processing
+  cat("\nPost-processing.")
+  
+  # round to requested number of digits, conditional on existing results for the stddev variables
   if (!is.null(signif.digits)) {
-    up.slc[, -c(1:2)] <- apply(up.slc[, -c(1:2)], 2, signif, digits = signif.digits)
+    up.wmean[, -1] <- apply(data.frame(up.wmean[, -1]), 2, signif, digits = signif.digits)
+    if (!is.null(up.wsd.elev)) {
+      up.wsd.elev[, -1] <- signif(up.wsd.elev[, -1], digits = signif.digits)
+    }
+    if (!is.null(up.wsd.slope)) {
+      up.wsd.slope[, -1] <- signif(up.wsd.slope[, -1], digits = signif.digits)
+    }
+    up.sum[, -1] <- apply(data.frame(up.sum[, -1]), 2, signif, digits = signif.digits)
   }
   
-  # rename SLCs to clarify they are upstream fractions
-  names(up.slc)[-c(1:2)] <- paste("UP", names(up.slc)[-c(1:2)], sep = "")
+  # copy all upstream calculations to result GeoData, replacing the originals
+  gd[, pos.wmean] <- up.wmean[, -1]
+  if (!is.null(up.wsd.elev)) {
+    gd[, pos.wsd.elev[2]] <- up.wsd.elev[, -1]
+  }
+  if (!is.null(up.wsd.slope)) {
+    gd[, pos.wsd.slope[2]] <- up.wsd.slope[, -1]
+  }
+  gd[, pos.sum] <- up.sum[, -1]
+  
+  
+  # rename variables to clarify they are upstream values
+  pos.up <- c(pos.wmean, pos.sum, if (length(pos.wsd.elev) == 2) pos.wsd.elev[2] else NULL, if (length(pos.wsd.slope) == 2) pos.wsd.slope[2] else NULL)
+  names(gd)[pos.up] <- paste("UP", names(gd)[pos.up], sep = "")
   
   # return result
-  return(up.slc)
+  return(gd)
 }
+
 

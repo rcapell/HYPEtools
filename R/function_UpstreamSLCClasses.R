@@ -31,8 +31,12 @@
 #' \code{UpstreamSLCClasses} returns a data frame with columns containing SUBIDs, total upstream areas (in area unit as provided in \code{gd}), and SLC 
 #' class fractions for upstream areas.
 #' 
+#' @note
+#' This function is now superseeded by \code{\link{UpstreamGeoData}}, which returns more upstream variables.
+#' 
 #' @seealso
 #' \code{\link{SumUpstreamArea}}
+#' \code{\link{UpstreamGeoData}}
 #' 
 #' @examples
 #' \dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}

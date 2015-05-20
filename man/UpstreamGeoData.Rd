@@ -2,10 +2,10 @@
 % Please edit documentation in R/function_UpstreamGeoData.R
 \name{UpstreamGeoData}
 \alias{UpstreamGeoData}
-\title{Calculate upstream sums and averages of GeoData contents}
+\title{Calculate upstream sums and averages of selected GeoData contents}
 \usage{
-UpstreamGeoData(subid = NULL, gd, bd = NULL, signif.digits = 3,
-  progbar = T)
+UpstreamGeoData(subid = NULL, gd, bd = NULL, col.olake.slc = NULL,
+  signif.digits = 3, progbar = T)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}).
@@ -15,27 +15,36 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
+\item{col.olake.slc}{Integer, column number with SLC class fraction of outlet lake. For weighted averaging of outlet lake depths.
+NOT YET IMPLEMENTED.}
+
 \item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding.}
 
 \item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid}
 is \code{NULL} or contains many SUBIDs.}
 }
 \value{
-\code{UpstreamSLCClasses} returns a data frame with columns containing SUBIDs, total upstream areas (in area unit as provided in \code{gd}), and SLC
-class fractions for upstream areas.
+\code{UpstreamSLCClasses} returns a data frame of the same dimension as argument \code{gd}, with updated upstream columns marked with a leading
+'UP' in the column names.
 }
 \description{
-Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files. See details for
+Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files.
 }
 \details{
-\code{UpstreamSLCClasses} sums upstream areas of all connected upstream SUBIDs, including branch connections in case of stream bifurcations
-but not including potential irrigation links or groundwater flows.
+\code{UpstreamGeoData} calculated upstream averages or sums of selected variables in a GeoData data frame, including branch connections
+in case of stream bifurcations but not including potential irrigation links or groundwater flows.
+
+Variables
+
+Area-weighted average: elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, elev_std, slope_std
+Sum: area, rivlen
 }
 \examples{
 \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata)}
 }
 \seealso{
-\code{\link{SumUpstreamArea}}
 \code{\link{UpstreamSLCClasses}}
+\code{\link{SumUpstreamArea}}
+\code{\link{AllUpstreamSubids}}
 }
 
