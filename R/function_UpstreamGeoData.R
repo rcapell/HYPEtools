@@ -15,26 +15,29 @@
 #' 
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' 
-#' @param col.olake.slc Integer, column number with SLC class fraction of outlet lake. For weighted averaging of outlet lake depths. 
-#' NOT YET IMPLEMENTED.
+#' @param col.olake.slc Integer, column number with SLC class fraction of outlet lake. Mandatory for weighted averaging of outlet lake depths. 
 #' 
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
-#' 
+#'
 #' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
 #' is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
 #' \code{UpstreamGeoData} calculated upstream averages or sums of selected variables in a GeoData data frame, including branch connections 
-#' in case of stream bifurcations but not including potential irrigation links or groundwater flows.
+#' in case of stream bifurcations but not including potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area, with 
+#' the exception of outlet lake depths provided in GeoData variable 'lake_depth'. These are weighted by outlet lake area and the GeoData column with 
+#' SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Elevation and slope standard deviations are 
+#' averaged if the corresponding mean values exist (sample means are required to calculate overall means of std. devs.).
 #' 
-#' Variables
-#' 
-#' Area-weighted average: elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, elev_std, slope_std
-#' Sum: area, rivlen
+#' Currently, the following variables are considered:
+#' \describe{
+#'   \item{Area-weighted average}{elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, elev_std, slope_std}
+#'   \item{Sum}{area, rivlen}
+#' }
 #' 
 #' @return
-#' \code{UpstreamSLCClasses} returns a data frame of the same dimension as argument \code{gd}, with updated upstream columns marked with a leading 
-#' 'UP' in the column names.
+#' \code{UpstreamGeoData} returns a data frame of the same dimension as argument \code{gd}, with updated upstream columns marked with a leading 
+#' 'UP_' in the column names.
 #' 
 #' @seealso
 #' \code{\link{UpstreamSLCClasses}}
@@ -42,7 +45,7 @@
 #' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata)}
+#' \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, col.olake.slc = 12)}
 
 UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, signif.digits = 3, progbar = T) {
   
@@ -70,13 +73,17 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
   # unknown/untreated columns will be returned unchanged
   pos.wmean <- c(which(tolower(names(gd)) %in% c("elev_mean", "slope_mean", "buffer", "close_w", "latitude", "longitude")), 
                  which(toupper(substr(names(gd), 1, 3)) == "SLC"))
+  # lake depths are special, because they will be weighted by lake area, if olake slc is provided by user
+  pos.wmean.ldepth <- which(tolower(names(gd)) == "lake_depth")
   pos.sum <- which(tolower(names(gd)) %in% c("area", "rivlen"))
   pos.wsd.elev <- which(tolower(names(gd)) %in% c("elev_std", "elev_mean"))
   pos.wsd.slope <- which(tolower(names(gd)) %in% c("slope_std", "slope_mean"))
-  # lake depths are special, because they will be weighted by lake area, if olake slc is provided by user
-  pos.ldepth <- which(tolower(names(gd)) %in% c("lake_depth"))
   
-    
+  # warn user if lake_depth variable found but no lake area slc column provided
+  if (length(pos.wmean.ldepth) == 1 && is.null(col.olake.slc)) {
+    warning("'lake_depth' found in GeoData, but no lake area column provided in argument 'col.olake.slc'. Skipping upstream 'lake_depth'.")
+  }
+  
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if requested by user
   cat("\nFinding upstream SUBIDs.\n")
@@ -86,11 +93,10 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
     up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   }
   
-  
-  ### internal functions used below
+  ########################
+  ### internal functions applied below
   
   # internal function to calculate area-weighted means for one group of upstream areas (one element in up.sbd)
-  # used with sapply below
   # x: vector of upstream subids
   WeightedMean <- function(x, g, p.sbd, p.wmean, p.area) {
     
@@ -141,6 +147,9 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
     return(res)
   }
   
+  ##############################################
+  
+  
 
   # apply area-weighted mean function to all SUBIDs in variable 'subid', for all relevant variables
   # conditional: use the progress bar version of sapply if set by function argument
@@ -158,6 +167,20 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
     names(up.wmean)[2] <- names(gd)[pos.wmean]
   }
   rm(te)
+  
+  # olake-area weighted mean for lake depths
+  if (length(pos.wmean.ldepth) == 1 && !is.null(col.olake.slc)) {
+    cat("\nCalculating upstream lake-area-weighted lake depths.\n")
+    if (progbar) {
+      up.wmean.ldepth <- data.frame(SUBID = subid, LAKE_DEPTH = pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean.ldepth, p.area = col.olake.slc))
+    } else {
+      up.wmean.ldepth <- data.frame(SUBID = subid, LAKE_DEPTH = sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean.ldepth, p.area = col.olake.slc))
+    }
+    # if no lakes exist, all weights are 0 and NaN is computed. Replace those with zeros
+    up.wmean.ldepth[is.nan(up.wmean.ldepth[, 2]), 2] <- 0
+  } else {
+    up.wmean.ldepth <- NULL
+  }
   
   # apply area-weighted sd function to all SUBIDs in variable 'subid'
   # do separately for slope and elev, if they exist in gd
@@ -198,12 +221,18 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
   }
   rm(te)
   
+  
+  #######################################################
+  
   ## post-processing
   cat("\nPost-processing.")
   
-  # round to requested number of digits, conditional on existing results for the stddev variables
+  # round to requested number of digits, conditional on existing results for lake_depth and stddev variables
   if (!is.null(signif.digits)) {
     up.wmean[, -1] <- apply(data.frame(up.wmean[, -1]), 2, signif, digits = signif.digits)
+    if (!is.null(up.wmean.ldepth)) {
+      up.wmean.ldepth[, -1] <- signif(up.wmean.ldepth[, -1], digits = signif.digits)
+    }
     if (!is.null(up.wsd.elev)) {
       up.wsd.elev[, -1] <- signif(up.wsd.elev[, -1], digits = signif.digits)
     }
@@ -215,6 +244,9 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
   
   # copy all upstream calculations to result GeoData, replacing the originals
   gd[, pos.wmean] <- up.wmean[, -1]
+  if (!is.null(up.wmean.ldepth)) {
+    gd[, col.olake.slc] <- up.wmean.ldepth[2]
+  }
   if (!is.null(up.wsd.elev)) {
     gd[, pos.wsd.elev[2]] <- up.wsd.elev[, -1]
   }
@@ -225,8 +257,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
   
   
   # rename variables to clarify they are upstream values
-  pos.up <- c(pos.wmean, pos.sum, if (length(pos.wsd.elev) == 2) pos.wsd.elev[2] else NULL, if (length(pos.wsd.slope) == 2) pos.wsd.slope[2] else NULL)
-  names(gd)[pos.up] <- paste("UP", names(gd)[pos.up], sep = "")
+  pos.up <- c(pos.wmean, pos.sum, col.olake.slc, if (length(pos.wsd.elev) == 2) pos.wsd.elev[2] else NULL, if (length(pos.wsd.slope) == 2) pos.wsd.slope[2] else NULL)
+  names(gd)[pos.up] <- paste("UP_", names(gd)[pos.up], sep = "")
   
   # return result
   return(gd)

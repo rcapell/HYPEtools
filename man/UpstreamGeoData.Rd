@@ -15,8 +15,7 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
-\item{col.olake.slc}{Integer, column number with SLC class fraction of outlet lake. For weighted averaging of outlet lake depths.
-NOT YET IMPLEMENTED.}
+\item{col.olake.slc}{Integer, column number with SLC class fraction of outlet lake. Mandatory for weighted averaging of outlet lake depths.}
 
 \item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding.}
 
@@ -24,23 +23,27 @@ NOT YET IMPLEMENTED.}
 is \code{NULL} or contains many SUBIDs.}
 }
 \value{
-\code{UpstreamSLCClasses} returns a data frame of the same dimension as argument \code{gd}, with updated upstream columns marked with a leading
-'UP' in the column names.
+\code{UpstreamGeoData} returns a data frame of the same dimension as argument \code{gd}, with updated upstream columns marked with a leading
+'UP_' in the column names.
 }
 \description{
 Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files.
 }
 \details{
 \code{UpstreamGeoData} calculated upstream averages or sums of selected variables in a GeoData data frame, including branch connections
-in case of stream bifurcations but not including potential irrigation links or groundwater flows.
+in case of stream bifurcations but not including potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area, with
+the exception of outlet lake depths provided in GeoData variable 'lake_depth'. These are weighted by outlet lake area and the GeoData column with
+SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Elevation and slope standard deviations are
+averaged if the corresponding mean values exist (sample means are required to calculate overall means of std. devs.).
 
-Variables
-
-Area-weighted average: elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, elev_std, slope_std
-Sum: area, rivlen
+Currently, the following variables are considered:
+\describe{
+  \item{Area-weighted average}{elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, elev_std, slope_std}
+  \item{Sum}{area, rivlen}
+}
 }
 \examples{
-\dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata)}
+\dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, col.olake.slc = 12)}
 }
 \seealso{
 \code{\link{UpstreamSLCClasses}}
