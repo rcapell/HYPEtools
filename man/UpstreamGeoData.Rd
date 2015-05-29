@@ -23,14 +23,14 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 is \code{NULL} or contains many SUBIDs.}
 }
 \value{
-\code{UpstreamGeoData} returns a data frame of the same dimension as argument \code{gd}, with updated upstream columns marked with a leading
-'UP_' in the column names.
+\code{UpstreamGeoData} returns a data frame with the same number of columns as argument \code{gd} and number of rows corresponding to number of
+SUBIDs in argument \code{subid}, with updated upstream columns marked with a leading 'UP_' in the column names.
 }
 \description{
 Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files.
 }
 \details{
-\code{UpstreamGeoData} calculated upstream averages or sums of selected variables in a GeoData data frame, including branch connections
+\code{UpstreamGeoData} calculates upstream averages or sums of selected variables in a GeoData data frame, including branch connections
 in case of stream bifurcations but not including potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area, with
 the exception of outlet lake depths provided in GeoData variable 'lake_depth'. These are weighted by outlet lake area and the GeoData column with
 SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Elevation and slope standard deviations are

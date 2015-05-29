@@ -23,7 +23,7 @@
 #' is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
-#' \code{UpstreamGeoData} calculated upstream averages or sums of selected variables in a GeoData data frame, including branch connections 
+#' \code{UpstreamGeoData} calculates upstream averages or sums of selected variables in a GeoData data frame, including branch connections 
 #' in case of stream bifurcations but not including potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area, with 
 #' the exception of outlet lake depths provided in GeoData variable 'lake_depth'. These are weighted by outlet lake area and the GeoData column with 
 #' SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Elevation and slope standard deviations are 
@@ -36,8 +36,8 @@
 #' }
 #' 
 #' @return
-#' \code{UpstreamGeoData} returns a data frame of the same dimension as argument \code{gd}, with updated upstream columns marked with a leading 
-#' 'UP_' in the column names.
+#' \code{UpstreamGeoData} returns a data frame with the same number of columns as argument \code{gd} and number of rows corresponding to number of 
+#' SUBIDs in argument \code{subid}, with updated upstream columns marked with a leading 'UP_' in the column names.
 #' 
 #' @seealso
 #' \code{\link{UpstreamSLCClasses}}
@@ -61,9 +61,15 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
     stop("No AREA column found in 'gd'. Exiting.")
   }
   
-  # conditional: fill subid vector if not user-provided
+  # conditional: fill subid vector if not user-provided, otherwise check that all subids are in gd and get row numbers
   if (is.null(subid)) {
     subid <- gd[, pos.sbd]
+    row.sbd <- NULL
+  } else {
+    row.sbd <- match(x = c(subid), table = gd[, pos.sbd])
+    if (any(is.na(row.sbd))) {
+      stop("Atleast one SUBID in 'subid' not found in 'gd'. Exiting.")
+    }
   }
   
   # safety measure: force type of area to numeric to prevent integer overflow when summing below
@@ -159,7 +165,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
   } else {
     te <- sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
   }
-  # create result dataframe, conditiononal on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
+  # create result dataframe, conditional on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
   if(length(pos.wmean) > 1) {
     up.wmean <- data.frame(SUBID = subid, t(te))
   } else {
@@ -242,26 +248,33 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
     up.sum[, -1] <- apply(data.frame(up.sum[, -1]), 2, signif, digits = signif.digits)
   }
   
-  # copy all upstream calculations to result GeoData, replacing the originals
-  gd[, pos.wmean] <- up.wmean[, -1]
+  ## copy all upstream calculations to result GeoData, replacing the originals, conditional on presence of argument subid
+  # create result dataframe
+  if (is.null(subid)) {
+    res <- gd
+  } else {
+    res <- gd[row.sbd, ]
+  }
+  # update result dataframe with upstream variables
+  res[, pos.wmean] <- up.wmean[, -1]
   if (!is.null(up.wmean.ldepth)) {
-    gd[, col.olake.slc] <- up.wmean.ldepth[2]
+    res[, col.olake.slc] <- up.wmean.ldepth[2]
   }
   if (!is.null(up.wsd.elev)) {
-    gd[, pos.wsd.elev[2]] <- up.wsd.elev[, -1]
+    res[, pos.wsd.elev[2]] <- up.wsd.elev[, -1]
   }
   if (!is.null(up.wsd.slope)) {
-    gd[, pos.wsd.slope[2]] <- up.wsd.slope[, -1]
+    res[, pos.wsd.slope[2]] <- up.wsd.slope[, -1]
   }
-  gd[, pos.sum] <- up.sum[, -1]
+  res[, pos.sum] <- up.sum[, -1]
   
   
-  # rename variables to clarify they are upstream values
+  # rename upstream variables to clarify they are upstream values
   pos.up <- c(pos.wmean, pos.sum, col.olake.slc, if (length(pos.wsd.elev) == 2) pos.wsd.elev[2] else NULL, if (length(pos.wsd.slope) == 2) pos.wsd.slope[2] else NULL)
-  names(gd)[pos.up] <- paste("UP_", names(gd)[pos.up], sep = "")
+  names(res)[pos.up] <- paste("UP_", names(res)[pos.up], sep = "")
   
   # return result
-  return(gd)
+  return(res)
 }
 
 
