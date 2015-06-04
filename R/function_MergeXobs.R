@@ -39,6 +39,11 @@ MergeXobs <- function(x, y, x.first = TRUE, comment = "") {
     stop("Time step lengths in 'x' and 'y' differ.")
   }
   
+  # check if there are any duplicated dates in x or y
+  if (anyDuplicated(x[, 1]) || anyDuplicated(y[, 1])) {
+    stop("Duplicated dates in either 'x' or 'y'.")
+  }
+  
   # Create data frame with common time period column for both input xobs in appropriate time steps 
   date.min <- min(min(x[, 1]), min(y[, 1]))
   date.max <- max(max(x[, 1]), max(y[, 1]))

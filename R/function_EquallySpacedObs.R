@@ -39,6 +39,11 @@ EquallySpacedObs <- function(x, sort.data = TRUE, timestep, ts.col = 1) {
     stop("Datetime column neither of class 'POSIXt' nor of class 'Date'.")
   }
   
+  # check if there are any duplicated dates in x or y
+  if (anyDuplicated(x[, ts.col])) {
+    stop("Duplicated dates in 'x'.")
+  }
+  
   # sort by datetime if requested
   if (sort.data) {
     x <- x[order(x[, ts.col]), ]
