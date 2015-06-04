@@ -1,7 +1,7 @@
 
 #' @export
 #' @title
-#' Create an equally spaced time series from observations
+#' Create an equally spaced time series from irregular observations
 #'
 #' @description
 #' \code{EquallySpacedObs} creates equally spaced time series with missing observations from a data frame with irregular 

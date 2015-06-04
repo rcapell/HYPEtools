@@ -2,7 +2,7 @@
 % Please edit documentation in R/function_EquallySpacedObs.R
 \name{EquallySpacedObs}
 \alias{EquallySpacedObs}
-\title{Create an equally spaced time series from observations}
+\title{Create an equally spaced time series from irregular observations}
 \usage{
 EquallySpacedObs(x, sort.data = TRUE, timestep, ts.col = 1)
 }
