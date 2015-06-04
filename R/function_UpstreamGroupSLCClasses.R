@@ -4,19 +4,25 @@
 #' @import pbapply
 #' 
 #' @title
-#' Calculate area-weighted upstream averages of CropID fractions
+#' Calculate area-weighted upstream averages of grouped SLC class fractions.
 #'
 #' @description
-#' Function to calculate averages of CropID fractions calculated from imported GeoData.txt and GeoClass.txt files. 
+#' Function to calculate averages of grouped SLC class fractions calculated from imported GeoData.txt and GeoClass.txt or any other user-defined grouping. 
 #'
 #' @param subid Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
 #' If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.
 #' 
-#' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.
-#' 
-#' @param gc A data frame containing an imported 'GeoClass.txt' file.
+#' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
 #' 
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
+#' 
+#' @param gc Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+#' file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.
+#' 
+#' @param type Keyword character string for use with \code{gc}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
+#' can be abbreviated.
+#' 
+#' @param group Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gc} + \code{type}.
 #' 
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
 #'
@@ -24,27 +30,32 @@
 #' is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
-#' \code{UpstreamCropids} calculates area-weighted upstream averages of CropID fractions from SLC class fractions in a GeoData table and corresponding 
-#' CropIDs in a GeoClass table, including branch connections in case of stream bifurcations but not including potential irrigation links or 
-#' groundwater flows. Averages are weighted by sub-catchment area.
+#' \code{UpstreamGroupSLCClasses} calculates area-weighted upstream averages of CropID fractions from SLC class fractions in a GeoData table and corresponding 
+#' grouping columns in a GeoClass table or a user-provided vector. Upstream calculations include branch connections in case of stream bifurcations but not 
+#' potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area.
+#' 
+#' The function builds on \code{\link{GroupSLCClasses}}, which provides grouped sums of SLC classes for several or all sub-basins in a GeoData dataframe.
 #' 
 #' @note
-#' \code{UpstreamCropids} expects SLC class columns in argument \code{gd} to be ordered in ascending order.
+#' \code{UpstreamGroupSLCClasses} expects SLC class columns in argument \code{gd} to be ordered in ascending order.
 #' 
 #' @return
-#' \code{UpstreamCropids} returns a data frame with SUBIDs in the first column, and upstream CropID fractions in the following columns.
+#' \code{UpstreamGroupSLCClasses} returns a data frame with SUBIDs in the first column, and upstream group fractions in the following columns.
 #' 
 #' @seealso
+#' \code{\link{GroupSLCClasses}}
 #' \code{\link{UpstreamSLCClasses}}
 #' \code{\link{UpstreamGeoData}}
 #' \code{\link{SumUpstreamArea}}
 #' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{UpstreamCropids(subid = 21, gd = mygeodata, gc = mygeoclass, bd = mybranchdata)}
+#' \dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gc = mygeoclass, bd = mybranchdata, type = "landuse")}
 
 
-UpstreamCropids <- function(subid = NULL, gd, gc, bd = NULL, signif.digits = 3, progbar = T) {
+
+
+UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gc = NULL, type = "landuse", group = NULL, signif.digits = 3, progbar = T) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
@@ -59,30 +70,13 @@ UpstreamCropids <- function(subid = NULL, gd, gc, bd = NULL, signif.digits = 3, 
     stop("No AREA column found in 'gd'. Exiting.")
   }
   
-  # check if numbers of slc classes in gc and gd are consistent
-  if (nrow(gc) != length(pos.slc)) {
-    stop("Number of SLC classes in 'gd' and 'gc' are not identical. Exiting.")
-  }
-  
   # conditional: fill subid vector if not user-provided
   if (is.null(subid)) {
     subid <- gd[, pos.sbd]
   }
   
-  ## merge SLC classes by crop id and create cropid fractions for each subid in gd
-  # extract slc columns from geodata
-  slc <- gd[, pos.slc]
-  # calculate cropid fraction, conditionally using progress bar
-  cat("\nCalculating CROPID fractions.\n")
-  if (progbar) {
-    te <- pbapply(slc, 1, function(x, y) {tapply(x, y, sum)}, y = paste("UP_CROPID_", gc[, 4], sep = ""))
-  } else {
-    te <- apply(slc, 1, function(x, y) {tapply(x, y, sum)}, y = paste("UP_CROPID_", gc[, 4], sep = ""))
-  }
-  # create geodata-like dataframe with subids and cropid fractions
-  gcrop <- data.frame(SUBID = gd[, pos.sbd], AREA = gd[, pos.area], 
-                      t(te))
-  rm(te)
+  # create grouped slc classes using existing function
+  grclass <- GroupSLCClasses(gd = gd, gc = gc, type = type, group = group, abs.area = FALSE, verbose = progbar)
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if requested by user
@@ -92,6 +86,8 @@ UpstreamCropids <- function(subid = NULL, gd, gc, bd = NULL, signif.digits = 3, 
   } else {
     up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   }
+  
+  ## calculate upstream average groups
   
   ########################
   ### internal function applied below
@@ -118,30 +114,28 @@ UpstreamCropids <- function(subid = NULL, gd, gc, bd = NULL, signif.digits = 3, 
   }
   ########################
   
-  
   # apply area-weighted mean function to all SUBIDs in variable 'subid', for all relevant variables
   # conditional: use the progress bar version of sapply if set by function argument
   cat("\nCalculating upstream area-weighted means.\n")
   if (progbar) {
-    te <- pbsapply(up.sbd, WeightedMean, g = gcrop, p.sbd = 1, p.wmean = 3:ncol(gcrop), p.area = 2)
+    te <- pbsapply(up.sbd, WeightedMean, g = grclass, p.sbd = 1, p.wmean = 3:ncol(grclass), p.area = 2)
   } else {
-    te <- sapply(up.sbd, WeightedMean, g = gcrop, p.sbd = 1, p.wmean = 3:ncol(gcrop), p.area = 2)
+    te <- sapply(up.sbd, WeightedMean, g = grclass, p.sbd = 1, p.wmean = 3:ncol(grclass), p.area = 2)
   }
   # create result dataframe, conditional on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
-  if(length(3:ncol(gcrop)) > 1) {
-    up.gcrop <- data.frame(SUBID = subid, t(te))
+  if(length(3:ncol(grclass)) > 1) {
+    up.grclass <- data.frame(SUBID = subid, t(te))
   } else {
-    up.gcrop <- data.frame(SUBID = subid, te)
-    names(up.gcrop)[2] <- names(gcrop)[3]
+    up.grclass <- data.frame(SUBID = subid, te)
+    names(up.grclass)[2] <- names(grclass)[3]
   }
   rm(te)
   
   # round to requested number of digits, conditional on existing results for lake_depth and stddev variables
   if (!is.null(signif.digits)) {
-    up.gcrop[, -1] <- apply(data.frame(up.gcrop[, -1]), 2, signif, digits = signif.digits)
+    up.grclass[, -1] <- apply(data.frame(up.grclass[, -1]), 2, signif, digits = signif.digits)
   }
   
-  # return upstream cropids
-  return(up.gcrop)
-  
+  # return upstream groups
+  return(up.grclass)
 }

@@ -6,7 +6,7 @@
 #' Calculate grouped sums for SLC classes in a GeoData file
 #'
 #' @description
-#' \code{GroupSLCClasses} calculates grouped sums for SLC classes (area fractions or absolute areas) based on land use or soil groups in a GeoClass 
+#' \code{GroupSLCClasses} calculates grouped sums for SLC classes (area fractions or absolute areas) based on land use, soil, or crop groups in a GeoClass 
 #' table, or any other user-provided grouping index. 
 #' 
 #' @param gd Data frame containing columns with SUBIDs, SLC fractions, and SUBID areas if \code{abs.area = TRUE}. Typically a 'GeoData.txt' file 
@@ -15,7 +15,8 @@
 #' @param gc Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.
 #' 
-#' @param type Keyword character string for use with \code{gc}. Type of grouping index, either \code{"landuse"} or \code{"soil"}, can be abbreviated.
+#' @param type Keyword character string for use with \code{gc}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
+#' can be abbreviated.
 #' 
 #' @param group Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gc} + \code{type}.
 #' 
@@ -27,7 +28,7 @@
 #' If absolute areas are calculated, area units will correspond to areas provided in \code{gd}.
 #' 
 #' @return
-#' \code{GroupSLClasses} returns the data frame with SUBIDs and grouped SLC class columns. 
+#' \code{GroupSLClasses} returns the data frame with SUBIDs, SUBID areas, and grouped SLC class columns. 
 #' 
 #' @examples
 #' \dontrun{
@@ -44,7 +45,7 @@ GroupSLCClasses <- function(gd, gc = NULL, type = "landuse", group = NULL, abs.a
   if (!is.null(gc) && !is.null(group)) {
     stop("Both GeoClass table and user-defined grouping index provided. Please provide just one of them.")
   }
-  if (!any(type == "landuse", type == "l", type == "soil", type == "s")) {
+  if (!any(type == "landuse", type == "l", type == "soil", type == "s", type == "crop", type == "c")) {
     stop("'type' keyword unknown.")
   }
   
@@ -52,23 +53,36 @@ GroupSLCClasses <- function(gd, gc = NULL, type = "landuse", group = NULL, abs.a
   if (!is.null(gc)) {
     if (type == "landuse" || type == "l") {
       lgroup <- gc[, 2]
+      grname <- "landuse"
     }
     if (type == "soil" || type == "s") {
       lgroup <- gc[, 3]
+      grname <- "soil"
+    }
+    if (type == "crop" || type == "c") {
+      lgroup <- gc[, 4]
+      grname <- "crop"
     }
   } else {
     lgroup <- group
+    grname <- "group"
   }
   
   # columns with SLCs in GeoData
   gdcols.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")
+  
   
   # extract slc class area fractions or absolute slc areas as working data frame
   if (abs.area) {
     # force conversion of areas in gd to numeric, to prevent integer overflow errors
     area <- as.numeric(gd[, which(toupper(names(gd)) == "AREA")])
     # calculate absolute areas from fractions and area sums provided in gd
-    slc <- apply(gd[, gdcols.slc], 2, function(x, y) {x * y}, y = area)
+    if (verbose) {
+      cat("Calculating absolute areas.")
+      slc <- pbapply(gd[, gdcols.slc], 2, function(x, y) {x * y}, y = area)
+    } else {
+      slc <- apply(gd[, gdcols.slc], 2, function(x, y) {x * y}, y = area)
+    }
     # convert to matrix if just one row in gd, would be a vector otherwise
     if (nrow(gd) == 1) {
       slc <- t(slc)
@@ -82,12 +96,12 @@ GroupSLCClasses <- function(gd, gc = NULL, type = "landuse", group = NULL, abs.a
   
   # error check: number of SLCs in grouping index and gd must be identical
   if (nslc != length(lgroup)) {
-    stop("Number of SLCs in GeoData and grouping index do not match.")
+    stop("Number of SLCs in 'GeoData'gd' and number of elements in grouping index do not match.")
   }
   
   # print to screen if verbose
   if (verbose) {
-    cat(paste("\nNumber of SLC classes in GeoData and GeoClass:", nslc, "\n"))
+    cat(paste("\nNumber of SLC classes in 'gd':", nslc, "\n"))
   }
   
   # extract areas from gd if absolute areas are to be calculated
@@ -99,8 +113,8 @@ GroupSLCClasses <- function(gd, gc = NULL, type = "landuse", group = NULL, abs.a
   }
   # formatting: transpose result and convert to dataframe
   res <- as.data.frame(t(res))
-  res <- cbind(gd[, which(toupper(names(gd)) == "SUBID")], res)
-  names(res) <- c("SUBID", paste("group", names(res)[-1], sep = ""))
+  res <- cbind(gd[, which(toupper(names(gd)) == "SUBID")], gd[, which(toupper(names(gd)) == "AREA")], res)
+  names(res) <- c("SUBID", "AREA", paste(grname, names(res)[-c(1:2)], sep = "_"))
   
   # return results
   return(res)
