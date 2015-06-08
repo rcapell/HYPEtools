@@ -4,7 +4,8 @@
 \alias{AllUpstreamSubids}
 \title{Find All Upstream SUBIDs}
 \usage{
-AllUpstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
+AllUpstreamSubids(subid, gd, bd = NULL, sort = FALSE,
+  write.arcgis = FALSE)
 }
 \arguments{
 \item{subid}{SUBID of a target sub-catchment (must exist in \code{gd}).}
@@ -13,11 +14,14 @@ AllUpstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
 
 \item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
+\item{sort}{Logical. If \code{TRUE}, the resulting upstream SUBID vector will be sorted according to order in argument \code{gd}, i.e. in
+downstream order for a working GeoData table.}
+
 \item{write.arcgis}{Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's
 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.}
 }
 \value{
-\code{AllUpstreamSubids} returns a vector of SUBIDs, ordered as downstream sequence.
+\code{AllUpstreamSubids} returns a vector of SUBIDs.
 }
 \description{
 Function to find all SUBIDs of upstream sub-catchments for a single

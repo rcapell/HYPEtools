@@ -32,7 +32,8 @@
 #' These additional downstream connections are provided in the BranchData file, together with flow fractions to each downstream sUBID.
 #' 
 #' Formally, \code{gd} can be any data frame which contains columns 'SUBID' and 'MAINDOWN' (not case-sensitive), and \code{bd} any 
-#' data frame which contains four columns 'BRANCHID', 'SOURCEID', 'MAINPART', and 'MAXQMAIN'. Typically, these are HYPE data files 
+#' data frame which contains three columns: 'BRANCHID', 'SOURCEID', and 'MAINPART', and optionally columns 'MAXQMAIN', 'MINQMAIN', 'MAXQBRANCH'. 
+#' Typically, these are HYPE data files 
 #' imported through \code{\link{ReadGeoData}} and \code{\link{ReadBranchData}}. See HYPE documentation for further details on connections
 #' Between SUBIDs in the model.
 #' 
@@ -41,7 +42,7 @@
 #' \code{DirectUpstreamSubids} always returns a \link{list}. If argument \code{subid} is non-\code{NULL}, a list with two elements is returned: 
 #'  \code{subid} contains an integer giving the target SUBID and \code{upstr.df} contains a data frame with columns 
 #'  \code{upstream} (upstream SUBID), \code{is.main} (logical, \code{TRUE} if it is a MAINDOWN connection), 
-#'  \code{fraction} (fraction of flow going into the target SUBID), and \code{limit} (maximum flow contribution to target SUBID).
+#'  \code{mainpart} (fraction of flow going into the target SUBID), and optionally \code{MAXQMAIN} \code{MINQMAIN}, and \code{MAXQBRANCH}.
 #'  
 #'  If no specific SUBID was provided, \code{DirectUpstreamSubids} returns a list with upstream information for all SUBIDs in argument 
 #'  \code{gd}, each list element containing the list described above, i.e. with an integer element (SUBID) and a data frame element 

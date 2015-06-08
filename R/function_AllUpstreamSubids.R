@@ -10,6 +10,8 @@
 #' @param subid SUBID of a target sub-catchment (must exist in \code{gd}). 
 #' @param gd A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
+#' @param sort Logical. If \code{TRUE}, the resulting upstream SUBID vector will be sorted according to order in argument \code{gd}, i.e. in 
+#' downstream order for a working GeoData table.
 #' @param write.arcgis Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
 #' 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.
 #' 
@@ -21,14 +23,14 @@
 #' 
 #' 
 #' @return
-#' \code{AllUpstreamSubids} returns a vector of SUBIDs, ordered as downstream sequence.
+#' \code{AllUpstreamSubids} returns a vector of SUBIDs.
 #' 
 #' 
 #' @examples
 #' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
 
 
-AllUpstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
+AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, write.arcgis = FALSE) {
   
   # identify relevant column positions in geodata and branchdata
   geocol.md <- which(tolower(colnames(gd)) == "maindown")
@@ -80,8 +82,10 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   # add outlet SUBID to result vector
   us <- c(subid, us)
   
-  # order in downstream sequence, for direct use as pmsf file
-  us <- gd[, geocol.sub][sort(match(us, gd[, geocol.sub]))]
+  # condional: order in downstream sequence, for direct use as pmsf file
+  if (sort) {
+    us <- gd[, geocol.sub][sort(match(us, gd[, geocol.sub]))]
+  }
   
   # try to write arcgis select string to clipboard, with error recovery
   if (write.arcgis == T) {
