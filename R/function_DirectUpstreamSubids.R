@@ -42,7 +42,8 @@
 #' \code{DirectUpstreamSubids} always returns a \link{list}. If argument \code{subid} is non-\code{NULL}, a list with two elements is returned: 
 #'  \code{subid} contains an integer giving the target SUBID and \code{upstr.df} contains a data frame with columns 
 #'  \code{upstream} (upstream SUBID), \code{is.main} (logical, \code{TRUE} if it is a MAINDOWN connection), 
-#'  \code{mainpart} (fraction of flow going into the target SUBID), and optionally \code{MAXQMAIN} \code{MINQMAIN}, and \code{MAXQBRANCH}.
+#'  \code{fraction} (fraction of flow going into the target SUBID), and \code{llim} and \code{ulim} giving upper and lower flow boundaries which 
+#'  optionally limit flow into the target SUBID.
 #'  
 #'  If no specific SUBID was provided, \code{DirectUpstreamSubids} returns a list with upstream information for all SUBIDs in argument 
 #'  \code{gd}, each list element containing the list described above, i.e. with an integer element (SUBID) and a data frame element 
@@ -54,36 +55,58 @@
 #' @examples
 #' \dontrun{DirectUpstreamSubids(subid = 1, gd = mygeodata)}
 
-DirectUpstreamSubids <- function(subid = NULL, 
-                               gd, 
-                               bd = data.frame("BRANCHID" = integer(), "SOURCEID" = integer(), 
-                                               "MAINPART" = numeric(), "MAXQMAIN" = numeric())
-                               ) {
+DirectUpstreamSubids <- function(subid = NULL, gd, bd = NULL) {
   
-  geocol.md <- which(colnames(gd)=="maindown" | colnames(gd) =="MAINDOWN")
-  geocol.sub <- which(colnames(gd)=="subid" | colnames(gd) =="SUBID")
-  brcol.br <- which(colnames(bd)=="branchid" | colnames(bd) =="BRANCHID")
-  brcol.sr <- which(colnames(bd)=="sourceid" | colnames(bd) =="SOURCEID")   
-  brcol.mp <- which(colnames(bd)=="mainpart" | colnames(bd) =="MAINPART")   
-  brcol.mx <- which(colnames(bd)=="maxQmain" | colnames(bd) =="MAXQMAIN")
+  # create dummy branchdata if none was provided, needed for merging below
+  if (is.null(bd)) {
+    bd <- data.frame("BRANCHID" = integer(), "SOURCEID" = integer(), "MAINPART" = numeric(), "MAXQMAIN" = numeric(), 
+                     "MINQMAIN" = numeric(), "MAXQBRANCH" = numeric())
+  }
   
+  # mandatory column positions
+  geocol.md <- which(toupper(colnames(gd)) =="MAINDOWN")
+  geocol.sub <- which(toupper(colnames(gd)) =="SUBID")
+  brcol.br <- which(toupper(colnames(bd)) =="BRANCHID")
+  brcol.sr <- which(toupper(colnames(bd)) =="SOURCEID")  
+  # optional branchdata column positions
+  brcol.mp <- which(toupper(colnames(bd)) =="MAINPART")   
+  brcol.mx <- which(toupper(colnames(bd)) =="MAXQMAIN")
+  brcol.mn <- which(toupper(colnames(bd)) =="MINQMAIN")
+  brcol.mb <- which(toupper(colnames(bd)) =="MAXQBRANCH")
+  # add optional columns if they do not exist, to create a well defined argument for internal function below
+  if (length(brcol.mp) == 0) {
+    brcol.mp <- ncol(bd) + 1
+    bd <- data.frame(bd, MAINPART = NA)
+  }
+  if (length(brcol.mx) == 0) {
+    brcol.mx <- ncol(bd) + 1
+    bd <- data.frame(bd, MAXQMAIN = NA)
+  }
+  if (length(brcol.mn) == 0) {
+    brcol.mn <- ncol(bd) + 1
+    bd <- data.frame(bd, MINQMAIN = NA)
+  }
+  if (length(brcol.mb) == 0) {
+    brcol.mb <- ncol(bd) + 1
+    bd <- data.frame(bd, MAXQBRANCH = NA)
+  }
   
   # merge subid, maindown, branchid, mainpart, maxqmain to working data frame
-  df <- merge(gd[, c(geocol.sub, geocol.md)], bd[, c(brcol.sr, brcol.br, brcol.mp, brcol.mx)], by.x = 1, by.y = 1, all = T, sort = F)
-  
+  df <- merge(gd[, c(geocol.sub, geocol.md)], bd[, c(brcol.sr, brcol.br, brcol.mp, brcol.mx, brcol.mn, brcol.mb)], by.x = 1, by.y = 1, all = T, sort = F)
+  # sort as in gd, necessary to do separately because non-sorting in merge will still put all matches first (bifurcations) and then append all non-matches (no bif.)
+  df <- df[match(x = gd[, geocol.sub], table = df[, 1]), ]
   
   # if no target subid is given as argument, apply internal function to find upstream subids on all subids in gd
   if (is.null(subid)){
     res <- lapply(df[, 1], .FindUpstrSbd, dtf = df)
     # name entries in the list with 'X' + subid
     names(res) <- paste("X", df[, 1], sep = "")
-    return(res)
-  }
-  # otherwise just run the function for the one subid
-  else {
+  } else {
+    # otherwise just run the function for the one subid
     res <- .FindUpstrSbd(sbd = subid, dtf = df)
-    return(res)
   }
+  
+  return(res)
 }
 
 ## DEBUG

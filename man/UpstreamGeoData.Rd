@@ -5,7 +5,7 @@
 \title{Calculate upstream sums and averages of selected GeoData contents}
 \usage{
 UpstreamGeoData(subid = NULL, gd, bd = NULL, col.olake.slc = NULL,
-  signif.digits = 3, progbar = T)
+  signif.digits = 3, progbar = TRUE)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}).

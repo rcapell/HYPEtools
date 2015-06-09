@@ -47,7 +47,7 @@
 #' @examples
 #' \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, col.olake.slc = 12)}
 
-UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, signif.digits = 3, progbar = T) {
+UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, signif.digits = 3, progbar = TRUE) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
