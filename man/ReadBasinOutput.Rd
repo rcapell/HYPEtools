@@ -14,13 +14,13 @@ Paths are separated by '/', not '\\'.}
 and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.}
 
-\item{outformat}{Format of the returned object. Character string, either \code{'dataframe'} or \code{'matrix'},
-can be abbreviated.}
+\item{outformat}{Format of the returned object. Character string, either \code{'dataframe'} (the standard choice) or
+\code{'matrix'}, can be abbreviated.}
 }
 \value{
 \code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
 is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed.
-Variable units ar imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'.
+Variable units are imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'.
 The catchment's SUBID is extracted from the \code{filename} argument if possible and stored in \code{attribute} 'subid'.
 If a matrix is returned, these attributes will not be preserved.
 }

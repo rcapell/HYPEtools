@@ -27,7 +27,7 @@
 #' \dontrun{SortGeoData(gd = mygeodata, bd = mybranchdata)}
 
 
-SortGeoData <- function(gd = gd, bd = bd, progbar = TRUE) {
+SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
   
   # column position of subids in gd
   geocol.sbd <- which(tolower(colnames(gd)) == "subid")

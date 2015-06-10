@@ -88,8 +88,8 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
 #' and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
-#' @param outformat Format of the returned object. Character string, either \code{'dataframe'} or \code{'matrix'}, 
-#' can be abbreviated.
+#' @param outformat Format of the returned object. Character string, either \code{'dataframe'} (the standard choice) or 
+#' \code{'matrix'}, can be abbreviated.
 #' 
 #' @details
 #' \code{ReadBasinOutput} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
@@ -98,7 +98,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' @return
 #' \code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
 #' is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed. 
-#' Variable units ar imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'. 
+#' Variable units are imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'. 
 #' The catchment's SUBID is extracted from the \code{filename} argument if possible and stored in \code{attribute} 'subid'.
 #' If a matrix is returned, these attributes will not be preserved.
 #' 
@@ -121,7 +121,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
     stop("Argument 'outformat' invalid.")
   }
   
-  x <- read.table(filename, header = F, na.strings = "-9999", skip = 2)      
+  x <- read.table(filename, header = F, na.strings = "-9999", skip = 2, sep = "\t")      
   names(x) <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
   
   
@@ -157,7 +157,9 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
     }
     # conditional: timestep attribute identified by difference between first two entries
     tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
-    if (tdff == 24) {
+    if (is.na(tdff)) {
+      attr(x, which = "timestep") <- "unknown"
+    } else if (tdff == 24) {
       attr(x, which = "timestep") <- "day"
     } else if (tdff == 168) {
       attr(x, which = "timestep") <- "week"
@@ -168,7 +170,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
     }
   } else {
     # add timestep attribute with placeholder value
-    attr(x, which = "timestep") <- "none"
+    attr(x, which = "timestep") <- "unknown"
   }
   
   
@@ -176,7 +178,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
   xattr <- readLines(filename, n = 2)
   attr(x, which = "unit") <- strsplit(xattr[2], split = "\t")[[1]]
   te <- strsplit(filename, "/")[[1]]
-  attr(x, which = "subid") <- gsub("[[:alpha:][:punct:]]", "", te[length(te)])
+  attr(x, which = "subid") <- as.integer(gsub("[[:alpha:][:punct:]]", "", te[length(te)]))
   
   
   # search data rows for occurrences of "****************", which represent values which had too many digits at the requested
