@@ -305,7 +305,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
         # attribute variable exists
         if (length(attr(x, which = "variable")) == ncol(x) - 1) {
           # attribute and export dataframe match in length, export attribute with padded 'name' string and newline
-          tmp <- paste(c("name", attr(x, which = "variable")), collapse = "\t")
+          tmp <- paste(c("x", attr(x, which = "variable")), collapse = "\t")
           writeLines(tmp, con = fcon)
         } else {
           # mismatch in length, stop with error

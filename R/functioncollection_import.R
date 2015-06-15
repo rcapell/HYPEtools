@@ -243,9 +243,10 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #' how to access these).
 #' 
 #' @return
-#' \code{ReadXobs} returns a data frame with three additional attributes: \code{variable} and \code{subid} each containing a 
-#' vector with column-wise information (exept the first column with date/time). A third attribute \code{comment} contains 
-#' the content of the Xobs file comment row as single string.
+#' \code{ReadXobs} returns a data frame with three additional attributes \code{variable}, \code{subid}, and \code{comment}: \code{variable} 
+#' and \code{subid} each contain a vector with column-wise information (exept the first column with date/time). \code{comment} contains 
+#' the content of the Xobs file comment row as single string. Column names of the returned data frame are composed of variable names and 
+#' SUBIDs, separated by and underscore, i.e. \code{[variable]_[subid]}.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
