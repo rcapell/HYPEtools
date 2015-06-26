@@ -16,9 +16,10 @@ Paths are separated by '/', not '\\'.}
 to import.}
 }
 \value{
-\code{ReadXobs} returns a data frame with three additional attributes: \code{variable} and \code{subid} each containing a
-vector with column-wise information (exept the first column with date/time). A third attribute \code{comment} contains
-the content of the Xobs file comment row as single string.
+\code{ReadXobs} returns a data frame with three additional attributes \code{variable}, \code{subid}, and \code{comment}: \code{variable}
+and \code{subid} each contain a vector with column-wise information (exept the first column with date/time). \code{comment} contains
+the content of the Xobs file comment row as single string. Column names of the returned data frame are composed of variable names and
+SUBIDs, separated by and underscore, i.e. \code{[variable]_[subid]}.
 }
 \description{
 This is a convenience wrapper function to import an Xobs file as data frame into R.

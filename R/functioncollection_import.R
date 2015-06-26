@@ -15,6 +15,7 @@
 #     - ReadPmsf()
 #     - ReadMgmtData()
 #     - ReadAquiferData()
+#     - ReadPointSourceData()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -267,7 +268,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
     
   # update with new attributes to hold subids and obs-variables for all columns
   xattr <- readLines(filename,n=3)
-  attr(xobs, which = "comment") <- gsub("\t", "", xattr[1])
+  attr(xobs, which = "comment") <- strsplit(xattr[1], split = "\t")[[1]]
   attr(xobs, which = "variable") <- strsplit(xattr[2], split = "\t")[[1]][-1]
   attr(xobs, which = "subid") <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
   
@@ -849,3 +850,40 @@ ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t") {
   if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
+
+
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPointSourceData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read a 'PointSourceData.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to import a PointSourceData file as data frame into R.
+#' 
+#' @param filename Path to and file name of the PointSourceData file to import. 
+#'  
+#' @details
+#' \code{PointSourceData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
+#' function to the other RHYPE imports.
+#' 
+#' @return
+#' \code{PointSourceData} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{PointSourceData("PointSourceData.txt")}
+#' 
+
+
+PointSourceData <- function(filename = "PointSourceData.txt") {
+  read.table(file = filename, header = T)
+}
+
+

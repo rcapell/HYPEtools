@@ -11,7 +11,8 @@ UpstreamSLCClasses(subid = NULL, gd, bd = NULL, signif.digits = 3,
 \item{subid}{Integer vector of SUBIDs to calculate upstream SUBID fractions for (must exist in \code{gd}).
 If \code{NULL}, upstream areas for all SUBIDs will be calculated.}
 
-\item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.}
+\item{gd}{A data frame containing columns 'SUBID' with SUBIDs, 'MAINDOWN' with downstream SUBIDs, and 'AREA' with sub-basin areas,
+e.g. an imported 'GeoData.txt' file.}
 
 \item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
