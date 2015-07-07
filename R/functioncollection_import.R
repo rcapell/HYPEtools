@@ -298,9 +298,9 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 #' 
 #' @param filename Path to and file name of the GeoData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
-#'  
+#' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
 #' @details
-#' \code{ReadGeoData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
+#' \code{ReadGeoData} is just \code{read.table(file = filename, header = T, sep = sep)}, mainly added to provide a comparable 
 #' function to the other RHYPE imports.
 #' 
 #' @return
@@ -311,8 +311,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 #' 
 
 
-ReadGeoData <- function(filename = "GeoData.txt") {
-  read.table(file = filename, header = T)
+ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
+  read.table(file = filename, header = T, sep = sep)
 }
 
 
@@ -871,18 +871,18 @@ ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t") {
 #' @param filename Path to and file name of the PointSourceData file to import. 
 #'  
 #' @details
-#' \code{PointSourceData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
+#' \code{ReadPointSourceData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
 #' function to the other RHYPE imports.
 #' 
 #' @return
-#' \code{PointSourceData} returns a data frame.
+#' \code{ReadPointSourceData} returns a data frame.
 #' 
 #' @examples
-#' \dontrun{PointSourceData("PointSourceData.txt")}
+#' \dontrun{ReadPointSourceData("PointSourceData.txt")}
 #' 
 
 
-PointSourceData <- function(filename = "PointSourceData.txt") {
+ReadPointSourceData <- function(filename = "PointSourceData.txt") {
   read.table(file = filename, header = T)
 }
 
