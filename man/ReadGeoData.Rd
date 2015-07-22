@@ -4,11 +4,13 @@
 \alias{ReadGeoData}
 \title{Read a 'GeoData.txt' file}
 \usage{
-ReadGeoData(filename = "GeoData.txt")
+ReadGeoData(filename = "GeoData.txt", sep = "\\t")
 }
 \arguments{
 \item{filename}{Path to and file name of the GeoData file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
+
+\item{sep}{character string. Field separator character as described in \code{\link{read.table}}.}
 }
 \value{
 \code{ReadGeoData} returns a data frame.
@@ -17,7 +19,7 @@ Paths are separated by '/', not '\\'.}
 This is a convenience wrapper function to import a GeoData file as data frame into R.
 }
 \details{
-\code{ReadGeoData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable
+\code{ReadGeoData} is just \code{read.table(file = filename, header = T, sep = sep)}, mainly added to provide a comparable
 function to the other RHYPE imports.
 }
 \examples{

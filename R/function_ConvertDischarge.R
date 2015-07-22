@@ -56,7 +56,7 @@ ConvertDischarge <- function (q, area, from = "m3s", to = "mmd") {
     q.out <- q * area / 31536000
   } else if (from == "mmd" && to == "m3s"){
     # factor: 1 / (86400 s/d * 1000 mm/m)
-    q.out <- q * area / 31536000
+    q.out <- q * area / 86400000
   } else if (from == "mmd" && to == "ls"){
     # factor: 1000 l/m3 / (86400 s/d * 1000 mm/m)
     q.out <- q * area / 86400
