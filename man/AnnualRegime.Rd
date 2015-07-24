@@ -26,7 +26,12 @@ to daily and shorter time steps only.}
 }
 \value{
 \code{AnnualRegime} returns a list with 5 data frames and a two-element POSIXct vector containing start and end dates of the
-source data.
+source data. Data frame elements in the list contain in order: reference dates in \code{POSIXct} format, date information as string,
+mean values, min values, max values, and 25% and 75% percentiles.
+
+Reference dates are given as dates in 1900/1901 and can be used for plots starting at the beginning of the hydrological year
+(with axis annotations to months only). Daily and hourly time steps are given as is, weekly time steps are given as mid-week
+dates (Wednesday), monthly time steps as mid month dates (15th).
 }
 \description{
 Calculate annual regimes based on long-term time series, typically imported HYPE basin output and time output result files.
@@ -44,8 +49,10 @@ results. Values in \code{x} will be assigned to the preceeding week days, corres
 values are conventionally printed on the last day of the week. If \code{NA} values are present in the original weekly data,
 these will be filled with the next available value as a side effect of the inflation.
 
-If weekly output time steps are computed in combination with a user-defined start month, the function will round up weeks when
-determining first week of the hydrological year.
+If weekly output time steps are computed in combination with a user-defined start month, the function will round up weeks to
+determine the first week of the hydrological year. Weeks are identified using Monday as first day of the week and the first Monday
+of the year as day 1 of week 1 (see conversion code \code{\%W} in \code{\link{strptime}}). Boundary weeks \code{'00'} and
+\code{'53'} are merged to week \code{'00'} prior to average computations.
 }
 \examples{
 \dontrun{AnnualRegime(x = mybasinoutput)}
