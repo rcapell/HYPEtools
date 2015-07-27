@@ -8,6 +8,8 @@
 #'
 #' @param x Data frame, with column-wise equally-spaced time series. Date-times in \code{\link{POSIXct}} format in first column.
 #' Typically an imported basin or time output file from HYPE. See details.
+#' @param stat Character string, either \code{"mean"} or \code{"sum"}. Defines the type of aggregation to be computed for output 
+#' time periods, see Details. Defaults to \code{"mean"}.
 #' @param ts.in Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
 #' @param ts.out Character string, timestep for results, defaults to \code{ts.in}. This timestep must be equal to or longer than 
@@ -23,6 +25,9 @@
 #' is particularly applicable to model basin and time results imported using \code{\link{ReadBasinOutput}} and 
 #' \code{\link{ReadTimeOutput}}. The function currently does not check if equally spaced time steps are provided in \code{x} or if the 
 #' overall time period in \code{x} covers full years so that the calculated averages are based on the same number of values.
+#' 
+#' Values within each output time period can be aggregated either by arithmetic means or by sums within each period, e.g. typically 
+#' means for temperatures and sums for precipitation. Long-term aggregated values are always computed as arithmetic means. 
 #' 
 #' @note
 #' If weekly data are provided in \code{x}, \code{AnnualRegime} will inflate \code{x} to daily time steps before computing 
@@ -47,7 +52,7 @@
 #' @examples
 #' \dontrun{AnnualRegime(x = mybasinoutput)}
 
-AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.leap = FALSE, na.rm = TRUE) {
+AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mon = 1, incl.leap = FALSE, na.rm = TRUE) {
   
   ## identify timestep of x and choose posix element for averaging
   # conditional: get timestep of x from attribute if argument ts.in is not provided, with error handling
@@ -86,7 +91,8 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
     }
   }
   
-  # format index vector for calculations below
+  ## format index vectors for calculations below
+  # output period vector
   if (length(grep("hour", ts.out)) == 1) {
     tformat <- format(x[, 1], format = "%m-%d %H")
   } else if (ts.out == "day") {
@@ -100,13 +106,27 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
   } else { # this should never occur, leave it just for safety...
     stop(paste("Timestep '", ts.out, "' not known.", sep = ""))
   }
+  # Year vector
+  yformat <- format(x[, 1], format = "%Y")
   
-  # calculate results
-  res_ave <- aggregate(x[, -1], list(tformat), mean, na.rm = na.rm)
-  res_min <- aggregate(x[, -1], list(tformat), min, na.rm = na.rm)
-  res_max <- aggregate(x[, -1], list(tformat), max, na.rm = na.rm)
-  res_25p <- aggregate(x[, -1], list(tformat), quantile, probs = 0.25, na.rm = na.rm)
-  res_75p <- aggregate(x[, -1], list(tformat), quantile, probs = 0.75, na.rm = na.rm)
+  # calculate results, conditional on type of aggregation for output periods
+  if (stat == "mean") {
+    res_ave <- aggregate(x[, -1], list(tformat), mean, na.rm = na.rm)
+    res_min <- aggregate(x[, -1], list(tformat), min, na.rm = na.rm)
+    res_max <- aggregate(x[, -1], list(tformat), max, na.rm = na.rm)
+    res_25p <- aggregate(x[, -1], list(tformat), quantile, probs = 0.25, na.rm = na.rm)
+    res_75p <- aggregate(x[, -1], list(tformat), quantile, probs = 0.75, na.rm = na.rm)
+  } else if (stat == "sum") {
+    te <- aggregate(x[, -1], list(tformat, yformat), sum, na.rm = na.rm)
+    res_ave <- aggregate(te[, -c(1:2)], list(te[, 1]), mean, na.rm = na.rm)
+    res_min <- aggregate(te[, -c(1:2)], list(te[, 1]), min, na.rm = na.rm)
+    res_max <- aggregate(te[, -c(1:2)], list(te[, 1]), max, na.rm = na.rm)
+    res_25p <- aggregate(te[, -c(1:2)], list(te[, 1]), quantile, probs = 0.25, na.rm = na.rm)
+    res_75p <- aggregate(te[, -c(1:2)], list(te[, 1]), quantile, probs = 0.75, na.rm = na.rm)
+  } else {
+    # catch input errors
+    stop(paste("Function argument stat: keyword '", stat, "' not known.", sep = ""))
+  }
   
   # prettify header
   names(res_ave)[1] <- ts.out
@@ -124,7 +144,8 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
     res_75p <- res_75p[-60, ]
   }
   
-  # order results according to a user-requested starting month to reflect the hydrological year rather than the calender year
+  # order results according to a user-requested starting month to reflect the hydrological year rather than the calender year, 
+  # calculate reference dates, conditional on starting month
   if (start.mon != 1) {
     
     # catch user input errors
@@ -243,8 +264,9 @@ AnnualRegime <- function(x, ts.in = NULL, ts.out = NULL, start.mon = 1, incl.lea
 }
 
 # # DEBUG
-# x <- ReadPTQobs("//winfs-proj/data/proj/Fouh/Global/SouthAmerica/Projekt/Statkraft_Osorno/model/Tobs.txt", dt.format = "%Y%m%d")
+# x <- ReadPTQobs("//winfs-proj/data/proj/Fouh/Global/SouthAmerica/Projekt/Statkraft_Osorno/model/Pobs.txt", dt.format = "%Y%m%d")
 # gd <- ReadGeoData("//winfs-proj/data/proj/Fouh/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/hadley/BUS/period1/GeoData.txt")
+# stat <- "sum"
 # ts.in <- "day"
 # ts.out <- "month"
 # na.rm <- TRUE

@@ -4,12 +4,15 @@
 \alias{AnnualRegime}
 \title{Calculate annual regimes}
 \usage{
-AnnualRegime(x, ts.in = NULL, ts.out = NULL, start.mon = 1,
-  incl.leap = FALSE, na.rm = TRUE)
+AnnualRegime(x, stat = "mean", ts.in = NULL, ts.out = NULL,
+  start.mon = 1, incl.leap = FALSE, na.rm = TRUE)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series. Date-times in \code{\link{POSIXct}} format in first column.
 Typically an imported basin or time output file from HYPE. See details.}
+
+\item{stat}{Character string, either \code{"mean"} or \code{"sum"}. Defines the type of aggregation to be computed for output
+time periods, see Details. Defaults to \code{"mean"}.}
 
 \item{ts.in}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
@@ -42,6 +45,9 @@ including long-term arithmetic means, minima and maxima, and 25% and 75% percent
 is particularly applicable to model basin and time results imported using \code{\link{ReadBasinOutput}} and
 \code{\link{ReadTimeOutput}}. The function currently does not check if equally spaced time steps are provided in \code{x} or if the
 overall time period in \code{x} covers full years so that the calculated averages are based on the same number of values.
+
+Values within each output time period can be aggregated either by arithmetic means or by sums within each period, e.g. typically
+means for temperatures and sums for precipitation. Long-term aggregated values are always computed as arithmetic means.
 }
 \note{
 If weekly data are provided in \code{x}, \code{AnnualRegime} will inflate \code{x} to daily time steps before computing
