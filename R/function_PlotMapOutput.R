@@ -26,6 +26,7 @@
 #' @param legend.title Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
 #' is used as legend title string. For select HYPE variables, pretty legend titles are in-built.
 #' @param legend.inset Numeric, inset distance(s) from the margins as a fraction of the plot region. See \code{\link{legend}} and details below.
+#' @param legend.cex Numeric, character expansion factor for legend. See description of \code{cex} in \code{\link{legend}}.
 #' @param col.ramp.fun Color ramp palette to use for the map. One of the following: \itemize{
 #' \item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name}, 
 #' see details
@@ -80,7 +81,7 @@
 
 
 PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.scale = T, plot.legend = T, legend.pos = "right", legend.title = NULL, 
-                          legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NULL, par.mar = rep(0, 4) + .1) {
+                          legend.inset = c(0, 0), legend.cex = 1, col.ramp.fun = "auto", col.breaks = NULL, par.mar = rep(0, 4) + .1) {
   
   # input argument checks
   stopifnot(is.data.frame(data), dim(data)[2] == 2, class(map)=="SpatialPolygonsDataFrame", 
@@ -231,8 +232,8 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
   .NorthArrow(xb = bbx[1,2], 
               yb = bbx[2,1] + diff(bbx[2, ]) * .02, 
               len = diff(bbx[1,])/70, cex.lab = .8)
-  legend(legend.pos, legend = .CreateLabelsFromBreaks(cbrks), 
-         col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", cex = .8, title = legend.title, inset = legend.inset)
+  legend(legend.pos, legend = .CreateLabelsFromBreaks(cbrks), cex = legend.cex,
+         col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title, inset = legend.inset)
   
   # invisible unless assigned: return the color codes for all values in data
   invisible(data[, 3])

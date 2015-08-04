@@ -4,7 +4,8 @@
 \alias{MapRegionalSources}
 \title{Map regional irrigation source connection as spatial lines}
 \usage{
-MapRegionalSources(data, map, map.subid.column = 1, progbar = T)
+MapRegionalSources(data, map, map.subid.column = 1, digits = 3,
+  progbar = T)
 }
 \arguments{
 \item{data}{Dataframe, containing a column \code{SUBID} and a column \code{REGSRCID} (not case-sensitive), which identify
@@ -14,6 +15,8 @@ irrigation target and source sub-catchments, respectively. Typically a HYPE 'Mgm
 centre-point shape file, shape file import requires additional packages, e.g. \code{rgdal}.}
 
 \item{map.subid.column}{Integer, index of the column in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
+
+\item{digits}{Integer, number of digits to which irrigation connection lengths are rounded to.}
 
 \item{progbar}{Logical, display a progress bar while calculating.}
 }

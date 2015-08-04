@@ -6,8 +6,8 @@
 \usage{
 PlotMapOutput(data, map, map.subid.column = 1, var.name = "",
   plot.scale = T, plot.legend = T, legend.pos = "right",
-  legend.title = NULL, legend.inset = c(0, 0), col.ramp.fun = "auto",
-  col.breaks = NULL, par.mar = rep(0, 4) + 0.1)
+  legend.title = NULL, legend.inset = c(0, 0), legend.cex = 1,
+  col.ramp.fun = "auto", col.breaks = NULL, par.mar = rep(0, 4) + 0.1)
 }
 \arguments{
 \item{data}{HYPE map results, data frame object with two columns, first column containing SUBIDs and
@@ -33,6 +33,8 @@ based on meter units, not geographical projections}
 is used as legend title string. For select HYPE variables, pretty legend titles are in-built.}
 
 \item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region. See \code{\link{legend}} and details below.}
+
+\item{legend.cex}{Numeric, character expansion factor for legend. See description of \code{cex} in \code{\link{legend}}.}
 
 \item{col.ramp.fun}{Color ramp palette to use for the map. One of the following: \itemize{
 \item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name},

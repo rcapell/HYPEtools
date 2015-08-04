@@ -16,6 +16,7 @@
 #' @param map A \code{SpatialPointsDataFrame} object providing sub-catchment locations as points. Typically an imported SUBID 
 #' centre-point shape file, shape file import requires additional packages, e.g. \code{rgdal}.
 #' @param map.subid.column Integer, index of the column in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
+#' @param digits Integer, number of digits to which irrigation connection lengths are rounded to.
 #' @param progbar Logical, display a progress bar while calculating.
 #' 
 #' @details
@@ -32,7 +33,7 @@
 #' @examples
 #' \dontrun{MapRegionalSources(data = myMgmtData, map = mySUBIDCentrePoints)}
 
-MapRegionalSources <- function (data, map, map.subid.column = 1, progbar = T) {
+MapRegionalSources <- function (data, map, map.subid.column = 1, digits = 3, progbar = T) {
   
   # input argument checks
   stopifnot(is.data.frame(data), class(map)=="SpatialPointsDataFrame")
@@ -98,6 +99,7 @@ MapRegionalSources <- function (data, map, map.subid.column = 1, progbar = T) {
   
   # calculate vector of connection lengths for all Lines objects and add to rcb dataframe
   rcb[, 3] <- sapply(1:nrow(condata), function(x, y, ll) {LinesLength(Ls = y[[x]], longlat = ll)}, y = lineslist, ll = longlat)
+  round(rcb[, 3], digits = digits)
   
   # create Spatial result object
   res <- SpatialLinesDataFrame(SpatialLines(lineslist, proj4string = map@proj4string), rcb)
