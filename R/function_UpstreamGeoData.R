@@ -128,7 +128,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
   # used with sapply below
   WeightedSd   <- function(x, g, p.sbd, p.wsd, p.area) {
     
-    # extract dataframe with areas and variables in x, for which to calculate weighted stdevs
+    # extract dataframe with areas and variables in x for which to calculate weighted stdevs
     df.wsd <- g[g[, p.sbd] %in% x, c(p.area, p.wsd)]
     
     # averaging only necessary if more than one subid, also avoids NaN result if stddev is 0
@@ -250,7 +250,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, col.olake.slc = NULL, s
   
   ## copy all upstream calculations to result GeoData, replacing the originals, conditional on presence of argument subid
   # create result dataframe
-  if (is.null(subid)) {
+  if (is.null(row.sbd)) {
     res <- gd
   } else {
     res <- gd[row.sbd, ]
