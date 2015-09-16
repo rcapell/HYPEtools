@@ -5,8 +5,9 @@
 \title{Box plots of SLC distributions}
 \usage{
 BoxplotSLClasses(gd, gc, col.landuse = "rainbow", col.group = NULL,
-  lab.legend = NULL, abs.area = F, log = "", ylim = NULL, mar = c(3,
-  3, 1, 9) + 0.1, mgp = c(1.5, 0.2, 0), tcl = 0.1, xaxs = "i", xpd = T)
+  lab.legend = NULL, pos.legend = 1, abs.area = F, log = "",
+  ylim = NULL, mar = c(3, 3, 1, 7) + 0.1, mgp = c(1.5, 0.2, 0),
+  tcl = 0.1, xaxs = "i", xpd = T)
 }
 \arguments{
 \item{gd}{Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
@@ -32,6 +33,8 @@ each land use class ID, in ascending order. Groups and group IDs to use (in pare
 
 \item{lab.legend}{Character string giving optional land use and soil class names to label the legend. Land use classes first, then soil classes.
 Both following class IDs as given in \code{gc} in ascending order.}
+
+\item{pos.legend}{Numeric, legend position in x direction. Given as position on the right hand outside of the plot area in x-axis units.}
 
 \item{abs.area}{Logical, if \code{TRUE}, boxes will be plotted for absolute areas instead of area fractions.}
 

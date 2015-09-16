@@ -29,6 +29,7 @@
 #' 
 #' @param lab.legend Character string giving optional land use and soil class names to label the legend. Land use classes first, then soil classes. 
 #' Both following class IDs as given in \code{gc} in ascending order.
+#' @param pos.legend Numeric, legend position in x direction. Given as position on the right hand outside of the plot area in x-axis units.
 #' 
 #' @param abs.area Logical, if \code{TRUE}, boxes will be plotted for absolute areas instead of area fractions.
 #' 
@@ -64,8 +65,8 @@
 #' }
 #' 
 
-BoxplotSLClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, abs.area = F, log = "", ylim = NULL, 
-                             mar = c(3,3,1,9)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = T) {
+BoxplotSLClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 
+                             mar = c(3,3,1,7)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = T) {
   
   # if lab.legend was specified, check for consistency with number of land use and soil classes
   if (!is.null(lab.legend) && length(lab.legend) != length(c(unique(gc[, 2]), unique(gc[,3])))) {
@@ -87,13 +88,21 @@ BoxplotSLClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, 
   
   #get SLCs and replace 0 fractions with NAs, so that they do not bias the area distributions
   # conditional: calculate absolute areas in km2
+  slc <- gd[, gdcols.slc]
   if (abs.area) {
-    slc <- gd[, gdcols.slc]
-    slc <- as.data.frame(apply(slc, 2, function(x, y) {x*y}, y = gd[which(toupper(names(gd)) == "AREA")] / 1000000))
-    slc <- as.data.frame(apply(slc, 2, function(x){x[which(x == 0)] <- NA; x}))
+    slc <- as.data.frame(apply(slc, 2, function(x, y) {x * y}, y = gd[which(toupper(names(gd)) == "AREA")] / 1000000))
+    if (nrow(slc) == 1) {
+      slc[which(slc == 0)] <- NA
+    } else {
+      slc <- as.data.frame(apply(slc, 2, function(x){x[which(x == 0)] <- NA; x}))
+    }
   } else {
-    slc <- gd[, gdcols.slc]
-    slc <- as.data.frame(apply(slc, 2, function(x){x[which(x == 0)] <- NA; x}))
+    if (nrow(slc) == 1) {
+      slc[which(slc == 0)] <- NA
+    } else {
+      slc <- as.data.frame(apply(slc, 2, function(x){x[which(x == 0)] <- NA; x}))
+    }
+    
   }
   
   # number of slc classes in GeoData
@@ -208,7 +217,7 @@ BoxplotSLClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, 
     legend.y <- mean(usr.cur[3:4])
   }
   # legend plot
-  legend(x = nslc * 1.01, y = legend.y, legend = lab.legend, col = c(legend.lu, rep("black", nsoil)), 
+  legend(x = nslc + pos.legend, y = legend.y, legend = lab.legend, col = c(legend.lu, rep("black", nsoil)), 
          pch = c(rep(15, length(legend.lu)), 0:(nsoil - 1)), 
-         inset = , bty = "n", pt.bg = "grey", cex = .9, pt.cex = 1, yjust = .5)  
+         bty = "n", pt.bg = "grey", cex = .9, pt.cex = 1, yjust = .5)  
 }
