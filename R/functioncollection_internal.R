@@ -190,7 +190,7 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.FillWeek~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-# Internal function to fill weekly averages, written on last day of the week in a daily time series, into preceeding NAs
+# Internal function to fill weekly averages written on last day of the week in a daily time series into preceeding NAs
 # used in AnnualRegime()
 .FillWeek <- function(y) {
   # reverse y

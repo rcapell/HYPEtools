@@ -373,7 +373,7 @@ ReadBranchData <- function(filename = "BranchData.txt") {
 #' 
 
 
-ReadCropData <- function(filename = "BranchData.txt") {
+ReadCropData <- function(filename = "CropData.txt") {
   te <- read.table(file = filename, header = T)
 }
 

@@ -4,7 +4,7 @@
 \alias{ReadCropData}
 \title{Read a 'CropData.txt' file}
 \usage{
-ReadCropData(filename = "BranchData.txt")
+ReadCropData(filename = "CropData.txt")
 }
 \arguments{
 \item{filename}{Path to and file name of the CropData file to import. Windows users: Note that

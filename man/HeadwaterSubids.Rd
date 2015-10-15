@@ -7,7 +7,8 @@
 HeadwaterSubids(gd)
 }
 \arguments{
-\item{gd}{A data frame, with two columns \code{subid} and \code{maindown}, (not case-sensitive).
+\item{gd}{A data frame, containing among others two columns \code{subid} and \code{maindown}. Column names are not case-sensitive
+and column positions in the data frame are irrelevant.
 Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
 }
 \value{
