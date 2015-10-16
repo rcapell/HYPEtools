@@ -59,9 +59,12 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
                               xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue", lty = 1, lwd = 1, 
                               mar = c(3, 3, 1, 1) + .1) {
   
-  # save current state of par() variable which is altered by the function, for restoring on function exit
+  # save current state of par() variables which are altered below, for restoring on function exit
   par.mar <- par("mar")
-  on.exit(par(mar = par.mar))
+  par.xaxs <- par("xaxs")
+  par.mgp <- par("mgp")
+  par.tcl <- par("tcl")
+  on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl))
   
   # number of quantile series in freq
   nq <- ncol(freq) - 1
@@ -115,7 +118,7 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
     ylabel <- ylab
   }
   
-  # conditional: extract automatic y-axis limits by finding globall maxima in all provided data series
+  # conditional: extract automatic y-axis limits by finding global maxima in all provided data series
   if (is.null(ylim)) {
     ylim <- range(unlist(data[, -1], use.names = FALSE), na.rm = TRUE)
   }

@@ -15,6 +15,8 @@
 #' @param timestep  Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
 #' @param log.q
+#' @param start.mon Integer between 1 and 12, starting month of the hydrological year. For runoff regime plot, see also 
+#' \code{\link{AnnualRegime}}.
 #' @param from
 #' @param to
 #' @param name
@@ -39,7 +41,7 @@
 #' @examples
 #' PlotBasinOutput(x = mybasin, area = 56.67)
 
-PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
+PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
   
   ## Preliminaries
   
@@ -201,19 +203,22 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, from =
     cp <- cp + 1
     iscr[cp] <- cscr
     if (exi.t["rout"] && exi.t["cout"]) {
-      list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = "gauss", yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
+      
     } else if (exi.t["rout"]) {
-      list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rout), xscale = "gauss", yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = "Qobs", col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
+      
     } else if (exi.t["cout"]) {
-      list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cout), xscale = "gauss", yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = "Qsim", col = c("red"), mar = c(3.1, 3.1, .5, .5))')
+      
     } else {
       list.plotexpr[[cp]] <- parse(text = 'frame()')
     }
     
   }
-  
-  AnnualRegime(data.frame(date, rout. cout), ts.in = attr(x, "timestep"))
-  
+  ann.reg <- AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon)$mean
+  par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))
+  plot()
+  grid(equilogs = F)
+  expression(paste("Q (m"^3, " s"^{-1}, ")"))
+  range(unlist(data[, -1], use.names = FALSE), na.rm = TRUE)
   
   cscr <- cscr + 1
   cp <- cp + 1
@@ -317,3 +322,5 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, from =
 # filename <- NA
 # subid <- 9548212
 # bd <- NULL
+# timestep <- "day"
+# start.mon <- 10

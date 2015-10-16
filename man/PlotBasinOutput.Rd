@@ -4,13 +4,28 @@
 \alias{PlotBasinOutput}
 \title{Plot a suite of evaluation plots from a HYPE basin output file}
 \usage{
-PlotBasinOutput(x, logQ = F, from = 1, to = nrow(x), sitename = "",
-  area = NULL, subid = NULL, gd = NULL, bd = NULL)
+PlotBasinOutput(x, timestep = attr(x, "timestep"), log.q = F,
+  start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL,
+  subid = NULL, gd = NULL, bd = NULL)
 }
 \arguments{
-\item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables and an attribute \code{timestep}. Date-times in
+\item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in
 \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}.
 See details for HYPE output variables required for plotting.}
+
+\item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or
+\code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
+
+\item{log.q}{}
+
+\item{start.mon}{Integer between 1 and 12, starting month of the hydrological year. For runoff regime plot, see also
+\code{\link{AnnualRegime}}.}
+
+\item{from}{}
+
+\item{to}{}
+
+\item{name}{}
 
 \item{area}{Numeric, upstream area of sub-basin in km^2. Required for calculation of accumulated volume error. Optional argument,
 either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.}
