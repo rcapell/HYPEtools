@@ -59,9 +59,12 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
                               xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue", lty = 1, lwd = 1, 
                               mar = c(3, 3, 1, 1) + .1) {
   
+  # save current state of par() variable which is altered by the function, for restoring on function exit
+  par.mar <- par("mar")
+  on.exit(par(mar = par.mar))
+  
   # number of quantile series in freq
   nq <- ncol(freq) - 1
-  
   
   # input check for scale specification arguments
   stopifnot(any(xscale == "lin", xscale == "gauss"), any(yscale == "lin", yscale == "log"))
