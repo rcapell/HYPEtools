@@ -121,7 +121,7 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.
   
   ## define plot dimensions and which panels are to be plotted based on existing variables
   
-  # plot dimensions, weight iteratively updated below
+  # plot dimensions, height iteratively updated below
   wdth <- 23
   hght <- 0
   
@@ -198,27 +198,64 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.
     
     # define screen for flow regime
     split.figs <- rbind(split.figs, c(2/3, 1, split.height,  split.height + 1))
+    # update split height, so that next screen goes into next row
+    split.height <- split.height + 1
     # conditional: prepare regime plot call depending on data availability
     cscr <- cscr + 1
     cp <- cp + 1
     iscr[cp] <- cscr
     if (exi.t["rout"] && exi.t["cout"]) {
-      
+      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["rout"]) {
-      
+      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["cout"]) {
-      
+      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c(Qsim"), col = c(red"), mar = c(3.1, 3.1, .5, .5))')
     } else {
       list.plotexpr[[cp]] <- parse(text = 'frame()')
     }
     
   }
-  ann.reg <- AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon)$mean
-  par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))
-  plot()
-  grid(equilogs = F)
-  expression(paste("Q (m"^3, " s"^{-1}, ")"))
-  range(unlist(data[, -1], use.names = FALSE), na.rm = TRUE)
+  
+  # precipitation and snowfall panel
+  if (exi.t["uppr"]) {
+    
+    # define screen for precip chart
+    split.figs <- rbind(split.figs, c(0, 1, split.height,  split.height + 1))
+    
+    cscr <- cscr + 1
+    cp <- cp + 1
+    iscr[cp] <- cscr
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    cp <- cp + 1
+    iscr[cp] <- cscr
+    list.plotexpr[[cp]] <- parse(text = 'plot(date, uppr, ylim = c(max(uppr), -2), col = NA, axes = F, ylab = "")')
+    cp <- cp + 1
+    iscr[cp] <- cscr
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    cp <- cp + 1
+    iscr[cp] <- cscr
+    list.plotexpr[[cp]] <- parse(text = 'par(new = TRUE)')
+    
+    # conditional: if rainfall and snow variables available, plot stacked bars based on these, otherwise plot precip bars
+    if (exi.t["uprf"] && exi.t["upsf"]) {
+      cp <- cp + 1
+      iscr[cp] <- cscr
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(uprf, upsf))), border = NA, ylim = c(max(uppr), -2), xlab = "", col = c("darkblue", "forestgreen"), names.arg = rep("", length(uppr)), legend.text = c("Rain", "Snow"), args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2), ylab = "mm", space = 0, cex.axis = 1.1, cex.lab = 1.2)')
+    } else {
+      cp <- cp + 1
+      iscr[cp] <- cscr
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = uppr, border = NA, ylim = c(max(uppr), -2), xlab = "", col = "darkblue", names.arg = rep("", length(uppr)), legend.text = "Precipitation", args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2), ylab = "mm", space = 0, cex.axis = 1.1, cex.lab = 1.2)')
+    }
+    cp <- cp + 1
+    iscr[cp] <- cscr
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    cp <- cp + 1
+    iscr[cp] <- cscr
+    list.plotexpr[[cp]] <- parse(text = 'box()')
+  }
+  
+  
+  
   
   cscr <- cscr + 1
   cp <- cp + 1
@@ -230,15 +267,21 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.
   
   ## plot all results to split.screen device
   # update screen matrix with relative heights
+  split.figs[, 3:4] <- split.figs[, 3:4] / split.figs[nrow(split.figs), 4]
+  
+  # open new device
+  x11(width=15, height = 14)
   
   # define screens
   split.screen(figs = split.figs)
   
-  # open new device
+  # layout definition
+  nf <- layout(matrix(c(1:3, rep(4, 3), rep(0, 3)), byrow= T, ncol = 3), widths =c(1, 1, 1), heights = c(rep(1, 2), .2))
+  layout.show(nf)
   
   # plot
-  for (i in 1:length(list.plotcall)) {
-    screen(n = iscr[i], new = F)
+  for (i in 1:length(list.plotexpr)) {
+    #screen(n = iscr[i], new = F)
     eval(list.plotexpr[[i]])
   }
   

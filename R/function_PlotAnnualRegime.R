@@ -8,7 +8,7 @@
 #' Convenience wrapper function for a combined line \code{\link{plot}} with \code{\link{polygon}} variation ranges.
 #'
 #' @param x List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average regime data. 
-#' See details in decription there.
+#' See details in description there.
 #' 
 #' @param type Character string, keyword for plot type. Either \code{"mean"} to plot long-term averages only, or \code{"minmax"} or 
 #' \code{"p25p75"} to include bands of variation. See details.
@@ -38,7 +38,7 @@
 #' 
 #' @details
 #' If \code{"minmax"} or \code{"p25p75"} are chosen for argument \code{type}, transparent bands of inter-annual variation are plotted along the 
-#' long-term average, either based on minimum and maximum values or on 25% and 75% percentiles.
+#' long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
 #' 
 #' @return
 #' \code{PlotAnnualRegime} returns a plot to the currently active plot device.
@@ -81,7 +81,7 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
     
   # conditional: extract automatic y-axis limits by finding global maxima in all provided data series
   if (is.null(ylim) && type == "mean") {
-    ylim <- rang(unlist(x$mean[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
+    ylim <- range(unlist(x$mean[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
   } else if (is.null(ylim) && type == "minmax") {
     ylim <- range(unlist(rbind(x$min, x$max)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
   } else if (is.null(ylim) && type == "p25p75") {
@@ -163,8 +163,6 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
     # print legend
     legend("topright", legend = lgnd, bty = "n", lty = 1, col = col, cex=.9)
   }
-  
-  
     
 }
 

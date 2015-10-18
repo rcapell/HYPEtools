@@ -11,7 +11,7 @@ PlotAnnualRegime(x, type = "mean", add.legend = FALSE, l.legend = NULL,
 }
 \arguments{
 \item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average regime data.
-See details in decription there.}
+See details in description there.}
 
 \item{type}{Character string, keyword for plot type. Either \code{"mean"} to plot long-term averages only, or \code{"minmax"} or
 \code{"p25p75"} to include bands of variation. See details.
@@ -49,7 +49,7 @@ Convenience wrapper function for a combined line \code{\link{plot}} with \code{\
 
 
 If \code{"minmax"} or \code{"p25p75"} are chosen for argument \code{type}, transparent bands of inter-annual variation are plotted along the
-long-term average, either based on minimum and maximum values or on 25% and 75% percentiles.
+long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
 }
 \examples{
 \dontrun{PlotAnnualRegime(x = myregime)}
