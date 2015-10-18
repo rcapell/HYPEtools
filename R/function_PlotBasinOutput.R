@@ -12,6 +12,7 @@
 #' @param x Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
 #' \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 #' See details for HYPE output variables required for plotting.
+#' @param filename String, file name for plotting to \code{\link{png}} device, defaults to name provided in argument \code{x}
 #' @param timestep  Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
 #' @param log.q
@@ -41,7 +42,7 @@
 #' @examples
 #' PlotBasinOutput(x = mybasin, area = 56.67)
 
-PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
+PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = attr(x, "timestep"), log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
   
   ## Preliminaries
   
@@ -119,24 +120,22 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.
     }
   }
   
-  ## define plot dimensions and which panels are to be plotted based on existing variables
+  ## parse plot commands based on existing HYPE variables to a list
+  ## create layout() arguments based on existinng HYPE variables
   
-  # plot dimensions, height iteratively updated below
-  wdth <- 23
-  hght <- 0
-  
-  # split-screen screen matrix and screen height initialisation. Height will be cumulatively updated below
-  # for each new screen row
-  split.figs <- matrix(ncol = 4, nrow = 0)
-  split.height <- 0
-  # screen identity vector and counter initialisation, used to relate plot expressions to a screen
-  cscr <- 0
-  iscr <- integer()
-  # plot expression list and counter initialisation. Expression evaluated after plot and screen dimensions are defined
-  list.plotexpr <- list()
+  # create list to hold all plot commands, and plot counter
+  list.plotexpr <- list(NULL)
   cp <- 0
   
-  # first row, three panels with FDC, GoFs, and regime
+  # layout() matrix initialisation
+  lay.mat <- matrix(ncol = 3, nrow = 0)
+  # layout() panel widths (hard-coded for now)
+  lay.widths <- c(1.5, 1, 1.5)
+  # layout() panel heights initialisation
+  lay.heights <- NULL
+  
+  
+  # conditional: three panels with FDC, GoFs, and regime. If GoF variables exist
   if ((exi.t["rout"] || exi.t["cout"]) || (
     (exi.t["rein"] && exi.t["ccin"]) || 
       (exi.t["reon"] && exi.t["ccon"]) || 
@@ -147,70 +146,63 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.
     )
     ) {
     
-    # define screen for FDC
-    split.figs <- rbind(split.figs, c(0, 1/3, split.height,  split.height + 1))
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, 1:3)
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
     # conditional: prepare FDC plot call depending on data availability
-    cscr <- cscr + 1
-    cp <- cp + 1
-    iscr[cp] <- cscr
     if (exi.t["rout"] && exi.t["cout"]) {
+      cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = "gauss", yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["rout"]) {
+      cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rout), xscale = "gauss", yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = "Qobs", col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["cout"]) {
+      cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cout), xscale = "gauss", yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = "Qsim", col = c("red"), mar = c(3.1, 3.1, .5, .5))')
     } else {
+      cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'frame()')
     }
     
-    # define screen for text information
-    split.figs <- rbind(split.figs, c(1/3, 2/3, split.height,  split.height + 1))
-    # plot information texts
-    cscr <- cscr + 1
+    ## plot information texts
     cp <- cp + 1
-    iscr[cp] <- cscr
     list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(0, 4))')
     cp <- cp + 1
-    iscr[cp] <- cscr
     list.plotexpr[[cp]] <- parse(text = 'frame()')
+    # plot name
     cp <- cp + 1
-    iscr[cp] <- cscr
-    list.plotexpr[[cp]] <- parse(text = 'title(name, line = -1)')
+    list.plotexpr[[cp]] <- parse(text = 'title(main = name, line = -1)')
     # compute and plot GoFs for discharge, TN, and TP, if variables are available
     if (exi.t["rout"] && exi.t["cout"]){
       gof.q <- gof(sim = cout, obs = rout, na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
       cp <- cp + 1
-      iscr[cp] <- cscr
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.q), gof.q, sep = ": "),"",paste0("(", length(na.omit(rout)), " obs.)")), bty = "n", title = "Q, goodness of fit")')
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.q), gof.q, sep = ": "),"",paste0("(", length(na.omit(rout)), " obs.)")), bty = "n", title = "Q, goodness of fit", cex = .8)')
     }
     if (exi.t["retn"] && exi.t["cctn"]){
       gof.tn <- gof(sim = cctn, obs = retn, na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
       cp <- cp + 1
-      iscr[cp] <- cscr
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",paste0("(", length(na.omit(retn)), " obs.)")), bty = "n", title = "TN, goodness of fit")')
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",paste0("(", length(na.omit(retn)), " obs.)")), bty = "n", title = "TN, goodness of fit", cex = .8)')
     }
     if (exi.t["retp"] && exi.t["cctp"]){
       gof.tp <- gof(sim = cctp, obs = retp, na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
       cp <- cp + 1
-      iscr[cp] <- cscr
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.tp), gof.tn, sep = ": "),"",paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness of fit")')
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.tp), gof.tn, sep = ": "),"",paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness of fit", cex = .8)')
     }
     
-    # define screen for flow regime
-    split.figs <- rbind(split.figs, c(2/3, 1, split.height,  split.height + 1))
-    # update split height, so that next screen goes into next row
-    split.height <- split.height + 1
     # conditional: prepare regime plot call depending on data availability
-    cscr <- cscr + 1
-    cp <- cp + 1
-    iscr[cp] <- cscr
     if (exi.t["rout"] && exi.t["cout"]) {
+      cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["rout"]) {
+      cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["cout"]) {
+      cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c(Qsim"), col = c(red"), mar = c(3.1, 3.1, .5, .5))')
     } else {
+      cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'frame()')
     }
     
@@ -219,134 +211,188 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.
   # precipitation and snowfall panel
   if (exi.t["uppr"]) {
     
-    # define screen for precip chart
-    split.figs <- rbind(split.figs, c(0, 1, split.height,  split.height + 1))
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1)
     
-    cscr <- cscr + 1
     cp <- cp + 1
-    iscr[cp] <- cscr
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
     cp <- cp + 1
-    iscr[cp] <- cscr
     list.plotexpr[[cp]] <- parse(text = 'plot(date, uppr, ylim = c(max(uppr), -2), col = NA, axes = F, ylab = "")')
     cp <- cp + 1
-    iscr[cp] <- cscr
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     cp <- cp + 1
-    iscr[cp] <- cscr
     list.plotexpr[[cp]] <- parse(text = 'par(new = TRUE)')
     
     # conditional: if rainfall and snow variables available, plot stacked bars based on these, otherwise plot precip bars
     if (exi.t["uprf"] && exi.t["upsf"]) {
       cp <- cp + 1
-      iscr[cp] <- cscr
       list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(uprf, upsf))), border = NA, ylim = c(max(uppr), -2), xlab = "", col = c("darkblue", "forestgreen"), names.arg = rep("", length(uppr)), legend.text = c("Rain", "Snow"), args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2), ylab = "mm", space = 0, cex.axis = 1.1, cex.lab = 1.2)')
     } else {
       cp <- cp + 1
-      iscr[cp] <- cscr
       list.plotexpr[[cp]] <- parse(text = 'barplot(height = uppr, border = NA, ylim = c(max(uppr), -2), xlab = "", col = "darkblue", names.arg = rep("", length(uppr)), legend.text = "Precipitation", args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2), ylab = "mm", space = 0, cex.axis = 1.1, cex.lab = 1.2)')
     }
     cp <- cp + 1
-    iscr[cp] <- cscr
     list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
     cp <- cp + 1
-    iscr[cp] <- cscr
     list.plotexpr[[cp]] <- parse(text = 'box()')
   }
   
+  # temperature panel
+  if (exi.t["temp"]) {
+    
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'plot(date, temp, type = "l", col = NA, xaxt = "n", ylab = expression(paste(""*degree, "C")), cex.axis = 1.1, cex.lab = 1.2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'lines(date, temp, col = "red")')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext(" Air temp. at outlet", side=3, adj= 0, line=-1.1, cex = .8)')
+    
+  }
   
+  # Qsim, Qobs panel
+  if (exi.t["cout"] || exi.t["rout"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    cp <- cp + 1
+    if (!exi.t["cout"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, rout, type = "l", col = NA, xaxt = "n", ylab = expression(paste("m"^3, "s"^"-1")), ylim = c(ifelse(log.q, 0.001, 0), max(rout, na.rm=T)), log = ifelse(log.q, "y", ""), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else if (!exi.t["rout"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cout, type = "l", col = NA, xaxt = "n", ylab = expression(paste("m"^3, "s"^"-1")), ylim = c(ifelse(log.q, 0.001, 0), max(cout, na.rm=T)), log = ifelse(log.q, "y", ""), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cout, type = "l", col = NA, xaxt = "n", ylab = expression(paste("m"^3, "s"^"-1")), ylim = c(ifelse(log.q, 0.001, 0), max(c(cout, rout), na.rm=T)), log = ifelse(log.q, "y", ""), cex.axis = 1.1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["rout"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, rout, col = "royalblue4")')
+    }
+    
+    if (exi.t["cout"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, cout, col = "orangered3")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("Qobs", "Qsim"), lty = 1, col = c("royalblue4", "orangered3"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
   
-  
-  cscr <- cscr + 1
   cp <- cp + 1
-  iscr[cp] <- cscr
   list.plotexpr[[cp]] <- parse(text = '')
   
   
+  # panel 3: ET
+  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
+  plot(xw[, col.date], xw[, col.uppe], type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(xw[, col.uppe])), cex.axis = 1.1, cex.lab = 1.2)
+  abline(h = 0, col = "grey", lwd = .5)
+  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
+  lines(xw[, col.date], xw[, col.uppe], col = "green3", lty = 3)
+  lines(xw[, col.date], xw[, col.upev], col = "green4")
+  legend("topleft", c("ETp", "ETa"), lty = c(3, 1), col = c("green3", "green4"), bty = "n", cex = 1.2, horiz = TRUE)
+  
+  # panel 4: snow water equivalent
+  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
+  plot(xw[, col.date], xw[, col.snow], type = "l", col = NA, xaxt = "n", ylab = "mm", cex.axis = 1.1, cex.lab = 1.2)
+  abline(h = 0, col = "grey", lwd = .5)
+  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
+  lines(xw[, col.date], xw[, col.snow], col = "deepskyblue3")
+  mtext(" Snow water equivalent", side=3, adj= 0, line=-1.1, cex = .8)
   
   
-  ## plot all results to split.screen device
-  # update screen matrix with relative heights
-  split.figs[, 3:4] <- split.figs[, 3:4] / split.figs[nrow(split.figs), 4]
+  # panel 6: soil moisture in local subid
+  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
+  plot(xw[, col.date], xw[, col.soim], type = "l", col = NA, xaxt = "n", ylab = "mm", 
+       ylim = c(min(xw[, col.soim], na.rm = TRUE), max(xw[, col.soim], na.rm = TRUE)), cex.axis = 1.1, cex.lab = 1.2)
+  abline(h = 0, col = "grey", lwd = .5)
+  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
+  lines(xw[, col.date], xw[, col.soim], col = "firebrick3")
+  lines(xw[, col.date], xw[, col.sm13], col = "springgreen4")
+  legend("topleft", c("soil moisture", "surface water"), lty = 1, col = c("springgreen4", "firebrick3"), 
+         bty = "n", cex = 1.2, horiz = TRUE)
   
-  # open new device
-  x11(width=15, height = 14)
+  # panel 7: accumulated volume error
+  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
+  sqsim <- ConvertDischarge(q = xw[, col.cout], area = uarea, from = "m3s", to = "mmd")
+  sqobs <- ConvertDischarge(q = xw[, col.rout], area = uarea, from = "m3s", to = "mmd")
+  accvolerr <- cumsum(sqsim - ifelse(is.na(sqobs), sqsim, sqobs))
+  plot(xw[, col.date], accvolerr, type = "l", col = NA, xaxt = "n", ylab = "mm", cex.axis = 1, cex.lab = 1.2)
+  abline(h = 0, col = "grey", lwd = .5)
+  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
+  lines(xw[, col.date], accvolerr, col = "seagreen")
+  mtext(" Accumulated volume error", side=3, adj= 0, line=-1.1, cex = .8)
   
-  # define screens
-  split.screen(figs = split.figs)
+  # panel 8: soil moisture
+  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
+  plot(xw[, col.date], xw[, col.upfp], type = "l", col = NA, xaxt = "s", ylab = "(-)", xlab = "", cex.axis = 1.1, cex.lab = 1.2)
+  abline(h = 0, col = "grey", lwd = .5)
+  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
+  lines(xw[, col.date], xw[, col.upfp], col = "chocolate3")
+  mtext(" Rel. soil moisture", side=3, adj= 0, line=-1.1, cex = .8)
+  
+  
+  
+  cp <- cp + 1
+  list.plotexpr[[cp]] <- parse(text = '')
+  
+  # add empty row at the figure bottom in layout, as space for x-axis annotation
+  lay.mat <- rbind(lay.mat, rep(0, 3))
+  # add layout height for this row
+  lay.heights <- c(lay.heights, .2)
+  
+  ## set up plot device with layout and call all plot commands 
+  
+  # define device width (hard-coded for now)
+  wdth <- 20
+  # set device height, based on layout rows
+  hght <- sum(lay.heights) * 1.5
+  
+  # create plot device, conditional on filename
+  if (is.null(filename)) {
+    x11(width=wdth, height = hght)
+  } else {
+    png(filename = paste0(filename, ".png"), width=wdth*.8, height = hght*.8, units = "in", res = 300)
+  }
   
   # layout definition
-  nf <- layout(matrix(c(1:3, rep(4, 3), rep(0, 3)), byrow= T, ncol = 3), widths =c(1, 1, 1), heights = c(rep(1, 2), .2))
+  nf <- layout(mat = lay.mat, widths = lay.widths, heights = lay.heights)
   layout.show(nf)
   
-  # plot
+  # plot all commands in list
   for (i in 1:length(list.plotexpr)) {
-    #screen(n = iscr[i], new = F)
     eval(list.plotexpr[[i]])
   }
   
-  
-  
-  # make multi-panel layout
-  nf <- layout(matrix(c(0,0, 1:3,0, 4,0, 5,0, 6:10,0, 11,12, 0,0), byrow= T, nrow=10, ncol = 2), widths =c(1, .08), heights = c(.15, rep(1, 8), .2))
-  layout.show(nf)
-  
-  # panel 1: precip/snow
-  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
-  plot(xw[, col.date], xw[, col.uppr], ylim = c(max(xw[, col.uppr]), -2), col = NA, axes = F, ylab = "")
-  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
-  par(new = TRUE)
-  barplot(height = t(as.matrix(xw[, c(col.uprf, col.upsf)])), border = NA, ylim = c(max(xw[, col.uppr]), -2), xlab = "", 
-          col = c("darkblue", "dodgerblue"), names.arg = rep("", nrow(xw)), legend.text = c("Rain", "Snow"), 
-          args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2), ylab = "mm", space = 0, cex.axis = 1.1, cex.lab = 1.2)
-  abline(h = 0, col = "grey", lwd = .5)
-  box()
-  mtext(paste(" ", river, " at ", gauge, ", ", round(uarea * 10^-6, 0), " km2", sep = ""), side = 3, line = 0)
-  par(mar = c(0, 0, 0, 0))
-  plot(NA, ann = F, axes = F, ylim = c(0, 1), xlim = c(0, 1))
-  
-  col.date <- which(nm == "date")
-  col.uprf <- which(nm == "uprf")
-  col.upsf <- which(nm == "upsf")
-  col.temp <- which(nm == "temp")
-  col.uppe <- which(nm == "uppe")
-  col.upev <- which(nm == "upev")
-  col.cout <- which(nm == "cout")
-  col.rout <- which(nm == "rout")
-  col.soim <- which(nm == "soim")
-  col.sm13 <- which(nm == "sm13")
-  col.upfp <- which(nm == "upfp")
-  col.snow <- which(nm == "snow")
-  col.uppr <- which(nm == "uppr")
-  col.ccin <- which(nm == "ccin")
-  col.rein <- which(nm == "rein")
-  col.ccon <- which(nm == "ccon")
-  col.reon <- which(nm == "reon")
-  col.cctn <- which(nm == "cctn")
-  col.retn <- which(nm == "retn")
-  col.ccsp <- which(nm == "ccsp")
-  col.resp <- which(nm == "resp")
-  col.ccpp <- which(nm == "ccpp")
-  col.repp <- which(nm == "repp")
-  col.cctp <- which(nm == "cctp")
-  col.retp <- which(nm == "retp")
-  col.wcom <- which(nm == "wcom")
-  col.wstr <- which(nm == "wstr")
-  
-  
-  # conditional incl. error handling: argument area given or able to calculate with arguments gd, bd, subid?
-  if (is.null(area) & is.null(gd)) {
-    stop("Provide either argument 'area' or argument 'gd'.")
-  } else {
-    if (is.null(area)) {
-      if (is.null(subid)) {
-        stop("Argument 'subid' is mandatory with argument 'gd'.")
-      }
-      uarea <- SumUpstreamArea(subid = subid, gd = gd, bd = bd)[, 2]
-    } else {
-      uarea <- area * 10^6
-    }
+  # close the file device, if any
+  if (!is.null(filename)) {
+    dev.off()
   }
+  
+  
   
 }
 
@@ -367,3 +413,4 @@ PlotBasinOutput <- function(x, timestep = attr(x, "timestep"), log.q = F, start.
 # bd <- NULL
 # timestep <- "day"
 # start.mon <- 10
+# filename <- NULL
