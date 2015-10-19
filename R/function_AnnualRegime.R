@@ -49,6 +49,9 @@
 #' (with axis annotations to months only). Daily and hourly time steps are given as is, weekly time steps are given as mid-week 
 #' dates (Wednesday), monthly time steps as mid month dates (15th). 
 #' 
+#' @seealso
+#' \code{\link{AnnualRegime}}
+#'
 #' @examples
 #' \dontrun{AnnualRegime(x = mybasinoutput)}
 

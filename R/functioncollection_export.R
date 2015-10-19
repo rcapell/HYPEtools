@@ -513,7 +513,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
 WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
   # create and open a file connection to write header to
-  conn <- file(description = filename, open = "a")
+  conn <- file(description = filename, open = "w")
   # write header lines
   writeLines(paste(names(x), collapse = "\t"), con = conn)
   writeLines(paste(attr(x, "unit"), collapse = "\t"), con = conn)
@@ -577,7 +577,7 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
   # create and open a file connection to write header to
-  conn <- file(description = filename, open = "a")
+  conn <- file(description = filename, open = "w")
   # write header lines
   writeLines(attr(x, "comment"), con = conn)
   writeLines(paste(c("DATE", attr(x, "subid")), collapse = "\t"), con = conn)

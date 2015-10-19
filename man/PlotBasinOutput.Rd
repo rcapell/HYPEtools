@@ -5,29 +5,35 @@
 \title{Plot a suite of evaluation plots from a HYPE basin output file}
 \usage{
 PlotBasinOutput(x, filename = NULL, timestep = attr(x, "timestep"),
-  log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "",
-  area = NULL, subid = NULL, gd = NULL, bd = NULL)
+  hype.vars = "all", log.q = F, start.mon = 1, from = 1, to = nrow(x),
+  name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in
 \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}.
 See details for HYPE output variables required for plotting.}
 
-\item{filename}{String, file name for plotting to \code{\link{png}} device, defaults to name provided in argument \code{x}}
+\item{filename}{String, file name for plotting to \code{\link{png}} device. \code{NULL}, the default, triggers a plot on a new
+screen device. \emph{Device dimensions are currently hard-coded.}}
 
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
 
-\item{log.q}{}
+\item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables
+to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details
+for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of
+(available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown
+to the function will be ignored with a warning.}
+
+\item{log.q}{Logical, y-axis scaling for flow duration curve and discharge time series, set to \code{TRUE} for log-scaling.}
 
 \item{start.mon}{Integer between 1 and 12, starting month of the hydrological year. For runoff regime plot, see also
 \code{\link{AnnualRegime}}.}
 
-\item{from}{}
+\item{from,to}{Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are
+interpreted as row indices of \code{x}.}
 
-\item{to}{}
-
-\item{name}{}
+\item{name}{Character string, name to be printed on the plot.}
 
 \item{area}{Numeric, upstream area of sub-basin in km^2. Required for calculation of accumulated volume error. Optional argument,
 either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.}
@@ -50,10 +56,35 @@ Plot a standard suite of evaluation plots from a basin output file, typically us
 during manual calibration
 }
 \details{
-date, uprf, upsf, temp, uppe, upev, cout, rout, soim, sm13, upfp, snow, uppr, ccin, rein, ccon, reon, cctn, retn, ccsp, resp, ccpp, repp, cctp, retp, wcom, wstr
-\url{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}
+\code{PlotBasinOutput} plots a suite of time series along with a flow duration curve, a flow regime plot, and a selection of
+goodness-of-fit measures from an imported HYPE basin output file. The function selects from a range of "known" variables, and plots
+those which are available in the user-supplied basin output. It is mostly meant as a support tool during calibration, manual or
+automatic, providing a quick and comprehensive overview of model dynamics at in a sub-basin of interest.
+
+HYPE outputs which are known to \code{PlotBasinOutput} include:
+
+\itemize{
+\item{precipitation}
+\item{discharge}
+\item{lake water level}
+\item{evapotranspiration}
+\item{snow water equivalent}
+\item{sub-surface storage components}
+\item{nitrogen concentrations}
+\item{phosphorus concentrations}
+}
+
+A complete list of known HYPE variables are listed below in HYPE info.txt format, ready to copy-paste into an info.txt file. For a detailed
+description of the variables, see the
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
+
+\code{basinoutput variable uprf upsf temp uppe upev cout rout soim sm13 upfp snow uppr ccin rein ccon reon cctn retn ccsp
+resp ccpp repp cctp retp wcom wstr}
 }
 \examples{
 PlotBasinOutput(x = mybasin, area = 56.67)
+}
+\seealso{
+\code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 }
 
