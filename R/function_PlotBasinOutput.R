@@ -42,7 +42,7 @@
 #' @examples
 #' PlotBasinOutput(x = mybasin, area = 56.67)
 
-PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = attr(x, "timestep"), log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
+PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
   
   ## Preliminaries
   
@@ -105,7 +105,7 @@ PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = att
   nm.t <- c("date", "uprf", "upsf", "temp", "uppe", "upev", "cout", "rout", "soim", "sm13", "upfp", "snow", "uppr", 
             "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp", "wcom", "wstr")
   # initialise logical vector to indicate existence of target variables
-  exi.t <- logical()
+  exi.t <- logical(length = length(nm.t))
   names(exi.t) <- nm.t
   
   # identify existing and non-empty variables for plotting in user-provided basin output table
@@ -130,7 +130,7 @@ PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = att
   # layout() matrix initialisation
   lay.mat <- matrix(ncol = 3, nrow = 0)
   # layout() panel widths (hard-coded for now)
-  lay.widths <- c(1.5, 1, 1.5)
+  lay.widths <- c(1, 2, 1)
   # layout() panel heights initialisation
   lay.heights <- NULL
   
@@ -149,7 +149,7 @@ PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = att
     # fill layout matrix with panel IDs
     lay.mat <- rbind(lay.mat, 1:3)
     # add layout height for this row
-    lay.heights <- c(lay.heights, 1.5)
+    lay.heights <- c(lay.heights, 2)
     
     # conditional: prepare FDC plot call depending on data availability
     if (exi.t["rout"] && exi.t["cout"]) {
@@ -302,62 +302,434 @@ PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = att
     
   }
   
-  cp <- cp + 1
-  list.plotexpr[[cp]] <- parse(text = '')
+  # lake water level panel
+  if (exi.t["wcom"] || exi.t["wstr"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    cp <- cp + 1
+    if (!exi.t["wcom"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, wstr, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(rout, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else if (!exi.t["wstr"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, wcom, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(cout, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, wcom, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(c(cout, rout), na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["rout"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, wstr, col = "black")')
+    }
+    
+    if (exi.t["cout"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, wcom, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("Obs. water level", "Sim. water level"), lty = 1, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
   
+  # ET panel
+  if (exi.t["uppe"] || exi.t["upev"]) {
+    
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'plot(date, uppe, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(uppe)), cex.axis = 1.1, cex.lab = 1.2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["uppe"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, uppe, col = "green3", lty = 3)')  
+    }
+    if (exi.t["upev"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, upev, col = "green4")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("ETp", "ETa"), lty = c(3, 1), col = c("green3", "green4"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  } 
   
-  # panel 3: ET
-  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
-  plot(xw[, col.date], xw[, col.uppe], type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(xw[, col.uppe])), cex.axis = 1.1, cex.lab = 1.2)
-  abline(h = 0, col = "grey", lwd = .5)
-  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
-  lines(xw[, col.date], xw[, col.uppe], col = "green3", lty = 3)
-  lines(xw[, col.date], xw[, col.upev], col = "green4")
-  legend("topleft", c("ETp", "ETa"), lty = c(3, 1), col = c("green3", "green4"), bty = "n", cex = 1.2, horiz = TRUE)
+  # snow water equiv panel
+  if (exi.t["snow"]) {
+    
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'plot(date, snow, type = "l", col = NA, xaxt = "n", ylab = "mm", cex.axis = 1.1, cex.lab = 1.2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'lines(date, snow, col = "deepskyblue3")')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext(" Snow water equivalent", side=3, adj= 0, line=-1.1, cex = .8)')
+    
+  }
   
-  # panel 4: snow water equivalent
-  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
-  plot(xw[, col.date], xw[, col.snow], type = "l", col = NA, xaxt = "n", ylab = "mm", cex.axis = 1.1, cex.lab = 1.2)
-  abline(h = 0, col = "grey", lwd = .5)
-  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
-  lines(xw[, col.date], xw[, col.snow], col = "deepskyblue3")
-  mtext(" Snow water equivalent", side=3, adj= 0, line=-1.1, cex = .8)
+  # accumulated vol err panel
+  if (exi.t["cout"] && exi.t["rout"]) {
+    
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    sqsim <- ConvertDischarge(q = cout, area = uarea, from = "m3s", to = "mmd")
+    sqobs <- ConvertDischarge(q = rout, area = uarea, from = "m3s", to = "mmd")
+    accvolerr <- cumsum(sqsim - ifelse(is.na(sqobs), sqsim, sqobs))
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'plot(date, accvolerr, type = "l", col = NA, xaxt = "n", ylab = "mm", cex.axis = 1, cex.lab = 1.2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'lines(date, accvolerr, col = "seagreen")')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext(" Accumulated volume error", side=3, adj= 0, line=-1.1, cex = .8)')
+    
+  }
   
+  # 
+  if (exi.t["soim"] || exi.t["sm13"]) {
+    
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    if (exi.t["soim"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, soim, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(min(soim, na.rm = TRUE), max(soim, na.rm = TRUE)), cex.axis = 1.1, cex.lab = 1.2)')
+    } else {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, sm13, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(min(sm13, na.rm = TRUE), max(sm13, na.rm = TRUE)), cex.axis = 1.1, cex.lab = 1.2)')
+    }
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    if (!exi.t["soim"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, sm13, col = "springgreen4")')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", "pore water", lty = 1, col = "springgreen4", bty = "n", cex = 1.2, horiz = TRUE)')
+    } else if (!exi.t["sm13"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, soim, col = "springgreen4")')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", " pore and surface water", lty = 1, col = "springgreen4", bty = "n", cex = 1.2, horiz = TRUE)')
+    } else {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, soim, col = "firebrick3")')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, sm13, col = "springgreen4")')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("pore water", "surface water"), lty = 1, col = c("springgreen4", "firebrick3"), bty = "n", cex = 1.2, horiz = TRUE)')
+    }
+    
+  }
   
-  # panel 6: soil moisture in local subid
-  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
-  plot(xw[, col.date], xw[, col.soim], type = "l", col = NA, xaxt = "n", ylab = "mm", 
-       ylim = c(min(xw[, col.soim], na.rm = TRUE), max(xw[, col.soim], na.rm = TRUE)), cex.axis = 1.1, cex.lab = 1.2)
-  abline(h = 0, col = "grey", lwd = .5)
-  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
-  lines(xw[, col.date], xw[, col.soim], col = "firebrick3")
-  lines(xw[, col.date], xw[, col.sm13], col = "springgreen4")
-  legend("topleft", c("soil moisture", "surface water"), lty = 1, col = c("springgreen4", "firebrick3"), 
-         bty = "n", cex = 1.2, horiz = TRUE)
+  # upstream average relative soil moisture panel
+  if (exi.t["upfp"]) {
+    
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'plot(date, upfp, type = "l", col = NA, xaxt = "s", ylab = "(-)", xlab = "", cex.axis = 1.1, cex.lab = 1.2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'lines(date, upfp, col = "chocolate3")')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext(" Rel. soil moisture", side=3, adj= 0, line=-1.1, cex = .8)')
+    
+  }
   
-  # panel 7: accumulated volume error
-  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
-  sqsim <- ConvertDischarge(q = xw[, col.cout], area = uarea, from = "m3s", to = "mmd")
-  sqobs <- ConvertDischarge(q = xw[, col.rout], area = uarea, from = "m3s", to = "mmd")
-  accvolerr <- cumsum(sqsim - ifelse(is.na(sqobs), sqsim, sqobs))
-  plot(xw[, col.date], accvolerr, type = "l", col = NA, xaxt = "n", ylab = "mm", cex.axis = 1, cex.lab = 1.2)
-  abline(h = 0, col = "grey", lwd = .5)
-  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
-  lines(xw[, col.date], accvolerr, col = "seagreen")
-  mtext(" Accumulated volume error", side=3, adj= 0, line=-1.1, cex = .8)
+  # TNsim, TNobs panel
+  if (exi.t["cctn"] || exi.t["retn"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    cp <- cp + 1
+    if (!exi.t["cctn"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, retn, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(retn, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else if (!exi.t["retn"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cctn, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(cctn, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cctn, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(c(cctn, retn), na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["retn"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, retn, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["cctn"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, cctn, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("TNobs", "TNsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
   
-  # panel 8: soil moisture
-  par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)
-  plot(xw[, col.date], xw[, col.upfp], type = "l", col = NA, xaxt = "s", ylab = "(-)", xlab = "", cex.axis = 1.1, cex.lab = 1.2)
-  abline(h = 0, col = "grey", lwd = .5)
-  abline(v = xw[, col.date][which(format(xw[, col.date], format = "%m%d") == "0101")], , col = "grey", lwd = .5)
-  lines(xw[, col.date], xw[, col.upfp], col = "chocolate3")
-  mtext(" Rel. soil moisture", side=3, adj= 0, line=-1.1, cex = .8)
+  # INsim, INobs panel
+  if (exi.t["ccin"] || exi.t["rein"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccin"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, rein, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(rein, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else if (!exi.t["rein"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccin, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(ccin, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccin, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(c(ccin, rein), na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["rein"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, rein, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccin"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccin, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("INobs", "INsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
   
+  # ONsim, ONobs panel
+  if (exi.t["ccon"] || exi.t["reon"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccon"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, reon, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(reon, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else if (!exi.t["reon"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccon, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(ccon, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccon, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(c(ccon, reon), na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["reon"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, reon, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccon"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccon, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("ONobs", "ONsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
   
+  # TPsim, TPobs panel
+  if (exi.t["cctp"] || exi.t["retp"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    cp <- cp + 1
+    if (!exi.t["cctp"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, retp, type = "l", col = NA, xaxt = "n", ylab = expressitp(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(retp, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else if (!exi.t["retp"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cctp, type = "l", col = NA, xaxt = "n", ylab = expressitp(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(cctp, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cctp, type = "l", col = NA, xaxt = "n", ylab = expressitp(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(c(cctp, retp), na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["retp"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, retp, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["cctp"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, cctp, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("TPobs", "TPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
   
-  cp <- cp + 1
-  list.plotexpr[[cp]] <- parse(text = '')
+  # PPsim, PPobs panel
+  if (exi.t["ccpp"] || exi.t["repp"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccpp"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, repp, type = "l", col = NA, xaxt = "n", ylab = expressipp(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(repp, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else if (!exi.t["repp"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccpp, type = "l", col = NA, xaxt = "n", ylab = expressipp(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(ccpp, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccpp, type = "l", col = NA, xaxt = "n", ylab = expressipp(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(c(ccpp, repp), na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["repp"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, repp, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccpp"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccpp, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("PPobs", "PPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
+  # SPsim, SPobs panel
+  if (exi.t["ccsp"] || exi.t["resp"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 2.5, 0, 0), xaxs = "i", mgp = c(1.2, .2, 0), tcl = .2)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccsp"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, resp, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(resp, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else if (!exi.t["resp"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccsp, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(ccsp, na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccsp, type = "l", col = NA, xaxt = "n", ylab = expression(paste(mu,"g ", "l"^"-1")), ylim = c(0, max(c(ccsp, resp), na.rm=T)), cex.axis = 1.1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["resp"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, resp, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccsp"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccsp, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", c("SPobs", "SPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
   
   # add empty row at the figure bottom in layout, as space for x-axis annotation
   lay.mat <- rbind(lay.mat, rep(0, 3))
@@ -367,7 +739,7 @@ PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = att
   ## set up plot device with layout and call all plot commands 
   
   # define device width (hard-coded for now)
-  wdth <- 20
+  wdth <- 24
   # set device height, based on layout rows
   hght <- sum(lay.heights) * 1.5
   
@@ -375,7 +747,7 @@ PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = att
   if (is.null(filename)) {
     x11(width=wdth, height = hght)
   } else {
-    png(filename = paste0(filename, ".png"), width=wdth*.8, height = hght*.8, units = "in", res = 300)
+    png(filename = paste0(filename, ".png"), width=wdth, height = hght, units = "in", res = 300, pointsize = 12)
   }
   
   # layout definition
@@ -414,3 +786,4 @@ PlotBasinOutput <- function(x, filename = deparse(substitute(x)), timestep = att
 # timestep <- "day"
 # start.mon <- 10
 # filename <- NULL
+# PlotBasinOutput(x = ReadBasinOutput("../9548212.txt"), name = "Weaver EHYPE3 default", gd = gd, subid = subid)

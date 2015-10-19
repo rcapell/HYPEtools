@@ -4,14 +4,16 @@
 \alias{PlotBasinOutput}
 \title{Plot a suite of evaluation plots from a HYPE basin output file}
 \usage{
-PlotBasinOutput(x, timestep = attr(x, "timestep"), log.q = F,
-  start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL,
-  subid = NULL, gd = NULL, bd = NULL)
+PlotBasinOutput(x, filename = NULL, timestep = attr(x, "timestep"),
+  log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "",
+  area = NULL, subid = NULL, gd = NULL, bd = NULL)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in
 \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}.
 See details for HYPE output variables required for plotting.}
+
+\item{filename}{String, file name for plotting to \code{\link{png}} device, defaults to name provided in argument \code{x}}
 
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
