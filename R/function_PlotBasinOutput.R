@@ -152,11 +152,11 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   }
   
   # select from existing variables based on user request, default is to use all available
-  if (hype.vars != "all") {
-    if (hype.vars == "hydro") {
+  if (hype.vars[1] != "all") {
+    if (hype.vars[1] == "hydro") {
       nm.hydro <- c("date", "uprf", "upsf", "temp", "uppe", "upev", "cout", "rout", "snow", "uppr", "wcom", "wstr")
       exi.t[!(nm.t %in% nm.hydro)] <- FALSE
-    } else if (hype.vars == "nutrients") {
+    } else if (hype.vars[1] == "nutrients") {
       nm.nutri <- c("date", "uprf", "upsf", "cout", "rout", "uppr", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp")
       exi.t[!(nm.t %in% nm.nutri)] <- FALSE
     } else if (is.character(hype.vars)) {
@@ -167,7 +167,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
         warning(paste("Unknown variable(s) specified in argument 'hype.vars':", paste(nm.manu[!(nm.manu %in% nm.t)], collapse = ",")))
       }
     } else {
-      stop("Wrong specification of argument hype.vars.")
+      stop("Wrong specification of argument 'hype.vars'.")
     }
   }
   
@@ -378,12 +378,12 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     
-    if (exi.t["rout"]) {
+    if (exi.t["wstr"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'lines(date, wstr, col = "black")')
     }
     
-    if (exi.t["cout"]) {
+    if (exi.t["wcom"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'lines(date, wcom, col = "red")')  
     }
@@ -802,6 +802,8 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     x11(width=wdth, height = hght)
   } else {
     png(filename = paste0(filename, ".png"), width=wdth, height = hght, units = "in", res = 300, pointsize = 20)
+    # close the file device on exit
+    on.exit(dev.off(), add = T)
   }
   
   # layout definition
@@ -811,11 +813,6 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   # plot all commands in list
   for (i in 1:length(list.plotexpr)) {
     eval(list.plotexpr[[i]])
-  }
-  
-  # close the file device, if any
-  if (!is.null(filename)) {
-    dev.off()
   }
 }
 
