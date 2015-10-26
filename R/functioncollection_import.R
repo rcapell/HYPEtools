@@ -1,5 +1,5 @@
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-#   Collection of import functions, herein:
+#   Collection of HYPE file import functions, herein:
 #
 #     - ReadGeoClass()
 #     - ReadBasinOutput()
