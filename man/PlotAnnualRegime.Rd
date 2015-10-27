@@ -14,8 +14,7 @@ PlotAnnualRegime(x, type = "mean", add.legend = FALSE, l.legend = NULL,
 See details in description there.}
 
 \item{type}{Character string, keyword for plot type. Either \code{"mean"} to plot long-term averages only, or \code{"minmax"} or
-\code{"p25p75"} to include bands of variation. See details.
-probability plot, which allows for for better comparison of low flow and high flow frequencies.}
+\code{"p25p75"} to include bands of variation. See details.}
 
 \item{add.legend}{Logical. If \code{TRUE}, a legend will be added to the plot.}
 
