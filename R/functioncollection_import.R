@@ -922,3 +922,36 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt") {
 }
 
 
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadAllsim~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Read an 'allsim.txt' file
+#'
+#' @description
+#' This is a convenience wrapper function to import an allsim.txt optimisation result file as data frame into R.
+#' 
+#' @param filename Path to and file name of the allsim.txt file to import. 
+#'  
+#' @details
+#' \code{ReadAllsim} is just \code{read.table(file = filename, header = T, sep = ",")}, mainly added to provide a 
+#' comparable function to the other RHYPE imports.
+#' 
+#' @return
+#' \code{ReadAllsim} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{ReadAllsim("allsim.txt")}
+#' 
+
+
+ReadAllsim <- function(filename = "PointSourceData.txt") {
+  read.table(file = filename, header = T, sep = ",")
+}
+
+
