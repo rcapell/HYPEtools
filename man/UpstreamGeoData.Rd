@@ -4,7 +4,7 @@
 \alias{UpstreamGeoData}
 \title{Calculate upstream sums and averages of selected GeoData contents}
 \usage{
-UpstreamGeoData(subid = NULL, gd, bd = NULL, col.olake.slc = NULL,
+UpstreamGeoData(subid = NULL, gd, bd = NULL, olake.slc = NULL,
   signif.digits = 3, progbar = TRUE)
 }
 \arguments{
@@ -15,7 +15,7 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
-\item{col.olake.slc}{Integer, column number with SLC class fraction of outlet lake. Mandatory for weighted averaging of outlet lake depths.}
+\item{olake.slc}{Integer,SLC class number which represents outlet lake fractions. Mandatory for weighted averaging of outlet lake depths.}
 
 \item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding.}
 
@@ -43,7 +43,7 @@ Currently, the following variables are considered:
 }
 }
 \examples{
-\dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, col.olake.slc = 12)}
+\dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, olake.slc = 1)}
 }
 \seealso{
 \code{\link{UpstreamSLCClasses}}
