@@ -82,7 +82,7 @@ description of the variables, see the
 resp ccpp repp cctp retp wcom wstr}
 }
 \examples{
-PlotBasinOutput(x = mybasin, area = 56.67)
+\dontrun{PlotBasinOutput(x = mybasin, area = 56.67)}
 }
 \seealso{
 \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}

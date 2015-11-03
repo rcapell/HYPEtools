@@ -776,7 +776,7 @@ WriteMgmtData <- function(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L
   # warn if NAs in data, since HYPE does not allow empty values in 
   # check for NAs
   te <- apply(x, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   
   # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
   x[is.na(x)] <- -9999
@@ -821,7 +821,7 @@ WriteAquiferData <- function(x, filename = "AquiferData.txt", digits = 10, nsmal
   # warn if NAs in data, since HYPE does not allow empty values in 
   # check for NAs
   te <- apply(x, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   
   # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
   x[is.na(x)] <- -9999

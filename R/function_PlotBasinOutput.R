@@ -70,7 +70,7 @@
 #' \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 #' 
 #' @examples
-#' PlotBasinOutput(x = mybasin, area = 56.67)
+#' \dontrun{PlotBasinOutput(x = mybasin, area = 56.67)}
 
 PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), hype.vars = "all", log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
   
@@ -227,17 +227,17 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     list.plotexpr[[cp]] <- parse(text = 'title(main = name, line = -1)')
     # compute and plot GoFs for discharge, TN, and TP, if variables are available
     if (exi.t["rout"] && exi.t["cout"]){
-      gof.q <- gof(sim = cout, obs = rout, na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
+      gof.q <- gof(sim = get("cout"), obs = get("rout"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.q), gof.q, sep = ": "),"",paste0("(", length(na.omit(rout)), " obs.)")), bty = "n", title = "Q, goodness of fit", cex = .8)')
     }
     if (exi.t["retn"] && exi.t["cctn"]){
-      gof.tn <- gof(sim = cctn, obs = retn, na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
+      gof.tn <- gof(sim = get("cctn"), obs = get("retn"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend(x = 1/3, y = 0.9, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",paste0("(", length(na.omit(retn)), " obs.)")), bty = "n", title = "TN, goodness of fit", cex = .8)')
     }
     if (exi.t["retp"] && exi.t["cctp"]){
-      gof.tp <- gof(sim = cctp, obs = retp, na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
+      gof.tp <- gof(sim = get("cctp"), obs = get("retp"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/3, y = 0.9, legend = c(paste(names(gof.tp), gof.tn, sep = ": "),"",paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness of fit", cex = .8)')
     }
@@ -260,7 +260,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   }
   
   # precipitation and snowfall panel
-  if (exi.t["uppr"]) {
+  if (exi.t["uppr"] || (exi.t["uprf"] && exi.t["upsf"])) {
     
     # fill layout matrix with panel IDs
     lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
@@ -270,13 +270,18 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'plot(date, uppr, ylim = c(max(uppr), -2), col = NA, axes = F, ylab = "")')
+    if (exi.t["uppr"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, uppr, ylim = c(max(uppr), -2), col = NA, axes = F, ylab = "")')
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, uprf + upsf, ylim = c(max(uppr), -2), col = NA, axes = F, ylab = "")')
+    }
+    
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(new = TRUE)')
     
-    # conditional: if rainfall and snow variables available, plot stacked bars based on these, otherwise plot precip bars
+    # conditional: if rainfall and snow variables available, plot stacked bars based of these, otherwise plot precip bars
     if (exi.t["uprf"] && exi.t["upsf"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(uprf, upsf))), border = NA, ylim = c(max(uppr), -2), xlab = "", col = c("darkblue", "forestgreen"), names.arg = rep("", length(uppr)), legend.text = c("Rain", "Snow"), args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
@@ -458,8 +463,8 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     
-    sqsim <- ConvertDischarge(q = cout, area = uarea, from = "m3s", to = "mmd")
-    sqobs <- ConvertDischarge(q = rout, area = uarea, from = "m3s", to = "mmd")
+    sqsim <- ConvertDischarge(q = get("cout"), area = uarea, from = "m3s", to = "mmd")
+    sqobs <- ConvertDischarge(q = ("rout"), area = uarea, from = "m3s", to = "mmd")
     accvolerr <- cumsum(sqsim - ifelse(is.na(sqobs), sqsim, sqobs))
     
     cp <- cp + 1
@@ -799,7 +804,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   
   # create plot device, conditional on filename
   if (is.null(filename)) {
-    x11(width=wdth, height = hght)
+    dev.new(width=wdth, height = hght, noRStudioGD = T)
   } else {
     png(filename = paste0(filename, ".png"), width=wdth, height = hght, units = "in", res = 300, pointsize = 20)
     # close the file device on exit
