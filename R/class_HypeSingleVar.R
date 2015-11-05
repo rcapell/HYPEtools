@@ -50,7 +50,7 @@ HypeSingleVar <- function(x, date, subid, hype.var) {
     if (length(subid) != dim(x)[2]) {
       stop("Different lengths of argument 'subid' and corresponding dimension of 'x'.")
     }
-    class(x) <- c("HypeDomainVar", "array")
+    class(x) <- c("HypeSingleVar", "array")
     attr(x, "date") <- date
     attr(x, "subid") <- subid
     attr(x, "variable") <- toupper(hype.var)
@@ -60,6 +60,13 @@ HypeSingleVar <- function(x, date, subid, hype.var) {
   }
 }
 
-# x <- array(data = 1:27, dim = c(3,3,3))
-# x <- array(data = 1:27, dim = c(9,3))
-# x <- array(data = 1:27, dim = c(27))
+
+# Sub-setting method
+
+`[.HypeSingleVar` <- function(x, i, j, ...) {
+  y <- NextMethod("[", drop = F)
+  attr(y, "date") <- attr(x, "date")[i]
+  attr(y, "subid") <- attr(x, "subid")[j]
+  attr(y, "variable") <- attr(x, "variable")
+  y
+}

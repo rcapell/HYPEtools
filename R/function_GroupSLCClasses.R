@@ -22,7 +22,7 @@
 #' 
 #' @param abs.area Logical, if \code{TRUE}, absolute areas will be calculated for eatch group, rather than area fractions.
 #' 
-#' @param verbose Logical,  if \code{TRUE} information and progress bar will be printed.
+#' @param verbose Logical, if \code{TRUE} information and progress bar will be printed.
 #' 
 #' @details
 #' If absolute areas are calculated, area units will correspond to areas provided in \code{gd}.
