@@ -1,7 +1,4 @@
-
-#'
 #' @export
-#' 
 #' @title
 #' Plot duration curves
 #'

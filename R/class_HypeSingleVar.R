@@ -1,6 +1,5 @@
 
 #' @export
-#' 
 #' @title
 #' HypeSingleVar arrays
 #' 
@@ -60,6 +59,8 @@ HypeSingleVar <- function(x, date, subid, hype.var) {
   }
 }
 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 # Sub-setting method
 

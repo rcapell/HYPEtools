@@ -4,16 +4,16 @@
 \alias{ReadWsOutput}
 \title{Read optimisation simulation results}
 \usage{
-ReadWsOutput(path, type = "time", hype.var = NULL, subid = NULL,
-  dt.format = NULL, progbar = T)
+ReadWsOutput(path, type = c("time", "map", "basin"), hype.var = NULL,
+  subid = NULL, dt.format = NULL, progbar = T)
 }
 \arguments{
 \item{path}{Character string, path to the directory holding simulation output files to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
 \item{type}{Character string, keyword for HYPE output file type to import. One of \code{"time"}, \code{"map"}, or 
-\code{"basin"}. The first two require specification of argument \code{hype.var}, the latter of argument \code{subid}. Format of 
-return value depends on output type, see details.}
+\code{"basin"}. Can be abbreviated. The first two require specification of argument \code{hype.var}, the latter of argument 
+\code{subid}. Format of return value depends on output type, see details.}
 
 \item{hype.var}{Character string, keyword to specify HYPE output variable to import. Not case-sensitive. Required in combination 
 with \code{type} \code{"time"} or \code{"map"}.}
@@ -31,7 +31,8 @@ when many files are imported.}
 }
 \value{
 \code{ReadWsOutput} returns a 3-dimensional array with additional attributes. The array content depends on the HYPE output file type 
-specified in argument \code{type}. Time and map output file imports return an array with \code{[time, subid, iteration]} dimensions, 
+specified in argument \code{type}. Time and map output file imports return an array of class \code{\link{HypeSingleVar}} with 
+\code{[time, subid, iteration]} dimensions, 
 basin output file imports return an array with \code{[time, subid, iteration]} dimensions.
 
 Returned arrays contain additional \code{\link{attributes}}:
@@ -40,7 +41,6 @@ Returned arrays contain additional \code{\link{attributes}}:
 dimension.}
 \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files.}
 \item{\strong{variable}}{A vector of HYPE output variables. Corresponds to 2nd array dimension for basin output files.}
-\item{\strong{type}}{A character string, indicating the imported output file type.}
 }
 }
 \description{

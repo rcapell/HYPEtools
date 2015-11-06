@@ -2,7 +2,7 @@
 #
 # Method definitions for generic functions from the 'hydroGOF' package.
 #
-# For these classes, defined in HYPETOOLS:
+# For the following S3 classes, defined in HYPETOOLS:
 #
 #     - HypeSingleVar
 #
@@ -13,13 +13,22 @@
 #'
 #' @title Nash-Sutcliffe Efficiency
 #'  
+#' @description
+#' Nash-sutcliffe Efficiency calculation for imported HYPE outputs with single variables for several catchments, i.e. time and 
+#' map files, optionally multiple model runs combined.
+#' 
 #' @param sim \code{\link{HypeSingleVar}} array with simulated variable.
 #' @param obs \code{\link{HypeSingleVar}} array with observed variable.
 #' @param progbar Logical, if \code{TRUE} progress bars will be printed for main computational steps.
 #' @param ... ignored
-#' @export
-#' @aliases NSE
-#' @name NSE
+#' @inheritParams hydroGOF::NSE
+# @export
+# @aliases NSE
+# @name NSE
+#' 
+#' @return 
+#' A two-dimensional array with NSEs for all time series pairs provided in \code{sim} and \code{obs}, with values in the same order 
+#' as the second and third dimension as the input, i.e. \code{[subid, iteration]}.
 
 
 NSE.HypeSingleVar <- function (sim, obs, na.rm = TRUE, progbar = TRUE, ...){ 

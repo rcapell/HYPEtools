@@ -1,5 +1,4 @@
 #' @export
-#' 
 #' @import pbapply
 #' 
 #' @title
@@ -12,8 +11,8 @@
 #' @param path Character string, path to the directory holding simulation output files to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param type Character string, keyword for HYPE output file type to import. One of \code{"time"}, \code{"map"}, or 
-#' \code{"basin"}. The first two require specification of argument \code{hype.var}, the latter of argument \code{subid}. Format of 
-#' return value depends on output type, see details.
+#' \code{"basin"}. Can be abbreviated. The first two require specification of argument \code{hype.var}, the latter of argument 
+#' \code{subid}. Format of return value depends on output type, see details.
 #' @param hype.var Character string, keyword to specify HYPE output variable to import. Not case-sensitive. Required in combination 
 #' with \code{type} \code{"time"} or \code{"map"}.
 #' @param subid Integer, giving a single SUBID for which to import basin output files. Required in combination with \code{type} 
@@ -34,7 +33,8 @@
 #' 
 #' @return
 #' \code{ReadWsOutput} returns a 3-dimensional array with additional attributes. The array content depends on the HYPE output file type 
-#' specified in argument \code{type}. Time and map output file imports return an array with \code{[time, subid, iteration]} dimensions, 
+#' specified in argument \code{type}. Time and map output file imports return an array of class \code{\link{HypeSingleVar}} with 
+#' \code{[time, subid, iteration]} dimensions, 
 #' basin output file imports return an array with \code{[time, subid, iteration]} dimensions.
 #' 
 #' Returned arrays contain additional \code{\link{attributes}}:
@@ -43,7 +43,6 @@
 #' dimension.}
 #' \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files.}
 #' \item{\strong{variable}}{A vector of HYPE output variables. Corresponds to 2nd array dimension for basin output files.}
-#' \item{\strong{type}}{A character string, indicating the imported output file type.}
 #' }
 #' 
 #' @examples
@@ -51,10 +50,9 @@
 
 
 
-ReadWsOutput <- function(path, type = "time", hype.var = NULL, subid = NULL, dt.format = NULL, progbar = T) {
+ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL, subid = NULL, dt.format = NULL, progbar = T) {
   
-  # check validity of 'type' argument
-  stopifnot(any(type == "time", type == "map", type == "basin"))
+  type <- match.arg(type)
   
   # create vector of time or map file locations
   if (type %in% c("map", "time")) {
@@ -96,10 +94,10 @@ ReadWsOutput <- function(path, type = "time", hype.var = NULL, subid = NULL, dt.
     }
     # add attributes with information
     te <- ReadTimeOutput(filename = locs[1], dt.format = dt.format)
+    class(x) <- c("HypeSingleVar", "array")
     attr(res, "date") <- te[, 1]
     attr(res, "subid") <- attr(te, "subid")
     attr(res, "variable") <- toupper(hype.var)
-    attr(res, "type") <- type
     
   } else if (type == "map") {
     if (progbar) {
@@ -111,10 +109,10 @@ ReadWsOutput <- function(path, type = "time", hype.var = NULL, subid = NULL, dt.
     }
     # add attributes with information
     te <- ReadMapOutput(filename = locs[1], dt.format = dt.format)
+    class(x) <- c("HypeSingleVar", "array")
     attr(res, "date") <- attr(te, "date")
     attr(res, "subid") <- te[, 1]
     attr(res, "variable") <- toupper(hype.var)
-    attr(res, "type") <- type
     
   } else {
     # type == "basin"
@@ -130,7 +128,6 @@ ReadWsOutput <- function(path, type = "time", hype.var = NULL, subid = NULL, dt.
     attr(res, "date") <- te[, 1]
     attr(res, "subid") <- subid
     attr(res, "variable") <- names(te)[-1]
-    attr(res, "type") <- type
     
   }
 

@@ -35,12 +35,13 @@ interpreted as row indices of \code{x}.}
 
 \item{name}{Character string, name to be printed on the plot.}
 
-\item{area}{Numeric, upstream area of sub-basin in km^2. Required for calculation of accumulated volume error. Optional argument, 
+\item{area}{Numeric, upstream area of sub-basin in m^2. Required for calculation of accumulated volume error. Optional argument, 
 either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.}
 
 \item{subid}{HYPE SUBID of a target sub-catchment (must exist in \code{gd}). Mandatory in combination with \code{gd} and 
 optionally \code{bd} if argument \code{area} is not defined. Used to calculate upstream area internally with function 
-\code{\link{SumUpstreamArea}}.}
+\code{\link{SumUpstreamArea}}. For repeated calls to \code{PlotBasinOutput} providing \code{area} in combination with a one-off 
+separate call to \code{\link{SumUpstreamArea}} saves computation time, especially in basins with many upstream sub-basins.}
 
 \item{gd}{A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory with argument 
 \code{subid}, details see there.}
@@ -82,7 +83,7 @@ description of the variables, see the
 resp ccpp repp cctp retp wcom wstr}
 }
 \examples{
-\dontrun{PlotBasinOutput(x = mybasin, area = 56.67)}
+\dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
 }
 \seealso{
 \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}

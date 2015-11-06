@@ -1,5 +1,4 @@
 #' @export
-#' 
 #' @import hydroGOF
 
 #' @title
@@ -27,11 +26,12 @@
 #' @param from,to Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
 #' interpreted as row indices of \code{x}.
 #' @param name Character string, name to be printed on the plot.
-#' @param area Numeric, upstream area of sub-basin in km^2. Required for calculation of accumulated volume error. Optional argument, 
+#' @param area Numeric, upstream area of sub-basin in m^2. Required for calculation of accumulated volume error. Optional argument, 
 #' either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.
 #' @param subid HYPE SUBID of a target sub-catchment (must exist in \code{gd}). Mandatory in combination with \code{gd} and 
 #' optionally \code{bd} if argument \code{area} is not defined. Used to calculate upstream area internally with function 
-#' \code{\link{SumUpstreamArea}}.
+#' \code{\link{SumUpstreamArea}}. For repeated calls to \code{PlotBasinOutput} providing \code{area} in combination with a one-off 
+#' separate call to \code{\link{SumUpstreamArea}} saves computation time, especially in basins with many upstream sub-basins.
 #' @param gd A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory with argument 
 #' \code{subid}, details see there. 
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional with argument 
@@ -70,7 +70,7 @@
 #' \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 #' 
 #' @examples
-#' \dontrun{PlotBasinOutput(x = mybasin, area = 56.67)}
+#' \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
 
 PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), hype.vars = "all", log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
   
@@ -86,7 +86,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
       }
       uarea <- SumUpstreamArea(subid = subid, gd = gd, bd = bd)[, 2]
     } else {
-      uarea <- area * 10^6
+      uarea <- area
     }
   }
   
@@ -370,11 +370,11 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     
     cp <- cp + 1
     if (!exi.t["wcom"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, wstr, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(rout, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, wstr, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(wstr, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
     } else if (!exi.t["wstr"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, wcom, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(cout, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, wcom, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(wcom, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
     } else {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, wcom, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(c(cout, rout), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, wcom, type = "l", col = NA, xaxt = "n", ylab = "m", ylim = c(0, max(c(wcom, wstr), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
     }
     
     cp <- cp + 1
@@ -409,7 +409,14 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'plot(date, uppe, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(uppe)), cex.axis = 1, cex.lab = 1.2)')
+    if (!exi.t["upev"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, uppe, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(uppe)), cex.axis = 1, cex.lab = 1.2)')
+    } else if (!exi.t["uppe"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upev, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(upev)), cex.axis = 1, cex.lab = 1.2)')
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upev, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(c(upev, uppe))), cex.axis = 1, cex.lab = 1.2)')
+    }
+    
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
     cp <- cp + 1
@@ -464,7 +471,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     
     sqsim <- ConvertDischarge(q = get("cout"), area = uarea, from = "m3s", to = "mmd")
-    sqobs <- ConvertDischarge(q = ("rout"), area = uarea, from = "m3s", to = "mmd")
+    sqobs <- ConvertDischarge(q = get("rout"), area = uarea, from = "m3s", to = "mmd")
     accvolerr <- cumsum(sqsim - ifelse(is.na(sqobs), sqsim, sqobs))
     
     cp <- cp + 1
@@ -831,9 +838,9 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
 # to <- nrow(x)
 # name <- "Weaver EHYPE3 default"
 # area <- NULL
-# gd <- ReadGeoData("//winfs-proj/data/proj/Fouh/Europe/Projekt/SWITCH-ON/WP3 experiments/experiment_wq_weaver/Analyses/cal_wbalance_coarse_open/GeoData.txt")
+# area <- SumUpstreamArea(subid = subid, gd = gd, bd = bd)[, 2]
+# gd <- ReadGeoData("//winfs-proj/data/proj/Fouh/Europe/Projekt/SWITCH-ON/WP3 experiments/experiment_wq_weaver/Analyses/calib_wbalance_coarse_open/GeoData.txt")
 # log.q <- F
-# filename <- NA
 # subid <- 9548212
 # bd <- NULL
 # timestep <- "day"

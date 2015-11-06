@@ -1,9 +1,3 @@
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DirectUpstreamSubids~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-
 #' @export
 #' @title
 #' Find Direct Upstream SUBIDs, with Flow Fractions
@@ -11,7 +5,6 @@
 #' @description
 #' Function to find \bold{direct} upstream SUBIDs including flow fractions for MAINDOWN/BRANCHDOWN splits for a single
 #' sub-catchment or all sub-catchments in a GeoData-like data frame. 
-#' 
 #'
 #' @param subid Integer, SUBID of a target sub-catchment (must exist in \code{gd}), defaults to 
 #' \code{NULL}. If non-\code{NULL}, \code{DirectUpstreamSubids} 

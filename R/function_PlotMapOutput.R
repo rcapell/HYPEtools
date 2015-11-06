@@ -1,6 +1,4 @@
-
 #' @export
-#' 
 #' @import sp
 # @importClassesFrom sp SpatialPolygonsDataFrame SpatialPolygons
 # @importMethodsFrom sp plot.SpatialPolygons

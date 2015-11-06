@@ -1,6 +1,4 @@
-#'
 #' @export
-#' 
 #' @title
 #' Plot annual regimes
 #'

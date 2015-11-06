@@ -1,6 +1,4 @@
-
 #' @export
-#' 
 #' @import sp
 #' @import pbapply
 #' 
