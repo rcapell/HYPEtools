@@ -23,7 +23,7 @@
 #' @param ... ignored
 #' @inheritParams hydroGOF::NSE
 # @export
-# @aliases NSE
+#' @aliases NSE
 # @name NSE
 #' 
 #' @return 
