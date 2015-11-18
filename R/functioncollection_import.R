@@ -231,7 +231,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #' Read an 'Xobs.txt' file
 #'
 #' @description
-#' This is a convenience wrapper function to import an Xobs file as data frame into R.
+#' This is a convenience wrapper function to import an Xobs file into R.
 #' 
 #' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
@@ -245,10 +245,12 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #' how to access these).
 #' 
 #' @return
-#' \code{ReadXobs} returns a data frame with three additional attributes \code{variable}, \code{subid}, and \code{comment}: \code{variable} 
-#' and \code{subid} each contain a vector with column-wise information (exept the first column with date/time). \code{comment} contains 
-#' the content of the Xobs file comment row as single string. Column names of the returned data frame are composed of variable names and 
-#' SUBIDs, separated by and underscore, i.e. \code{[variable]_[subid]}.
+#' If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with three 
+#' additional attributes \code{variable}, \code{subid}, and \code{comment}: \code{variable} 
+#' and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted). 
+#' \code{comment} contains the content of the Xobs file comment row as single string. Column names of the returned data 
+#' frame are composed of variable names and SUBIDs, separated by and underscore, i.e. \code{[variable]_[subid]}. 
+#' If datetime conversion failed on import, the returned object is a data frame (i.e. no class \code{HypeXobs}).
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -269,7 +271,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
     
   # update with new attributes to hold subids and obs-variables for all columns
   xattr <- readLines(filename,n=3)
-  attr(xobs, which = "comment") <- strsplit(xattr[1], split = "\t")[[1]]
+  #attr(xobs, which = "comment") <- strsplit(xattr[1], split = "\t")[[1]]
+  attr(xobs, which = "comment") <- xattr[1]
   attr(xobs, which = "variable") <- strsplit(xattr[2], split = "\t")[[1]][-1]
   attr(xobs, which = "subid") <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
   
@@ -280,6 +283,11 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
   xd <- as.POSIXct(strptime(xobs[, 1], format = dt.format), tz = "GMT")
   xobs[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(xobs[, 1])})
+  
+  # if date conversion worked, add class HydroXobs to returned object 
+  if(!any(is.na(xd))) {
+    class(xobs) <- c("HypeXobs", "data.frame")
+  }
   
   return(xobs)
 }

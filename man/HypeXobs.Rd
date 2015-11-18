@@ -7,8 +7,8 @@
 HypeXobs(x, comment, variable, subid)
 }
 \arguments{
-\item{x}{\code{\link{data.frame}} with \code{\link{POSIXct}} formatted time steps in the first, and numeric variables 
-in the remaining columns.}
+\item{x}{\code{\link{data.frame}} with \code{\link{POSIXct}} formatted time steps in the first, and \code{\link{numeric}} 
+variables in the remaining columns.}
 
 \item{comment}{Character string, metadata or other information, first line of a HYPE Xobs.txt file.}
 

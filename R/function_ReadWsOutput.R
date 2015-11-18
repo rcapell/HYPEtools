@@ -34,8 +34,8 @@
 #' @return
 #' \code{ReadWsOutput} returns a 3-dimensional array with additional attributes. The array content depends on the HYPE output file type 
 #' specified in argument \code{type}. Time and map output file imports return an array of class \code{\link{HypeSingleVar}} with 
-#' \code{[time, subid, iteration]} dimensions, 
-#' basin output file imports return an array with \code{[time, subid, iteration]} dimensions.
+#' \code{[time, subid, iteration]} dimensions, basin output file imports return a numeric array with \code{[time, subid, iteration]} 
+#' dimensions.
 #' 
 #' Returned arrays contain additional \code{\link{attributes}}:
 #' \describe{
@@ -94,7 +94,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     }
     # add attributes with information
     te <- ReadTimeOutput(filename = locs[1], dt.format = dt.format)
-    class(x) <- c("HypeSingleVar", "array")
+    class(res) <- c("HypeSingleVar", "array")
     attr(res, "date") <- te[, 1]
     attr(res, "subid") <- attr(te, "subid")
     attr(res, "variable") <- toupper(hype.var)

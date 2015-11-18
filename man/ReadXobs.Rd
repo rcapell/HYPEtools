@@ -16,13 +16,15 @@ Paths are separated by '/', not '\\'.}
 to import.}
 }
 \value{
-\code{ReadXobs} returns a data frame with three additional attributes \code{variable}, \code{subid}, and \code{comment}: \code{variable} 
-and \code{subid} each contain a vector with column-wise information (exept the first column with date/time). \code{comment} contains 
-the content of the Xobs file comment row as single string. Column names of the returned data frame are composed of variable names and 
-SUBIDs, separated by and underscore, i.e. \code{[variable]_[subid]}.
+If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with three 
+additional attributes \code{variable}, \code{subid}, and \code{comment}: \code{variable} 
+and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted). 
+\code{comment} contains the content of the Xobs file comment row as single string. Column names of the returned data 
+frame are composed of variable names and SUBIDs, separated by and underscore, i.e. \code{[variable]_[subid]}. 
+If datetime conversion failed on import, the returned object is a data frame (i.e. no class \code{HypeXobs}).
 }
 \description{
-This is a convenience wrapper function to import an Xobs file as data frame into R.
+This is a convenience wrapper function to import an Xobs file into R.
 }
 \details{
 \code{ReadXobs} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to

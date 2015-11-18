@@ -67,6 +67,10 @@ HypeXobs <- function(x, comment, variable, subid) {
     attr(x, "comment") <- comment
     attr(x, "variable") <- toupper(hype.var)
     attr(x, "subid") <- subid
+    
+    # update header, composite of variable and subid
+    names(x) <- c("date", paste(attr(x, "variable"), attr(x, "subid"), sep = "_"))
+    
     return(x)
   } else {
     stop("Non-data frame input.")
@@ -77,12 +81,12 @@ HypeXobs <- function(x, comment, variable, subid) {
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 # Sub-setting method
-
-`[.HypeXobs` <- function(x, i, j, ...) {
+#' @export
+`[.HypeXobs` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2]) {
   y <- NextMethod("[", drop = F)
   attr(y, "comment") <- attr(x, "comment")
-  attr(y, "date") <- attr(x, "variable")[j - 1]
-  attr(y, "subid") <- attr(x, "subid")[j - 1]
-  y
+  attr(y, "variable") <- attr(x, "variable")[(j - 1)[-1]]
+  attr(y, "subid") <- attr(x, "subid")[(j - 1)[-1]]
+  return(y)
 }
 

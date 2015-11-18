@@ -32,8 +32,8 @@ when many files are imported.}
 \value{
 \code{ReadWsOutput} returns a 3-dimensional array with additional attributes. The array content depends on the HYPE output file type 
 specified in argument \code{type}. Time and map output file imports return an array of class \code{\link{HypeSingleVar}} with 
-\code{[time, subid, iteration]} dimensions, 
-basin output file imports return an array with \code{[time, subid, iteration]} dimensions.
+\code{[time, subid, iteration]} dimensions, basin output file imports return a numeric array with \code{[time, subid, iteration]} 
+dimensions.
 
 Returned arrays contain additional \code{\link{attributes}}:
 \describe{
