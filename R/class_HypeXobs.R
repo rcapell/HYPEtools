@@ -80,13 +80,21 @@ HypeXobs <- function(x, comment, variable, subid) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-# Sub-setting method
+# Sub-setting method, for integer and logical subsetting
 #' @export
 `[.HypeXobs` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2]) {
-  y <- NextMethod("[", drop = F)
+  y <- NextMethod("[")
   attr(y, "comment") <- attr(x, "comment")
-  attr(y, "variable") <- attr(x, "variable")[(j - 1)[-1]]
-  attr(y, "subid") <- attr(x, "subid")[(j - 1)[-1]]
+  # attribute subsetting, conditional on subsetting specification
+  if (is.numeric(j)){
+    attr(y, "variable") <- attr(x, "variable")[(j - 1)[-1]]
+    attr(y, "subid") <- attr(x, "subid")[(j - 1)[-1]]
+  } else if(is.logical(j)) {
+    attr(y, "variable") <- attr(x, "variable")[(j)[-1]]
+    attr(y, "subid") <- attr(x, "subid")[(j)[-1]]
+  } else {
+    warning("Indexing of attributes 'subid' and 'variable' only defined for integer and logical element indices. Attributes lost.")
+  }
   return(y)
 }
 
