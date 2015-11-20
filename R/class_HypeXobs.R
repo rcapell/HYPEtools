@@ -82,7 +82,7 @@ HypeXobs <- function(x, comment, variable, subid) {
 
 # Indexing method, for integer and logical subsetting
 #' @export
-`[.HypeXobs` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2]) {
+`[.HypeXobs` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], drop) {
   y <- NextMethod("[")
   attr(y, "comment") <- attr(x, "comment")
   # attribute indexing, conditional on indexing specification
@@ -105,8 +105,6 @@ HypeXobs <- function(x, comment, variable, subid) {
             Attributes and class 'HypeXobs' lost.")
     class(y) <- class(y)[-1]
   }
-  # drop class if datetime column is removed
-  if((is.logical(j) && !j[1]) || is.numeric)
   return(y)
 }
 
