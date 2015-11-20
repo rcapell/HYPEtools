@@ -62,12 +62,12 @@ HypeSingleVar <- function(x, date, subid, hype.var) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-# Sub-setting method
+# indexing method
 #' @export
 `[.HypeSingleVar` <- function(x, i, j, ...) {
   y <- NextMethod("[", drop = F)
+  attr(y, "variable") <- attr(x, "variable")
   attr(y, "date") <- attr(x, "date")[i]
   attr(y, "subid") <- attr(x, "subid")[j]
-  attr(y, "variable") <- attr(x, "variable")
   return(y)
 }

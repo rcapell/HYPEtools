@@ -80,21 +80,33 @@ HypeXobs <- function(x, comment, variable, subid) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-# Sub-setting method, for integer and logical subsetting
+# Indexing method, for integer and logical subsetting
 #' @export
 `[.HypeXobs` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2]) {
   y <- NextMethod("[")
   attr(y, "comment") <- attr(x, "comment")
-  # attribute subsetting, conditional on subsetting specification
+  # attribute indexing, conditional on indexing specification
   if (is.numeric(j)){
     attr(y, "variable") <- attr(x, "variable")[(j - 1)[-1]]
     attr(y, "subid") <- attr(x, "subid")[(j - 1)[-1]]
+    if (j[1] != 1) {
+      warning("Date column removed or moved from first column, class 'HypeXobs' lost, other attributes preserved.")
+      class(y) <- class(y)[-1]
+    }
   } else if(is.logical(j)) {
     attr(y, "variable") <- attr(x, "variable")[(j)[-1]]
     attr(y, "subid") <- attr(x, "subid")[(j)[-1]]
+    if (!j[1]) {
+      warning("Date column removed, class 'HypeXobs' lost, other attributes preserved.")
+      class(y) <- class(y)[-1]
+    }
   } else {
-    warning("Indexing of attributes 'subid' and 'variable' only defined for integer and logical element indices. Attributes lost.")
+    warning("Indexing of attributes 'subid' and 'variable' only defined for integer and logical element indices. 
+            Attributes and class 'HypeXobs' lost.")
+    class(y) <- class(y)[-1]
   }
+  # drop class if datetime column is removed
+  if((is.logical(j) && !j[1]) || is.numeric)
   return(y)
 }
 
