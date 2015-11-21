@@ -7,20 +7,21 @@
 #' Function to merge two Xobs data frames, with handling of overlapping time periods and time periods gaps 
 #' as well as merging of common columns.
 #'
-#' @param x,y Data frames with additional attributes \code{comment}, \code{variable}, and \code{subid}, 
-#' typically imported using \code{\link{ReadXobs}}. For details on attribute format, see there.
-#' 
-#' @param x.first Logical, indicating which input data frame will be given precedence in case of common 
-#' columns (identical observation variable and SUBID combinations in \code{x} and \code{y}). If \code{TRUE}, 
-#' values from columns in \code{x} will take precedence, and values from \code{y} will only be added if 
-#' \code{x} values are missing. Vice versa if \code{FALSE}.
+#' @param x,y Data frames of class \code{\link{HypeXobs}}, including additional attributes \code{comment}, 
+#' \code{variable}, \code{subid}, and \code{timestep}, typically imported using \code{\link{ReadXobs}}. 
+#' For details on attribute format, see the class description. Class attribute not formally necessary.
 #' 
 #' @param comment Character string, will be added to the result as attribute \code{comment}. If empty, 
 #' comment attributes from \code{x} and \code{y} will be merged to new comment string.
 #' 
 #' @details
 #' \code{MergeXobs} handles time steps of different lengths (e.g. daily, hourly), but requires identical time 
-#' step lengths from both input data frames.
+#' step lengths from both inputs data frames. The functions expects data frames of class \code{\link{HypeXobs}} 
+#' or data frames with comparable structure and will throw a warning if the class attribute is missing.
+#' 
+#' In case of common columns (identical observation variable and SUBID combinations in \code{x} and \code{y}), 
+#' values from columns in \code{x} will take precedence, and values from \code{y} will only be added if 
+#' \code{x} values are missing
 #' 
 #' @return
 #' \code{MergeXobs} returns a data frame with attributes for Xobs data.
@@ -30,11 +31,23 @@
 #' \dontrun{MergeXobs(x = myxobs1, y = myxobs2)}
 
 
-MergeXobs <- function(x, y, x.first = TRUE, comment = "") {
+MergeXobs <- function(x, y, comment = "") {
   
   # check time step with in both inputs and if they are identical
-  x.tstep <- difftime(x[2, 1], x[1, 1])
-  y.tstep <- difftime(x[2, 1], x[1, 1])
+  # requires equidistant time steps
+  if (!any(class(x) == "HypeXobs")) {
+    warning("'x' not of class HypeXobs.")
+    x.tstep <- difftime(x[2, 1], x[1, 1])
+  } else {
+    x.tstep <- attr(x, "timestep")
+  }
+  if (!any(class(y) == "HypeXobs")) {
+    warning("'y' not of class HypeXobs.")
+    y.tstep <- difftime(x[2, 1], x[1, 1])
+  } else {
+    y.tstep <- attr(y, "timestep")
+  }
+  
   if (x.tstep != y.tstep) {
     stop("Time step lengths in 'x' and 'y' differ.")
   }
@@ -51,33 +64,41 @@ MergeXobs <- function(x, y, x.first = TRUE, comment = "") {
   
 
   # merge x and y with new time axis individually
-  if(x.first) {
-    res1 <- merge(res, x, by = 1, all = TRUE)
-    res2 <- merge(res, y, by = 1, all = TRUE)
-  } else {
-    res1 <- merge(res, y, by = 1, all = TRUE)
-    res2 <- merge(res, x, by = 1, all = TRUE)
-  }
+  res1 <- merge(res, x, by = 1, all = TRUE)
+  attr(res1, "comment") <- attr(x, "comment")
+  attr(res1, "variable") <- attr(x, "variable")
+  attr(res1, "subid") <- attr(x, "subid")
+  attr(res1, "class") <- attr(x, "class")
+  attr(res1, "timestep") <- attr(x, "timestep")
+  
+  res2 <- merge(res, y, by = 1, all = TRUE)
+  attr(res2, "comment") <- attr(y, "comment")
+  attr(res2, "variable") <- attr(y, "variable")
+  attr(res2, "subid") <- attr(y, "subid")
+  attr(res2, "class") <- attr(y, "class")
+  attr(res2, "timestep") <- attr(y, "timestep")
+  
   
   # extract variable names from the merged data and match common column where observations have to be merged
-  names1 <- names(res1)[-1]
-  names2 <- names(res2)[-1]
-  common.cols <- c(NA, match(names1, names2))
+  names1 <- paste0(attr(res1, "variable"), "_", attr(res1, "subid"))
+  names2 <- paste0(attr(res2, "variable"), "_", attr(res2, "subid"))
+  common.cols <- match(names1, names2)
   
   # conditional: common columns exist, merge them
   if(length(na.omit(common.cols)) > 0) {
+    cat("Common columns found, merging.")
     
-    # merge candidates from res1
-    te1 <- res1[, !is.na(common.cols)]
-    # merge candidates from res2
-    te2 <- res2[, as.integer(na.omit(common.cols)) + 1]
+    # columns to merge, res1
+    te1 <- res1[, c(TRUE, !is.na(common.cols))]
+    # columns to merge, res2
+    te2 <- res2[, c(1, as.integer(na.omit(common.cols)) + 1)]
     
     # fill observations from xobs without precedence into the one with precedence, if no obs exist there
     # mapply this to all identified columns (te1 and te2 are ALWAYS of the same length, therefore mapply is safe)
     te3 <- as.data.frame(mapply(function(x, y) {ifelse(!is.na(x), x, y)}, te1, te2))
     
     # update columns in data source with precedence
-    res1[, !is.na(common.cols)] <- te3
+    res1[, c(FALSE, !is.na(common.cols))] <- te3[, -1]
     
     # remove columns from data source without precedence
     res2 <- res2[, -(as.integer(na.omit(common.cols)) + 1)]
@@ -86,27 +107,21 @@ MergeXobs <- function(x, y, x.first = TRUE, comment = "") {
   
   # combine the results, catch special case where all columns are common and only a date vector is left in res2
   if(is.data.frame(res2)) {
-    res <- cbind(res, res1[, -1], res2[, -1])
+    res <- suppressWarnings(cbind(res, res1[, -1], res2[, -1]))
   } else {
-    res <- cbind(res, res1[, -1])
+    res <- suppressWarnings(cbind(res, res1[, -1]))
   }
   
-  # reconstruct xobs attributes variable and subid from header
-  attr(res,"variable") <- sapply(strsplit(names(res), "_"), function(x){x[1]})[-1]
-  attr(res,"subid") <- as.integer(sapply(strsplit(names(res), "_"), function(x){x[2]})[-1])
-  
-  # Comment attribute, conditional on function argument value
+  # update comment attribute, conditional on function argument value
   if (comment == "") {
-    if (x.first) {
-      attr(res,"comment") <- paste("!Created by MergeXobs, x took precedence where data overlapped. Original comments: ", 
-                                   attr(x,"comment"), " (x); ", attr(y,"comment"), " (y)", sep = "")
-    } else {
-      attr(res,"comment") <- paste("!Created by MergeXobs, y took precedence where data overlapped. Original comments: ", 
-                                   attr(x,"comment"), " (x); ", attr(y,"comment"), " (y)", sep = "")
-    }
-  } else {
-    attr(res,"comment") <- comment
+    comment <- paste0("!Created by MergeXobs. Original comments: ", 
+                                   attr(x,"comment"), " (x); ", attr(y,"comment"), " (y)")
   }
+  
+  # reconstruct other HypeXobs attributes from res1 and res2
+  res <- HypeXobs(x = res, comment = comment, 
+                  variable = c(attr(res1, "variable"), attr(res2, "variable")), 
+                  subid = c(attr(res1, "subid"), attr(res2, "subid")))
   
   return(res)
 }

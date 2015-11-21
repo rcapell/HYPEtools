@@ -16,20 +16,23 @@ Paths are separated by '/', not '\\'.}
 to import.}
 }
 \value{
-If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with three 
-additional attributes \code{variable}, \code{subid}, and \code{comment}: \code{variable} 
+If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with four 
+additional attributes \code{variable}, \code{subid}, \code{comment}, and \code{timestep}: \code{variable} 
 and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted). 
-\code{comment} contains the content of the Xobs file comment row as single string. Column names of the returned data 
-frame are composed of variable names and SUBIDs, separated by and underscore, i.e. \code{[variable]_[subid]}. 
-If datetime conversion failed on import, the returned object is a data frame (i.e. no class \code{HypeXobs}).
+\code{comment} contains the content of the Xobs file comment row as single string. \code{timestep} contains a keyword string.
+Column names of the returned data frame are composed of variable names and SUBIDs, separated by and underscore, 
+i.e. \code{[variable]_[subid]}. If datetime conversion failed on import, the returned object is a data frame 
+(i.e. no class \code{HypeXobs}).
 }
 \description{
 This is a convenience wrapper function to import an Xobs file into R.
 }
 \details{
 \code{ReadXobs} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
-POSIX time representations. Variable names, SUBIDs, and comments are returned as attributes (see \code{\link{attr}} on 
+POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as attributes (see \code{\link{attr}} on 
 how to access these).
+
+Duplicated variable-SUBID combinations are not allowed, and import will abort if any are found.
 }
 \note{
 For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 

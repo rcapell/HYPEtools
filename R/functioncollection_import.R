@@ -241,16 +241,19 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #'  
 #' @details
 #' \code{ReadXobs} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
-#' POSIX time representations. Variable names, SUBIDs, and comments are returned as attributes (see \code{\link{attr}} on 
+#' POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as attributes (see \code{\link{attr}} on 
 #' how to access these).
 #' 
+#' Duplicated variable-SUBID combinations are not allowed, and import will abort if any are found.
+#' 
 #' @return
-#' If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with three 
-#' additional attributes \code{variable}, \code{subid}, and \code{comment}: \code{variable} 
+#' If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with four 
+#' additional attributes \code{variable}, \code{subid}, \code{comment}, and \code{timestep}: \code{variable} 
 #' and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted). 
-#' \code{comment} contains the content of the Xobs file comment row as single string. Column names of the returned data 
-#' frame are composed of variable names and SUBIDs, separated by and underscore, i.e. \code{[variable]_[subid]}. 
-#' If datetime conversion failed on import, the returned object is a data frame (i.e. no class \code{HypeXobs}).
+#' \code{comment} contains the content of the Xobs file comment row as single string. \code{timestep} contains a keyword string.
+#' Column names of the returned data frame are composed of variable names and SUBIDs, separated by and underscore, 
+#' i.e. \code{[variable]_[subid]}. If datetime conversion failed on import, the returned object is a data frame 
+#' (i.e. no class \code{HypeXobs}).
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -265,28 +268,55 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
   
   # read the data, skip header and comment rows
   xobs <- read.table(filename, header = F, skip = 3, na.strings = "-9999", nrows = nrows, sep = "\t")
-  
-  # make an object of a new s3 class, KEPT FOR FUTURE REF, ACTIVATE IF METHODS TO BE WRITTEN, E.G. SUMMARY
-  # class(te) <- c("xobs", "data.frame")
     
   # update with new attributes to hold subids and obs-variables for all columns
   xattr <- readLines(filename,n=3)
   #attr(xobs, which = "comment") <- strsplit(xattr[1], split = "\t")[[1]]
   attr(xobs, which = "comment") <- xattr[1]
-  attr(xobs, which = "variable") <- strsplit(xattr[2], split = "\t")[[1]][-1]
+  attr(xobs, which = "variable") <- toupper(strsplit(xattr[2], split = "\t")[[1]][-1])
   attr(xobs, which = "subid") <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
   
   # update header, composite of variable and subid
   names(xobs) <- c("date", paste(attr(xobs, "variable"), attr(xobs, "subid"), sep = "_"))
   
+  # stop if duplicate columns found, through useful error msg
+  if (length(names(xobs)) != length(unique(names(xobs)))) {
+    stop(paste0("Duplicated variable-SUBID combination(s) in file: ", paste(names(xobs)[duplicated(names(xobs))], collapse = " ")))
+  }
+  
   # date conversion 
   xd <- as.POSIXct(strptime(xobs[, 1], format = dt.format), tz = "GMT")
   xobs[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-    print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(xobs[, 1])})
+    cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object."); return(xobs[, 1])})
   
-  # if date conversion worked, add class HydroXobs to returned object 
-  if(!any(is.na(xd))) {
-    class(xobs) <- c("HypeXobs", "data.frame")
+  # if date conversion worked and time steps are HYPE-conform, add class HydroXobs to returned object 
+  if(!is.factor(xobs[, 1])) {
+    # check if time steps are equidistant
+    tstep <- diff(xobs[, 1])
+    hypexobsclass <- TRUE
+    if (min(tstep) != max(tstep)) {
+      hypexobsclass <- FALSE
+      warning("Non-equidistant time steps in 'x'.")
+    }
+    # check if time steps are at least daily
+    tunits <- attr(tstep, "units")
+    if (tunits == "days" && tstep[1] > 1) {
+      hypexobsclass <- FALSE
+      warning("Longer-than-daily time steps not allowed in HypeXobs objects.")
+    }
+    
+    # add new class and timestep attribute, conditional on time step conformity
+    if (hypexobsclass) {
+      class(xobs) <- c("HypeXobs", "data.frame")
+      if (tunits == "days") {
+        attr(xobs, "timestep") <- "day"
+      } else {
+        attr(xobs, "timestep") <- paste0(tstep[1], tunits)
+      }
+    } else {
+      warning("Imported as data frame, not as 'HypeXobs' object.")
+    }
+    
   }
   
   return(xobs)

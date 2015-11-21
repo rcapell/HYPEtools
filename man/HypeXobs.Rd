@@ -28,11 +28,12 @@ Returns a data frame of class \code{HypeXobs} with additional \code{\link{attrib
 \item{\strong{comment}}{A character string.}
 \item{\strong{variable}}{A character vector of HYPE variable IDs.}
 \item{\strong{subid}}{A vector of SUBIDs.}
+\item{\strong{timestep}}{Time step keyword, \code{"day"}, or \code{"n hour"} (n = number of hours).}
 }
 }
 \description{
-Constructor function for data frames which hold HYPE time series of a multiple observation variables for multiple
-sub-basins and POSIXct time steps in the first column, i.e. Xobs.txt files.
+Constructor function for data frames which hold HYPE Xobs.txt file contents, i.e. time series of a multiple observation 
+variables for multiple sub-basins and equidistant time steps in POSIXct format in the first column.
 }
 \details{
 S3 class constructor function for \code{HypeXobs} data frame objects which hold HYPE Xobs.txt file contents. Xobs.txt 
