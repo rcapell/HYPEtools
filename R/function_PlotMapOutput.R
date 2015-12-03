@@ -180,7 +180,7 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
         }
       } else if (toupper(var.name) == "TEMP") {
         crfun <- .ColTemp
-        cbrks <- c(ifelse(min(data[,2]) < 7.5, min(data[,2]) - 1, 30), -7.5, -5, -2.5, 1, 0, 1, 2.5, 5, 7.5, ifelse(max(data[,2]) > 7.5, max(data[,2]) + 1, 30))
+        cbrks <- c(ifelse(min(data[,2]) < -7.5, min(data[,2]) - 1, -30), -7.5, -5, -2.5, 1, 0, 1, 2.5, 5, 7.5, ifelse(max(data[,2]) > 7.5, max(data[,2]) + 1, 30))
         if (is.null(legend.title)) {
           legend.title <- expression(paste("Air Temp. ("*degree, "C)"))
         }

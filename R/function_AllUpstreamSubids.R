@@ -34,9 +34,9 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, write.arcgis =
   
   # identify relevant column positions in geodata and branchdata
   geocol.md <- which(tolower(colnames(gd)) == "maindown")
-  geocol.sub <- which(tolower(colnames(gd)) == "subid")
+  geocol.sbd <- which(tolower(colnames(gd)) == "subid")
   # check existence
-  if (length(geocol.md) != 1 || length(geocol.sub) != 1) {
+  if (length(geocol.md) != 1 || length(geocol.sbd) != 1) {
     stop("SUBID and/or MAINDOWN column not found in 'gd'.")
   }
   
@@ -50,16 +50,16 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, write.arcgis =
   }
   
   # check if subid exists in gd
-  if (length(which(gd[, geocol.sub] == subid)) != 1) {
+  if (length(which(gd[, geocol.sbd] == subid)) != 1) {
     stop("'subid' not found in 'gd'.")
   }
   
   # internal helper function, used with sapply() in while loop below, finds direct upstream subids in geodata and branchdata
   findfun <- function(this.sub) {
     # case with branchdata
-    if (!is.null(bd)) ff <- c(gd[which(gd[, geocol.md] == this.sub), geocol.sub], bd[which(bd[, brcol.br] == this.sub), brcol.sr])
+    if (!is.null(bd)) ff <- c(bd[which(bd[, brcol.br] == this.sub), brcol.sr], gd[which(gd[, geocol.md] == this.sub), geocol.sbd])
     # case without branchdata
-    if (is.null(bd)) ff <- c(gd[which(gd[, geocol.md] == this.sub), geocol.sub])
+    if (is.null(bd)) ff <- c(gd[which(gd[, geocol.md] == this.sub), geocol.sbd])
     return(ff)
   }
   
@@ -74,9 +74,9 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, write.arcgis =
     if (length(this.us) > 0) {
       us.exists <- TRUE
     } else {
-      us.exists<-FALSE
+      us.exists <- FALSE
     }
-    us <- unique(c(us, this.us))
+    us <- unique(c(us, this.us), fromLast = T)
   }
   
   # add outlet SUBID to result vector
@@ -84,7 +84,7 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, write.arcgis =
   
   # condional: order in downstream sequence, for direct use as pmsf file
   if (sort) {
-    us <- gd[, geocol.sub][sort(match(us, gd[, geocol.sub]))]
+    us <- gd[, geocol.sbd][sort(match(us, gd[, geocol.sbd]))]
   }
   
   # try to write arcgis select string to clipboard, with error recovery
