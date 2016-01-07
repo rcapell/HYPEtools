@@ -12,6 +12,7 @@
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param sort Logical. If \code{TRUE}, the resulting upstream SUBID vector will be sorted according to order in argument \code{gd}, i.e. in 
 #' downstream order for a working GeoData table.
+#' @param get.weights Logical. 
 #' @param write.arcgis Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
 #' 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.
 #' 
@@ -30,7 +31,7 @@
 #' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
 
 
-AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, write.arcgis = FALSE) {
+AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = FALSE, write.arcgis = FALSE) {
   
   # identify relevant column positions in geodata and branchdata
   geocol.md <- which(tolower(colnames(gd)) == "maindown")
@@ -47,6 +48,17 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, write.arcgis =
     if (length(brcol.br) != 1 || length(brcol.sr) != 1) {
       stop("BRANCHID and/or SOURCEID column not found in 'bd'.")
     }
+    if (get.weights) {
+      brcol.mp <- which(tolower(colnames(bd)) == "mainpart")
+      if (length(brcol.mp) != 1) {
+        stop("MAINPART column not found in 'bd' but weights requested.")
+      }
+    }
+  }
+  
+  # warn if argument specification indicates user confusion
+  if (is.null(bd) && get.weights) {
+    warning("Bifurcation weights 'get.weights' requested but 'bd' not specified. Ignoring.")
   }
   
   # check if subid exists in gd
@@ -76,7 +88,8 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, write.arcgis =
     } else {
       us.exists <- FALSE
     }
-    us <- unique(c(us, this.us), fromLast = T)
+    #us <- unique(c(us, this.us), fromLast = T)
+    us <- unique(c(us, this.us))
   }
   
   # add outlet SUBID to result vector

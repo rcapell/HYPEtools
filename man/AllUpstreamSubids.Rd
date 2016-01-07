@@ -4,7 +4,7 @@
 \alias{AllUpstreamSubids}
 \title{Find All Upstream SUBIDs}
 \usage{
-AllUpstreamSubids(subid, gd, bd = NULL, sort = FALSE,
+AllUpstreamSubids(subid, gd, bd = NULL, sort = FALSE, get.weights = FALSE,
   write.arcgis = FALSE)
 }
 \arguments{
@@ -16,6 +16,8 @@ AllUpstreamSubids(subid, gd, bd = NULL, sort = FALSE,
 
 \item{sort}{Logical. If \code{TRUE}, the resulting upstream SUBID vector will be sorted according to order in argument \code{gd}, i.e. in 
 downstream order for a working GeoData table.}
+
+\item{get.weights}{Logical.}
 
 \item{write.arcgis}{Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.}

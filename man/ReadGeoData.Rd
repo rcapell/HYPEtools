@@ -19,8 +19,8 @@ Paths are separated by '/', not '\\'.}
 This is a convenience wrapper function to import a GeoData file as data frame into R.
 }
 \details{
-\code{ReadGeoData} is just \code{read.table(file = filename, header = T, sep = sep)}, mainly added to provide a comparable 
-function to the other RHYPE imports.
+\code{ReadGeoData} runs \code{read.table(file = filename, header = T, sep = sep)} with a forced numeric column type for 
+columns \code{AREA} and \code{RIVLEN}.
 }
 \examples{
 \dontrun{ReadGeoData("GeoData.txt")}

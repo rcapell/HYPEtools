@@ -339,8 +339,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 #' Paths are separated by '/', not '\\'. 
 #' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
 #' @details
-#' \code{ReadGeoData} is just \code{read.table(file = filename, header = T, sep = sep)}, mainly added to provide a comparable 
-#' function to the other RHYPE imports.
+#' \code{ReadGeoData} runs \code{read.table(file = filename, header = T, sep = sep)} with a forced numeric column type for 
+#' columns \code{AREA} and \code{RIVLEN}.
 #' 
 #' @return
 #' \code{ReadGeoData} returns a data frame.
@@ -351,7 +351,11 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 
 
 ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
-  read.table(file = filename, header = T, sep = sep)
+  res <- read.table(file = filename, header = T, sep = sep)
+  names(res) <- toupper(names(res))
+  res$AREA <- as.numeric(res$AREA)
+  res$RIVLEN <- as.numeric(res$RIVLEN)
+  return(res)
 }
 
 
