@@ -20,6 +20,8 @@
 #' for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of 
 #' (available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown 
 #' to the function will be ignored with a warning.
+#' @param vol.err Logical, if \code{TRUE} and both observed and simulated discharge are available in \code{x}, the accumulated volume error 
+#' will be plotted.
 #' @param log.q Logical, y-axis scaling for flow duration curve and discharge time series, set to \code{TRUE} for log-scaling.
 #' @param start.mon Integer between 1 and 12, starting month of the hydrological year. For runoff regime plot, see also 
 #' \code{\link{AnnualRegime}}.
@@ -72,7 +74,8 @@
 #' @examples
 #' \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
 
-PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), hype.vars = "all", log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
+PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, 
+                            to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
   
   ## Preliminaries
   
@@ -460,7 +463,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   }
   
   # accumulated vol err panel
-  if (exi.t["cout"] && exi.t["rout"]) {
+  if (exi.t["cout"] && exi.t["rout"] && vol.err) {
     
     # fill layout matrix with panel IDs
     lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 

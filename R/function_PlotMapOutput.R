@@ -95,7 +95,7 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
     if (!is.null(col.breaks)) {
       cbrks <- col.breaks
     } else {
-      cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
+      cbrks <- quantile(data[, 2], probs = seq(0, 1, .1), na.rm = T)
     }
   } else if (is.character(col.ramp.fun)) {
     # Case 2: no color ramp palette function is supplied and one of the predefined is requested
@@ -107,35 +107,35 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColPhos") {
       crfun <- .ColPhos
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColTemp") {
       crfun <- .ColTemp
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColPrec") {
       crfun <- .ColPrec
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColQ") {
       crfun <- .ColQ
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
-        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColDiffTemp") {
       crfun <- .ColDiffTemp
@@ -186,7 +186,7 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
         }
       } else {
         crfun <- .ColDiffGeneric
-        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1))
+        cbrks <- quantile(data[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else {
       # Error treatment for all other strings
@@ -223,15 +223,22 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
   par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T)
   plot(map, col = map$color, border = NA)
   bbx <- bbox(map)
-  .Scalebar(x = bbx[1,2] - 1.5 * (if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}), 
-            y = bbx[2,1] + diff(bbx[2, ]) * .01, 
-            distance = if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}, 
-            scale = 0.001, t.cex = 1)
-  .NorthArrow(xb = bbx[1,2], 
-              yb = bbx[2,1] + diff(bbx[2, ]) * .02, 
-              len = diff(bbx[1,])/70, cex.lab = .8)
-  legend(legend.pos, legend = .CreateLabelsFromBreaks(cbrks), cex = legend.cex,
-         col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title, inset = legend.inset)
+  
+  if (plot.scale) {
+    .Scalebar(x = bbx[1,2] - 1.5 * (if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}), 
+              y = bbx[2,1] + diff(bbx[2, ]) * .01, 
+              distance = if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}, 
+              scale = 0.001, t.cex = 1)
+    .NorthArrow(xb = bbx[1,2], 
+                yb = bbx[2,1] + diff(bbx[2, ]) * .02, 
+                len = diff(bbx[1,])/70, cex.lab = .8)
+    
+  }
+  
+  if (plot.legend) {
+    legend(legend.pos, legend = .CreateLabelsFromBreaks(cbrks), cex = legend.cex,
+           col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title, inset = legend.inset)
+  }
   
   # invisible unless assigned: return the color codes for all values in data
   invisible(data[, 3])

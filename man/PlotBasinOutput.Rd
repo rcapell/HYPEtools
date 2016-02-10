@@ -5,8 +5,9 @@
 \title{Plot a suite of evaluation plots from a HYPE basin output file}
 \usage{
 PlotBasinOutput(x, filename = NULL, timestep = attr(x, "timestep"),
-  hype.vars = "all", log.q = F, start.mon = 1, from = 1, to = nrow(x),
-  name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL)
+  hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1,
+  to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL,
+  bd = NULL)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
@@ -24,6 +25,9 @@ to plot. Default (\code{"all"}) is to plot all variables which the function know
 for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of 
 (available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown 
 to the function will be ignored with a warning.}
+
+\item{vol.err}{Logical, if \code{TRUE} and both observed and simulated discharge are available in \code{x}, the accumulated volume error 
+will be plotted.}
 
 \item{log.q}{Logical, y-axis scaling for flow duration curve and discharge time series, set to \code{TRUE} for log-scaling.}
 
