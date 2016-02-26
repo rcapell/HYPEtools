@@ -1,5 +1,5 @@
 Package: RHYPE
-Version: 0.3-9
+Version: 0.3-10
 Date: 
 Title: Tools for Processing and Analysing Files from the Conceptual
     Rainfall-Runoff Model HYPE
@@ -22,4 +22,4 @@ Author: Rene Capell [aut, cre],
     Jafet Andersson [aut],
     David Gustafsson [aut]
 Maintainer: Rene Capell <rene.capell@smhi.se>
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1

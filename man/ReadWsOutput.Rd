@@ -50,9 +50,12 @@ consist of basin time, or map output files.
 \details{
 HYPE optimisation routines optionally allow for generation of simulation output files for each iteration in the optimisation routine. 
 For further details see decumentation on 'task WS' in the 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. This 
-function imports and combines all simulation iterations in an \code{\link{array}}, which can then be easily used in further analysis, 
-most likely in combination with performance and parameter values from an imported corresponding 'allsim.txt' file.
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
+
+\code{ReadWsOutput} imports and combines all simulation iterations in an \code{\link{array}}, which can then be easily used in 
+further analysis, most likely in combination with performance and parameter values from an imported corresponding 'allsim.txt' file. 
+The result folder containing HYPE WS results, argument \code{path}, can contain other files as well, \code{ReadWsOutput} searches for 
+file name pattern to filter targeted result files.
 }
 \examples{
 \dontrun{ReadWsOutput(path = "../my_optim_results/", hype.var = "cout", dt.format = "\%Y-\%m")}

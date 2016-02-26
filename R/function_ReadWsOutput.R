@@ -21,15 +21,24 @@
 #' result files to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
 #' '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 #' summary values over the model period.
+#' @param subid.select Integer, vector of HYPE SUBIDs to select from imported time and map output files. ONLY IMPLEMENTED FOR TIME OUTPUT ATM!
+#' @param from Integer. For partial imports, number of simulation iteration to start from.
+#' @param to Integer. For partial imports, number of simulation iteration to end with.
 #' @param progbar Logical, display a progress bar while importing HYPE output files. Adds overhead to calculation time but useful 
 #' when many files are imported.
 #' 
 #' @details
 #' HYPE optimisation routines optionally allow for generation of simulation output files for each iteration in the optimisation routine. 
 #' For further details see decumentation on 'task WS' in the 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. This 
-#' function imports and combines all simulation iterations in an \code{\link{array}}, which can then be easily used in further analysis, 
-#' most likely in combination with performance and parameter values from an imported corresponding 'allsim.txt' file.
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
+#' 
+#' \code{ReadWsOutput} imports and combines all simulation iterations in an \code{\link{array}}, which can then be easily used in 
+#' further analysis, most likely in combination with performance and parameter values from an imported corresponding 'allsim.txt' file. 
+#' The result folder containing HYPE WS results, argument \code{path}, can contain other files as well, \code{ReadWsOutput} searches for 
+#' file name pattern to filter targeted result files.
+#' 
+#' For large numbers of result files, simulations can be partially imported using arguments \code{from} and \code{to}, in order to avoid 
+#' memory exceedance problems.
 #' 
 #' @return
 #' \code{ReadWsOutput} returns a 3-dimensional array with additional attributes. The array content depends on the HYPE output file type 
@@ -50,7 +59,8 @@
 
 
 
-ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL, subid = NULL, dt.format = NULL, progbar = T) {
+ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL, subid = NULL, dt.format = NULL, 
+                         subid.select = NULL, from = NULL, to = NULL, progbar = T) {
   
   type <- match.arg(type)
   
@@ -65,6 +75,16 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     # break if no files found
     if (length(locs) == 0) {
       stop(paste("No", type, "output files for variable", toupper(hype.var), "found in directory specified in argument 'path'."))
+    }
+    # select iteration sub-set
+    if (!is.null(from) || !is.null(to)) {
+      if (is.null(from)) {
+        from <- 1
+      }
+      if (is.null(to)) {
+        to <- length(locs)
+      }
+      locs <- locs[from:to]
     }
   }
   
@@ -85,19 +105,33 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
   # import routines, conditional on file type
   if (type == "time") {
     
+    # dummy file to extract attributes from
+    te <- ReadTimeOutput(filename = locs[1], dt.format = dt.format)
+    
+    sbd <- attr(te, "subid")
+    
+    if (!is.null(subid.select)) {
+      if (!all(subid.select %in% sbd)) {
+        stop("Not all SUBIDs in 'subid.select' found in time output files.")
+      }
+      sbd <- subid.select
+    }
+    
+    # columns to select from each imported time output file
+    ind <- c(FALSE, attr(te, "subid") %in% sbd)
+    
     if (progbar) {
-      res <- pblapply(locs, function(x, df) {as.matrix(ReadTimeOutput(filename = x, dt.format = df)[, -1])}, df = dt.format)
+      res <- pblapply(locs, function(x, df, i) {as.matrix(ReadTimeOutput(filename = x, dt.format = df)[, i])}, df = dt.format, i = ind)
       res <- simplify2array(res)
     } else {
-      res <- lapply(locs, function(x, df) {as.matrix(ReadTimeOutput(filename = x, dt.format = df)[, -1])}, df = dt.format)
+      res <- lapply(locs, function(x, df, i) {as.matrix(ReadTimeOutput(filename = x, dt.format = df)[, i])}, df = dt.format, i = ind)
       res <- simplify2array(res)
     }
     # add attributes with information
-    te <- ReadTimeOutput(filename = locs[1], dt.format = dt.format)
-    class(res) <- c("HypeSingleVar", "array")
-    attr(res, "date") <- te[, 1]
-    attr(res, "subid") <- attr(te, "subid")
     attr(res, "variable") <- toupper(hype.var)
+    attr(res, "date") <- te[, 1]
+    attr(res, "subid") <- attr(te, "subid")[attr(te, "subid") %in% sbd]
+    class(res) <- c("HypeSingleVar", "array")
     
   } else if (type == "map") {
     if (progbar) {

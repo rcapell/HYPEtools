@@ -64,10 +64,11 @@ HypeSingleVar <- function(x, date, subid, hype.var) {
 
 # indexing method
 #' @export
-`[.HypeSingleVar` <- function(x, i, j, ...) {
+`[.HypeSingleVar` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], ...) {
   y <- NextMethod("[", drop = F)
   attr(y, "variable") <- attr(x, "variable")
   attr(y, "date") <- attr(x, "date")[i]
   attr(y, "subid") <- attr(x, "subid")[j]
+  class(y) <- c("HypeSingleVar", "array")
   return(y)
 }
