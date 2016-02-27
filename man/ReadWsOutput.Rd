@@ -5,7 +5,8 @@
 \title{Read optimisation simulation results}
 \usage{
 ReadWsOutput(path, type = c("time", "map", "basin"), hype.var = NULL,
-  subid = NULL, dt.format = NULL, progbar = T)
+  subid = NULL, dt.format = NULL, subid.select = NULL, from = NULL,
+  to = NULL, progbar = T)
 }
 \arguments{
 \item{path}{Character string, path to the directory holding simulation output files to import. Windows users: Note that 
@@ -25,6 +26,12 @@ with \code{type} \code{"time"} or \code{"map"}.}
 result files to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
 '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 summary values over the model period.}
+
+\item{subid.select}{Integer, vector of HYPE SUBIDs to select from imported time and map output files. ONLY IMPLEMENTED FOR TIME OUTPUT ATM!}
+
+\item{from}{Integer. For partial imports, number of simulation iteration to start from.}
+
+\item{to}{Integer. For partial imports, number of simulation iteration to end with.}
 
 \item{progbar}{Logical, display a progress bar while importing HYPE output files. Adds overhead to calculation time but useful 
 when many files are imported.}
@@ -56,6 +63,9 @@ For further details see decumentation on 'task WS' in the
 further analysis, most likely in combination with performance and parameter values from an imported corresponding 'allsim.txt' file. 
 The result folder containing HYPE WS results, argument \code{path}, can contain other files as well, \code{ReadWsOutput} searches for 
 file name pattern to filter targeted result files.
+
+For large numbers of result files, simulations can be partially imported using arguments \code{from} and \code{to}, in order to avoid 
+memory exceedance problems.
 }
 \examples{
 \dontrun{ReadWsOutput(path = "../my_optim_results/", hype.var = "cout", dt.format = "\%Y-\%m")}

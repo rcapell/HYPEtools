@@ -21,7 +21,8 @@
 #' S3 class constructor function for array objects which can hold (multiple) HYPE time or map output results. 
 #' 
 #' @return
-#' Returns a 3-dimensional array with additional \code{\link{attributes}}:
+#' Returns a 3-dimensional array with 
+#' \code{[time, subid, iteration]} dimensions and additional \code{\link{attributes}}:
 #' \describe{
 #' \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
 #' \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension.}

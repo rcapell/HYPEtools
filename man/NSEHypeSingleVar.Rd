@@ -7,9 +7,10 @@
 NSEHypeSingleVar(sim, obs, na.rm = TRUE, progbar = TRUE, ...)
 }
 \arguments{
-\item{sim}{\code{\link{HypeSingleVar}} array with simulated variable.}
+\item{sim}{\code{\link{HypeSingleVar}} array with simulated variable (one or several iterations).}
 
-\item{obs}{\code{\link{HypeSingleVar}} array with observed variable.}
+\item{obs}{\code{\link{HypeSingleVar}} array with observed variable, (one iteration). If several iterations are present 
+in the array, only the first will be used.}
 
 \item{progbar}{Logical, if \code{TRUE} progress bars will be printed for main computational steps.}
 
@@ -17,10 +18,10 @@ NSEHypeSingleVar(sim, obs, na.rm = TRUE, progbar = TRUE, ...)
 }
 \value{
 A two-dimensional array with NSE for all time series pairs provided in \code{sim} and \code{obs}, with values in the same order 
-as the second and third dimension as the input, i.e. \code{[subid, iteration]}.
+as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 }
 \description{
 Nash-sutcliffe Efficiency calculation for imported HYPE outputs with single variables for several catchments, i.e. time and 
-map files, optionally multiple model runs combined.
+map files, optionally multiple model run iterations combined.
 }
 

@@ -21,7 +21,8 @@ e.g. \code{"2000-2010"}.}
 Not case-sensitive.}
 }
 \value{
-Returns a 3-dimensional array with additional \code{\link{attributes}}:
+Returns a 3-dimensional array with 
+\code{[time, subid, iteration]} dimensions and additional \code{\link{attributes}}:
 \describe{
 \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
 \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension.}
