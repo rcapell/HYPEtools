@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pblapply pbsapply
 #' 
 #' @title
 #' Calculate upstream sums and averages of selected GeoData contents

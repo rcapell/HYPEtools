@@ -1,8 +1,7 @@
-#' @export
-#'
-#' @title Pearson correlation coefficient for HypeSingleVar arrays
+
+
+#' Pearson correlation coefficient for HypeSingleVar arrays
 #'  
-#' @description
 #' Pearson correlation coefficient calculation for imported HYPE outputs with single variables for several catchments, i.e. time and 
 #' map files, optionally multiple model runs combined.
 #' 
@@ -14,8 +13,14 @@
 # #' @aliases pbias
 #' 
 #' @return 
-#' A two-dimensional array with Pearson CCs for all time series pairs provided in \code{sim} and \code{obs}, with values in the same order 
-#' as the second and third dimension as the input, i.e. \code{[subid, iteration]}.
+#' \code{CCHypeSingleVar} returns a 2-dimensional array of Pearson correlation coefficients for all SUBIDs and model 
+#' iterations provided in argument \code{sim}, with values in the same order 
+#' as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
+#' 
+#' @seealso \code{link{cor}}, on which the function is based
+#' 
+#' @export
+#' @importFrom pbapply pblapply pbsapply
 
 
 CCHypeSingleVar <- function(sim, obs, progbar = TRUE, ...){ 

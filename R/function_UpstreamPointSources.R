@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pblapply
 #' 
 #' @title
 #' Summarize point source emissions of all upstream areas

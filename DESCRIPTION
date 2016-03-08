@@ -10,7 +10,8 @@ Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
     "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut"),
     person("David", "Gustafsson", role = "aut") )
 Depends:
-    R (>= 2.15.1)
+    R (>= 2.15.1),
+    hydroGOF
 Imports:
     sp,
     pbapply,

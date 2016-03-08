@@ -1,6 +1,6 @@
 #' @export
 #' @import sp
-#' @import pbapply
+#' @importFrom pbapply pblapply
 #' 
 #' @title
 #' Map regional irrigation source connection as spatial lines

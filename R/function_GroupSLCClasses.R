@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pbapply
 #' 
 #' @title
 #' Calculate grouped sums for SLC classes in a GeoData file

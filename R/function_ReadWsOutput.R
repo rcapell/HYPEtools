@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pblapply
 #' 
 #' @title
 #' Read optimisation simulation results
@@ -21,7 +21,7 @@
 #' result files to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
 #' '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 #' summary values over the model period.
-#' @param subid.select Integer, vector of HYPE SUBIDs to select from imported time and map output files. ONLY IMPLEMENTED FOR TIME OUTPUT ATM!
+#' @param subid.select Integer, vector of HYPE SUBIDs to select from imported time and map output files.
 #' @param from Integer. For partial imports, number of simulation iteration to start from.
 #' @param to Integer. For partial imports, number of simulation iteration to end with.
 #' @param progbar Logical, display a progress bar while importing HYPE output files. Adds overhead to calculation time but useful 
@@ -134,19 +134,34 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     class(res) <- c("HypeSingleVar", "array")
     
   } else if (type == "map") {
+    
+    # dummy file to extract attributes from
+    te <- ReadMapOutput(filename = locs[1], dt.format = dt.format)
+    
+    sbd <- te[, 1]
+    
+    if (!is.null(subid.select)) {
+      if (!all(subid.select %in% sbd)) {
+        stop("Not all SUBIDs in 'subid.select' found in map output files.")
+      }
+      sbd <- subid.select
+    }
+    
+    # rows to select from each imported map output file
+    ind <- te[, 1] %in% sbd
+    
     if (progbar) {
-      res <- pblapply(locs, function(x, df) {t(as.matrix(ReadMapOutput(filename = x, dt.format = df)[, -1]))}, df = dt.format)
+      res <- pblapply(locs, function(x, df, i) {t(as.matrix(ReadMapOutput(filename = x, dt.format = df)[i, -1]))}, df = dt.format, i = ind)
       res <- simplify2array(res)
     } else {
-      res <- lapply(locs, function(x, df) {t(as.matrix(ReadMapOutput(filename = x, dt.format = df)[, -1]))}, df = dt.format)
+      res <- lapply(locs, function(x, df, i) {t(as.matrix(ReadMapOutput(filename = x, dt.format = df)[i, -1]))}, df = dt.format, i = ind)
       res <- simplify2array(res)
     }
     # add attributes with information
-    te <- ReadMapOutput(filename = locs[1], dt.format = dt.format)
-    class(x) <- c("HypeSingleVar", "array")
-    attr(res, "date") <- attr(te, "date")
-    attr(res, "subid") <- te[, 1]
     attr(res, "variable") <- toupper(hype.var)
+    attr(res, "date") <- attr(te, "date")
+    attr(res, "subid") <- te[, 1][te[, 1] %in% sbd]
+    class(res) <- c("HypeSingleVar", "array")
     
   } else {
     # type == "basin"

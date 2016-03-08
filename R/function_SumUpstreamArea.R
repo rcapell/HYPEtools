@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pbsapply
 #' 
 #' @title
 #' Calculate upstream area sums

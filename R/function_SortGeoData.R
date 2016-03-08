@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pblapply
 #' 
 #' @title
 #' Sort a GeoData dataframe in downstream order

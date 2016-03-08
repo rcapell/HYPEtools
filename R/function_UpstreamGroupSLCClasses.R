@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pblapply pbsapply
 #' 
 #' @title
 #' Calculate area-weighted upstream averages of grouped SLC class fractions.

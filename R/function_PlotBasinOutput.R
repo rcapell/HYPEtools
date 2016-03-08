@@ -1,6 +1,6 @@
 #' @export
-#' @import hydroGOF
-
+#' @importFrom hydroGOF gof gof.default
+# #' @import hydroGOF
 #' @title
 #' Plot a suite of evaluation plots from a HYPE basin output file
 #'

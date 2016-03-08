@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pbapply
 #' 
 #' @title
 #' Clean Soil-Landuse classes (SLCs) from small fractions

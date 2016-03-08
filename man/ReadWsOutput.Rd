@@ -27,7 +27,7 @@ result files to POSIX dates, which are returned as attribute. Incomplete format 
 '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 summary values over the model period.}
 
-\item{subid.select}{Integer, vector of HYPE SUBIDs to select from imported time and map output files. ONLY IMPLEMENTED FOR TIME OUTPUT ATM!}
+\item{subid.select}{Integer, vector of HYPE SUBIDs to select from imported time and map output files.}
 
 \item{from}{Integer. For partial imports, number of simulation iteration to start from.}
 

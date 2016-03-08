@@ -1,5 +1,5 @@
 #' @export
-#' @import pbapply
+#' @importFrom pbapply pblapply pbsapply
 #' 
 #' @title
 #' Calculate SLC class fractions of all upstream areas

@@ -2,7 +2,10 @@
 % Please edit documentation in R/function_CCHypeSingleVar.R
 \name{CCHypeSingleVar}
 \alias{CCHypeSingleVar}
-\title{Pearson correlation coefficient for HypeSingleVar arrays}
+\title{Pearson correlation coefficient for HypeSingleVar arrays
+ 
+Pearson correlation coefficient calculation for imported HYPE outputs with single variables for several catchments, i.e. time and 
+map files, optionally multiple model runs combined.}
 \usage{
 CCHypeSingleVar(sim, obs, progbar = TRUE, ...)
 }
@@ -15,11 +18,17 @@ in the array, only the first will be used.}
 \item{progbar}{Logical, if \code{TRUE} progress bars will be printed for main computational steps.}
 }
 \value{
-A two-dimensional array with Pearson CCs for all time series pairs provided in \code{sim} and \code{obs}, with values in the same order 
-as the second and third dimension as the input, i.e. \code{[subid, iteration]}.
+\code{CCHypeSingleVar} returns a 2-dimensional array of Pearson correlation coefficients for all SUBIDs and model 
+iterations provided in argument \code{sim}, with values in the same order 
+as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 }
 \description{
+Pearson correlation coefficient for HypeSingleVar arrays
+ 
 Pearson correlation coefficient calculation for imported HYPE outputs with single variables for several catchments, i.e. time and 
 map files, optionally multiple model runs combined.
+}
+\seealso{
+\code{link{cor}}, on which the function is based
 }
 
