@@ -1,12 +1,6 @@
-#' @export
-#' @import sp
-# @importClassesFrom sp SpatialPolygonsDataFrame SpatialPolygons
-# @importMethodsFrom sp plot.SpatialPolygons
 #' 
-#' @title
 #' Plot function for HYPE map results.
 #'
-#' @description
 #' Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables. 
 #' 
 #' @param data HYPE map results, data frame object with two columns, first column containing SUBIDs and 
@@ -16,8 +10,11 @@
 #' @param map.subid.column Integer, index of the column in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 #' HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.
-#' @param plot.scale Logical, plot a scale bar and a North arrow in the lower right corner. NOTE: works only with projected maps 
+#' @param plot.scale Logical, plot a scale bar in the lower right corner. NOTE: works only with projected maps 
 #' based on meter units, not geographical projections
+#' @param plot.arrow Logical, plot a North arrow in the lower right corner.
+#' @param map.pos Numeric, map positioning in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
+#' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.
 #' @param plot.legend Logical, plot a legend along with the map. Uses function \code{\link{legend}}.
 #' @param legend.pos Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"top"}, \code{"topright"}, 
 #' \code{"right"}, \code{"bottomright"}, \code{"bottom"}, \code{"bottomleft"}.
@@ -76,15 +73,28 @@
 #' \dontrun{require(rgdal)
 #' PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")}
 #' 
+#' @export
+#' @import sp
+# @importFrom sp SpatialPolygonsDataFrame SpatialPolygons
 
 
-PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.scale = T, plot.legend = T, legend.pos = "right", legend.title = NULL, 
-                          legend.inset = c(0, 0), legend.cex = 1, col.ramp.fun = "auto", col.breaks = NULL, par.mar = rep(0, 4) + .1) {
+PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.scale = T, plot.arrow = T, map.pos = 0.5, plot.legend = T, 
+                          legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0), legend.cex = 1, 
+                          col.ramp.fun = "auto", col.breaks = NULL, par.mar = rep(0, 4) + .1) {
   
   # input argument checks
   stopifnot(is.data.frame(data), dim(data)[2] == 2, class(map)=="SpatialPolygonsDataFrame", 
             is.null(col.breaks) || is.numeric(col.breaks))
+  stopifnot(map.pos %in% c(0, .5, 1))
   
+  # save current state of par() variables which are altered below, for restoring on function exit
+  par.mar0 <- par("mar")
+  par.xaxs <- par("xaxs")
+  par.yaxs <- par("yaxs")
+  par.lend <- par("lend")
+  par.xpd <- par("xpd")
+  par.cex <- par("cex")
+  on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex))
   
   # data preparation and conditional assignment of color ramp functions and break point vectors 
   # to internal variables crfun and cbrks
@@ -215,20 +225,47 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
   
   # update legend title if none was provided by user or "auto" selection
   if (is.null(legend.title)) {
-    legend.title = toupper(var.name)
+    legend.title <- toupper(var.name)
   }
   #x11(width = 4.5, height = 9)
   # par settings: lend set to square line endings because the legend below works with very thick lines 
   # instead of boxes (a box size limitation work-around); xpd set to allow for plotting a legend on the margins
   par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T)
-  plot(map, col = map$color, border = NA)
-  bbx <- bbox(map)
   
+  
+  ## plotting prelininaries: calculate coordinates for positioning
+  
+  # map coordinates
+  bbx <- bbox(map)
+  # map side ratio (h/w)
+  msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
+  # plot area side ratio (h/w)
+  psr <- par("pin")[2] / par("pin")[1]
+  # define plot limits, depending on (a) map and plot ratios (plot will be centered if left to automatic) and (b) user choice
+  if (msr > psr) {
+    # map is smaller than plot window in x direction
+    if (map.pos == 0) {
+      
+    } else if (map.pos == .5) {
+      
+    } else {
+      pylim <- as.numeric(bbx[2, ])
+      pxlim <- c(bbx[1, 2] - diff(pylim)/psr, bbx[1, 2])
+    }
+  } else {
+    # map is smaller than plot window in y direction
+  }
+  
+  plot(map, col = map$color, border = NA, ylim = pylim, xlim = pxlim)
+  bbx <- bbox(map)
+  par("usr")
   if (plot.scale) {
     .Scalebar(x = bbx[1,2] - 1.5 * (if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}), 
               y = bbx[2,1] + diff(bbx[2, ]) * .01, 
               distance = if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}, 
               scale = 0.001, t.cex = 1)
+  }
+  if (plot.arrow) {
     .NorthArrow(xb = bbx[1,2], 
                 yb = bbx[2,1] + diff(bbx[2, ]) * .02, 
                 len = diff(bbx[1,])/70, cex.lab = .8)
@@ -246,25 +283,28 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
 
 
 # DEBUG
-# data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTN.txt")
+# library(rgdal)
+# data <- ReadMapOutput("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_shype/res_test/mapCOUT.txt")[, 1:2]
 # # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTP.txt")
-# # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCOUT.txt")
-# # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapTEMP.txt")
 # map <- readOGR(dsn = "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/S-HYPE2012B/gis", layer = "SHYPE2012B_aro_y")
 # # Clean map from Norwegian area
 # map <- map[map$SUBIDnew < 51000, ]
 # map.subid.column <- 3
-# var.name <- "CCTN"
+# map <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_shype/gis", layer = "helgean_shype_aro_y")
+# map.subid.column <- 3
+# var.name <- "COUT"
 # plot.scale <- T
+# map.pos <- 1
 # plot.legend <- T
 # legend.pos <- "right"
-# legend.title <- "" 
+# legend.title <- ""
 # col.ramp.fun <- "auto"
 # col.ramp.fun <- colorRampPalette(c("yellow", "green"))
-# col.breaks <- NA
+# col.breaks <- NULL
 # par.mar <- rep(0, 4) + .1
+# par.mar <- c(0,0,0,3) + .1
 # legend.inset <- c(0,0)
-# 
+# x11(width = 10)
 # # re-set map data
 # map@data <- map@data[, 1:7]
 # rm(data, map, map.subid.column, var.name, plot.scale, plot.legend, legend.pos, legend.title, col.ramp.fun, col.breaks, .CreateLabelsFromBreaks, cbrks, crfun,
