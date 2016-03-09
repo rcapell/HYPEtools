@@ -78,7 +78,7 @@
 # @importFrom sp SpatialPolygonsDataFrame SpatialPolygons
 
 
-PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.scale = T, plot.arrow = T, map.pos = 0.5, plot.legend = T, 
+PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.scale = T, plot.arrow = T, map.pos = 0, plot.legend = T, 
                           legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0), legend.cex = 1, 
                           col.ramp.fun = "auto", col.breaks = NULL, par.mar = rep(0, 4) + .1) {
   
@@ -86,6 +86,12 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
   stopifnot(is.data.frame(data), dim(data)[2] == 2, class(map)=="SpatialPolygonsDataFrame", 
             is.null(col.breaks) || is.numeric(col.breaks))
   stopifnot(map.pos %in% c(0, .5, 1))
+  stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
+  
+  # add y to legend inset if not provided by user
+  if (length(legend.inset) == 1) {
+    legend.inset[2] <- 0
+  }
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar0 <- par("mar")
@@ -231,9 +237,50 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
   # par settings: lend set to square line endings because the legend below works with very thick lines 
   # instead of boxes (a box size limitation work-around); xpd set to allow for plotting a legend on the margins
   par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T)
+  plot.new()
+  
+  ## the positioning of all plot elements works with three scales for the device's plot region: 
+  ## inches, fraction, and map coordinates
+  
+  # plot width (inches)
+  p.in.wd <- par("pin")[1]
+  
+  # legend position (fraction) 
+  leg.fr.pos <- legend(legend.pos, legend = rep(NA, length(cbrks) - 1), cex = legend.cex,
+               col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title, plot = F)
+  # legend width (fraction) 
+  leg.fr.wd <- leg.fr.pos$rect$w
+  # legend box element height (fraction)
+  legbx.fr.ht <- diff(c(leg.fr.pos$text$y[length(cbrks) - 1], leg.fr.pos$text$y[length(cbrks) - 2]))
   
   
-  ## plotting prelininaries: calculate coordinates for positioning
+  ## prepare legend annotation
+  
+  # formatted annotation text (to be placed between legend boxes which is not possible with legend() directly)
+  ann.txt <- signif(cbrks, digits = 2)
+  # annotation width (inches)
+  ann.in.wd <- max(strwidth(ann.txt, "inches"))
+  # legend inset required to accomodate text annotation
+  leg.inset <- c(ann.in.wd/p.in.wd, 0)
+  
+  # conditional on legend placement side (legend annotation always right of color boxes)
+  if (legend.pos %in% c("bottomright", "right", "topright")) {
+    
+    # annotation positions (fraction)
+    ann.fr.x <- 1 - rep((1 - leg.fr.pos$text$x[1]), length(ann.txt)) - legend.inset[1] - 0.01
+    ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2]
+    # update legend inset
+    legend.inset <- legend.inset + leg.inset
+    
+  } else {
+    
+    # annotation positions (fraction)
+    ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) + legend.inset[1] - 0.01
+    ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2]
+  }
+  
+  
+  ## calculate coordinates for map positioning
   
   # map coordinates
   bbx <- bbox(map)
@@ -241,29 +288,53 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
   msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
   # plot area side ratio (h/w)
   psr <- par("pin")[2] / par("pin")[1]
+  
   # define plot limits, depending on (a) map and plot ratios (plot will be centered if left to automatic) and (b) user choice
   if (msr > psr) {
-    # map is smaller than plot window in x direction
+    # map is smaller than plot window in x direction, map can be moved left or right
     if (map.pos == 0) {
-      
+      pylim <- as.numeric(bbx[2, ])
+      pxlim <- c(bbx[1, 1], bbx[1, 1] + diff(pylim)/psr)
     } else if (map.pos == .5) {
-      
+      pylim <- as.numeric(bbx[2, ])
+      pxlim <- c(mean(as.numeric(bbx[1, ])) - diff(pylim)/psr/2, mean(as.numeric(bbx[1, ])) + diff(pylim)/psr/2)
     } else {
       pylim <- as.numeric(bbx[2, ])
       pxlim <- c(bbx[1, 2] - diff(pylim)/psr, bbx[1, 2])
     }
   } else {
-    # map is smaller than plot window in y direction
+    # map is smaller than plot window in y direction, map can be moved up or down
+    if (map.pos == 0) {
+      pxlim <- as.numeric(bbx[1, ])
+      pylim <- c(bbx[2, 1], bbx[2, 1] + diff(pxlim)*psr)
+    } else if (map.pos == .5) {
+      pxlim <- as.numeric(bbx[1, ])
+      pylim <- c(mean(as.numeric(bbx[2, ])) - diff(pxlim)*psr/2, mean(as.numeric(bbx[2, ])) + diff(pxlim)*psr/2)
+    } else {
+      pxlim <- as.numeric(bbx[1, ])
+      pylim <- c(bbx[2, 2] - diff(pxlim)*psr, bbx[2, 2])
+    }
   }
   
+  
+  ## plot the map and add legend using the positioning information reived above
+  
+  # map
   plot(map, col = map$color, border = NA, ylim = pylim, xlim = pxlim)
-  bbx <- bbox(map)
-  par("usr")
+  # legend
+  legend(legend.pos, legend = rep(NA, length(cbrks) - 1), cex = legend.cex, inset = legend.inset, 
+         col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title)
+  # convert annotation positioning to map coordinates
+  ann.mc.x <- ann.fr.x * diff(pxlim) + pxlim[1]
+  ann.mc.y <- ann.fr.y * diff(pylim) + pylim[1]
+  text(x = ann.mc.x, y = ann.mc.y, labels = ann.txt, adj = c(0, .5))
+  
+  
   if (plot.scale) {
     .Scalebar(x = bbx[1,2] - 1.5 * (if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}), 
               y = bbx[2,1] + diff(bbx[2, ]) * .01, 
               distance = if (diff(bbx[1,])/4 >= 1000) {signif(diff(bbx[1,])/4, 0)} else {1000}, 
-              scale = 0.001, t.cex = 1)
+              scale = 0.001, t.cex = 0.6)
   }
   if (plot.arrow) {
     .NorthArrow(xb = bbx[1,2], 
@@ -272,10 +343,6 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
     
   }
   
-  if (plot.legend) {
-    legend(legend.pos, legend = .CreateLabelsFromBreaks(cbrks), cex = legend.cex,
-           col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title, inset = legend.inset)
-  }
   
   # invisible unless assigned: return the color codes for all values in data
   invisible(data[, 3])
@@ -283,29 +350,21 @@ PlotMapOutput <- function(data, map, map.subid.column = 1, var.name = "", plot.s
 
 
 # DEBUG
-# library(rgdal)
-# data <- ReadMapOutput("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_shype/res_test/mapCOUT.txt")[, 1:2]
-# # data <- ReadMapOutput("//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/echam/BUS/period1/res/mapCCTP.txt")
-# map <- readOGR(dsn = "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/S-HYPE2012B/gis", layer = "SHYPE2012B_aro_y")
-# # Clean map from Norwegian area
-# map <- map[map$SUBIDnew < 51000, ]
-# map.subid.column <- 3
-# map <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_shype/gis", layer = "helgean_shype_aro_y")
-# map.subid.column <- 3
-# var.name <- "COUT"
-# plot.scale <- T
-# map.pos <- 1
-# plot.legend <- T
-# legend.pos <- "right"
-# legend.title <- ""
-# col.ramp.fun <- "auto"
-# col.ramp.fun <- colorRampPalette(c("yellow", "green"))
-# col.breaks <- NULL
-# par.mar <- rep(0, 4) + .1
-# par.mar <- c(0,0,0,3) + .1
-# legend.inset <- c(0,0)
-# x11(width = 10)
-# # re-set map data
-# map@data <- map@data[, 1:7]
-# rm(data, map, map.subid.column, var.name, plot.scale, plot.legend, legend.pos, legend.title, col.ramp.fun, col.breaks, .CreateLabelsFromBreaks, cbrks, crfun,
-#    .ColNitr, .NorthArrow, .Scalebar, bbx)
+library(rgdal)
+data <- ReadMapOutput("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_shype/res_test/mapCOUT.txt")[, 1:2]
+map <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_shype/gis", layer = "helgean_shype_aro_y")
+map.subid.column <- 3
+var.name <- "COUT"
+plot.scale <- T
+map.pos <- 0
+plot.legend <- T
+legend.pos <- "right"
+legend.title <- "rhrhshfhfhs"
+col.ramp.fun <- "auto"
+col.ramp.fun <- colorRampPalette(c("yellow", "green"))
+col.breaks <- NULL
+par.mar <- rep(0, 4) + .1
+par.mar <- c(0,0,0,3) + .1
+legend.inset <- c(0,0)
+legend.cex <- 1
+rm(.ColQ)

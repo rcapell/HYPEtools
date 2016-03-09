@@ -5,9 +5,10 @@
 \title{Plot function for HYPE map results.}
 \usage{
 PlotMapOutput(data, map, map.subid.column = 1, var.name = "",
-  plot.scale = T, plot.legend = T, legend.pos = "right",
-  legend.title = NULL, legend.inset = c(0, 0), legend.cex = 1,
-  col.ramp.fun = "auto", col.breaks = NULL, par.mar = rep(0, 4) + 0.1)
+  plot.scale = T, plot.arrow = T, map.pos = 0, plot.legend = T,
+  legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0),
+  legend.cex = 1, col.ramp.fun = "auto", col.breaks = NULL,
+  par.mar = rep(0, 4) + 0.1)
 }
 \arguments{
 \item{data}{HYPE map results, data frame object with two columns, first column containing SUBIDs and 
@@ -21,8 +22,13 @@ e.g. \code{rgdal}.}
 \item{var.name}{Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.}
 
-\item{plot.scale}{Logical, plot a scale bar and a North arrow in the lower right corner. NOTE: works only with projected maps 
+\item{plot.scale}{Logical, plot a scale bar in the lower right corner. NOTE: works only with projected maps 
 based on meter units, not geographical projections}
+
+\item{plot.arrow}{Logical, plot a North arrow in the lower right corner.}
+
+\item{map.pos}{Numeric, map positioning in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
+or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.}
 
 \item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}}.}
 
