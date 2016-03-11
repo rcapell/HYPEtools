@@ -123,22 +123,25 @@
 
 
 # Internal function to add a distance scalebar to a projected map.
-# Code copied unchanged from function Scalebar() in package SDMTools by Jeremy VanDerWal jjvanderwal@gmail.com, 
-# all credits to him.
-# Copy because package SDMTools otherwise does not overlap with this package
-# breaks: vector of breakpoints
+# Code adapted from function Scalebar() in package SDMTools by Jeremy VanDerWal jjvanderwal@gmail.com. 
+# x:        the x-axis position for the lower left corner of the bar
+# y:        the y-axis position for the lower left corner of the bar
+# distance: the distance for which the scale bar should represent
+# unit:     the units to report as the scaling
+# scale:    the scaling factor to rescale the distance to a different unit.
+#           e.g., if your map is in m and want the scalebar to be in km, use a scale of 0.01
+#t.cex:     the scaling of the font size to be used for the scalebar
 .Scalebar <- function (x, y, distance, unit = "km", scale = 1, t.cex = 0.8) {
-  xvals = distance * c(0, 0.25, 0.5, 0.75, 1) + x
-  yvals = c(0, distance/c(30, 20, 10)) + y
+  xvals <- distance * c(0, 0.25, 0.5, 0.75, 1) + x
+  yvals <- c(0, distance/c(30, 20, 10)) + y
   cols <- c("black", "white", "black", "white")
-  for (i in 1:4) rect(xvals[i], yvals[1], xvals[i + 1], yvals[2], 
-                      col = cols[i])
+  for (i in 1:4) rect(xvals[i], yvals[1], xvals[i + 1], yvals[2], col = cols[i])
   for (i in 1:5) segments(xvals[i], yvals[2], xvals[i], yvals[3])
-  labels <- c((xvals[c(1, 3)] - xvals[1]) * scale, paste((xvals[5] - 
-                                                            xvals[1]) * scale, unit))
-  text(xvals[c(1, 3, 5)], yvals[4], labels = labels, adj = 0.5, 
-       cex = t.cex)
+  labels <- c((xvals[c(1, 3)] - xvals[1]) * scale, paste((xvals[5] - xvals[1]) * scale, unit))
+  labels <- c((xvals[c(1, 3, 5)] - xvals[1]) * scale, unit)
+  text(c(xvals[c(1, 3, 5)], xvals[5] + diff(xvals[1:2])*.8), yvals[4], labels = labels, adj = c(0.5, 0.2), cex = t.cex)
 }
+
 
 
 
@@ -163,7 +166,7 @@
   arrow.x = c(-1, 1, 1, 2, 0, -2, -1, -1)
   arrow.y = c(0, 0, 2, 2, 4, 2, 2, 0)
   polygon(xb + arrow.x * sx, yb + arrow.y * sy, ...)
-  text(xb, yb - strheight(lab, cex = cex.lab) * .5, lab, cex = cex.lab, 
+  text(xb, yb - strheight(lab, cex = cex.lab) * .9, lab, cex = cex.lab, adj = 0.4, 
        col = tcol)
 }
 

@@ -4,43 +4,36 @@
 \alias{PlotMapOutput}
 \title{Plot function for HYPE map results.}
 \usage{
-PlotMapOutput(data, map, map.subid.column = 1, var.name = "",
-  plot.scale = T, plot.arrow = T, map.pos = 0, plot.legend = T,
-  legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0),
-  legend.cex = 1, col.ramp.fun = "auto", col.breaks = NULL,
-  par.mar = rep(0, 4) + 0.1)
+PlotMapOutput(x, map, map.subid.column = 1, var.name = "", map.adj = 0,
+  plot.legend = T, legend.pos = "right", legend.title = NULL,
+  legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NULL,
+  plot.scale = T, plot.arrow = T, par.cex = 1, par.mar = rep(0, 4) +
+  0.1)
 }
 \arguments{
-\item{data}{HYPE map results, data frame object with two columns, first column containing SUBIDs and 
-second column containing model results. See details.}
+\item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
+second column containing model results to plot. See details.}
 
 \item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported SUBID shape file, shape file import requires additional packages, 
 e.g. \code{rgdal}.}
 
-\item{map.subid.column}{Integer, index of the column in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
+\item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
 \item{var.name}{Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.}
 
-\item{plot.scale}{Logical, plot a scale bar in the lower right corner. NOTE: works only with projected maps 
-based on meter units, not geographical projections}
-
-\item{plot.arrow}{Logical, plot a North arrow in the lower right corner.}
-
-\item{map.pos}{Numeric, map positioning in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
+\item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
 or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.}
 
 \item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}}.}
 
-\item{legend.pos}{Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"top"}, \code{"topright"}, 
-\code{"right"}, \code{"bottomright"}, \code{"bottom"}, \code{"bottomleft"}.}
+\item{legend.pos}{Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
+\code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.}
 
 \item{legend.title}{Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
 is used as legend title string. For select HYPE variables, pretty legend titles are in-built.}
 
 \item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region. See \code{\link{legend}} and details below.}
-
-\item{legend.cex}{Numeric, character expansion factor for legend. See description of \code{cex} in \code{\link{legend}}.}
 
 \item{col.ramp.fun}{Color ramp palette to use for the map. One of the following: \itemize{
 \item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name}, 
@@ -59,15 +52,23 @@ unclassified white spots on the map plot. Not mandatory, can optionally
 be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
 classification will be applied (see details).}
 
-\item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.}
+\item{plot.scale}{Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with 
+projected maps based on meter units, not geographical projections}
+
+\item{plot.arrow}{Logical, plot a North arrow below legend (i.e. position defined by legend position).}
+
+\item{par.cex}{Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}.}
+
+\item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
+In standard use cases of this function, plot margins do not need to be changed.}
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables.
 }
 \details{
 \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
-\code{data} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with 
-several time periods, pass index selections to \code{data}, e.g. \code{mymapresult[, c(1, 3)]}. 
+\code{x} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with 
+several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}. 
 
 Mapped variables are visualised using color-coded data intervals. \code{PlotMapOutput} can use one of several internal color ramp functions 
 suitable for some common HYPE result variables as listed under argument \code{col.ramp.fun}. These are called by keyword. Alternatively,
@@ -81,22 +82,26 @@ order.
 Break points between color classes of in-built or user-provided color ramp palettes can optionally be provided in argument 
 \code{col.breaks}. This is particularly useful when specific pretty class boundaries are needed, e.g. for publication figures. Per default, 
 break points for internal single color ramps and user-provided ramps are calculated based on 10\% percentiles of HYPE results given in 
-\code{data}. Default break points for internal color ramp \code{"ColDiffGeneric"} are based on an equal distance classification of log-scaled 
-\code{data} ranges, centered around zero. For internal color ramp \code{"ColDiffTemp"}, they are breaks in an interval from -7.5 to 7.5 K.
+\code{x}. Default break points for internal color ramp \code{"ColDiffGeneric"} are based on an equal distance classification of log-scaled 
+\code{x} ranges, centered around zero. For internal color ramp \code{"ColDiffTemp"}, they are breaks in an interval from -7.5 to 7.5 K.
 
 For select common HYPE variables, given in argument \code{var.name}, an automatic color ramp selection including pretty breaks and legend titles 
 is built into 
 \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword \code{"auto"}
 in \code{col.ramp.fun}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points.
 
-Legends are positioned by keyword, defaulting to the right side of the map. Depending on the form of the displayed area and 
-the size of the legend, there might be no optimal place inside the plot area. In that case, the legend can be moved to the 
-outer margins by specifying negative \code{legend.inset} values. For details on inset specification see \code{inset} in \code{\link{legend}}. 
-Make sure to also adapt the plot margin sizes appropriately through \code{par.mar}, see \code{mar} in \code{\link{par}}.
+\code{PlotMapOutput} per default works with a margin-less figure and positions map and legend items close to the plot boundaries. 
+In order to move map and legend closer to each other, change the plot device width.
+
+Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the right side of the map. \code{legend.pos} and 
+\code{map.adj} should be chosen so that legend and map do not overlap. Additionally, the legend position can be fine-tuned using 
+argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. For details on inset 
+specification see \code{inset} in \code{\link{legend}}.
 }
 \examples{
 \dontrun{require(rgdal)
-PlotMapOutput(data = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")}
+x11(width = 5, height = 8)
+PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")}
 
 }
 
