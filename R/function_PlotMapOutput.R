@@ -94,6 +94,14 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
             is.null(col.breaks) || is.numeric(col.breaks))
   stopifnot(map.adj %in% c(0, .5, 1))
   stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
+  if (length(col.breaks) == 1) {
+    col.breaks <- range(x[, 2], na.rm = T)
+    warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
+  }
+  if (!is.null(col.breaks) && (min(col.breaks > min(x[, 2], na.rm = T)) || max(col.breaks < max(x[, 2], na.rm = T)))) {
+    warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2]. 
+            Areas outside range will be excluded from plot.")
+  }
   
   # add y to legend inset if not provided by user
   if (length(legend.inset) == 1) {
@@ -223,7 +231,12 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   
   # in variables with large numbers of "0" values, the lower 10%-percentiles can be repeatedly "0", which leads to an error with cut,
   # so cbrks is shortened to unique values (this affects only the automatic quantile-based breaks)
+  # if just one value remains (or was requested by user), replace crbks by minmax-based range (this also resolves unexpected behaviour
+  # with single-value cbrks in 'cut' below).
   cbrks <- unique(cbrks)
+  if (length(cbrks) == 1) {
+    cbrks <- range(cbrks) + c(-1, 1)
+  }
   # discretise the modeled values in x into classed groups, add to x as new column (of type factor)
   x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = T)
   # replace the factor levels with color codes using the color ramp function assigned above
@@ -258,8 +271,14 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
                col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title, plot = F)
   # legend width (fraction) 
   leg.fr.wd <- leg.fr.pos$rect$w
-  # legend box element height (fraction)
-  legbx.fr.ht <- diff(c(leg.fr.pos$text$y[length(cbrks) - 1], leg.fr.pos$text$y[length(cbrks) - 2]))
+  # legend box element height (fraction), with workaround for single-class maps
+  if (length(leg.fr.pos$text$y) == 1) {
+    te <- legend(legend.pos, legend = rep(NA, length(cbrks)),
+                 col = crfun(length(cbrks)), lty = 1, lwd = 14,  bty = "n", title = legend.title, plot = F)
+    legbx.fr.ht <- diff(c(te$text$y[length(cbrks)], te$text$y[length(cbrks) - 1]))
+  } else {
+    legbx.fr.ht <- diff(c(leg.fr.pos$text$y[length(cbrks) - 1], leg.fr.pos$text$y[length(cbrks) - 2]))
+  }
   
   
   ## prepare legend annotation
@@ -408,9 +427,9 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
 # plot.legend <- T
 # legend.pos <- "bottomleft"
 # legend.title <- "rhrhshfhfhs"
-# #col.ramp.fun <- "auto"
+# #col.ramp.fun <- "ColQ"
 # col.ramp.fun <- colorRampPalette(c("yellow", "green"))
-# col.breaks <- NULL
+# col.breaks <- c(2, 2)
 # par.mar <- rep(0, 4) + .1
 # #par.mar <- c(0,0,0,3) + .1
 # legend.inset <- c(0,0)
