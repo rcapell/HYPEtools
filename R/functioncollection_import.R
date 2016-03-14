@@ -961,7 +961,7 @@ ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t") {
 
 
 ReadPointSourceData <- function(filename = "PointSourceData.txt") {
-  read.table(file = filename, header = T)
+  read.table(file = filename, header = T, sep = "\t")
 }
 
 
