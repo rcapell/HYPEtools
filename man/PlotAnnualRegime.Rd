@@ -6,12 +6,13 @@
 \usage{
 PlotAnnualRegime(x, type = "mean", add.legend = FALSE, l.legend = NULL,
   ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{     -1 }, ")")),
-  xlab = paste(format(x$period, format = "\%Y"), collapse = " to "),
+  xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse = " to "),
   col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + 0.1)
 }
 \arguments{
-\item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average regime data. 
-See details in description there.}
+\item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
+regime data and two attributes \code{period} and \code{timestep}.
+See Details and Value description there.}
 
 \item{type}{Character string, keyword for plot type. Either \code{"mean"} to plot long-term averages only, or \code{"minmax"} or 
 \code{"p25p75"} to include bands of variation. See details.}
@@ -47,9 +48,12 @@ Convenience wrapper function for a combined line \code{\link{plot}} with \code{\
 \details{
 If \code{"minmax"} or \code{"p25p75"} are chosen for argument \code{type}, transparent bands of inter-annual variation are plotted along the 
 long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
+
+Vertical lines of background grid are mid-month lines.
 }
 \examples{
 \dontrun{AnnualRegime(x = myregime)}
+
 }
 \seealso{
 \code{\link{AnnualRegime}}

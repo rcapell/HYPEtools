@@ -28,13 +28,16 @@ to daily and shorter time steps only.}
 \item{na.rm}{Logical, indicating if \code{NA} values should be stripped before averages are calculated.}
 }
 \value{
-\code{AnnualRegime} returns a list with 5 data frames and a two-element POSIXct vector containing start and end dates of the 
-source data. Data frame elements in the list contain in order: reference dates in \code{POSIXct} format, date information as string, 
-mean values, min values, max values, and 25\% and 75\% percentiles.
+\code{AnnualRegime} returns a list with 7 elements and two additional \code{\link{attributes}}. 
 
+Each element contains a data frame with, in column-wise order: reference dates in \code{POSIXct} format, date information as string, 
+mean values, min values, max values, and 25\% and 75\% percentiles.
 Reference dates are given as dates in 1900/1901 and can be used for plots starting at the beginning of the hydrological year 
 (with axis annotations set to months only). Daily and hourly time steps are given as is, weekly time steps are given as mid-week 
-dates (Wednesday), monthly time steps as mid month dates (15th).
+dates (Wednesday), monthly time steps as mid month dates (15th). 
+
+Attribute \code{period} contains a two-element POSIXct vector containing start and end dates of the 
+source data. Attribute \code{timestep} contains a timestep keyword corresponding to function argument \code{ts.out}.
 }
 \description{
 Calculate annual regimes based on long-term time series, typically imported HYPE basin output and time output result files.

@@ -1,33 +1,22 @@
-#' @export
-#' @title
 #' Plot annual regimes
 #'
-#' @description
 #' Convenience wrapper function for a combined line \code{\link{plot}} with \code{\link{polygon}} variation ranges.
 #'
-#' @param x List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average regime data. 
-#' See details in description there.
-#' 
+#' @param x List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
+#' regime data and two attributes \code{period} and \code{timestep}.
+#' See Details and Value description there.
 #' @param type Character string, keyword for plot type. Either \code{"mean"} to plot long-term averages only, or \code{"minmax"} or 
 #' \code{"p25p75"} to include bands of variation. See details.
-#' 
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
-#' 
 #' @param l.legend Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.
-#' 
 #' @param ylim  Numeric vector of length two, giving y-axis limits. \code{NULL} for default values.
-#' 
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Default prints the time period on which the 
 #' regime is based, read from \code{x$period}.
-#' 
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label, with a default for discharge regimes.
-#' 
 #' @param col Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
-#' 
 #' @param lty Line type specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
-#'
 #' @param lwd Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
 #' 
@@ -37,6 +26,8 @@
 #' If \code{"minmax"} or \code{"p25p75"} are chosen for argument \code{type}, transparent bands of inter-annual variation are plotted along the 
 #' long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
 #' 
+#' Vertical lines of background grid are mid-month lines.
+#' 
 #' @return
 #' \code{PlotAnnualRegime} returns a plot to the currently active plot device.
 #' 
@@ -45,10 +36,13 @@
 #' 
 #' @examples
 #' \dontrun{AnnualRegime(x = myregime)}
+#' 
+#' @export
+
 
 
 PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NULL, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
-                 xlab = paste(format(x$period, format = "%Y"), collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1) {
+                 xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1) {
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar <- par("mar")
@@ -112,11 +106,16 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
   
   # plot background grid
   grid(nx = NA, ny = NULL)
-  abline(v = x$mean[, 1], col = "lightgray", lty = "dotted", lwd = par("lwd"))
+  if (attr(x, "timestep") == "month") {
+    vline <- x$mean[, 1]
+  } else {
+    vline <- x$mean[which(format(x$mean[, 1], format = "%d") == "15"), 1]
+  }
+  abline(v = vline, col = "lightgray", lty = "dotted", lwd = par("lwd"))
   
   # manually add axes and framing box
   axis(side = 2)
-  axis.POSIXct(side = 1, at = x$mean[, 1])
+  axis.POSIXct(side = 1, at = vline)
   box()
   
   # internal function to calculate transparent colors for variation polygon, used below
@@ -167,10 +166,12 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
 # x <- AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon)
 # mar <- c(3, 3, 1, 1) + .1
 # ylab <- expression(paste("Q (m"^3, " s"^{-1}, ")"))
-# xlab <- paste(format(x$period, format = "%Y"), collapse = " to ")
+# xlab <- paste(format(attr(x, "period"), format = "%Y"), collapse = " to ")
 # col <- "blue"
 # lty <- 1
 # lwd <- 1
 # type <- "mean"
 # add.legend <- FALSE
 # l.legend <- NULL
+# ylim <- NULL
+

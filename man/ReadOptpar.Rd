@@ -30,6 +30,10 @@ This function imports an 'optpar.txt' into a list.
 and parameter value ranges, for details on the file format, see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
 }
+\examples{
+\dontrun{ReadOptpar("optpar.txt")}
+
+}
 \seealso{
 \code{\link{ReadPar}}
 }
