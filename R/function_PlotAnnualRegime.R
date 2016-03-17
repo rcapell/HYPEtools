@@ -44,7 +44,7 @@
 #' \code{\link{AnnualRegime}}
 #' 
 #' @examples
-#' \dontrun{PlotAnnualRegime(x = myregime)}
+#' \dontrun{AnnualRegime(x = myregime)}
 
 
 PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NULL, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 

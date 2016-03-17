@@ -22,7 +22,7 @@ time periods, see Details. Defaults to \code{"mean"}.}
 
 \item{start.mon}{Integer between 1 and 12, starting month of the hydrological year, used to order the output.}
 
-\item{incl.leap}{Logical, leap days (Mar 29) are removed from results per default, set to \code{TRUE} to keep them. Applies 
+\item{incl.leap}{Logical, leap days (Feb 29) are removed from results per default, set to \code{TRUE} to keep them. Applies 
 to daily and shorter time steps only.}
 
 \item{na.rm}{Logical, indicating if \code{NA} values should be stripped before averages are calculated.}
@@ -30,10 +30,10 @@ to daily and shorter time steps only.}
 \value{
 \code{AnnualRegime} returns a list with 5 data frames and a two-element POSIXct vector containing start and end dates of the 
 source data. Data frame elements in the list contain in order: reference dates in \code{POSIXct} format, date information as string, 
-mean values, min values, max values, and 25% and 75% percentiles.
+mean values, min values, max values, and 25\% and 75\% percentiles.
 
 Reference dates are given as dates in 1900/1901 and can be used for plots starting at the beginning of the hydrological year 
-(with axis annotations to months only). Daily and hourly time steps are given as is, weekly time steps are given as mid-week 
+(with axis annotations set to months only). Daily and hourly time steps are given as is, weekly time steps are given as mid-week 
 dates (Wednesday), monthly time steps as mid month dates (15th).
 }
 \description{
@@ -41,7 +41,7 @@ Calculate annual regimes based on long-term time series, typically imported HYPE
 }
 \details{
 \code{AnnualRegime} uses \code{\link{aggregate}} to calculate long-term average regimes for all data columns provided in \code{x}, 
-including long-term arithmetic means, minima and maxima, and 25% and 75% percentiles. In a HYPE context, \code{AnnualRegime} 
+including long-term arithmetic means, minima and maxima, and 25\% and 75\% percentiles. In a HYPE context, \code{AnnualRegime} 
 is particularly applicable to model basin and time results imported using \code{\link{ReadBasinOutput}} and 
 \code{\link{ReadTimeOutput}}. The function currently does not check if equally spaced time steps are provided in \code{x} or if the 
 overall time period in \code{x} covers full years so that the calculated averages are based on the same number of values.
@@ -64,6 +64,6 @@ of the year as day 1 of week 1 (see conversion code \code{\%W} in \code{\link{st
 \dontrun{AnnualRegime(x = mybasinoutput)}
 }
 \seealso{
-\code{\link{AnnualRegime}}
+\code{\link{PlotAnnualRegime}}
 }
 

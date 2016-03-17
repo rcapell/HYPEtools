@@ -17,6 +17,7 @@
 #     - ReadAquiferData()
 #     - ReadPointSourceData()
 #     - ReadAllsim()
+#     - ReadOptpar()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -279,9 +280,12 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
   # update header, composite of variable and subid
   names(xobs) <- c("date", paste(attr(xobs, "variable"), attr(xobs, "subid"), sep = "_"))
   
-  # stop if duplicate columns found, through useful error msg
+  # stop if duplicate columns found, throw useful error msg
   if (length(names(xobs)) != length(unique(names(xobs)))) {
-    stop(paste0("Duplicated variable-SUBID combination(s) in file: ", paste(names(xobs)[duplicated(names(xobs))], collapse = " ")))
+    warning(paste0("Duplicated variable-SUBID combination(s) in file: ", paste(names(xobs)[duplicated(names(xobs))], collapse = " ")))
+    duplifree <- FALSE
+  } else {
+    duplifree <- TRUE
   }
   
   # date conversion 
@@ -290,7 +294,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
     cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object."); return(xobs[, 1])})
   
   # if date conversion worked and time steps are HYPE-conform, add class HydroXobs to returned object 
-  if(!is.factor(xobs[, 1])) {
+  if(!is.factor(xobs[, 1]) && duplifree) {
     # check if time steps are equidistant
     tstep <- diff(xobs[, 1])
     hypexobsclass <- TRUE
@@ -458,8 +462,9 @@ ReadPar <- function (filename = "par.txt") {
   x <- scan(filename, what = "", sep = "\n")
   # split string elements along whitespaces, returns list of character vectors
   x <- strsplit(x, split = "[[:space:]]+")
-  # assign first vector elements as list element names
+  # assign first vector elements as list element names and convert to lower-case (as standardisation)
   names(x) <- sapply(x, `[[`, 1)
+  names(x) <- tolower(names(x))
   # remove first vector elements
   x <- lapply(x, `[`, -1)
   # convert list elements to numeric, if possible, catch conversion errors and return non-numeric strings untouched (typically comment lines)
@@ -979,7 +984,7 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt") {
 #' @description
 #' This is a convenience wrapper function to import an allsim.txt optimisation result file as data frame into R.
 #' 
-#' @param filename Path to and file name of the allsim.txt file to import. 
+#' @param filename Path to and file name of the 'allsim.txt' file to import. 
 #'  
 #' @details
 #' \code{ReadAllsim} is just \code{read.table(file = filename, header = T, sep = ",")}, mainly added to provide a 
@@ -993,8 +998,89 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt") {
 #' 
 
 
-ReadAllsim <- function(filename = "PointSourceData.txt") {
+ReadAllsim <- function(filename = "allsim.txt") {
   read.table(file = filename, header = T, sep = ",")
 }
 
+
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadOptpar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' Read an 'optpar.txt' file
+#' 
+#' This function imports an 'optpar.txt' into a list.
+#' 
+#' @param filename Path to and file name of the 'optpar.txt' file to import. 
+#' 
+#' @details 
+#' \code{ReadOptpar} imports a HYPE 'optpar.txt' file. Optpar files contain instructions for parameter calibration/optimisation 
+#' and parameter value ranges, for details on the file format, see the
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
+#' 
+#' @return 
+#' \code{ReadOptpar} returns a \code{\link{list}} object with four elements: \itemize{ 
+#' \item \code{comment}, the file's first-row comment string.
+#' \item \code{tasks}, a two-column dataframe with row-wise key-value pairs for tasks and settings.
+#' \item \code{pars}, a list of dataframes, each containing values for one parameter. Three columns each, holding parameter 
+#' range minima, maxima, and intervals. 
+#' The number of rows in each dataframe corresponds to the number of soil or land use classes for class-specific parameters. 
+#' Parameter names as list element names.
+#' \item \code{calib}, a list of vectors with (soil or land use) class numbers of parameters included in calibration (parameters 
+#' with identical min and max values are omitted in calibration, but need to be specified in optpar files). Parameter names 
+#' as list element names.
+#' }
+#' 
+#' @seealso \code{\link{ReadPar}}
+
+#' @examples
+#' \dontrun{ReadOptpar("optpar.txt")}
+#' 
+#' @export
+
+ReadOptpar <- function(filename) {
+  
+  # read tasks and settings into a character vector (one string per row in file)
+  tasks <- scan(filename, what = "", sep = "\n", nlines = 21)
+  # split string elements along whitespaces, returns list of character vectors
+  tasks <- strsplit(tasks, split = "[[:space:]]+")
+  # re-merge and separate first-row comment string
+  comm <- paste(tasks[[1]], collapse = " ")
+  #remove comment from tasks
+  tasks <- tasks[-1]
+  # convert tasks and settings to two-column dataframe (they are always combinations of single key single value)
+  tasks <- do.call(rbind.data.frame, tasks)
+  names(tasks) <- c("key", "value")
+  
+  # read parameters
+  x <- scan(filename, what = "", sep = "\n", skip = 21)
+  x <- strsplit(x, split = "[[:space:]]+")
+  # assign first vector elements as list element names and convert to lower-case (as standardisation)
+  names(x) <- sapply(x, `[[`, 1)
+  names(x) <- tolower(names(x))
+  # remove first vector elements
+  x <- lapply(x, `[`, -1)
+  # convert list elements to numeric, if possible, catch conversion errors and return non-numeric strings untouched (typically comment lines)
+  x <- lapply(x, as.numeric)
+  # organise into data frames containing boundaries and interval
+  pars <- list()
+  j <- 0
+  for (i in seq(from = 1, to = length(x), by = 3)) {
+    j <- j + 1
+    pars[[j]] <- data.frame(min = x[[i]], max = x[[i + 1]], ival = x[[i + 2]])
+    names(pars)[j] <- names(x)[i]
+  }
+  # extract calibrated classes (as vector of class number per parameter)
+  calib <- list()
+  for (i in 1:length(pars)) {
+    calib[[i]] <- which(pars[[i]][, 1] - pars[[i]][, 2] != 0)
+    names(calib)[i] <- names(pars)[i]
+  }
+  return(list(comment = comm, tasks, pars, calib))
+}
 

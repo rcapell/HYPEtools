@@ -49,7 +49,7 @@ If \code{"minmax"} or \code{"p25p75"} are chosen for argument \code{type}, trans
 long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
 }
 \examples{
-\dontrun{PlotAnnualRegime(x = myregime)}
+\dontrun{AnnualRegime(x = myregime)}
 }
 \seealso{
 \code{\link{AnnualRegime}}

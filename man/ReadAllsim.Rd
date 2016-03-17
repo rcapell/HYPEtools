@@ -4,10 +4,10 @@
 \alias{ReadAllsim}
 \title{Read an 'allsim.txt' file}
 \usage{
-ReadAllsim(filename = "PointSourceData.txt")
+ReadAllsim(filename = "allsim.txt")
 }
 \arguments{
-\item{filename}{Path to and file name of the allsim.txt file to import.}
+\item{filename}{Path to and file name of the 'allsim.txt' file to import.}
 }
 \value{
 \code{ReadAllsim} returns a data frame.
