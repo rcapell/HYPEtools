@@ -1084,3 +1084,58 @@ ReadOptpar <- function(filename) {
   return(list(comment = comm, tasks, pars, calib))
 }
 
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadSubass~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' Read an 'subassX.txt' file
+#'
+#' This is a convenience wrapper function to import an subassX.txt sub-basin assessment file as data frame into R.
+#' Sub-basins assessment files contain performance criteria results, as defined in 'info.txt', for individual 
+#' sub-basins with observations.
+#' 
+#' @param filename Path to and file name of the 'subassX.txt' file to import. 
+#' @param nhour Integer, time step of sub-daily model results in hours. See details. 
+#'  
+#' @details
+#' \code{ReadSubass} imports a sub-basin assessement file into R. Information on model variables evaluated in the 
+#' file is imported as additional \code{\link{attribute}} \code{variables}, the evaluation time step in an attribute 
+#' \code{timestep}.
+#' 
+#' Sub-daily time steps are reported with time step code '0' in HYPE result files. In order to preserve the time step 
+#' information in the imported R object, users must provide the actual model evaluation time step in hours 
+#' in argument \code{nhour} in the sub-daily case.
+#' 
+#' @return
+#' \code{ReadSubass} returns a data frame with two additional attributes: \code{variables} contains a 2-element 
+#' character vector with IDs of evaluated observed and simulated HYPE variables, \code{timestep} contains a character 
+#' keyword detailing the evaluation time step.
+#' 
+#' @examples
+#' \dontrun{ReadSubass("subass1.txt")}
+#'
+#' @export 
+
+
+ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
+  x <- read.table(file = filename, header = F, sep = "\t", skip = 2)
+  te <- readLines(filename, n = 2)
+  names(x) <- strsplit(te[2], split = "\t")[[1]]
+  # extract additional information from first row in file and add as attributes
+  attrsrc <- strsplit(te[1], split = "[[:space:][:punct:]]+")[[1]]
+  tstep <- c("day", "week", "month", "year", "modelperiod")[attrsrc[9]]
+  # treatment for sub-daily time step (code 0)
+  if (length(tstep) == 0) {
+    if (is.null(nhour)) {
+      tstep <- "nhour"
+      warning("Sub-daily results in imported file, but argument 'nhour' not provided. Attribute 'timestep' returned as 'nhour'")
+    } else {
+      tstep <- paste0(nhour, "hour") 
+    }
+  }
+  attr(x, "timestep") <- tstep
+  attr(x, "variables") <- attrsrc[11:12]
+}
+
