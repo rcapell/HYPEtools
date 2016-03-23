@@ -822,7 +822,7 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 
 
 ReadLakeData <- function(filename = "LakeData.txt") {
-  read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "")
+  read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
 }
 
 
