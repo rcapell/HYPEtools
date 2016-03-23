@@ -1,29 +1,38 @@
-
-
-#' Pearson correlation coefficient for HypeSingleVar arrays
-#'  
-#' Pearson correlation coefficient calculation for imported HYPE outputs with single variables for several catchments, i.e. time and 
-#' map files, optionally multiple model runs combined.
+#'
+#' Pearson product-moment correlation coefficient r
 #' 
-#' @param sim \code{\link{HypeSingleVar}} array with simulated variable (one or several iterations).
-#' @param obs \code{\link{HypeSingleVar}} array with observed variable, (one iteration). If several iterations are present 
-#' in the array, only the first will be used.
+#' Pearson product-moment correlation coefficient calculation, a specific case of function \code{\link{cor}}.
+#' 
+#' @param sim \code{\link[=HypeSingleVar]{HypeSingleVar array}} with simulated variable (one or several iterations).
+#' @param obs \code{\link[=HypeSingleVar]{HypeSingleVar array}} with observed variable, (one iteration). If several iterations 
+#' are present in the array, only the first will be used.
 #' @param progbar Logical, if \code{TRUE} progress bars will be printed for main computational steps.
-# @inheritParams hydroGOF::pbias
-# #' @aliases pbias
+#' 
+#' @details 
+#' This function wraps a call to \code{cor(x = obs, y = sim, use = "na.or.complete", method = "pearson")}. 
+#' 
+#' Method \code{r.HypeSingleVar} calculates Pearson's r for imported HYPE outputs with single variables for several 
+#' catchments, i.e. time and map files, optionally multiple model runs combined, typically results from calibration runs.
 #' 
 #' @return 
-#' \code{CCHypeSingleVar} returns a 2-dimensional array of Pearson correlation coefficients for all SUBIDs and model 
+#' \code{r.HypeSingleVar} returns a 2-dimensional array of Pearson correlation coefficients for all SUBIDs and model 
 #' iterations provided in argument \code{sim}, with values in the same order 
 #' as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 #' 
-#' @seealso \code{link{cor}}, on which the function is based
+#' @seealso \code{\link{cor}}, on which the function is based. \code{\link{ReadWsOutput}} for importing HYPE calibration results.
 #' 
+#' @export
+r <- function(sim, obs, ...) {
+  UseMethod("r")
+  }
+
+
+#' @rdname r
 #' @export
 #' @importFrom pbapply pblapply pbsapply
 
 
-CCHypeSingleVar <- function(sim, obs, progbar = TRUE, ...){ 
+r.HypeSingleVar <- function(sim, obs, progbar = TRUE){ 
   
   # Check that 'sim' and 'obs' have the same dimensions
   if (all.equal(dim(sim)[1:2], dim(obs)[1:2]) != TRUE)
