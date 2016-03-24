@@ -114,7 +114,8 @@ summary.HypeSingleVar <- function(x, ...) {
   ans$nsbd <- length(attr(x, "subid"))
   ans$niter <- dim(x)[3]
   class(ans) <- "summaryHypeSingleVar"
-  ans
+  print(ans)
+  invisible(ans)
 }
 
 

@@ -8,7 +8,7 @@ PlotMapOutput(x, map, map.subid.column = 1, var.name = "", map.adj = 0,
   plot.legend = T, legend.pos = "right", legend.title = NULL,
   legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NULL,
   plot.scale = T, plot.arrow = T, par.cex = 1, par.mar = rep(0, 4) +
-  0.1)
+  0.1, add = FALSE)
 }
 \arguments{
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
@@ -27,13 +27,14 @@ or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means
 
 \item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}}.}
 
-\item{legend.pos}{Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
+\item{legend.pos}{Legend, scale, and north arrow position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
 \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.}
 
 \item{legend.title}{Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
 is used as legend title string. For select HYPE variables, pretty legend titles are in-built.}
 
-\item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region. See \code{\link{legend}} and details below.}
+\item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
+See \code{\link{legend}} and details below.}
 
 \item{col.ramp.fun}{Color ramp palette to use for the map. One of the following: \itemize{
 \item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name}, 
@@ -61,6 +62,8 @@ projected maps based on meter units, not geographical projections}
 
 \item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 In standard use cases of this function, plot margins do not need to be changed.}
+
+\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot.}
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables.

@@ -13,11 +13,12 @@
 #' @param map.adj Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
 #' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.
 #' @param plot.legend Logical, plot a legend along with the map. Uses function \code{\link{legend}}.
-#' @param legend.pos Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
+#' @param legend.pos Legend, scale, and north arrow position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
 #' \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.
 #' @param legend.title Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
 #' is used as legend title string. For select HYPE variables, pretty legend titles are in-built.
-#' @param legend.inset Numeric, inset distance(s) from the margins as a fraction of the plot region. See \code{\link{legend}} and details below.
+#' @param legend.inset Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
+#' See \code{\link{legend}} and details below.
 #' @param col.ramp.fun Color ramp palette to use for the map. One of the following: \itemize{
 #' \item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name}, 
 #' see details
@@ -39,6 +40,7 @@
 #' @param par.cex Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}.
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 #' In standard use cases of this function, plot margins do not need to be changed.
+#' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot.
 #' 
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
@@ -87,7 +89,7 @@
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj = 0, plot.legend = T, 
                           legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0), 
                           col.ramp.fun = "auto", col.breaks = NULL, plot.scale = T, plot.arrow = T, 
-                          par.cex = 1, par.mar = rep(0, 4) + .1) {
+                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE) {
   
   # input argument checks
   stopifnot(is.data.frame(x), dim(x)[2] == 2, class(map)=="SpatialPolygonsDataFrame", 
@@ -256,8 +258,12 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   #x11(width = 4.5, height = 9)
   # par settings: lend set to square line endings because the legend below works with very thick lines 
   # instead of boxes (a box size limitation work-around); xpd set to allow for plotting a legend on the margins
-  par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
-  plot.new()
+  if (!add) {
+    plot.new()
+    par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
+  } else {
+    par(lend = 1, xpd = T, cex = par.cex)
+  }
   
   
   ## the positioning of all plot elements works with three scales for the device's plot region: 
@@ -266,10 +272,10 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   # plot width (inches)
   p.in.wd <- par("pin")[1]
   
-  # legend position (fraction) 
+  # legend position (fraction if 'add' is FALSE, otherwise already in map coordinates) 
   leg.fr.pos <- legend(legend.pos, legend = rep(NA, length(cbrks) - 1),
                col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title, plot = F)
-  # legend width (fraction) 
+  # legend width (fraction if 'add' is FALSE, otherwise already in map coordinates) 
   leg.fr.wd <- leg.fr.pos$rect$w
   # legend box element height (fraction), with workaround for single-class maps
   if (length(leg.fr.pos$text$y) == 1) {
@@ -295,28 +301,34 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
     
     # update legend inset
     legend.inset <- legend.inset + leg.inset
-    # annotation positions (fraction)
-    ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) - legend.inset[1] - 0.01
+    ## annotation positions (fraction if 'add' is FALSE, otherwise already in map coordinates)
+    # inset scaling factor, used if 'add' is TRUE, otherwise 1
+    f.inset.x <- par("usr")[2] - par("usr")[1]
+    f.inset.y <- par("usr")[4] - par("usr")[3]
+    ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) - legend.inset[1] * f.inset.x - 0.01
     if (legend.pos == "bottomright") {
-      ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2]
+      ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2] * f.inset.y
     } else if (legend.pos == "right") {
       ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks)))
     } else {
-      ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2]
+      ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2] * f.inset.y
     }
     
   } else {
     # left side legend
     # update legend inset
     legend.inset[2] <- legend.inset[2] + leg.inset[2]
-    # annotation positions (fraction)
-    ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) + legend.inset[1] - 0.01
+    ## annotation positions (fraction if 'add' is FALSE, otherwise already in map coordinates)
+    # inset scaling factor, used if 'add' is TRUE, otherwise 1
+    f.inset.x <- par("usr")[2] - par("usr")[1]
+    f.inset.y <- par("usr")[4] - par("usr")[3]
+    ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) + legend.inset[1] * f.inset.x - 0.01
     if (legend.pos == "bottomleft") {
-      ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2]
+      ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2] * f.inset.y
     } else if (legend.pos == "left") {
       ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks)))
     } else {
-      ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2]
+      ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2] * f.inset.y
     }
   }
   
@@ -361,37 +373,69 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   ## plot the map and add legend using the positioning information reived above
   
   # map
-  plot(map, col = map$color, border = NA, ylim = pylim, xlim = pxlim)
+  plot(map, col = map$color, border = NA, ylim = pylim, xlim = pxlim, add = add)
   # legend
-  legend(legend.pos, legend = rep(NA, length(cbrks) - 1), inset = legend.inset, 
-         col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title)
-  # convert annotation positioning to map coordinates
-  ann.mc.x <- ann.fr.x * diff(pxlim) + pxlim[1]
-  ann.mc.y <- ann.fr.y * diff(pylim) + pylim[1]
-  text(x = ann.mc.x, y = ann.mc.y, labels = ann.txt, adj = c(0, .5), cex = 0.8)
+  if (plot.legend) {
+    legend(legend.pos, legend = rep(NA, length(cbrks) - 1), inset = legend.inset, 
+           col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title)
+    # convert annotation positioning to map coordinates, only if 'add' is FALSE
+    # then plot annoration text
+    if (!add) {
+      ann.mc.x <- ann.fr.x * diff(pxlim) + pxlim[1]
+      ann.mc.y <- ann.fr.y * diff(pylim) + pylim[1]
+      text(x = ann.mc.x, y = ann.mc.y, labels = ann.txt, adj = c(0, .5), cex = 0.8)
+    } else {
+      text(x = ann.fr.x, y = ann.fr.y, labels = ann.txt, adj = c(0, .5), cex = 0.8)
+    }
+    
+  }
   
   
   ## scale position (reference point: lower left corner), also used as reference point for north arrow
+  ## conditional on 'add'
   
-  # x position conditional on legend placement side
-  if (legend.pos %in% c("bottomright", "right", "topright")) {
-    lx <- pxlim[2] - signif(diff(bbx[1,])/4, 0) - legend.inset[1] * diff(pxlim)
+  if (add) {
+    
+    # x position conditional on legend placement side
+    if (legend.pos %in% c("bottomright", "right", "topright")) {
+      lx <- par("usr")[2] - signif(diff(par("usr")[1:2])/4, 0) - legend.inset[1] * diff(par("usr")[1:2])
+    } else {
+      lx <- par("usr")[1] + (legend.inset[1] + 0.02) * diff(par("usr")[1:2])
+    }
+    
+    # y position conditional legend placement position (leg.fr.pos here is already in map coordinates)
+    if (legend.pos %in% c("bottomright", "bottomleft")) {
+      ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2]*f.inset.y/2)
+    } else if (legend.pos %in% c("right", "left")) {
+      ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + (legend.inset[2]/2 - .1) * f.inset.y)
+    } else {
+      ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h - (legend.inset[2]/2 - .1) * f.inset.y)
+    }
   } else {
-    lx <- pxlim[1] + (legend.inset[1] + 0.02) * diff(pxlim)
+    
+    # x position conditional on legend placement side
+    if (legend.pos %in% c("bottomright", "right", "topright")) {
+      lx <- pxlim[2] - signif(diff(bbx[1,])/4, 0) - legend.inset[1] * diff(pxlim)
+    } else {
+      lx <- pxlim[1] + (legend.inset[1] + 0.02) * diff(pxlim)
+    }
+    
+    # y position conditional legend placement position
+    if (legend.pos %in% c("bottomright", "bottomleft")) {
+      ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2]/2) * diff(pylim) + pylim[1]
+    } else if (legend.pos %in% c("right", "left")) {
+      ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2]/2 - .1) * diff(pylim) + pylim[1]
+    } else {
+      ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h - legend.inset[2]/2 - .1) * diff(pylim) + pylim[1]
+    }
   }
-  
-  # y position conditional on legend placement position
-  if (legend.pos %in% c("bottomright", "bottomleft")) {
-    ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2]/2) * diff(pylim) + pylim[1]
-  } else if (legend.pos %in% c("right", "left")) {
-    ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2]/2 - .1) * diff(pylim) + pylim[1]
-  } else {
-    ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h - legend.inset[2]/2 - .1) * diff(pylim) + pylim[1]
-  }
-  
   
   if (plot.scale) {
-    ldistance <- signif(diff(bbx[1,])/4, 0)
+    if (!add) {
+      ldistance <- signif(diff(bbx[1,])/4, 0)
+    } else {
+      ldistance <- signif(diff(par("usr")[1:2])/4, 0)
+      }
     .Scalebar(x = lx, 
               y = ly, 
               distance = ldistance, 
@@ -399,22 +443,34 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   }
   
   if (plot.arrow) {
-    # north arrow x position conditional on side where legend is plotted
-    if (legend.pos %in% c("bottomright", "right", "topright")) {
-      nx <- lx - 0.02 * diff(pxlim)
+    
+    if (add) {
+      nlen <- diff(par("usr")[1:2])/70
+      # north arrow x position conditional on side where legend is plotted
+      if (legend.pos %in% c("bottomright", "right", "topright")) {
+        nx <- lx - 0.02 * diff(par("usr")[1:2])
+      } else {
+        nx <- lx + signif(diff(par("usr")[1:2])/4, 0) + 0.055 * diff(par("usr")[1:2])
+      }
     } else {
-      nx <- lx + signif(diff(bbx[1,])/4, 0) + 0.055 * diff(pxlim)
+      nlen <- diff(bbx[1,])/70
+      # north arrow x position conditional on side where legend is plotted
+      if (legend.pos %in% c("bottomright", "right", "topright")) {
+        nx <- lx - 0.02 * diff(pxlim)
+      } else {
+        nx <- lx + signif(diff(bbx[1,])/4, 0) + 0.055 * diff(pxlim)
+      }
     }
+    
     .NorthArrow(xb = nx, 
                 yb = ly, 
-                len = diff(bbx[1,])/70, cex.lab = .8)
+                len = nlen, cex.lab = .8)
   }
   
   
   # invisible unless assigned: return the color codes for all values in x
   invisible(x[, 3])
 }
-
 
 # # DEBUG
 # library(rgdal)
@@ -429,10 +485,12 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
 # legend.title <- "rhrhshfhfhs"
 # #col.ramp.fun <- "ColQ"
 # col.ramp.fun <- colorRampPalette(c("yellow", "green"))
-# col.breaks <- c(2, 2)
+# col.breaks <- NULL
 # par.mar <- rep(0, 4) + .1
 # #par.mar <- c(0,0,0,3) + .1
 # legend.inset <- c(0,0)
 # par.cex <- 1
 # plot.arrow <- T
+# plot.legend <- T
+# add <- T
 # rm(list = ls(all.names = T))

@@ -106,10 +106,19 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   }
   if (is.numeric(to)) {
     tw <- to
+    if (tw > nrow(x)) {
+      date.plot <- seq(x[1, 1], by = "day", length.out = tw)
+    }
   } else if (is.character(to)) {
-    tw <- which(format(x[, 1], format = "%F") == to)[1]
+    tw.d <- strptime(to, format = "%F", tz = "GMT")
+    if (tw.d > x[nrow(x), 1]) {
+      date.plot <- seq(x[1, 1], tw.d, by = "day")
+      tw <- length(date.plot)
+    } else {
+      tw <- which(x[, 1] == tw.d)
+    }
     if (length(tw) == 0) {
-      stop("Argument 'to': Unknown date string or date outside model time period.")
+      stop("Argument 'to': Unknown date string or other date matching error.")
     }
   } else {
     stop("Argument 'to': Wrong type.")
@@ -120,6 +129,12 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   
   # select time window from indata for plotting
   xw <- x[fw:tw, ]
+  # save data extent for regime plot label
+  xlab.regime <- paste(format(range(xw[, 1], na.rm = T), "%Y"), collapse = " to ")
+  # if selected time window is longer than time series in x, extend date column
+  if (exists("date.plot")) {
+    xw[, 1] <- date.plot[fw:length(date.plot)]
+  }
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar <- par("mar")
@@ -248,13 +263,13 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     # conditional: prepare regime plot call depending on data availability
     if (exi.t["rout"] && exi.t["cout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
+      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else if (exi.t["rout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
+      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else if (exi.t["cout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5))')
+      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", add.legend = T, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -274,9 +289,9 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     cp <- cp + 1
     if (exi.t["uppr"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, uppr, ylim = c(max(uppr), -2), col = NA, axes = F, ylab = "")')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, uppr, ylim = c(max(uppr, na.rm = T), -2), col = NA, axes = F, ylab = "")')
     } else {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, uprf + upsf, ylim = c(max(uppr), -2), col = NA, axes = F, ylab = "")')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, uprf + upsf, ylim = c(max(uppr, na.rm = T), -2), col = NA, axes = F, ylab = "")')
     }
     
     cp <- cp + 1
@@ -287,10 +302,10 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     # conditional: if rainfall and snow variables available, plot stacked bars based of these, otherwise plot precip bars
     if (exi.t["uprf"] && exi.t["upsf"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(uprf, upsf))), border = NA, ylim = c(max(uppr), -2), xlab = "", col = c("darkblue", "forestgreen"), names.arg = rep("", length(uppr)), legend.text = c("Rain", "Snow"), args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(uprf, upsf))), border = NA, ylim = c(max(uppr, na.rm = T), -2), xlab = "", col = c("darkblue", "forestgreen"), names.arg = rep("", length(uppr)), legend.text = c("Rain", "Snow"), args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
     } else {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'barplot(height = uppr, border = NA, ylim = c(max(uppr), -2), xlab = "", col = "darkblue", names.arg = rep("", length(uppr)), legend.text = "Precipitation", args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE, adj = c(1, 1)), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = uppr, border = NA, ylim = c(max(uppr, na.rm = T), -2), xlab = "", col = "darkblue", names.arg = rep("", length(uppr)), legend.text = "Precipitation", args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
     }
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
@@ -357,7 +372,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("Qobs", "Qsim"), lty = 1, col = c("royalblue4", "orangered3"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("Qobs", "Qsim"), lty = 1, col = c("royalblue4", "orangered3"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
   
@@ -397,7 +412,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("Obs. water level", "Sim. water level"), lty = 1, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("Obs. water level", "Sim. water level"), lty = 1, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
   
@@ -413,11 +428,11 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     cp <- cp + 1
     if (!exi.t["upev"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, uppe, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(uppe)), cex.axis = 1, cex.lab = 1.2)')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, uppe, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(uppe, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
     } else if (!exi.t["uppe"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, upev, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(upev)), cex.axis = 1, cex.lab = 1.2)')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upev, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(upev, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
     } else {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, upev, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(c(upev, uppe))), cex.axis = 1, cex.lab = 1.2)')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upev, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(c(upev, uppe), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
     }
     
     cp <- cp + 1
@@ -435,7 +450,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("ETp", "ETa"), lty = c(3, 1), col = c("green3", "green4"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("ETp", "ETa"), lty = c(3, 1), col = c("green3", "green4"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   } 
   
@@ -516,19 +531,19 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'lines(date, sm13, col = "springgreen4")')
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), "pore water", lty = 1, col = "springgreen4", bty = "n", cex = 1.2, horiz = TRUE)')
+      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), "pore water", lty = 1, col = "springgreen4", bty = "n", cex = 1.2, horiz = TRUE)')
     } else if (!exi.t["sm13"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'lines(date, soim, col = "springgreen4")')
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), " pore and surface water", lty = 1, col = "springgreen4", bty = "n", cex = 1.2, horiz = TRUE)')
+      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), " pore and surface water", lty = 1, col = "springgreen4", bty = "n", cex = 1.2, horiz = TRUE)')
     } else {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'lines(date, soim, col = "firebrick3")')
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'lines(date, sm13, col = "springgreen4")')
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("pore water", "surface water"), lty = 1, col = c("springgreen4", "firebrick3"), bty = "n", cex = 1.2, horiz = TRUE)')
+      list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("pore water", "surface water"), lty = 1, col = c("springgreen4", "firebrick3"), bty = "n", cex = 1.2, horiz = TRUE)')
     }
     
   }
@@ -592,7 +607,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("TNobs", "TNsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("TNobs", "TNsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
   
@@ -632,7 +647,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("INobs", "INsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("INobs", "INsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
   
@@ -672,7 +687,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("ONobs", "ONsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("ONobs", "ONsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
   
@@ -712,7 +727,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("TPobs", "TPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("TPobs", "TPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
   
@@ -752,7 +767,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("PPobs", "PPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("PPobs", "PPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
   
@@ -792,7 +807,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     }
     
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.1), c("SPobs", "SPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("SPobs", "SPsim"), lty = c(NA, 1), pch = c(16, NA), pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
   
@@ -836,9 +851,9 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
 # x <- ReadBasinOutput("../9548212.txt")
 # names(x)
 # x <- x[, -c(20:25)]
-# from <- 1
+# from <- 10
 # from <- "2005-01-01"
-# to <- nrow(x)
+# to <- nrow(x) +10
 # name <- "Weaver EHYPE3 default"
 # area <- NULL
 # area <- SumUpstreamArea(subid = subid, gd = gd, bd = bd)[, 2]
@@ -849,5 +864,5 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
 # timestep <- "day"
 # start.mon <- 10
 # filename <- NULL
-# hype.vars <- "all"
+# hype.vars <- "hydro"
 # PlotBasinOutput(x = ReadBasinOutput("../9548212.txt"), name = "Weaver EHYPE3 default", gd = gd, subid = subid, hype.vars = "nutrients", filename = "../test3")
