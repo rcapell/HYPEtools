@@ -18,6 +18,7 @@
 #     - ReadPointSourceData()
 #     - ReadAllsim()
 #     - ReadOptpar()
+#     - ReadSubass()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -1137,5 +1138,6 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
   }
   attr(x, "timestep") <- tstep
   attr(x, "variables") <- attrsrc[11:12]
+  return(x)
 }
 
