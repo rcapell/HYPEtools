@@ -14,8 +14,8 @@ PlotMapOutput(x, map, map.subid.column = 1, var.name = "", map.adj = 0,
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 second column containing model results to plot. See details.}
 
-\item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported SUBID shape file, shape file import requires additional packages, 
-e.g. \code{rgdal}.}
+\item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
+requires additional packages, e.g. \code{rgdal}.}
 
 \item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
@@ -63,7 +63,11 @@ projected maps based on meter units, not geographical projections}
 \item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 In standard use cases of this function, plot margins do not need to be changed.}
 
-\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot.}
+\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
+}
+\value{
+\code{PlotMapPoints} invisibly returns an object of class \code{\link{SpatialPolygonsDataFrame}} as provided in argument 
+\code{map}, with plotted values and color codes added as columns in the data slot.
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables.
@@ -106,5 +110,8 @@ specification see \code{inset} in \code{\link{legend}}.
 x11(width = 5, height = 8)
 PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")}
 
+}
+\seealso{
+\code{\link{ReadMapOutput}} for HYPE result import; \code{\link{ReadMapPoints}} for a similar plot function
 }
 

@@ -98,7 +98,7 @@
 
 
 # Internal function to make pretty label expressions from a given vector of breakpoints, which is used to convert 
-# a continuous scale to a discrete one. Used for map plot function legends.
+# a continuous scale to a discrete one. Used for map plot function legends => not any longer, but function kept for future ref.
 # breaks: vector of breakpoints
 .CreateLabelsFromBreaks <- function(breaks) {
   # create first element as an expression which uses the value given in breaks

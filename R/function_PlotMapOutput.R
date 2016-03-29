@@ -5,8 +5,8 @@
 #' 
 #' @param x HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 #' second column containing model results to plot. See details.
-#' @param map A \code{SpatialPolygonsDataFrame} object. Typically an imported SUBID shape file, shape file import requires additional packages, 
-#' e.g. \code{rgdal}.
+#' @param map A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
+#' requires additional packages, e.g. \code{rgdal}.
 #' @param map.subid.column Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 #' HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.
@@ -40,7 +40,7 @@
 #' @param par.cex Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}.
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 #' In standard use cases of this function, plot margins do not need to be changed.
-#' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot.
+#' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.
 #' 
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
@@ -75,6 +75,12 @@
 #' argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. For details on inset 
 #' specification see \code{inset} in \code{\link{legend}}. 
 #' 
+#' @return 
+#' \code{PlotMapPoints} invisibly returns an object of class \code{\link{SpatialPolygonsDataFrame}} as provided in argument 
+#' \code{map}, with plotted values and color codes added as columns in the data slot.
+#' 
+#' @seealso 
+#' \code{\link{ReadMapOutput}} for HYPE result import; \code{\link{ReadMapPoints}} for a similar plot function
 #' 
 #' @examples
 #' \dontrun{require(rgdal)
@@ -302,9 +308,14 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
     # update legend inset
     legend.inset <- legend.inset + leg.inset
     ## annotation positions (fraction if 'add' is FALSE, otherwise already in map coordinates)
-    # inset scaling factor, used if 'add' is TRUE, otherwise 1
-    f.inset.x <- par("usr")[2] - par("usr")[1]
-    f.inset.y <- par("usr")[4] - par("usr")[3]
+    # inset scaling factor, used if 'add' is TRUE, otherwise 1 (explicitly because usr does not get updated directly when set)
+    if (add) {
+      f.inset.x <- par("usr")[2] - par("usr")[1]
+      f.inset.y <- par("usr")[4] - par("usr")[3]
+    } else {
+      f.inset.x <- 1
+      f.inset.y <- 1
+    }
     ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) - legend.inset[1] * f.inset.x - 0.01
     if (legend.pos == "bottomright") {
       ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2] * f.inset.y
@@ -319,9 +330,14 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
     # update legend inset
     legend.inset[2] <- legend.inset[2] + leg.inset[2]
     ## annotation positions (fraction if 'add' is FALSE, otherwise already in map coordinates)
-    # inset scaling factor, used if 'add' is TRUE, otherwise 1
-    f.inset.x <- par("usr")[2] - par("usr")[1]
-    f.inset.y <- par("usr")[4] - par("usr")[3]
+    # inset scaling factor, used if 'add' is TRUE, otherwise 1 (explicitly because usr does not get updated directly when set)
+    if (add) {
+      f.inset.x <- par("usr")[2] - par("usr")[1]
+      f.inset.y <- par("usr")[4] - par("usr")[3]
+    } else {
+      f.inset.x <- 1
+      f.inset.y <- 1
+    }
     ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) + legend.inset[1] * f.inset.x - 0.01
     if (legend.pos == "bottomleft") {
       ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht/2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2] * f.inset.y
@@ -370,7 +386,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   }
   
   
-  ## plot the map and add legend using the positioning information reived above
+  ## plot the map and add legend using the positioning information derived above
   
   # map
   plot(map, col = map$color, border = NA, ylim = pylim, xlim = pxlim, add = add)
@@ -387,7 +403,6 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
     } else {
       text(x = ann.fr.x, y = ann.fr.y, labels = ann.txt, adj = c(0, .5), cex = 0.8)
     }
-    
   }
   
   
@@ -468,8 +483,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   }
   
   
-  # invisible unless assigned: return the color codes for all values in x
-  invisible(x[, 3])
+  # invisible unless assigned: return map with added data and color codes
+  invisible(map)
 }
 
 # # DEBUG
