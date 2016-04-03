@@ -253,7 +253,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #' additional attributes \code{variable}, \code{subid}, \code{comment}, and \code{timestep}: \code{variable} 
 #' and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted). 
 #' \code{comment} contains the content of the Xobs file comment row as single string. \code{timestep} contains a keyword string.
-#' Column names of the returned data frame are composed of variable names and SUBIDs, separated by and underscore, 
+#' Column names of the returned data frame are composed of variable names and SUBIDs, separated by an underscore, 
 #' i.e. \code{[variable]_[subid]}. If datetime conversion failed on import, the returned object is a data frame 
 #' (i.e. no class \code{HypeXobs}).
 #' 
@@ -268,8 +268,12 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 
 ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
   
-  # read the data, skip header and comment rows
-  xobs <- read.table(filename, header = F, skip = 3, na.strings = "-9999", nrows = nrows, sep = "\t")
+  # read first line to get number of columns in file, used for colClasses below
+  te <- read.table(filename, header = F, skip = 3, na.strings = "-9999", nrows = 1, sep = "\t")
+  nc <- ncol(te)
+  
+  # read the data, skip header and comment rows, force numberic data (automatic column classes can be integer)
+  xobs <- read.table(filename, header = F, skip = 3, na.strings = "-9999", nrows = nrows, sep = "\t", colClasses = c(NA, rep("numeric", nc - 1)))
     
   # update with new attributes to hold subids and obs-variables for all columns
   xattr <- readLines(filename,n=3)

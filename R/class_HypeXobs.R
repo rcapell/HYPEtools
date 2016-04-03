@@ -106,14 +106,15 @@ HypeXobs <- function(x, comment, variable, subid) {
   y <- NextMethod("[")
   
   attr(y, "comment") <- attr(x, "comment")
+  attr(y, "timestep") <- attr(x, "timestep")
   
   # attribute indexing, conditional on indexing specification
   
   if (is.numeric(j)){
     
-    # only active if more than one column in index
-    if (length(j) > 1) {
-      # column index adapted because in attributes are one element shorter than the data frame (no datetime), 
+    # only active if more than one column in index, or if single index is negative
+    if (length(j) > 1 || j < 0) {
+      # column index adapted because attributes are one element shorter than the data frame (no datetime), 
       # conditional on negative or positive indexes
       # (negative and positive indices cannot be combined, so that the two choices are safe), but 0s are allowed and removed
       # prior to attribute indexing

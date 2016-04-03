@@ -73,6 +73,10 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   if (!(length(grep("hour", ts.in)) == 1 | ts.in == "day" | ts.in == "week" | ts.in == "month")) {
     stop(paste("Timestep '", ts.in, "' not accepted.", sep = ""))
   }
+  # check if timestep is acceptable, abort otherwise
+  if (!(length(grep("hour", ts.out)) == 1 | ts.out == "day" | ts.out == "week" | ts.out == "month")) {
+    stop(paste("Timestep '", ts.out, "' not accepted.", sep = ""))
+  }
   
   # weekly data will be expanded to daily data for calculations and later re-collapsed, HYPE writes weekly values to 
   # last day of the week
