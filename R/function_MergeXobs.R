@@ -87,7 +87,8 @@ MergeXobs <- function(x, y, comment = "") {
   # conditional: common columns exist, merge them
   if(length(na.omit(common.cols)) > 0) {
     cat("Common columns found, merging.")
-    
+    cat(paste0("Common column indices in 'x': ", paste(which(!is.na(common.cols)) + 1, collapse = " ")))
+    cat(paste0("Common column indices in 'y': ", paste(as.integer(na.omit(common.cols)) + 1, collapse = " ")))
     # columns to merge, res1
     te1 <- res1[, c(TRUE, !is.na(common.cols))]
     # columns to merge, res2

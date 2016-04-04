@@ -166,10 +166,12 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   # give it a name
   names(x)[3] <- "color"
   
+  # number of columns in orginial sites map
+  nc.sites <- ncol(sites@data)
   # add x to subid map table (in data slot, indicated by @), merge by SUBID
   sites@data <- data.frame(sites@data, x[match(sites@data[, sites.subid.column], x[, 1]),])
   # select sites for which x exists
-  sts <- sites[!is.na(sites@data[, sites.subid.column + 1]), ]
+  sts <- sites[!is.na(sites@data[, nc.sites + 1]), ]
   
   # update legend title if none was provided by user or "auto" selection
   if (is.null(legend.title)) {
@@ -265,17 +267,49 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   
   ## calculate coordinates for map positioning
   
-  # map coordinates
+  # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
   if (!is.null(bg)) {
-    bbx <- bbox(bg)
+    if (is.projected(bg)) {
+      bbx <- bbox(bg)
+      # map side ratio (h/w)
+      msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
+      # plot area side ratio (h/w)
+      psr <- par("pin")[2] / par("pin")[1]
+    } else {
+      # set user coordinates using a dummy plot
+      plot(bg, col = NULL, add = add)
+      # create a map side ratio based on the device region in user coordinates and the map bounding box
+      p.range.x <- diff(par("usr")[1:2])
+      p.range.y <- diff(par("usr")[3:4])
+      m.range.x <- diff(bbox(bg)[1, ])
+      m.range.y <- diff(bbox(bg)[2, ])
+      # map side ratio (h/w)
+      msr <- m.range.y / m.range.x
+      # plot area side ratio (h/w)
+      psr <- p.range.y / p.range.x
+    }
   } else {
-    bbx <- bbox(sites)
+    if (is.projected(sites)) {
+      bbx <- bbox(sites)
+      # map side ratio (h/w)
+      msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
+      # plot area side ratio (h/w)
+      psr <- par("pin")[2] / par("pin")[1]
+    } else {
+      # set user coordinates using a dummy plot
+      plot(sites, col = NULL, add = add)
+      # create a map side ratio based on the device region in user coordinates and the map bounding box
+      p.range.x <- diff(par("usr")[1:2])
+      p.range.y <- diff(par("usr")[3:4])
+      m.range.x <- diff(bbox(sites)[1, ])
+      m.range.y <- diff(bbox(sites)[2, ])
+      # map side ratio (h/w)
+      msr <- m.range.y / m.range.x
+      # plot area side ratio (h/w)
+      psr <- p.range.y / p.range.x
+    }
   }
   
-  # map side ratio (h/w)
-  msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
-  # plot area side ratio (h/w)
-  psr <- par("pin")[2] / par("pin")[1]
   
   # define plot limits, depending on (a) map and plot ratios (plot will be centered if left to automatic) and (b) user choice
   if (msr > psr) {
@@ -312,14 +346,14 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
     plot(bg, col = "grey90", border = "grey70", ylim = pylim, xlim = pxlim, add = add)
     plot(sts, bg = sts$color, border = 1, pch = 21, lwd = .8, cex = 1.2 * pt.cex, add = T)
   } else {
-    plot(sts, bg = sts$color, border = 1, pch = 21, lwd = .8, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
+    plot(sts, bg = sts$color, col = 1, pch = 21, lwd = .8, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
   }
   # legend
   if (plot.legend) {
     legend(legend.pos, legend = rep(NA, length(cbrks) - 1), inset = legend.inset, 
            col = rev(col.class), lty = 1, lwd = 14,  bty = "n", title = legend.title, pt.cex = pt.cex)
     # convert annotation positioning to map coordinates, only if 'add' is FALSE
-    # then plot annoration text
+    # then plot annotation text
     if (!add) {
       ann.mc.x <- ann.fr.x * diff(pxlim) + pxlim[1]
       ann.mc.y <- ann.fr.y * diff(pylim) + pylim[1]
@@ -412,16 +446,20 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
 
 # # DEBUG
 # x <- ReadSubass("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_miracle/res_wq_baseline/subass2.txt")[, c(1, 3)]
+# x <- read.table(file = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.xDev/New Data/Xobs_WQ/Xobsar/RDir/subid_xobs.txt", sep = "\t", header = T)
 # sites <- readOGR("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/gis", layer = "helgean_outlet_points")
+# sites <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.0/Data/RepurposedData/WHIST/Current_shapefiles/Utloppspunkter", layer = "EHYPE3_utlopp_20141211_rev20150325")
 # bg <- readOGR("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/gis/helgean/subbasin", layer = "helgean_shype_aro_y")
+# bg <- NULL
 # add <- F
 # map.adj <- 0
-# plot.legend <- T
+# plot.legend <- F
 # legend.pos <- "right"
 # legend.title <- "test"
 # legend.inset <- c(0,0)
-# col.breaks <- NULL
+# col.breaks <- 1
 # col <- NULL
-# sites.subid.column <- 5
+# sites.subid.column <- 2
 # par.mar <- rep(0, 4) + .1
 # par.cex <- 1
+# pt.cex <- 1

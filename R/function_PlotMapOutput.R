@@ -351,12 +351,27 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   
   ## calculate coordinates for map positioning
   
-  # map coordinates
-  bbx <- bbox(map)
-  # map side ratio (h/w)
-  msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
-  # plot area side ratio (h/w)
-  psr <- par("pin")[2] / par("pin")[1]
+  # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
+  if (is.projected(sites)) {
+    bbx <- bbox(map)
+    # map side ratio (h/w)
+    msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
+    # plot area side ratio (h/w)
+    psr <- par("pin")[2] / par("pin")[1]
+  } else {
+    # set user coordinates using a dummy plot
+    plot(map, col = NULL, add = add)
+    # create a map side ratio based on the device region in user coordinates and the map bounding box
+    p.range.x <- diff(par("usr")[1:2])
+    p.range.y <- diff(par("usr")[3:4])
+    m.range.x <- diff(bbox(sites)[1, ])
+    m.range.y <- diff(bbox(sites)[2, ])
+    # map side ratio (h/w)
+    msr <- m.range.y / m.range.x
+    # plot area side ratio (h/w)
+    psr <- p.range.y / p.range.x
+  }
+  
   
   # define plot limits, depending on (a) map and plot ratios (plot will be centered if left to automatic) and (b) user choice
   if (msr > psr) {
@@ -395,7 +410,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
     legend(legend.pos, legend = rep(NA, length(cbrks) - 1), inset = legend.inset, 
            col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title)
     # convert annotation positioning to map coordinates, only if 'add' is FALSE
-    # then plot annoration text
+    # then plot annotation text
     if (!add) {
       ann.mc.x <- ann.fr.x * diff(pxlim) + pxlim[1]
       ann.mc.y <- ann.fr.y * diff(pylim) + pylim[1]
