@@ -81,10 +81,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
             is.null(col.breaks) || is.numeric(col.breaks))
   stopifnot(map.adj %in% c(0, .5, 1))
   stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
-  if (length(col.breaks) == 1) {
-    col.breaks <- range(x[, 2], na.rm = T)
-    warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
-  }
+  # if (length(col.breaks) == 1) {
+  #   col.breaks <- range(x[, 2], na.rm = T)
+  #   warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
+  # }
   if (!is.null(col.breaks) && (min(col.breaks > min(x[, 2], na.rm = T)) || max(col.breaks < max(x[, 2], na.rm = T)))) {
     warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2]. 
             Areas outside range will be excluded from plot.")
@@ -111,6 +111,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   # create color breaks vector from user input or internally
   if (!is.null(col.breaks)) {
     cbrks <- col.breaks
+    mnx <- min(cbrks)
     # special treatment for single-value maps
     if (length(cbrks) == 1) {
       cbrks <- range(cbrks) + c(-1, 1)
@@ -150,8 +151,6 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
     } else {
       stop("If colors are specified as vector in 'col', the number of colors in 'col' must be one less than the number of breakpoints in 'col.breaks'.")
     }
-  } else if (is.null(col)) {
-    
   } else {
     # Error treatment for all other types of user input
     stop("Invalid 'col.ramp.fun' argument.")
@@ -276,13 +275,14 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
       # plot area side ratio (h/w)
       psr <- par("pin")[2] / par("pin")[1]
     } else {
-      # set user coordinates using a dummy plot
-      plot(bg, col = NULL, add = add)
+      bbx <- bbox(bg)
+      # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
+      plot(sites, col = NULL, xlim = bbox(bg)[1, ], ylim = bbox(bg)[2, ])
       # create a map side ratio based on the device region in user coordinates and the map bounding box
       p.range.x <- diff(par("usr")[1:2])
       p.range.y <- diff(par("usr")[3:4])
-      m.range.x <- diff(bbox(bg)[1, ])
-      m.range.y <- diff(bbox(bg)[2, ])
+      m.range.x <- diff(bbx[1, ])
+      m.range.y <- diff(bbx[2, ])
       # map side ratio (h/w)
       msr <- m.range.y / m.range.x
       # plot area side ratio (h/w)
@@ -296,13 +296,14 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
       # plot area side ratio (h/w)
       psr <- par("pin")[2] / par("pin")[1]
     } else {
+      bbx <- bbox(sites)
       # set user coordinates using a dummy plot
       plot(sites, col = NULL, add = add)
       # create a map side ratio based on the device region in user coordinates and the map bounding box
       p.range.x <- diff(par("usr")[1:2])
       p.range.y <- diff(par("usr")[3:4])
-      m.range.x <- diff(bbox(sites)[1, ])
-      m.range.y <- diff(bbox(sites)[2, ])
+      m.range.x <- diff(bbx[1, ])
+      m.range.y <- diff(bbx[2, ])
       # map side ratio (h/w)
       msr <- m.range.y / m.range.x
       # plot area side ratio (h/w)
@@ -454,6 +455,8 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
 # add <- F
 # map.adj <- 0
 # plot.legend <- F
+# plot.scale <- F
+# plot.arrow <- F
 # legend.pos <- "right"
 # legend.title <- "test"
 # legend.inset <- c(0,0)
