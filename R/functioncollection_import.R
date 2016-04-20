@@ -19,6 +19,7 @@
 #     - ReadAllsim()
 #     - ReadOptpar()
 #     - ReadSubass()
+#     - ReadDescription()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -1145,3 +1146,72 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
   return(x)
 }
 
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadDescription~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' Read a 'description.txt' file
+#'
+#' Read a 'description.txt' file as \code{list} object into R. A 'description.txt' file contains land use, soil, and crop 
+#' class names of a HYPE set-up, as well as set-up name and version. 
+#' 
+#' @param filename Path to and file name of the 'subassX.txt' file to import. 
+#' @param gcl dataframe, imported GeoClass table to compare number of class names with. A warning will be thrown if numbers 
+#' are not identical. 
+#'  
+#' @details
+#' \code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
+#' e.g. plotting legends or examining imported GeoClass files. The text file must contain 10 lines as follows: HYPE 
+#' set-up name (2nd line), set-up version (4th line), tab-separated land use class names (6th line), tab-separated 
+#' soil class names (8th line),  tab-separated crop class names (8th line). Lines in between can contain names, but are not 
+#' read by the function.
+#' 
+#' @return
+#' \code{ReadDescription} returns a list with 5 elements, corresponding to the imported lines.
+#' 
+#' @examples
+#' \dontrun{ReadDescription("description.txt")}
+#'
+#' @export 
+
+ReadDescription <- function(filename, gcl = NULL) {
+  
+  ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
+  # read description file into a character vector (one string per row in file)
+  x <- scan(file = filename, what = "", sep = "\n", quiet = T)
+  # split string elements along tabs, returns list of character vectors
+  x <- strsplit(x, split = "\t")
+  # create result list, assign names
+  res <- x[c(2, 4, 6, 8, 10)]
+  names(res) <- c("Name", "Version", "Landuse", "Soil", "Crop")
+  
+  # check conformity with geoclass if provided
+  if (!is.null(gcl)) {
+    lu.g <- length(unique(gcl[, 2]))
+    lu.d <- length(res$Landuse)
+    if (lu.g != lu.d) {
+      warning(paste0("Land use classes: Number in description (", lu.d, ") != number of land use classes in 'gcl' (", lu.g, ")."))
+    }
+    s.g <- length(unique(gcl[, 3]))
+    s.d <- length(res$Soil)
+    if (s.g != s.d) {
+      warning(paste0("Soil classes: Number in description (", s.d, ") != number in 'gcl' (", s.g, ")."))
+    }
+    # crop classes in two columns, and can be 0
+    te <- unique(c(gcl[, 4], gcl[, 5]))
+    c.g <- length(te[te > 0])
+    c.d <- length(res$Crop)
+    if (c.g != c.d) {
+      warning(paste0("Crop classes: Number in description (", c.d, ") != number in 'gcl' (", c.g, ")."))
+    }
+  }
+  return(res)
+}
+
+# filename <- "../description.txt"
+# rm(filename, x, res, lu.d, lu.g, s.g, s.d, c.d, c.g, te)

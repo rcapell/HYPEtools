@@ -21,8 +21,8 @@ Paths are separated by '/', not '\\'.}
 This is a convenience wrapper function to export a HYPE 'AquiferData.txt' file from R.
 }
 \details{
-\code{WriteAquiferData} exports a AquiferData dataframe with formatting options adjusted for the output to be read by HYPE.
-HYPE requires \code{NA}-free data in all mandatory AquiferData column, but \code{NA}s are allowed in optional comment 
+\code{WriteAquiferData} exports an AquiferData dataframe with formatting options adjusted for the output to be read by HYPE.
+HYPE requires \code{NA}-free data in all mandatory AquiferData columns, but \code{NA}s are allowed in optional comment 
 columns which are not read by HYPE. The function will return with a warning if \code{NA}s were exported.
 }
 \examples{

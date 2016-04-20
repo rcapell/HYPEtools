@@ -352,7 +352,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   ## calculate coordinates for map positioning
   
   # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
-  if (is.projected(sites)) {
+  if (is.projected(map)) {
     bbx <- bbox(map)
     # map side ratio (h/w)
     msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
@@ -364,8 +364,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
     # create a map side ratio based on the device region in user coordinates and the map bounding box
     p.range.x <- diff(par("usr")[1:2])
     p.range.y <- diff(par("usr")[3:4])
-    m.range.x <- diff(bbox(sites)[1, ])
-    m.range.y <- diff(bbox(sites)[2, ])
+    m.range.x <- diff(bbox(map)[1, ])
+    m.range.y <- diff(bbox(map)[2, ])
     # map side ratio (h/w)
     msr <- m.range.y / m.range.x
     # plot area side ratio (h/w)

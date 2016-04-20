@@ -38,7 +38,8 @@
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 #' In standard use cases of this function, plot margins do not need to be changed.
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.
-#' 
+#' @param reset.par Logical, default \code{TRUE}. Re-set changes to \code{\link{par}} after function call. Set to 
+#' \code{FALSE} to add other layers to the result plot.
 #' @details
 #' \code{PlotMapPoints} can be used to print point information on a mapped surface. The primary target are model performance 
 #' measures as written to 
@@ -74,7 +75,7 @@
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj = 0, plot.legend = T, 
                           legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0), col = NULL, 
                           col.breaks = NULL, plot.scale = T, plot.arrow = T, pt.cex = 1, 
-                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE) {
+                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, reset.par = TRUE) {
   
   # input argument checks
   stopifnot(is.data.frame(x), dim(x)[2] == 2, class(sites)=="SpatialPointsDataFrame", 
@@ -85,7 +86,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   #   col.breaks <- range(x[, 2], na.rm = T)
   #   warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
   # }
-  if (!is.null(col.breaks) && (min(col.breaks > min(x[, 2], na.rm = T)) || max(col.breaks < max(x[, 2], na.rm = T)))) {
+  if (!is.null(col.breaks) && (min(col.breaks) > min(x[, 2], na.rm = T)) || max(col.breaks) < max(x[, 2], na.rm = T)) {
     warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2]. 
             Areas outside range will be excluded from plot.")
   }
@@ -96,14 +97,16 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   }
   
   # save current state of par() variables which are altered below, for restoring on function exit
-  par.mar0 <- par("mar")
-  par.xaxs <- par("xaxs")
-  par.yaxs <- par("yaxs")
-  par.lend <- par("lend")
-  par.xpd <- par("xpd")
-  par.cex0 <- par("cex")
-  on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex0))
-  
+  # conditional on argument reset.par'
+  if (reset.par) {
+    par.mar0 <- par("mar")
+    par.xaxs <- par("xaxs")
+    par.yaxs <- par("yaxs")
+    par.lend <- par("lend")
+    par.xpd <- par("xpd")
+    par.cex0 <- par("cex")
+    on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex0))
+  }
   
   
   ## data preparation and conditional assignment of break point vectors and colors to x 
@@ -447,6 +450,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
 
 # # DEBUG
 # x <- ReadSubass("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_miracle/res_wq_baseline/subass2.txt")[, c(1, 3)]
+# x <- ReadGeoData("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_miracle/GeoData.txt")[, c("SUBID", "PARREG")]
 # x <- read.table(file = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.xDev/New Data/Xobs_WQ/Xobsar/RDir/subid_xobs.txt", sep = "\t", header = T)
 # sites <- readOGR("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/gis", layer = "helgean_outlet_points")
 # sites <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.0/Data/RepurposedData/WHIST/Current_shapefiles/Utloppspunkter", layer = "EHYPE3_utlopp_20141211_rev20150325")
@@ -454,15 +458,15 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
 # bg <- NULL
 # add <- F
 # map.adj <- 0
-# plot.legend <- F
-# plot.scale <- F
-# plot.arrow <- F
+# plot.legend <- T
+# plot.scale <- T
+# plot.arrow <- T
 # legend.pos <- "right"
 # legend.title <- "test"
 # legend.inset <- c(0,0)
-# col.breaks <- 1
+# col.breaks <- 1:5
 # col <- NULL
-# sites.subid.column <- 2
+# sites.subid.column <- 5
 # par.mar <- rep(0, 4) + .1
 # par.cex <- 1
 # pt.cex <- 1

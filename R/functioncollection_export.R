@@ -13,6 +13,7 @@
 #     - WritePTQobs()
 #     - WriteMgmtData()
 #     - WriteAquiferData()
+#     - WritePointSourceData()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -807,8 +808,8 @@ WriteMgmtData <- function(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L
 #' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #'  
 #' @details
-#' \code{WriteAquiferData} exports a AquiferData dataframe with formatting options adjusted for the output to be read by HYPE.
-#' HYPE requires \code{NA}-free data in all mandatory AquiferData column, but \code{NA}s are allowed in optional comment 
+#' \code{WriteAquiferData} exports an AquiferData dataframe with formatting options adjusted for the output to be read by HYPE.
+#' HYPE requires \code{NA}-free data in all mandatory AquiferData columns, but \code{NA}s are allowed in optional comment 
 #' columns which are not read by HYPE. The function will return with a warning if \code{NA}s were exported.
 #' 
 #' @examples
@@ -828,6 +829,49 @@ WriteAquiferData <- function(x, filename = "AquiferData.txt", digits = 10, nsmal
   
   # export
   write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE)
+              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
   
+}
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePointSourceData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' Write a 'PointSourceData.txt' file
+#'
+#' This is a convenience wrapper function to export a HYPE 'PointSourceData.txt' file from R.
+#' 
+#' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadPointSourceData}}. 
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'.
+#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
+#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+#'  
+#' @details
+#' \code{WritePointSourceData} exports an PointSourceData dataframe with formatting options adjusted for the output to be read 
+#' by HYPE. HYPE requires \code{NA}-free data in all mandatory PointSourceData columns, but \code{NA}s are allowed in optional 
+#' comment columns which are not read by HYPE. The function will return with a warning if \code{NA}s were exported.
+#' 
+#' @examples
+#' \dontrun{WritePointSourceData(x = mypsd, filename = "PointSourceData.txt")}
+#' 
+#' @export
+
+WritePointSourceData <- function(x, filename = "PointSourceData.txt", digits = 10, nsmall = 0L) {
+  
+  # warn if NAs in data, since HYPE does not allow empty values in 
+  # check for NAs
+  te <- apply(x, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
+  
+  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  x[is.na(x)] <- -9999
+  
+  # export
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
 }

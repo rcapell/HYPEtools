@@ -10,7 +10,7 @@
 #'
 #' @param data either a numeric vector or an all-numeric dataframe (\code{NA}s allowed) which holds the variables for which
 #' quantiles are computed.
-#'
+#' @param probs numeric, vector of probabilities as in \code{\link{quantile}} with default suitable for flow duration curves.
 #' 
 #' @details
 #' \code{ExtractFreq} is a convenience wrapper function, it uses \code{\link{quantile}} to calculate the quantiles 
@@ -30,27 +30,25 @@
 
 
 
-ExtractFreq <- function(data){
-  # probabilities to be calculated
-  prbs <- c(0, 0.00001, 0.0001, 0.001, seq(0.01,0.99,by = .01), 0.999, 0.9999, 0.99999, 1)
+ExtractFreq <- function(data, probs = c(0, 0.00001, 0.0001, 0.001, seq(0.01,0.99,by = .01), 0.999, 0.9999, 0.99999, 1)){
   # condition: several variables in data
   if (is.data.frame(data)) {
     # condition: several variables in data
     # preparation of return variables
     nc <- ncol(data)
-    res <- matrix(nrow=length(prbs), ncol=nc+1)
+    res <- matrix(nrow=length(probs), ncol=nc+1)
     res <- as.data.frame(res)
-    res[,1] <- prbs
+    res[,1] <- probs
     names(res) <- c("prob", names(data))
     n.obs <- NA
     # column-wise calculation of quantiles and number of observations
     for (i in 1:nc) {
-      res[,i+1] <- quantile(data[,i], probs=prbs, na.rm=T, names=F)
+      res[,i+1] <- quantile(data[,i], probs=probs, na.rm=T, names=F)
       n.obs[i] <- length(na.omit(data[,i]))
     }
   } else {
     # condition: vector variable in data
-    res <- data.frame(prob=prbs, quantile = quantile(data, probs=prbs, na.rm=T, names=F))
+    res <- data.frame(prob=probs, quantile = quantile(data, probs=probs, na.rm=T, names=F))
     n.obs <- length(na.omit(data))
   }
   # add number of observations as new attribute to result dataframe

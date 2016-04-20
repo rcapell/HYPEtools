@@ -8,7 +8,7 @@ PlotMapPoints(x, sites, sites.subid.column = 1, bg = NULL, map.adj = 0,
   plot.legend = T, legend.pos = "right", legend.title = NULL,
   legend.inset = c(0, 0), col = NULL, col.breaks = NULL, plot.scale = T,
   plot.arrow = T, pt.cex = 1, par.cex = 1, par.mar = rep(0, 4) + 0.1,
-  add = FALSE)
+  add = FALSE, reset.par = TRUE)
 }
 \arguments{
 \item{x}{Information to plot, typically model performances from imported HYPE 'subassX.txt' files. Data frame object 
@@ -62,6 +62,9 @@ projected maps based on meter units, not geographical projections}
 In standard use cases of this function, plot margins do not need to be changed.}
 
 \item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
+
+\item{reset.par}{Logical, default \code{TRUE}. Re-set changes to \code{\link{par}} after function call. Set to 
+\code{FALSE} to add other layers to the result plot.}
 }
 \value{
 \code{PlotMapPoints} invisibly returns an object of class \code{\link{SpatialPointsDataFrame}} as provided in argument 
