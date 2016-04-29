@@ -89,7 +89,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, signi
   if (length(pos.wmean.ldepth) == 1 && is.null(olake.slc)) {
     warning("'lake_depth' found in GeoData, but no outlet lake SLC class provided in argument 'olake.slc'. Skipping upstream 'lake_depth'.")
   }
-  if (length(pos.wmean.ldepth) == 1 && !is.null(olake.slc)) {
+  if (length(pos.wmean.ldepth) == 0 && !is.null(olake.slc)) {
     warning("Outlet lake SLC class provided in argument 'olake.slc', but no 'lake_depth' found in GeoData. Skipping upstream 'lake_depth'.")
   }
   if (length(pos.wmean.ldepth) == 1 && length(pos.wmean.slc.olake) == 0) {

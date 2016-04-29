@@ -363,8 +363,14 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
   res <- read.table(file = filename, header = T, sep = sep)
   names(res) <- toupper(names(res))
-  res$AREA <- as.numeric(res$AREA)
-  res$RIVLEN <- as.numeric(res$RIVLEN)
+  te <- which(names(res) == "AREA")
+  if (te == 1) {
+    res$AREA <- as.numeric(res$AREA)
+  }
+  te <- which(names(res) == "RIVLEN")
+  if (te == 1) {
+    res$RIVLEN <- as.numeric(res$RIVLEN)
+  }
   return(res)
 }
 
@@ -1168,8 +1174,8 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #' \code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
 #' e.g. plotting legends or examining imported GeoClass files. The text file must contain 10 lines as follows: HYPE 
 #' set-up name (2nd line), set-up version (4th line), tab-separated land use class names (6th line), tab-separated 
-#' soil class names (8th line),  tab-separated crop class names (8th line). Lines in between can contain names, but are not 
-#' read by the function.
+#' soil class names (8th line),  tab-separated crop class names (8th line). Lines in between can contain headers, 
+#' but are not read by the function.
 #' 
 #' @return
 #' \code{ReadDescription} returns a list with 5 elements, corresponding to the imported lines.
@@ -1186,6 +1192,8 @@ ReadDescription <- function(filename, gcl = NULL) {
   x <- scan(file = filename, what = "", sep = "\n", quiet = T)
   # split string elements along tabs, returns list of character vectors
   x <- strsplit(x, split = "\t")
+  # remove empty strings (excel export artefacts)
+  x <- sapply(x, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
   # create result list, assign names
   res <- x[c(2, 4, 6, 8, 10)]
   names(res) <- c("Name", "Version", "Landuse", "Soil", "Crop")

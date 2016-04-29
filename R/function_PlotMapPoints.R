@@ -86,7 +86,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   #   col.breaks <- range(x[, 2], na.rm = T)
   #   warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
   # }
-  if (!is.null(col.breaks) && (min(col.breaks) > min(x[, 2], na.rm = T)) || max(col.breaks) < max(x[, 2], na.rm = T)) {
+  if (!is.null(col.breaks) && (min(col.breaks) > min(x[, 2], na.rm = T) || max(col.breaks) < max(x[, 2], na.rm = T))) {
     warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2]. 
             Areas outside range will be excluded from plot.")
   }
@@ -185,8 +185,9 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   if (!add) {
     plot.new()
     par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
+    frame()
   } else {
-    par(xpd = T, cex = par.cex)
+    par(xpd = T, cex = par.cex, lend = 1)
   }
   
   
@@ -464,7 +465,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
 # legend.pos <- "right"
 # legend.title <- "test"
 # legend.inset <- c(0,0)
-# col.breaks <- 1:5
+# col.breaks <- NULL
 # col <- NULL
 # sites.subid.column <- 5
 # par.mar <- rep(0, 4) + .1

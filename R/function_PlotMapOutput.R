@@ -267,6 +267,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   if (!add) {
     plot.new()
     par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
+    frame()
   } else {
     par(lend = 1, xpd = T, cex = par.cex)
   }
