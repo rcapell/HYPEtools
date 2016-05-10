@@ -52,7 +52,7 @@ dimension.}
 }
 \description{
 Read and combine HYPE optimisation simulation output files, generated with 'task WS' during HYPE optimisation runs. Outputs can 
-consist of basin time, or map output files.
+consist of basin, time, or map output files.
 }
 \details{
 HYPE optimisation routines optionally allow for generation of simulation output files for each iteration in the optimisation routine. 

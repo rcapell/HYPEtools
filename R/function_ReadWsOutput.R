@@ -6,7 +6,7 @@
 #'
 #' @description
 #' Read and combine HYPE optimisation simulation output files, generated with 'task WS' during HYPE optimisation runs. Outputs can 
-#' consist of basin time, or map output files.
+#' consist of basin, time, or map output files.
 #' 
 #' @param path Character string, path to the directory holding simulation output files to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
@@ -165,7 +165,10 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     
   } else {
     # type == "basin"
+    
+    # dummy file to extract attributes from
     te <-ReadBasinOutput(locs[1], dt.format = dt.format)
+    
     if (progbar) {
       res <- pblapply(locs, function(x, df) {as.matrix(ReadBasinOutput(filename = x, dt.format = df)[, -1])}, df = dt.format)
       res <- simplify2array(res)
@@ -173,7 +176,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
       res <- lapply(locs, function(x, df) {as.matrix(ReadBasinOutput(filename = x, dt.format = df)[, -1])}, df = dt.format)
       res <- simplify2array(res)
     }
-    te <-ReadBasinOutput(locs[1], dt.format = dt.format)
+    
     attr(res, "date") <- te[, 1]
     attr(res, "subid") <- subid
     attr(res, "variable") <- names(te)[-1]

@@ -1,6 +1,6 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-#   Class HypeSingleVar, herein:
+#   S3 class HypeSingleVar, herein:
 #
 #     - HypeSingleVar (constructor function)
 #     - [.HypeSingleVar (indexing method)
@@ -24,8 +24,8 @@
 #' @param x numeric \code{\link{array}} with three dimensions, which holds HYPE results for one variable as (in order)
 #' \code{[time, subid, iteration]}.
 #' @param date \code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
-#' with time steps (starting day for time steps from weekly to annual), or character string for full model period averages, 
-#' e.g. \code{"2000-2010"}.
+#' with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
+#' period averages, e.g. \code{"2000-2010"}.
 #' @param subid Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}.
 #' @param hype.var Character string, four-letter keyword to specify HYPE variable ID, see 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}. 

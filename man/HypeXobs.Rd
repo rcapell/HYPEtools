@@ -18,9 +18,6 @@ last column in \code{x}.}
 \item{subid}{Integer vector with HYPE sub-basin IDs, corresponding to second to last column in \code{x}.
  
 Not case-sensitive.}
-
-\item{date}{\code{\link{POSIXct}} date-time vector of the same length as number of rows in \code{x} 
-with time steps (starting day for time steps from weekly to annual).}
 }
 \value{
 Returns a data frame of class \code{HypeXobs} with additional \code{\link{attributes}}:

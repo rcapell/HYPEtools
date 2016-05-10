@@ -32,9 +32,9 @@ to daily and shorter time steps only.}
 
 Each element contains a data frame with, in column-wise order: reference dates in \code{POSIXct} format, date information as string, 
 mean values, min values, max values, and 25\% and 75\% percentiles.
-Reference dates are given as dates in 1900/1901 and can be used for plots starting at the beginning of the hydrological year 
-(with axis annotations set to months only). Daily and hourly time steps are given as is, weekly time steps are given as mid-week 
-dates (Wednesday), monthly time steps as mid month dates (15th). 
+Reference dates are given as dates in 1911/1912/1913 (just because a leap day and weeks '00'/'53' occurr during these years) and can 
+be used for plots starting at the beginning of the hydrological year (with axis annotations set to months only). Daily and hourly 
+time steps are given as is, weekly time steps are given as mid-week dates (Wednesday), monthly time steps as mid month dates (15th). 
 
 Attribute \code{period} contains a two-element POSIXct vector containing start and end dates of the 
 source data. Attribute \code{timestep} contains a timestep keyword corresponding to function argument \code{ts.out}.

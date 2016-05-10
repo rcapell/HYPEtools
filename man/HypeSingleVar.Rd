@@ -11,8 +11,8 @@ HypeSingleVar(x, date, subid, hype.var)
 \code{[time, subid, iteration]}.}
 
 \item{date}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
-with time steps (starting day for time steps from weekly to annual), or character string for full model period averages, 
-e.g. \code{"2000-2010"}.}
+with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
+period averages, e.g. \code{"2000-2010"}.}
 
 \item{subid}{Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}.}
 

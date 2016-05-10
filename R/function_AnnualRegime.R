@@ -45,9 +45,9 @@
 #' 
 #' Each element contains a data frame with, in column-wise order: reference dates in \code{POSIXct} format, date information as string, 
 #' mean values, min values, max values, and 25\% and 75\% percentiles.
-#' Reference dates are given as dates in 1900/1901 and can be used for plots starting at the beginning of the hydrological year 
-#' (with axis annotations set to months only). Daily and hourly time steps are given as is, weekly time steps are given as mid-week 
-#' dates (Wednesday), monthly time steps as mid month dates (15th). 
+#' Reference dates are given as dates in 1911/1912/1913 (just because a leap day and weeks '00'/'53' occurr during these years) and can 
+#' be used for plots starting at the beginning of the hydrological year (with axis annotations set to months only). Daily and hourly 
+#' time steps are given as is, weekly time steps are given as mid-week dates (Wednesday), monthly time steps as mid month dates (15th). 
 #' 
 #' Attribute \code{period} contains a two-element POSIXct vector containing start and end dates of the 
 #' source data. Attribute \code{timestep} contains a timestep keyword corresponding to function argument \code{ts.out}.
@@ -69,11 +69,26 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
       stop("No attribute 'timestep' found in 'x', and no argument 'ts_in' provided.")
     }
   }
-  # check if timestep is acceptable, abort otherwise
+  
+  # check if input timestep is acceptable, abort otherwise
   if (!(length(grep("hour", ts.in)) == 1 | ts.in == "day" | ts.in == "week" | ts.in == "month")) {
     stop(paste("Timestep '", ts.in, "' not accepted.", sep = ""))
   }
-  # check if timestep is acceptable, abort otherwise
+  
+  # assign and check output timestep
+  if (is.null(ts.out)) {
+    ts.out <- ts.in
+  } else {
+    if (ts.out != ts.in) {
+      if ((ts.in == "month" & ts.out != "month") | 
+          (ts.in == "week" & !(ts.out %in% c("week", "month"))) | 
+          (ts.in == "day" & !(ts.out %in% c("day", "week", "month")))) {
+        stop("Output timestep cannot be shorter than input timestep.")
+      }
+    }
+  }
+
+  # check if output timestep is acceptable, abort otherwise
   if (!(length(grep("hour", ts.out)) == 1 | ts.out == "day" | ts.out == "week" | ts.out == "month")) {
     stop(paste("Timestep '", ts.out, "' not accepted.", sep = ""))
   }
@@ -89,18 +104,6 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
     tformat <- format(x[, 1], format = "%j")
   }
   
-  # assign and check output timestep
-  if (is.null(ts.out)) {
-    ts.out <- ts.in
-  } else {
-    if (ts.out != ts.in) {
-      if ((ts.in == "month" & ts.out != "month") | 
-          (ts.in == "week" & !(ts.out %in% c("week", "month"))) | 
-          (ts.in == "day" & !(ts.out %in% c("day", "week", "month")))) {
-        stop("Output timestep cannot be shorter than input timestep.")
-      }
-    }
-  }
   
   ## format index vectors for calculations below
   # output period vector
@@ -146,13 +149,25 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   names(res_25p)[1] <- ts.out
   names(res_75p)[1] <- ts.out
   
-  # remove leap day from daily results
-  if (ts.out == "day" & !incl.leap) {
+  # remove leap day from daily results if requested by user (and if it exists in results)
+  if (ts.out == "day" && !incl.leap && res_ave[60, 1] == "02-29") {
     res_ave <- res_ave[-60, ]
     res_min <- res_min[-60, ]
     res_max <- res_max[-60, ]
     res_25p <- res_25p[-60, ]
     res_75p <- res_75p[-60, ]
+  }
+  
+  # remove leap day from sub-daily results if requested by user
+  if (length(grep("hour", ts.out)) == 1 && !incl.leap) {
+    te <- which(substr(res_ave[, 1], 1, 5) == "02-29")
+    if (length(te) > 0) {
+      res_ave <- res_ave[-te, ]
+      res_min <- res_min[-te, ]
+      res_max <- res_max[-te, ]
+      res_25p <- res_25p[-te, ]
+      res_75p <- res_75p[-te, ]
+    }
   }
   
   # order results according to a user-requested starting month to reflect the hydrological year rather than the calender year, 
@@ -172,7 +187,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
     } else if (ts.out == "week") {
       # look-up table for starting weeks
       te <- data.frame(mon = 2:12, week = c(4,9,13,18,22,26,31,35,40,44,49))
-      sm <- te[which(te[, 1] == start.mon), 2]
+      sm <- formatC(te[which(te[, 1] == start.mon), 2], width=2, flag = "0")
     } else if (ts.out == "month") {
       sm <- formatC(start.mon, width=2, flag = "0")
     }
@@ -190,83 +205,60 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
     
     # add a reference date column, format conditional on output time step
     if (length(grep("hour", ts.out)) == 1) {
-      # construct reference datetimes
-      te <- as.POSIXct(strptime(paste(c(rep(1900, times = ind.nrow - ind.sm + 1), rep(1901, times = ind.sm - 1)), "-", res_ave[, 1], sep = ""), format = "%F %H", tz = "GMT"))
-      # add to all results
-      res_ave <- data.frame(refdate = te, res_ave)
-      res_min <- data.frame(refdate = te, res_min)
-      res_max <- data.frame(refdate = te, res_max)
-      res_25p <- data.frame(refdate = te, res_25p)
-      res_75p <- data.frame(refdate = te, res_75p)
+      # construct reference datetimes, conditional on hydrological year starting month
+      # so that a leap day is always included in the results
+      if (start.mon == 2) {
+        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res_ave[, 1], sep = ""), format = "%F %H", tz = "GMT"))
+      } else {
+        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res_ave[, 1], sep = ""), format = "%F %H", tz = "GMT"))
+      }
     } else if (ts.out == "day") {
       # construct reference days
-      te <- as.POSIXct(strptime(paste(c(rep(1900, times = ind.nrow - ind.sm + 1), rep(1901, times = ind.sm - 1)), "-", res_ave[, 1], sep = ""), format = "%F", tz = "GMT"))
-      # add to all results
-      res_ave <- data.frame(refdate = te, res_ave)
-      res_min <- data.frame(refdate = te, res_min)
-      res_max <- data.frame(refdate = te, res_max)
-      res_25p <- data.frame(refdate = te, res_25p)
-      res_75p <- data.frame(refdate = te, res_75p)
+      # te <- as.POSIXct(strptime(paste(c(rep(1900, times = ind.nrow - ind.sm + 1), rep(1901, times = ind.sm - 1)), "-", res_ave[, 1], sep = ""), format = "%F", tz = "GMT"))
+      if (start.mon == 2) {
+        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res_ave[, 1], sep = ""), format = "%F", tz = "GMT"))
+      } else {
+        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res_ave[, 1], sep = ""), format = "%F", tz = "GMT"))
+      }
     } else if (ts.out == "week") {
       # construct reference dates for each week, Wednesdays chosen
-      te <- as.POSIXct(strptime(paste(c(rep(1900, times = ind.nrow - ind.sm + 1), rep(1901, times = ind.sm - 1)), res_ave[, 1], "3", sep = ""), format = "%Y%W%u", tz = "GMT"))
-      # add to all results
-      res_ave <- data.frame(refdate = te, res_ave)
-      res_min <- data.frame(refdate = te, res_min)
-      res_max <- data.frame(refdate = te, res_max)
-      res_25p <- data.frame(refdate = te, res_25p)
-      res_75p <- data.frame(refdate = te, res_75p)
+      if (start.mon == 2) {
+        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), res_ave[, 1], "3", sep = ""), format = "%Y%W%u", tz = "GMT"))
+      } else {
+        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), res_ave[, 1], "3", sep = ""), format = "%Y%W%u", tz = "GMT"))
+      }
     } else if (ts.out == "month") {
       # construct reference dates for each month, 15th chosen
-      te <- as.POSIXct(strptime(paste(c(rep(1900, times = ind.nrow - ind.sm + 1), rep(1901, times = ind.sm - 1)), "-", res_ave[, 1], "-15", sep = ""), format = "%F", tz = "GMT"))
-      # add to all results
-      res_ave <- data.frame(refdate = te, res_ave)
-      res_min <- data.frame(refdate = te, res_min)
-      res_max <- data.frame(refdate = te, res_max)
-      res_25p <- data.frame(refdate = te, res_25p)
-      res_75p <- data.frame(refdate = te, res_75p)
+      if (start.mon == 2) {
+        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res_ave[, 1], "-15", sep = ""), format = "%F", tz = "GMT"))
+      } else {
+        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res_ave[, 1], "-15", sep = ""), format = "%F", tz = "GMT"))
+      }
     }
     
   } else {
     # no start month adjustment necessary, just add a reference date column
     if (length(grep("hour", ts.out)) == 1) {
       # construct reference datetimes
-      te <- as.POSIXct(strptime(paste(rep(1900, times = nrow(res_ave)), "-", res_ave[, 1], sep = ""), format = "%F %H", tz = "GMT"))
-      # add to all results
-      res_ave <- data.frame(refdate = te, res_ave)
-      res_min <- data.frame(refdate = te, res_min)
-      res_max <- data.frame(refdate = te, res_max)
-      res_25p <- data.frame(refdate = te, res_25p)
-      res_75p <- data.frame(refdate = te, res_75p)
+      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res_ave)), "-", res_ave[, 1], sep = ""), format = "%F %H", tz = "GMT"))
     } else if (ts.out == "day") {
       # construct reference days
-      te <- as.POSIXct(strptime(paste(rep(1900, times = nrow(res_ave)), "-", res_ave[, 1], sep = ""), format = "%F", tz = "GMT"))
-      # add to all results
-      res_ave <- data.frame(refdate = te, res_ave)
-      res_min <- data.frame(refdate = te, res_min)
-      res_max <- data.frame(refdate = te, res_max)
-      res_25p <- data.frame(refdate = te, res_25p)
-      res_75p <- data.frame(refdate = te, res_75p)
+      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res_ave)), "-", res_ave[, 1], sep = ""), format = "%F", tz = "GMT"))
     } else if (ts.out == "week") {
       # construct reference dates for each week, Wednesdays chosen, 1901 because 1900 has no week "00"
-      te <- as.POSIXct(strptime(paste(rep(1901, times = nrow(res_ave)), res_ave[, 1], "3", sep = ""), format = "%Y%W%u", tz = "GMT"))
-      # add to all results
-      res_ave <- data.frame(refdate = te, res_ave)
-      res_min <- data.frame(refdate = te, res_min)
-      res_max <- data.frame(refdate = te, res_max)
-      res_25p <- data.frame(refdate = te, res_25p)
-      res_75p <- data.frame(refdate = te, res_75p)
+      te <- as.POSIXct(strptime(paste(rep(1913, times = nrow(res_ave)), res_ave[, 1], "3", sep = ""), format = "%Y%W%u", tz = "GMT"))
     } else if (ts.out == "month") {
       # construct reference dates for each month, 15th chosen
-      te <- as.POSIXct(strptime(paste(rep(1900, times = nrow(res_ave)), "-", res_ave[, 1], "-15", sep = ""), format = "%F", tz = "GMT"))
-      # add to all results
-      res_ave <- data.frame(refdate = te, res_ave)
-      res_min <- data.frame(refdate = te, res_min)
-      res_max <- data.frame(refdate = te, res_max)
-      res_25p <- data.frame(refdate = te, res_25p)
-      res_75p <- data.frame(refdate = te, res_75p)
+      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res_ave)), "-", res_ave[, 1], "-15", sep = ""), format = "%F", tz = "GMT"))
     }
   }
+  
+  # add reference dates to all results
+  res_ave <- data.frame(refdate = te, res_ave)
+  res_min <- data.frame(refdate = te, res_min)
+  res_max <- data.frame(refdate = te, res_max)
+  res_25p <- data.frame(refdate = te, res_25p)
+  res_75p <- data.frame(refdate = te, res_75p)
   
   # combine to result list
   res <- list(mean = res_ave, minimum = res_min, maximum = res_max, p25 = res_25p, p75 = res_75p)
@@ -277,15 +269,13 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   return(res)
 }
 
-# # DEBUG
-# x <- ReadPTQobs("//winfs-proj/data/proj/Fouh/Global/SouthAmerica/Projekt/Statkraft_Osorno/model/Pobs.txt", dt.format = "%Y%m%d")
-# gd <- ReadGeoData("//winfs-proj/data/proj/Fouh/Sweden/S-HYPE/Projekt/cleo/WP_3/2014-04_SHYPE_combined_scenarios/hadley/BUS/period1/GeoData.txt")
-# stat <- "sum"
+## DEBUG
+# stat <- "mean"
 # ts.in <- "day"
-# ts.out <- "month"
+# ts.out <- "day"
 # na.rm <- TRUE
-# incl.leap <- F
-# start.mon <- 4
-# rm(.FillWeek); rm(list = ls())
+# incl.leap <- T
+# start.mon <- 2
+# rm(.FillWeek); rm(list = ls(all.names = T))
 # te <- AnnualRegime(x = x, ts.out = "day", start.mon = 1, ts.in = "day")
 # plot(te[[1]][, c(1, 3)], type = "l")
