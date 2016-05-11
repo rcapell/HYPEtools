@@ -281,7 +281,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
     } else {
       bbx <- bbox(bg)
       # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
-      plot(sites, col = NULL, xlim = bbox(bg)[1, ], ylim = bbox(bg)[2, ])
+      plot(sites, col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
       # create a map side ratio based on the device region in user coordinates and the map bounding box
       p.range.x <- diff(par("usr")[1:2])
       p.range.y <- diff(par("usr")[3:4])
@@ -408,6 +408,9 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   }
   
   if (plot.scale) {
+    if (!is.projected(map)) {
+      warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = F' to remove it.")
+    }
     if (!add) {
       ldistance <- signif(diff(bbx[1,])/4, 0)
     } else {
