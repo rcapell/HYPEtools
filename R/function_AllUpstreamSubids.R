@@ -1,9 +1,6 @@
-#' @export
-
-#' @title
+#' 
 #' Find All Upstream SUBIDs
 #'
-#' @description
 #' Function to find all SUBIDs of upstream sub-catchments for a single 
 #' sub-catchment. 
 #'
@@ -40,6 +37,8 @@
 #' 
 #' @examples
 #' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+#' 
+#' @export
 
 
 AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = FALSE, write.arcgis = FALSE) {
@@ -69,7 +68,7 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
   
   # warn if argument specification indicates user confusion
   if (is.null(bd) && get.weights) {
-    warning("Bifurcation weights requested with 'get.weights' but 'bd' not specified. Ignoring.")
+    warning("Bifurcation weights requested with 'get.weights' but 'bd' not specified. Ignoring request.")
     get.weights <- FALSE
   }
   
@@ -179,7 +178,7 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
     this.us <- us
     us.exists <- length(us) > 0
     
-    system.time(while(us.exists) {
+    while(us.exists) {
       this.us <- unlist(sapply(this.us, findfun.gw))
       if (length(this.us) > 0) {
         us.exists <- TRUE
@@ -187,7 +186,7 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
         us.exists <- FALSE
       }
       us <- c(us, this.us)
-    })
+    }
     
     # RENE'S OLD VERSION, _MUCH_ SLOWER BUT LEFT FOR REFERENCE ATM
     # # loop through upstreams of the upstreams repeatedly, until none are found anymore
@@ -206,10 +205,10 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
     us <- c(subid, us)
     
     # remove duplicates
-    us[!duplicated(floor(us))]
+    us <- us[!duplicated(floor(us))]
     
     # convert to dataframe of subids and weights
-    us <- data.frame(subid = floor(us), weight = us %% 1)
+    us <- data.frame(subid = floor(us), weight = ifelse(us %% 1 > 0, us %% 1, 1))
   }
   
   

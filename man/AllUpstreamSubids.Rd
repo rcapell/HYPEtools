@@ -47,6 +47,7 @@ For details on bifurcation handling in HYPE, see the
 }
 \examples{
 \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+
 }
 \seealso{
 \code{\link{UpstreamGeoData}}

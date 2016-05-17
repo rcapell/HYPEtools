@@ -1,25 +1,19 @@
-#' @export
-#' @importFrom pbapply pblapply pbsapply
 #' 
-#' @title
 #' Calculate upstream sums and averages of selected GeoData contents
 #'
-#' @description
 #' Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files. 
 #'
 #' @param subid Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
 #' If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.
-#' 
 #' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.
-#' 
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
-#' 
 #' @param olake.slc Integer,SLC class number which represents outlet lake fractions. Mandatory for weighted averaging of outlet lake depths. 
-#' 
-#' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
-#'
-#' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
-#' is \code{NULL} or contains many SUBIDs.
+#' @param bd.weight Logical, if set to \code{TRUE}, flow weights will be applied for areas upstream of stream bifurcations. See 
+#' \code{\link{AllUpstreamSubids}} for further details on flow fraction computation.
+#' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. 
+#' Set to \code{NULL} to prevent rounding. 
+#' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful 
+#' when \code{subid} is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
 #' \code{UpstreamGeoData} calculates upstream averages or sums of selected variables in a GeoData data frame, including branch connections 
@@ -45,8 +39,11 @@
 #' 
 #' @examples
 #' \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, olake.slc = 1)}
+#' 
+#' @export
+#' @importFrom pbapply pblapply pbsapply
 
-UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, signif.digits = 3, progbar = TRUE) {
+UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.weight = FALSE, signif.digits = 3, progbar = TRUE) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
@@ -58,6 +55,12 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, signi
   }
   if (length(pos.area) == 0) {
     stop("No AREA column found in 'gd'. Exiting.")
+  }
+  
+  # warn if argument specification indicates user confusion
+  if (is.null(bd) && bd.weight) {
+    warning("Bifurcation weights requested with 'bd.weight' but 'bd' not specified. Ignoring request.")
+    bd.weight <- FALSE
   }
   
   # conditional: fill subid vector if not user-provided, otherwise check that all subids are in gd and get row numbers
@@ -100,9 +103,9 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, signi
   # conditional: use the progress bar version of lapply if requested by user
   cat("\nFinding upstream SUBIDs.\n")
   if (progbar) {
-    up.sbd <- pblapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
+    up.sbd <- pblapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b, get.weights = bd.weight)}, g = gd, b = bd)
   } else {
-    up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
+    up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b, get.weights = bd.weight)}, g = gd, b = bd)
   }
   
   ########################
@@ -113,7 +116,12 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, signi
   WeightedMean <- function(x, g, p.sbd, p.wmean, p.area) {
     
     # extract dataframe with areas and variables in x, for which to calculate weighted means
-    df.wmean <- g[g[, p.sbd] %in% x, c(p.area, p.wmean)]
+    if (bd.weight) {
+      df.wmean <- g[g[, p.sbd] %in% x[, 1], c(p.area, p.wmean)]
+      df.wmean[, 1] <- df.wmean[, 1] * x[, 2]
+    } else {
+      df.wmean <- g[g[, p.sbd] %in% x, c(p.area, p.wmean)]
+    }
     
     # averaging only necessary if more than one subid, also avoids NaN result if stddev is 0
     if (nrow(df.wmean) > 1) {
@@ -135,7 +143,12 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, signi
   WeightedSd   <- function(x, g, p.sbd, p.wsd, p.area) {
     
     # extract dataframe with areas and variables in x for which to calculate weighted stdevs
-    df.wsd <- g[g[, p.sbd] %in% x, c(p.area, p.wsd)]
+    if (bd.weight) {
+      df.wsd <- g[g[, p.sbd] %in% x[, 1], c(p.area, p.wsd)]
+      df.wsd[, 1] <- df.wsd[, 1] * x[, 2]
+    } else {
+      df.wsd <- g[g[, p.sbd] %in% x, c(p.area, p.wsd)]
+    }
     
     # averaging only necessary if more than one subid, also avoids NaN result if stddev is 0
     if (nrow(df.wsd) > 1) {
@@ -153,7 +166,14 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, signi
   # internal function to calculate sums
   Sum <- function(x, g, p.sum, p.sbd) {
     # extract dataframe with areas and variables in x, for which to calculate weighted stdevs
-    df.sum <- data.frame(g[g[, p.sbd] %in% x, p.sum])
+    if (bd.weight) {
+      df.sum <- data.frame(g[g[, p.sbd] %in% x[, 1], p.sum])
+      for (i in 1:ncol(df.sum)) {
+        df.sum[, i] <- df.sum[, i] * x[, 2]
+      }
+    } else {
+      df.sum <- data.frame(g[g[, p.sbd] %in% x, p.sum])
+    }
     # columnwise sum
     res <- colSums(df.sum)
     return(res)
@@ -237,21 +257,26 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, signi
   #######################################################
   
   ## post-processing
-  cat("\nPost-processing.")
+  cat("\nPost-processing.\n")
   
   # round to requested number of digits, conditional on existing results for lake_depth and stddev variables
+  # the data frame dummy column adding and removing is a workaround for single-column cases (names get messed up because apply returns a names vector then..)
   if (!is.null(signif.digits)) {
-    up.wmean[, -1] <- apply(data.frame(up.wmean[, -1]), 2, signif, digits = signif.digits)
+    te <- names(up.wmean)
+    up.wmean[, -1] <- apply(data.frame(1, up.wmean[, -1]), 2, signif, digits = signif.digits)[, -1]
+    names(up.wmean) <- te
     if (!is.null(up.wmean.ldepth)) {
       up.wmean.ldepth[, -1] <- signif(up.wmean.ldepth[, -1], digits = signif.digits)
-    }
+      }
     if (!is.null(up.wsd.elev)) {
       up.wsd.elev[, -1] <- signif(up.wsd.elev[, -1], digits = signif.digits)
-    }
+      }
     if (!is.null(up.wsd.slope)) {
       up.wsd.slope[, -1] <- signif(up.wsd.slope[, -1], digits = signif.digits)
-    }
-    up.sum[, -1] <- apply(data.frame(up.sum[, -1]), 2, signif, digits = signif.digits)
+      }
+    te <- names(up.sum)
+    up.sum[, -1] <- apply(data.frame(1, up.sum[, -1]), 2, signif, digits = signif.digits)[, -1]
+    names(up.sum) <- te
   }
   
   ## copy all upstream calculations to result GeoData, replacing the originals, conditional on presence of argument subid

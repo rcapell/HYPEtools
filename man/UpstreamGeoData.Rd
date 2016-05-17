@@ -5,7 +5,7 @@
 \title{Calculate upstream sums and averages of selected GeoData contents}
 \usage{
 UpstreamGeoData(subid = NULL, gd, bd = NULL, olake.slc = NULL,
-  signif.digits = 3, progbar = TRUE)
+  bd.weight = FALSE, signif.digits = 3, progbar = TRUE)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
@@ -17,10 +17,14 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{olake.slc}{Integer,SLC class number which represents outlet lake fractions. Mandatory for weighted averaging of outlet lake depths.}
 
-\item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding.}
+\item{bd.weight}{Logical, if set to \code{TRUE}, flow weights will be applied for areas upstream of stream bifurcations. See 
+\code{\link{AllUpstreamSubids}} for further details on flow fraction computation.}
 
-\item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
-is \code{NULL} or contains many SUBIDs.}
+\item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. 
+Set to \code{NULL} to prevent rounding.}
+
+\item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful 
+when \code{subid} is \code{NULL} or contains many SUBIDs.}
 }
 \value{
 \code{UpstreamGeoData} returns a data frame with the same number of columns as argument \code{gd} and number of rows corresponding to number of 
@@ -44,6 +48,7 @@ Currently, the following variables are considered:
 }
 \examples{
 \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, olake.slc = 1)}
+
 }
 \seealso{
 \code{\link{UpstreamSLCClasses}}
