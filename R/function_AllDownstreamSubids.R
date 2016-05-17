@@ -22,7 +22,7 @@
 #' @return
 #' \code{AllDownstreamSubids} returns a vector of downstream SUBIDs to the outlet if no BranchData is provided, otherwise a data frame with 
 #' two columns \code{downstream} with downstream SUBIDs and \code{is.branch} with logical values indicating if a downstream SUBID contains a 
-#' bifurcation ('branch' in HYPE terms). Downstream SUBIDs are ordered from the source SUBID to the final outlet.
+#' bifurcation ('branch' in HYPE terms). Downstream SUBIDs are ordered from source to final outlet SUBID.
 #' 
 #' 
 #' @examples
@@ -68,6 +68,8 @@ AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
     # update current downstream with downstream's downstream
     md.cur <- gd[which(gd[, geocol.sub] == md.cur), geocol.md]
   }
+  # force integer
+  ds <- as.integer(ds)
   
   # try to write arcgis select string to clipboard, with error recovery
   if (write.arcgis == T) {
@@ -79,9 +81,9 @@ AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   
   # conditional: add logical vector with TRUE for branched catchments if branchdata exists
   if (!is.null(bd)) {
-    ds <- data.frame(downstream = as.integer(ds), is.branch = ds %in% bd[, brcol.sr])
+    ds <- data.frame(downstream = ds, is.branch = ds %in% bd[, brcol.sr])
   }
   
   # return result
-  return(as.integer(ds))
+  return(ds)
 }

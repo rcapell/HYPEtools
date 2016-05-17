@@ -19,7 +19,7 @@ AllDownstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
 \value{
 \code{AllDownstreamSubids} returns a vector of downstream SUBIDs to the outlet if no BranchData is provided, otherwise a data frame with 
 two columns \code{downstream} with downstream SUBIDs and \code{is.branch} with logical values indicating if a downstream SUBID contains a 
-bifurcation ('branch' in HYPE terms). Downstream SUBIDs are ordered from the source SUBID to the final outlet.
+bifurcation ('branch' in HYPE terms). Downstream SUBIDs are ordered from source to final outlet SUBID.
 }
 \description{
 Function to find all SUBIDs of downstream sub-catchments along the main stem for a single 

@@ -12,18 +12,20 @@ AllUpstreamSubids(subid, gd, bd = NULL, sort = FALSE, get.weights = FALSE,
 
 \item{gd}{A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.}
 
-\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.}
+\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, and 'MAINPART' with argument \code{get.weights}, 
+e.g. an imported 'BranchData.txt' file. Optional argument.}
 
 \item{sort}{Logical. If \code{TRUE}, the resulting upstream SUBID vector will be sorted according to order in argument \code{gd}, i.e. in 
 downstream order for a working GeoData table.}
 
-\item{get.weights}{Logical.}
+\item{get.weights}{Logical. If \code{TRUE}, flow weights are computed along the upstream SUBID sequence. See details.}
 
 \item{write.arcgis}{Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.}
 }
 \value{
-\code{AllUpstreamSubids} returns a vector of SUBIDs.
+If \code{get.weights} is \code{FALSE} \code{AllUpstreamSubids} returns a vector of SUBIDs, otherwise a two-column data frame with SUBIDs in 
+the first, and flow weight fractions in the second column.
 }
 \description{
 Function to find all SUBIDs of upstream sub-catchments for a single 
@@ -34,8 +36,19 @@ sub-catchment.
 including potential irrigation links or groundwater flows) using GeoData columns 'SUBID' and 'MAINDOWN', i.e the full upstream catchment. 
 If a BranchData file is provided, the function will also include upstream areas which are connected through an upstream bifurcation. The 
 results can be directly used as 'partial model setup file' ('pmsf.txt') using the export function \code{\link{WritePmsf}}.
+
+If argument \code{get.weights} is set to \code{TRUE}, weighting fractions are returned along with upstream SUBIDs. The fractions are based 
+on column 'MAINPART' in argument \code{bd}. The function considers fractions from bifurcation branches which flow into the basin, and 
+fractions where bifurcation branches remove discharge from the basin. Fractions are incrementally updated, i.e. nested bifurcation fractions 
+are multiplied.
+
+For details on bifurcation handling in HYPE, see the 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{HYPE online documentation for BranchData.txt}.
 }
 \examples{
 \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+}
+\seealso{
+\code{\link{UpstreamGeoData}}
 }
 

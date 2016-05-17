@@ -38,7 +38,7 @@ for all SUBIDs given in a data frame \code{gd}, typically an imported GeoData fi
 A sub-catchment in HYPE can have several upstream sub-catchments. If there are more than one upstream sub-catchments, 
 the downstream sub-catchment is a confluence. HYPE stores these connections in the GeoData file, in downstream direction, 
 given as downstream SUBID in column 'MAINDOWN'. Bifurcations, i.e. splits in downstream direction, are also possible to model in HYPE.
-These additional downstream connections are provided in the BranchData file, together with flow fractions to each downstream sUBID.
+These additional downstream connections are provided in the BranchData file, together with flow fractions to each downstream SUBID.
 
 Formally, \code{gd} can be any data frame which contains columns 'SUBID' and 'MAINDOWN' (not case-sensitive), and \code{bd} any 
 data frame which contains three columns: 'BRANCHID', 'SOURCEID', and 'MAINPART', and optionally columns 'MAXQMAIN', 'MINQMAIN', 'MAXQBRANCH'. 

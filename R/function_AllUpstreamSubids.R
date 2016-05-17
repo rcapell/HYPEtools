@@ -9,10 +9,11 @@
 #'
 #' @param subid SUBID of a target sub-catchment (must exist in \code{gd}). 
 #' @param gd A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
-#' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
+#' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, and 'MAINPART' with argument \code{get.weights}, 
+#' e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param sort Logical. If \code{TRUE}, the resulting upstream SUBID vector will be sorted according to order in argument \code{gd}, i.e. in 
 #' downstream order for a working GeoData table.
-#' @param get.weights Logical. 
+#' @param get.weights Logical. If \code{TRUE}, flow weights are computed along the upstream SUBID sequence. See details.
 #' @param write.arcgis Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
 #' 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.
 #' 
@@ -22,10 +23,20 @@
 #' If a BranchData file is provided, the function will also include upstream areas which are connected through an upstream bifurcation. The 
 #' results can be directly used as 'partial model setup file' ('pmsf.txt') using the export function \code{\link{WritePmsf}}.
 #' 
+#' If argument \code{get.weights} is set to \code{TRUE}, weighting fractions are returned along with upstream SUBIDs. The fractions are based 
+#' on column 'MAINPART' in argument \code{bd}. The function considers fractions from bifurcation branches which flow into the basin, and 
+#' fractions where bifurcation branches remove discharge from the basin. Fractions are incrementally updated, i.e. nested bifurcation fractions 
+#' are multiplied.
+#' 
+#' For details on bifurcation handling in HYPE, see the 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{HYPE online documentation for BranchData.txt}.
 #' 
 #' @return
-#' \code{AllUpstreamSubids} returns a vector of SUBIDs.
+#' If \code{get.weights} is \code{FALSE} \code{AllUpstreamSubids} returns a vector of SUBIDs, otherwise a two-column data frame with SUBIDs in 
+#' the first, and flow weight fractions in the second column.
 #' 
+#' @seealso 
+#' \code{\link{UpstreamGeoData}}
 #' 
 #' @examples
 #' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
@@ -51,14 +62,15 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
     if (get.weights) {
       brcol.mp <- which(tolower(colnames(bd)) == "mainpart")
       if (length(brcol.mp) != 1) {
-        stop("MAINPART column not found in 'bd' but weights requested.")
+        stop("Weights requested, but column 'MAINPART' not found in 'bd'.")
       }
     }
   }
   
   # warn if argument specification indicates user confusion
   if (is.null(bd) && get.weights) {
-    warning("Bifurcation weights 'get.weights' requested but 'bd' not specified. Ignoring.")
+    warning("Bifurcation weights requested with 'get.weights' but 'bd' not specified. Ignoring.")
+    get.weights <- FALSE
   }
   
   # check if subid exists in gd
@@ -66,7 +78,9 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
     stop("'subid' not found in 'gd'.")
   }
   
-  # internal helper function, used with sapply() in while loop below, finds direct upstream subids in geodata and branchdata
+  # internal helper function for get.weights = F, used with sapply() in while loop below, 
+  # finds direct upstream subids in geodata and branchdata
+  # this.sub: integer, subid
   findfun <- function(this.sub) {
     # case with branchdata
     if (!is.null(bd)) ff <- c(bd[which(bd[, brcol.br] == this.sub), brcol.sr], gd[which(gd[, geocol.md] == this.sub), geocol.sbd])
@@ -75,34 +89,150 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
     return(ff)
   }
   
-  # create start conditions for while loop: find direct upstream subids of the target subid
-  us <- findfun(subid)
-  this.us <- us
-  us.exists <- length(us) > 0
+  # RENE'S OLD VERSION OF THE WEIGHT HELPER FUNCTION, _MUCH_ SLOWER BUT LEFT FOR REFERENCE ATM
+  # # internal helper function for get.weights = T
+  # # finds direct upstream subids and weight fractions
+  # # this.sub.gw: vector with two values, subid and weight fraction
+  # findfun.gw <- function(this.sub.gw) {
+  #   # get upstream subids plus weight fraction
+  #   ff <- DirectUpstreamSubids(this.sub.gw[1], gd, bd)[[2]]
+  #   if (length(nrow(ff)) > 0) {
+  #     ff <- ff[, c(1, 3)]
+  #     # update weight fraction with weight of downstream subid
+  #     ff[, 2] <- ff[, 2] * this.sub.gw[2]
+  #     return(ff)
+  #   } else {
+  #     return(NULL)
+  #   }
+  # }
   
-  # loop through upstreams of the upstreams repeatedly, until none are found anymore
-  while(us.exists) {
-    this.us <- unlist(sapply(this.us, findfun))
-    if (length(this.us) > 0) {
-      us.exists <- TRUE
+  # internal helper function for get.weights = T, builds on David's version, github issue #37
+  # finds direct upstream subids and weight fractions
+  # (use the old trick adding the branchpart as decimal to the SUBID)
+  # this.sub: numeric, subid + flow weight fraction
+  findfun.gw <- function(this.sub) {
+    # get current weight, saved as decimal fraction in current subid
+    if (this.sub - floor(this.sub) > 0) {
+      # weight > 0, thus we are in a branch, remove decimal fraction from subid
+      cw <- this.sub %% 1
+      this.sub <- floor(this.sub)
     } else {
-      us.exists <- FALSE
+      #weight==0, we are on the main river
+      cw <- 0
     }
-    #us <- unique(c(us, this.us), fromLast = T)
-    us <- unique(c(us, this.us))
+    #print(c(this.sub,cw))
+    
+    # find upstream subid(s) in geodata and add fraction of current subid
+    us.gd <- gd[gd[, geocol.md] == this.sub, geocol.sbd] + cw
+    
+    # find upstream subid(s) and fraction in branchdata 1, include fraction of current subid: 
+    # this subid as branchid, find sourceid(s)
+    us.bd <- bd[bd[, brcol.br] == this.sub, brcol.sr] + (1 - bd[bd[, brcol.br] == this.sub, brcol.mp]) * ifelse(cw > 0, cw, 1)
+    
+    # find upstream subid(s) and fraction in branchdata 2: 
+    # upstream subid(s) as sourceids (meaning they loose water to a branch), update current weight with mainpart fraction in branchdata
+    us.gd.f <- floor(us.gd)
+    # rows in branchdata where upstream subids loose water to branch
+    us.bsrc <- match(us.gd.f, bd[, brcol.sr])
+    # update if any exist
+    if (any(!is.na(us.bsrc))) {
+      # calculate new weight fraction
+      te <- ifelse(us.gd %% 1 > 0, us.gd %% 1, 1) * ifelse(is.na(bd[us.bsrc, brcol.mp]), 1, bd[us.bsrc, brcol.mp])
+      # update, replacing 1 with 0
+      us.gd <- us.gd.f + ifelse(te == 1, 0, te)
+    }
+    
+    # prepare result vector
+    ff <- c(us.gd, us.bd)
+    return(ff)
+    }
+  
+  
+  ## conditional on get.weights: iterate though upstream chain and get subids (plus weights)
+  if (!get.weights) {
+    # create start conditions for while loop: find direct upstream subids of the target subid
+    us <- findfun(subid)
+    this.us <- us
+    us.exists <- length(us) > 0
+    
+    # loop through upstreams of the upstreams repeatedly, until none are found anymore
+    while(us.exists) {
+      this.us <- unlist(sapply(this.us, findfun))
+      if (length(this.us) > 0) {
+        us.exists <- TRUE
+      } else {
+        us.exists <- FALSE
+      }
+      #us <- unique(c(us, this.us), fromLast = T)
+      us <- unique(c(us, this.us))
+    }
+    
+    # add outlet SUBID to result vector
+    us <- c(subid, us)
+    
+  } else if (get.weights) {
+    # create start conditions for while loop: find direct upstream subids of the target subid
+    # us <- DirectUpstreamSubids(subid, gd = gd, bd = bd)[[2]][, c(1, 3)]
+    # this.us <- us
+    # us.exists <- length(nrow(us)) > 0
+    us <- findfun.gw(subid)
+    this.us <- us
+    us.exists <- length(us) > 0
+    
+    system.time(while(us.exists) {
+      this.us <- unlist(sapply(this.us, findfun.gw))
+      if (length(this.us) > 0) {
+        us.exists <- TRUE
+      } else {
+        us.exists <- FALSE
+      }
+      us <- c(us, this.us)
+    })
+    
+    # RENE'S OLD VERSION, _MUCH_ SLOWER BUT LEFT FOR REFERENCE ATM
+    # # loop through upstreams of the upstreams repeatedly, until none are found anymore
+    # system.time(while(us.exists) {
+    #   this.us <- tryCatch(do.call(rbind.data.frame, apply(this.us, 1, findfun.gw)), error = function(e) NULL)
+    #   if (length(nrow(this.us)) > 0) {
+    #     us.exists <- TRUE
+    #     row.names(this.us) <- 1:nrow(this.us)
+    #   } else {
+    #     us.exists <- FALSE
+    #   }
+    #   us <- rbind(us, this.us)
+    # })
+    
+    # add outlet SUBID to result vector
+    us <- c(subid, us)
+    
+    # remove duplicates
+    us[!duplicated(floor(us))]
+    
+    # convert to dataframe of subids and weights
+    us <- data.frame(subid = floor(us), weight = us %% 1)
   }
   
-  # add outlet SUBID to result vector
-  us <- c(subid, us)
   
   # condional: order in downstream sequence, for direct use as pmsf file
-  if (sort) {
+  if (sort && !get.weights) {
     us <- gd[, geocol.sbd][sort(match(us, gd[, geocol.sbd]))]
   }
   
+  if (sort && get.weights) {
+    us <- data.frame(us, downstreamrank = rank(match(us[, 1], gd[, geocol.sbd])))
+    us <- us[order(us$downstreamrank), -3]
+  }
+  
   # try to write arcgis select string to clipboard, with error recovery
-  if (write.arcgis == T) {
+  if (write.arcgis == T && !get.weights) {
     to.arc <- paste(paste("\"SUBID\" =", us, 'OR'), collapse=" ")
+    to.arc <- substr(to.arc, 1, nchar(to.arc) - 3)
+    tryCatch(writeClipboard(to.arc), error = function(e) {
+      print("Writing to clipboard failed, this is probably not a Windows environment")})
+  }
+  
+  if (write.arcgis == T && get.weights) {
+    to.arc <- paste(paste("\"SUBID\" =", us[, 1], 'OR'), collapse=" ")
     to.arc <- substr(to.arc, 1, nchar(to.arc) - 3)
     tryCatch(writeClipboard(to.arc), error = function(e) {
       print("Writing to clipboard failed, this is probably not a Windows environment")})
