@@ -204,11 +204,13 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
     # add outlet SUBID to result vector
     us <- c(subid, us)
     
-    # remove duplicates
-    us <- us[!duplicated(floor(us))]
-    
     # convert to dataframe of subids and weights
     us <- data.frame(subid = floor(us), weight = ifelse(us %% 1 > 0, us %% 1, 1))
+    
+    # merge (sum) duplicates, keeping us's order
+    te <- tapply(us$weight, us$subid, sum)
+    te <- data.frame(subid = as.integer(names(te)), weight = as.numeric(te))
+    us <- te[match(x = unique(us$subid), table = te$subid), ]
   }
   
   
