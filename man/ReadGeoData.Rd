@@ -20,7 +20,7 @@ This is a convenience wrapper function to import a GeoData file as data frame in
 }
 \details{
 \code{ReadGeoData} runs \code{read.table(file = filename, header = T, sep = sep)} with a forced numeric column type for 
-columns \code{AREA} and \code{RIVLEN}.
+columns \code{AREA} and \code{RIVLEN}, and upper-case column names.
 }
 \examples{
 \dontrun{ReadGeoData("GeoData.txt")}

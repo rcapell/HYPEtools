@@ -20,6 +20,7 @@
 #     - ReadOptpar()
 #     - ReadSubass()
 #     - ReadDescription()
+#     - ReadGlacierData()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -350,7 +351,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 #' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
 #' @details
 #' \code{ReadGeoData} runs \code{read.table(file = filename, header = T, sep = sep)} with a forced numeric column type for 
-#' columns \code{AREA} and \code{RIVLEN}.
+#' columns \code{AREA} and \code{RIVLEN}, and upper-case column names.
 #' 
 #' @return
 #' \code{ReadGeoData} returns a data frame.
@@ -1224,3 +1225,36 @@ ReadDescription <- function(filename, gcl = NULL) {
 
 # filename <- "../description.txt"
 # rm(filename, x, res, lu.d, lu.g, s.g, s.d, c.d, c.g, te)
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadGlacierData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' Read a 'GlacierData.txt' file
+#'
+#' This is a convenience wrapper function to import a GlacierData file as data frame into R.
+#' 
+#' @param filename Path to and file name of the GlacierData file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
+
+#' @details
+#' \code{ReadGlacierData} runs \code{read.table(file = filename, header = T, sep = sep)} and forces upper-case column names.
+#' 
+#' @return
+#' \code{ReadGlacierData} returns a data frame.
+#' 
+#' @examples
+#' \dontrun{ReadGlacierData("GlacierData.txt")}
+#' 
+#' @export
+
+
+ReadGlacierData <- function(filename = "GlacierData.txt", sep = "\t") {
+  res <- read.table(file = filename, header = T, sep = sep)
+  names(res) <- toupper(names(res))
+  return(res)
+}
