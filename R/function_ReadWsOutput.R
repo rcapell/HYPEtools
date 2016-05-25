@@ -43,8 +43,8 @@
 #' @return
 #' \code{ReadWsOutput} returns a 3-dimensional array with additional attributes. The array content depends on the HYPE output file type 
 #' specified in argument \code{type}. Time and map output file imports return an array of class \code{\link{HypeSingleVar}} with 
-#' \code{[time, subid, iteration]} dimensions, basin output file imports return a numeric array with \code{[time, subid, iteration]} 
-#' dimensions.
+#' \code{[time, subid, iteration]} dimensions, basin output file imports return an array of class \code{\link{HypeMultiVar}} with 
+#' \code{[time, variable, iteration]} dimensions.
 #' 
 #' Returned arrays contain additional \code{\link{attributes}}:
 #' \describe{
@@ -92,7 +92,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
   if (type == "basin") {
     # check if required argument subid exists
     if (is.null(subid)) {
-      stop("Argument 'subid' required with time and map output files.")
+      stop("Argument 'subid' required with basin output files.")
     }
     # import
     locs <- list.files(path = path, pattern = glob2rx(paste0("*", subid, "_", "???????.txt")), full.names = TRUE)
@@ -180,6 +180,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     attr(res, "date") <- te[, 1]
     attr(res, "subid") <- subid
     attr(res, "variable") <- names(te)[-1]
+    class(res) <- c("HypeMultiVar", "array")
     
   }
 

@@ -8,7 +8,7 @@ HypeSingleVar(x, date, subid, hype.var)
 }
 \arguments{
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one variable as (in order)
-\code{[time, subid, iteration]}.}
+\code{[date, subid, iteration]}.}
 
 \item{date}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
 with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
@@ -30,7 +30,7 @@ Returns a 3-dimensional array with
 }
 }
 \description{
-Constructor function for arrays which can hold time series of a single HYPE variable for multiple sub-basins 
+Constructor function for arrays which hold equi-distant time series of a single HYPE variable for multiple sub-basins 
 and multiple model runs, typically imported time and map output results.
 }
 \details{
