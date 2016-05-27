@@ -15,7 +15,8 @@ Depends:
 Imports:
     sp,
     pbapply,
-    hydroGOF
+    hydroGOF,
+    data.table
 License: LGPL-3
 LazyData: true
 Packaged: 2014-11-21 15:25:14 UTC; rene
