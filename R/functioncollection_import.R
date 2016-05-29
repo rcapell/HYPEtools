@@ -29,11 +29,8 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadGeoClass~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Read a 'GeoClass.txt' File
 #'
-#' @description
 #' This is a convenience wrapper function to import a GeoClass file as data frame into R. GeoClass files contain definitions
 #' of SLC (\bold{S}oil and \bold{L}and use \bold{C}lass) classes.
 #' 
@@ -52,6 +49,7 @@
 #' @examples
 #' \dontrun{ReadGeoClass("Geoclass.txt")}
 #' 
+#' @export
 
 ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) { 
     
@@ -496,11 +494,8 @@ ReadPar <- function (filename = "par.txt") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadMapOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Read a Map Output File
 #'
-#' @description
 #' This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') as data frame into R.
 #' 
 #' @param filename Path to and file name of the basin output file to import. Windows users: Note that 
@@ -526,6 +521,7 @@ ReadPar <- function (filename = "par.txt") {
 #' @examples
 #' \dontrun{ReadMapOutput("mapCOUT.txt")}
 #' 
+#' @export
 
 ReadMapOutput <- function(filename, dt.format = NULL) {
     
@@ -628,7 +624,11 @@ ReadMapOutput <- function(filename, dt.format = NULL) {
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
 #' and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
-#' @param datatable Logical, if \code{TRUE}, return a \code{\link{data.table}} object, otherwise a data frame.
+#' @param hype.var Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
+#' (columns) in \code{x}. See 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}
+#' @param type Character, data type keyword for imported data. \code{"df"} to return a standard data frame, \code{"dt"} to 
+#' return a \code{\link{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
 #' 
 #' @details
 #' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link{fread}} from the \code{\link{data.table-package}}, 
@@ -636,35 +636,37 @@ ReadMapOutput <- function(filename, dt.format = NULL) {
 #' of the time step period.
 #' 
 #' @return
-#' \code{ReadTimeOutput} returns a \code{\link{data.table}} object or a data frame. Information on the output variable is stored 
-#' in attribute \code{comment}, a vector of subid integers in attribute \code{subid}.
+#' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
+#' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
+#' \code{subid}, a vector of subid integers (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and possibly converting to string representations during the process).
 #' 
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
-#' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. Results will
-#' then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
-
+#' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
+#' Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
 #' 
-#' @examples
-#' \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "%Y-%m)}
+#' @examples 
+#' \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "%Y-%m")}
 #' 
 #' @importFrom data.table fread is.data.table
 #' @export
 
-ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", datatable = FALSE) {
-    
+ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df") {
+  
+  # handling output type user choice
+  if (type == "df") {
+    d.t <- F
+  } else if (type %in% c("dt", "hsv")) {
+    d.t <- T
+  } else {
+    stop(paste("Unknown type", type, "."))
+  }
+  
   # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
-  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = datatable)
-  
-  # update with new attributes to hold comment row and subids (column headers will have a leading X)
-  xattr <- readLines(filename, n = 2)
-  # the strsplit on comment is only needed if the file to import was saved in excel before, and lots of empty cells added to the comment line
-  attr(x, which = "comment") <- strsplit(xattr[1],split = "\t")[[1]][1]
-  attr(x, which = "subid") <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
-  
+  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = d.t)
   
   
   ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
@@ -718,31 +720,51 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", datatable = FALSE) 
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(eval(dcol))})
       }
     }
+  } else {
+    # dummy date vector as there is always one needed in timestep attribute derivation below
+    xd <- NA
+  }
+    # prepare subid attribute vector
+    xattr <- readLines(filename, n = 2)
+    sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
     
     
-    # conditional: timestep attribute identified by difference between first two entries
-    tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
-    if (!is.na(tdff)) {
-      if (tdff == 24) {
-        attr(x, which = "timestep") <- "day"
-      } else if (tdff == 168) {
-        attr(x, which = "timestep") <- "week"
-      } else if (tdff %in% c(744, 720, 696, 672)) {
-        attr(x, which = "timestep") <- "month"
-      } else if (tdff %in% c(8760, 8784)) {
-        attr(x, which = "timestep") <- "year"
+    # conditional on user choice: output formatting
+    if (type %in% c("dt", "df")) {
+      
+      attr(x, which = "subid") <- sbd
+      attr(x, "variable") <- toupper(hype.var)
+      
+      # conditional: timestep attribute identified by difference between first two entries
+      tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+      if (!is.na(tdff)) {
+        if (tdff == 24) {
+          attr(x, which = "timestep") <- "day"
+        } else if (tdff == 168) {
+          attr(x, which = "timestep") <- "week"
+        } else if (tdff %in% c(744, 720, 696, 672)) {
+          attr(x, which = "timestep") <- "month"
+        } else if (tdff %in% c(8760, 8784)) {
+          attr(x, which = "timestep") <- "year"
+        } else {
+          attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+        }
       } else {
-        attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+        # add timestep attribute with placeholder value
+        attr(x, which = "timestep") <- "none"
       }
+      
     } else {
-      # add timestep attribute with placeholder value
-      attr(x, which = "timestep") <- "none"
+      ## HypeSingleVar formatting
+      # remove dates
+      x <- x[, !"DATE", with = F]
+      # convert to array (straigtht conversion to array gives error, therefore intermediate matrix)
+      x <- as.array(as.matrix(x))
+      # adding 'iteration' dimension
+      dim(x) <- c(dim(x), 1)
+      x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
     }
     
-  } else {
-    # add timestep attribute with placeholder value
-    attr(x, which = "timestep") <- "none"
-  }
   
   
   # OLD, LEFT FOR REFERENCE BUT CAN SOON BE DELETED

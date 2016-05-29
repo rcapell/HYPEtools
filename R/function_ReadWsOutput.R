@@ -29,7 +29,7 @@
 #' 
 #' @details
 #' HYPE optimisation routines optionally allow for generation of simulation output files for each iteration in the optimisation routine. 
-#' For further details see decumentation on 'task WS' in the 
+#' For further details see documentation on 'task WS' in the 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' 
 #' \code{ReadWsOutput} imports and combines all simulation iterations in an \code{\link{array}}, which can then be easily used in 
