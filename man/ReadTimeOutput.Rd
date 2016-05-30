@@ -5,7 +5,7 @@
 \title{Read a Time Output File}
 \usage{
 ReadTimeOutput(filename, dt.format = "\%Y-\%m-\%d", hype.var = NULL,
-  type = "df")
+  type = "df", select = NULL, nrows = -1L)
 }
 \arguments{
 \item{filename}{Path to and file name of the time output file to import. Windows users: Note that 
@@ -20,7 +20,11 @@ be imported as \code{character}, applicable e.g. for files containing just one r
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}}
 
 \item{type}{Character, data type keyword for imported data. \code{"df"} to return a standard data frame, \code{"dt"} to 
-return a \code{\link{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
+return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
+
+\item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported.}
+
+\item{nrows}{Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.}
 }
 \value{
 \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
@@ -31,7 +35,7 @@ Data frames and data tables contain additional \code{\link{attributes}}: \code{v
 This is a convenience wrapper function to import a time output file as data frame or matrix into R.
 }
 \details{
-\code{ReadTimeOutput} is a convenience wrapper function of \code{\link{fread}} from the \code{\link{data.table-package}}, 
+\code{ReadTimeOutput} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
 with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 of the time step period.
 }

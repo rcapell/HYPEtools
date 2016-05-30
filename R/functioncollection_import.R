@@ -628,10 +628,12 @@ ReadMapOutput <- function(filename, dt.format = NULL) {
 #' (columns) in \code{x}. See 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}
 #' @param type Character, data type keyword for imported data. \code{"df"} to return a standard data frame, \code{"dt"} to 
-#' return a \code{\link{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
+#' return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
+#' @param select Integer vector, column numbers to import. Note: first column with dates must be imported.
+#' @param nrows Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.
 #' 
 #' @details
-#' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link{fread}} from the \code{\link{data.table-package}}, 
+#' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
 #' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 #' of the time step period.
 #' 
@@ -654,7 +656,12 @@ ReadMapOutput <- function(filename, dt.format = NULL) {
 #' @importFrom data.table fread is.data.table
 #' @export
 
-ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df") {
+ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df", select = NULL, nrows = -1L) {
+  
+  # argument checks
+  if (!is.null(select) && !(1 %in% select)) {
+    stop("Argument 'select' must include column 1.")
+  }
   
   # handling output type user choice
   if (type == "df") {
@@ -666,17 +673,25 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   }
   
   # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
-  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = d.t)
+  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = d.t, 
+             select = select, nrows = nrows)
   
+  
+  # import subids, prepare subid attribute vector
+  xattr <- readLines(filename, n = 2)
+  sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
+  if (!is.null(select)) {
+    sbd <- sbd[select[-1] - 1]
+  }
+  
+  # create column names
+  names(x) <- c("DATE", paste0("X", sbd))
   
   ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
-  ## handles errors which might occur if the date string differs from the specified format, on error, strings are returned.
+  ## handles errors which might occur if the date string differs from the specified format. On error, strings are returned.
   
-  # 
   # if user-requested, hop over date-time conversion
   if (!is.null(dt.format)) {
-    # safety measure: override for date column name
-    names(x)[1] <- "DATE"
     
     # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
     # conditional on class of imported data (different syntax for data.table)
@@ -724,47 +739,45 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     # dummy date vector as there is always one needed in timestep attribute derivation below
     xd <- NA
   }
-    # prepare subid attribute vector
-    xattr <- readLines(filename, n = 2)
-    sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
+  
+  
+  
+  # conditional on user choice: output formatting
+  if (type %in% c("dt", "df")) {
     
+    attr(x, which = "subid") <- sbd
+    attr(x, "variable") <- toupper(hype.var)
     
-    # conditional on user choice: output formatting
-    if (type %in% c("dt", "df")) {
-      
-      attr(x, which = "subid") <- sbd
-      attr(x, "variable") <- toupper(hype.var)
-      
-      # conditional: timestep attribute identified by difference between first two entries
-      tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
-      if (!is.na(tdff)) {
-        if (tdff == 24) {
-          attr(x, which = "timestep") <- "day"
-        } else if (tdff == 168) {
-          attr(x, which = "timestep") <- "week"
-        } else if (tdff %in% c(744, 720, 696, 672)) {
-          attr(x, which = "timestep") <- "month"
-        } else if (tdff %in% c(8760, 8784)) {
-          attr(x, which = "timestep") <- "year"
-        } else {
-          attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
-        }
+    # conditional: timestep attribute identified by difference between first two entries
+    tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+    if (!is.na(tdff)) {
+      if (tdff == 24) {
+        attr(x, which = "timestep") <- "day"
+      } else if (tdff == 168) {
+        attr(x, which = "timestep") <- "week"
+      } else if (tdff %in% c(744, 720, 696, 672)) {
+        attr(x, which = "timestep") <- "month"
+      } else if (tdff %in% c(8760, 8784)) {
+        attr(x, which = "timestep") <- "year"
       } else {
-        # add timestep attribute with placeholder value
-        attr(x, which = "timestep") <- "none"
+        attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
       }
-      
     } else {
-      ## HypeSingleVar formatting
-      # remove dates
-      x <- x[, !"DATE", with = F]
-      # convert to array (straigtht conversion to array gives error, therefore intermediate matrix)
-      x <- as.array(as.matrix(x))
-      # adding 'iteration' dimension
-      dim(x) <- c(dim(x), 1)
-      x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
+      # add timestep attribute with placeholder value
+      attr(x, which = "timestep") <- "none"
     }
     
+  } else {
+    ## HypeSingleVar formatting
+    # remove dates
+    x <- x[, !"DATE", with = F]
+    # convert to array (straigtht conversion to array gives error, therefore intermediate matrix)
+    x <- as.array(as.matrix(x))
+    # adding 'iteration' dimension
+    dim(x) <- c(dim(x), 1)
+    x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
+  }
+  
   
   
   # OLD, LEFT FOR REFERENCE BUT CAN SOON BE DELETED
