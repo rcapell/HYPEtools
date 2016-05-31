@@ -370,7 +370,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
 
 ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
   #res <- read.table(file = filename, header = T, sep = sep)
-  res <- fread(filename, header = T, sep = sep)
+  res <- fread(filename, header = T, sep = sep, integer64 = "numeric")
   names(res) <- toupper(names(res))
   # force type numeric for selected columns if they exist. Otherwise there can be problem with integer calculation in other functions..
   te <- which(names(res) == "AREA")
