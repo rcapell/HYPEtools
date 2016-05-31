@@ -28,7 +28,7 @@ return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return 
 \item{nrows}{Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.}
 }
 \value{
-\code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
+\code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 \code{date}, a vector of date-times (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
 }
@@ -43,7 +43,7 @@ of the time step period.
 \note{
 HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
-Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
+Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries.
 }
 \examples{
 \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}

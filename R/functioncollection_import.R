@@ -228,25 +228,22 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadXobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Read an 'Xobs.txt' file
 #'
-#' @description
 #' This is a convenience wrapper function to import an Xobs file into R.
 #' 
 #' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
-#' @param nrows Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
-#' to import.
+#' @param nrows Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives 
+#' the number of rows to import.
 #'  
 #' @details
-#' \code{ReadXobs} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
-#' POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as attributes (see \code{\link{attr}} on 
-#' how to access these).
+#' \code{ReadXobs} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+#' with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as 
+#' attributes (see \code{\link{attr}} on how to access these).
 #' 
-#' Duplicated variable-SUBID combinations are not allowed, and import will abort if any are found.
+#' Duplicated variable-SUBID combinations are not allowed in HYPE Xobs files, and the function will throw a warning if any are found.
 #' 
 #' @return
 #' If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with four 
@@ -259,31 +256,41 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
-#' side effects when working with the imported data (and possibly converting to string representations during the process).
+#' side effects when working with the imported data (and e.g. converting to string representations during the process).
 #' 
 #' @examples
 #' \dontrun{ReadXobs("Xobs.txt")}
 #' 
+#' @importFrom data.table fread
+#' @export
 
 
-ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
+ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) {
   
-  # read first line to get number of columns in file, used for colClasses below
-  te <- read.table(filename, header = F, skip = 3, na.strings = "-9999", nrows = 1, sep = "\t")
-  nc <- ncol(te)
+  ## import xobs file header, extract attributes
+  # import (3-row header)
+  xattr <- readLines(filename,n=3)
+  # 1st row, comment
+  # split string elements along tabs, returns list of character vectors
+  cmt <- strsplit(xattr[1], split = "\t")
+  # remove empty strings (excel export artefacts)
+  cmt <- sapply(cmt, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
+  # 2nd row, HYPE variable IDs
+  hype.var <- toupper(strsplit(xattr[2], split = "\t")[[1]][-1])
+  # 3rd row, SUBIDs
+  sbd <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
+  
   
   # read the data, skip header and comment rows, force numberic data (automatic column classes can be integer)
-  xobs <- read.table(filename, header = F, skip = 3, na.strings = "-9999", nrows = nrows, sep = "\t", colClasses = c(NA, rep("numeric", nc - 1)))
-    
-  # update with new attributes to hold subids and obs-variables for all columns
-  xattr <- readLines(filename,n=3)
-  #attr(xobs, which = "comment") <- strsplit(xattr[1], split = "\t")[[1]]
-  attr(xobs, which = "comment") <- xattr[1]
-  attr(xobs, which = "variable") <- toupper(strsplit(xattr[2], split = "\t")[[1]][-1])
-  attr(xobs, which = "subid") <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
+  xobs <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, nrows = nrows, 
+                colClasses = c("NA", rep("numeric", length(sbd))))
+  
+  attr(xobs, which = "comment") <- cmt
+  attr(xobs, which = "variable") <- hype.var
+  attr(xobs, which = "subid") <- sbd
   
   # update header, composite of variable and subid
-  names(xobs) <- c("date", paste(attr(xobs, "variable"), attr(xobs, "subid"), sep = "_"))
+  names(xobs) <- c("DATE", paste(attr(xobs, "variable"), attr(xobs, "subid"), sep = "_"))
   
   # warn if duplicate columns found, throw useful msg
   if (length(names(xobs)) != length(unique(names(xobs)))) {
@@ -299,7 +306,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
     cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object."); return(xobs[, 1])})
   
   # if date conversion worked and time steps are HYPE-conform, add class HydroXobs to returned object 
-  if(!is.factor(xobs[, 1]) && duplifree) {
+  if(!is.character(xobs[, 1]) && duplifree) {
     # check if time steps are equidistant
     tstep <- diff(xobs[, 1])
     hypexobsclass <- TRUE
@@ -339,19 +346,17 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadGeoData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Read a 'GeoData.txt' file
 #'
-#' @description
 #' This is a convenience wrapper function to import a GeoData file as data frame into R.
 #' 
 #' @param filename Path to and file name of the GeoData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
 #' @details
-#' \code{ReadGeoData} runs \code{read.table(file = filename, header = T, sep = sep)} with a forced numeric column type for 
-#' columns \code{AREA} and \code{RIVLEN}, and upper-case column names.
+#' \code{ReadGeoData} runs \code{\link{data.table::fread}} from the \code{\link{data.table-package}} 
+#' with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and 
+#' upper-case column names.
 #' 
 #' @return
 #' \code{ReadGeoData} returns a data frame.
@@ -359,10 +364,13 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1) {
 #' @examples
 #' \dontrun{ReadGeoData("GeoData.txt")}
 #' 
+#' @importFrom data.table fread
+#' @export
 
 
 ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
-  res <- read.table(file = filename, header = T, sep = sep)
+  #res <- read.table(file = filename, header = T, sep = sep)
+  res <- fread(filename, header = T, sep = sep)
   names(res) <- toupper(names(res))
   # force type numeric for selected columns if they exist. Otherwise there can be problem with integer calculation in other functions..
   te <- which(names(res) == "AREA")
@@ -519,19 +527,19 @@ ReadPar <- function (filename = "par.txt") {
 #' of the time step period.
 #' 
 #' @return
-#' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
+#' \code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 #' \code{date}, a vector of date-times (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
 #' 
 #' @note
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 #' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
-#' Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
+#' Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries.
 #' 
 #' @examples
 #' \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
 #' 
-#' @importFrom data.table fread is.data.table transpose
+#' @importFrom data.table fread transpose
 #' @export
 
 ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "df", nrows = -1L) {
@@ -841,11 +849,8 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPTQobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Read 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files
 #'
-#' @description
 #' Import precipitation, temperature, or discharge observation files as data frame into R.
 #' 
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
@@ -855,43 +860,43 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' to import.
 #'  
 #' @details
-#' \code{ReadPTQobs} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
-#' POSIX time representations. SUBIDs are returned as integer attribute \code{subid} 
+#' \code{ReadPTQobs} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+#' with conversion of date-time strings to POSIX time representations. SUBIDs are returned as integer attribute \code{subid} 
 #' (see \code{\link{attr}} on how to access it). 
-#' 
-#' This function can only be used with reasonably small data files. Attempts to 
-#' read large files can lead to exceedance of R's memory space.
 #' 
 #' @return
 #' \code{ReadPTQobs} returns a data frame with an additional attribute \code{subid}.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
-#' side effects when working with the imported data (and possibly converting to string representations during the process).
+#' side effects when working with the imported data (and e.g. converting to string representations during the process).
 #' 
 #' @examples
 #' \dontrun{ReadPTQobs("Tobs.txt")}
 #' 
+#' @importFrom data.table fread
+#' @export
 
 
 ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
   
+  ## import ptqobs file header, extract attribute
+  # import
+  xattr <- readLines(filename,n = 1)
+  # extract SUBIDs
+  sbd <- as.integer(strsplit(xattr, split = "\t")[[1]][-1])
+  
   # read the data
-  x <- read.table(filename, header = T, na.strings = "-9999", nrows = nrows)
+  x <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = T, data.table = F, nrows = nrows, 
+                colClasses = c("NA", rep("numeric", length(sbd))))
   
-  # make an object of a new s3 class, KEPT FOR FUTURE REF, ACTIVATE IF METHODS TO BE WRITTEN, E.G. SUMMARY
-  # class(te) <- c("xobs", "data.frame")
-  
-  # update with new attributes to hold subids and obs-variables for all columns
-  xattr <- readLines(filename, n = 1)
-  attr(x, which = "subid") <- as.integer(strsplit(xattr[1], split = "\t")[[1]][-1])
+  attr(x, which = "subid") <- sbd
   
   # date conversion 
   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
   x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
-    }
-  )
+    })
   
   return(x)
 }

@@ -1,8 +1,6 @@
 #' 
-#' @title
 #' Read optimisation simulation results
 #'
-#' @description
 #' Read and combine HYPE optimisation simulation output files, generated with 'task WS' during HYPE optimisation runs. Outputs can 
 #' consist of basin, time, or map output files.
 #' 
