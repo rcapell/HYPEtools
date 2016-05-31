@@ -1,5 +1,3 @@
-#' @export
-#' @importFrom pbapply pblapply
 #' 
 #' @title
 #' Read optimisation simulation results
@@ -21,7 +19,8 @@
 #' result files to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
 #' '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 #' summary values over the model period.
-#' @param subid.select Integer, vector of HYPE SUBIDs to select from imported time and map output files.
+#' @param select Integer vector, column numbers to import, for use with \code{type = "time"}. Note: first column with dates must be 
+#' imported.
 #' @param from Integer. For partial imports, number of simulation iteration to start from.
 #' @param to Integer. For partial imports, number of simulation iteration to end with.
 #' @param progbar Logical, display a progress bar while importing HYPE output files. Adds overhead to calculation time but useful 
@@ -34,8 +33,11 @@
 #' 
 #' \code{ReadWsOutput} imports and combines all simulation iterations in an \code{\link{array}}, which can then be easily used in 
 #' further analysis, most likely in combination with performance and parameter values from an imported corresponding 'allsim.txt' file. 
+#' 
 #' The result folder containing HYPE WS results, argument \code{path}, can contain other files as well, \code{ReadWsOutput} searches for 
-#' file name pattern to filter targeted result files.
+#' file name pattern to filter targeted result files. However, if files of the same type exist from different model runs, e.g. 
+#' from another calibration run or from a standard model run, the pattern search cannot distinguish these from the targeted files 
+#' and \code{ReadWsOutput} will fail.
 #' 
 #' For large numbers of result files, simulations can be partially imported using arguments \code{from} and \code{to}, in order to avoid 
 #' memory exceedance problems.
@@ -56,11 +58,15 @@
 #' 
 #' @examples
 #' \dontrun{ReadWsOutput(path = "../my_optim_results/", hype.var = "cout", dt.format = "%Y-%m")}
+#' 
+#' @importFrom pbapply pblapply
+#' @importFrom data.table fread is.data.table transpose
+#' @export
 
 
 
 ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL, subid = NULL, dt.format = NULL, 
-                         subid.select = NULL, from = NULL, to = NULL, progbar = T) {
+                         select = NULL, from = NULL, to = NULL, progbar = T) {
   
   type <- match.arg(type)
   
@@ -106,61 +112,40 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
   if (type == "time") {
     
     # dummy file to extract attributes from
-    te <- ReadTimeOutput(filename = locs[1], dt.format = dt.format)
+    te <- ReadTimeOutput(filename = locs[1], dt.format = dt.format, select = select, type = "dt")
     
-    sbd <- attr(te, "subid")
-    
-    if (!is.null(subid.select)) {
-      if (!all(subid.select %in% sbd)) {
-        stop("Not all SUBIDs in 'subid.select' found in time output files.")
-      }
-      sbd <- subid.select
-    }
-    
-    # columns to select from each imported time output file
-    ind <- c(FALSE, attr(te, "subid") %in% sbd)
-    
+    # import
     if (progbar) {
-      res <- pblapply(locs, function(x, df, i) {as.matrix(ReadTimeOutput(filename = x, dt.format = df)[, i])}, df = dt.format, i = ind)
+      res <- pblapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt", hype.var = hype.var)[, !"DATE", with = F])})
       res <- simplify2array(res)
     } else {
-      res <- lapply(locs, function(x, df, i) {as.matrix(ReadTimeOutput(filename = x, dt.format = df)[, i])}, df = dt.format, i = ind)
+      res <- lapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt", hype.var = hype.var)[, !"DATE", with = F])})
       res <- simplify2array(res)
     }
     # add attributes with information
     attr(res, "variable") <- toupper(hype.var)
-    attr(res, "date") <- te[, 1]
-    attr(res, "subid") <- attr(te, "subid")[attr(te, "subid") %in% sbd]
+    attr(res, "date") <- te[, DATE]
+    attr(res, "subid") <- attr(te, "subid")
     class(res) <- c("HypeSingleVar", "array")
     
   } else if (type == "map") {
     
     # dummy file to extract attributes from
-    te <- ReadMapOutput(filename = locs[1], dt.format = dt.format)
+    te <- ReadMapOutput(filename = locs[1], dt.format = dt.format, type = "dt")
     
-    sbd <- te[, 1]
-    
-    if (!is.null(subid.select)) {
-      if (!all(subid.select %in% sbd)) {
-        stop("Not all SUBIDs in 'subid.select' found in map output files.")
-      }
-      sbd <- subid.select
-    }
-    
-    # rows to select from each imported map output file
-    ind <- te[, 1] %in% sbd
-    
+    # import
     if (progbar) {
-      res <- pblapply(locs, function(x, df, i) {t(as.matrix(ReadMapOutput(filename = x, dt.format = df)[i, -1]))}, df = dt.format, i = ind)
+      res <- pblapply(locs, function(x) {as.matrix(transpose(ReadMapOutput(filename = x, dt.format = dt.format, type = "dt", hype.var = hype.var)[, !"SUBID", with = F]))})
       res <- simplify2array(res)
     } else {
-      res <- lapply(locs, function(x, df, i) {t(as.matrix(ReadMapOutput(filename = x, dt.format = df)[i, -1]))}, df = dt.format, i = ind)
+      res <- lapply(locs, function(x) {t(as.matrix(ReadMapOutput(filename = x, dt.format = dt.format, type = "dt", hype.var = hype.var)[, !"SUBID", with = F]))})
       res <- simplify2array(res)
     }
     # add attributes with information
     attr(res, "variable") <- toupper(hype.var)
     attr(res, "date") <- attr(te, "date")
-    attr(res, "subid") <- te[, 1][te[, 1] %in% sbd]
+    attr(res, "subid") <- te[, SUBID]
+    dimnames(res)[[2]] <- paste0("X", te[, SUBID])
     class(res) <- c("HypeSingleVar", "array")
     
   } else {
@@ -188,16 +173,14 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
   
 }
 
-# debug
+# DEBUG
 # library(pbapply)
-# path <- "//winfs-proj/data/proj/Fouh/Europe/Projekt/SWITCH-ON/WP3 experiments/experiment_wq_weaver/Analyses/calib_wbalance_fine_local/res_mc_in_51_50_daily/"
-# path <- "//winfs-proj/data/proj/Fouh/Europe/Projekt/SWITCH-ON/WP3 experiments/experiment_wq_weaver/Analyses/test/test_basin"
+# path <- "d:/Rpackage_dev/r302/testdata/taskWS"
 # hype.var <- "ccin"
 # dt.format <- NULL
-# dt.format <- "%Y"
-# dt.format <- "%Y-%m"
 # progbar <- T
-# type <- "time"
 # type <- "map"
-# type <- "basin"
 # subid <- 51
+# from <- NULL
+# to <- NULL
+# select <- 1:3

@@ -4,7 +4,8 @@
 \alias{ReadMapOutput}
 \title{Read a Map Output File}
 \usage{
-ReadMapOutput(filename, dt.format = NULL)
+ReadMapOutput(filename, dt.format = NULL, hype.var = NULL, type = "df",
+  nrows = -1L)
 }
 \arguments{
 \item{filename}{Path to and file name of the basin output file to import. Windows users: Note that 
@@ -14,25 +15,38 @@ Paths are separated by '/', not '\\'.}
 headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
 '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 summary values over the model period.}
+
+\item{hype.var}{Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
+(columns) in \code{x}. See 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
+If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
+time output file names.}
+
+\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
+return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
+
+\item{nrows}{Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.}
 }
 \value{
-\code{ReadMapOutput} returns a data frame with additional attributes, see details.
+\code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
+Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
+\code{date}, a vector of date-times (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
 }
 \description{
-This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') as data frame into R.
+This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') into R.
 }
 \details{
-\code{ReadMapOutput} is a convenience wrapper function of \code{\link{read.table}}, with treatment of a leading 
-comment row in HYPE's output file. The comment row is imported as string \code{attribute} 'comment'. If \code{dt.format} is specified, 
-POSIX dates are returned in \code{attribute} 'date', and a time step keyword in \code{attribute} 'time step'.
+\code{ReadMapOutput} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
+of the time step period.
 }
 \note{
 HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
-decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. Results will
-then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NaN' entries and throw a warning.
+decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
+Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
 }
 \examples{
-\dontrun{ReadMapOutput("mapCOUT.txt")}
+\dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
 
 }
 

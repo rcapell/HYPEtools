@@ -5,7 +5,7 @@
 \title{Read optimisation simulation results}
 \usage{
 ReadWsOutput(path, type = c("time", "map", "basin"), hype.var = NULL,
-  subid = NULL, dt.format = NULL, subid.select = NULL, from = NULL,
+  subid = NULL, dt.format = NULL, select = NULL, from = NULL,
   to = NULL, progbar = T)
 }
 \arguments{
@@ -27,7 +27,8 @@ result files to POSIX dates, which are returned as attribute. Incomplete format 
 '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 summary values over the model period.}
 
-\item{subid.select}{Integer, vector of HYPE SUBIDs to select from imported time and map output files.}
+\item{select}{Integer vector, column numbers to import, for use with \code{type = "time"}. Note: first column with dates must be 
+imported.}
 
 \item{from}{Integer. For partial imports, number of simulation iteration to start from.}
 
@@ -61,13 +62,17 @@ For further details see documentation on 'task WS' in the
 
 \code{ReadWsOutput} imports and combines all simulation iterations in an \code{\link{array}}, which can then be easily used in 
 further analysis, most likely in combination with performance and parameter values from an imported corresponding 'allsim.txt' file. 
+
 The result folder containing HYPE WS results, argument \code{path}, can contain other files as well, \code{ReadWsOutput} searches for 
-file name pattern to filter targeted result files.
+file name pattern to filter targeted result files. However, if files of the same type exist from different model runs, e.g. 
+from another calibration run or from a standard model run, the pattern search cannot distinguish these from the targeted files 
+and \code{ReadWsOutput} will fail.
 
 For large numbers of result files, simulations can be partially imported using arguments \code{from} and \code{to}, in order to avoid 
 memory exceedance problems.
 }
 \examples{
 \dontrun{ReadWsOutput(path = "../my_optim_results/", hype.var = "cout", dt.format = "\%Y-\%m")}
+
 }
 

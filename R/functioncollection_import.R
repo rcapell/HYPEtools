@@ -496,7 +496,7 @@ ReadPar <- function (filename = "par.txt") {
 
 #' Read a Map Output File
 #'
-#' This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') as data frame into R.
+#' This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') into R.
 #' 
 #' @param filename Path to and file name of the basin output file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
@@ -504,62 +504,95 @@ ReadPar <- function (filename = "par.txt") {
 #' headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
 #' '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 #' summary values over the model period.
+#' @param hype.var Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
+#' (columns) in \code{x}. See 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
+#' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
+#' time output file names.
+#' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
+#' return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
+#' @param nrows Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.
 #' 
 #' @details
-#' \code{ReadMapOutput} is a convenience wrapper function of \code{\link{read.table}}, with treatment of a leading 
-#' comment row in HYPE's output file. The comment row is imported as string \code{attribute} 'comment'. If \code{dt.format} is specified, 
-#' POSIX dates are returned in \code{attribute} 'date', and a time step keyword in \code{attribute} 'time step'.
+#' \code{ReadMapOutput} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+#' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
+#' of the time step period.
 #' 
 #' @return
-#' \code{ReadMapOutput} returns a data frame with additional attributes, see details.
+#' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
+#' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
+#' \code{date}, a vector of date-times (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
 #' 
 #' @note
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
-#' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. Results will
-#' then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NaN' entries and throw a warning.
+#' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
+#' Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
 #' 
 #' @examples
-#' \dontrun{ReadMapOutput("mapCOUT.txt")}
+#' \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
 #' 
+#' @importFrom data.table fread is.data.table transpose
 #' @export
 
-ReadMapOutput <- function(filename, dt.format = NULL) {
-    
-  x <- read.table(filename, header = T, sep = ",", na.strings = "-9999", skip = 1)      
+ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "df", nrows = -1L) {
   
-  # update with new attribute to hold comment row
-  attr(x, which = "comment") <- readLines(filename, n = 1)
+  # handling output type user choice
+  if (type == "df") {
+    d.t <- F
+  } else if (type %in% c("dt", "hsv")) {
+    d.t <- T
+  } else {
+    stop(paste("Unknown type", type, "."))
+  }
   
-  # update with new attribute to hold output variable name
-  attr(x, which = "variable") <- substr(strsplit(filename, "map")[[1]][2], start = 1, stop = 4)
+  #x <- read.table(filename, header = T, sep = ",", na.strings = "-9999", skip = 1)      
+  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = ",", header = F, data.table = d.t, 
+             nrows = nrows)
+  
+  
+  # read hype.var from filename, if not provided by user
+  if (is.null(hype.var)) {
+    hype.var <- substr(strsplit(filename, "map")[[1]][2], start = 1, stop = 4)
+  }
+  
+  # import dates, prepare subid attribute vector
+  xattr <- readLines(filename, n = 2)
+  xd <- strsplit(xattr[2], split = ",")[[1]][-1]
+  
+  # create column names
+  names(x) <- c("SUBID", paste0("X", gsub(pattern = "-", replacement = ".", x = xd)))
   
   ## update with new attributes to hold POSIX dates and timestep keyword, create from column names
   
-  # extract date string from colnames
-  te <- substr(names(x)[-1], start = 2, stop = nchar(names(x)[2]))
   
   # if user-requested, hop over date-time conversion
   if (!is.null(dt.format)) {
+    # temporary copy to fall back to
+    te <- xd
     # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
     if (dt.format == "%Y-%m") {
-      xd <- as.POSIXct(strptime(paste(te, "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-      attr(x, which = "date") <- tryCatch(na.fail(xd), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     } else if (dt.format == "%Y%m") {
-      xd <- as.POSIXct(strptime(paste(te, "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
-      attr(x, which = "date") <- tryCatch(na.fail(xd), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     } else if (dt.format == "%Y") {
-      xd <- as.POSIXct(strptime(paste(te, "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-      attr(x, which = "date") <- tryCatch(na.fail(xd), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     } else {
-      xd <- as.POSIXct(strptime(te, format = dt.format), tz = "GMT")
-      attr(x, which = "date") <- tryCatch(na.fail(xd), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(xd, format = dt.format), tz = "GMT")), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     }
+  }
+  
+  # conditional on user choice: output formatting
+  if (type %in% c("dt", "df")) {
+    
+    attr(x, which = "date") <- xd
+    attr(x, "variable") <- toupper(hype.var)
+    
     # conditional: timestep attribute identified by difference between first two entries
-    tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+    tdff <- tryCatch(as.numeric(difftime(xd[2], xd[1], units = "hours")), error = function(e) {NA})
     if (!is.na(tdff)) {
       if (tdff == 24) {
         attr(x, which = "timestep") <- "day"
@@ -578,46 +611,33 @@ ReadMapOutput <- function(filename, dt.format = NULL) {
     }
     
   } else {
-    # add timestep attribute with placeholder value
-    attr(x, which = "timestep") <- "none"
-    attr(x, which = "date") <- te
-  }
-  
-  # search data columns for occurrences of "****************", which represent values which had too many digits at the requested
-  # decimal accuracy during HYPE's Fortran export to text file
-  te <- sapply(x[, -1], FUN = is.factor)
-  # conditional: walk through columns and if type is factor, convert to numeric and convert NAs and NaNs (for "*" values)
-  if (any(te)){
-    warning(paste("Column(s)", paste(names(x)[-1][te], collapse =", "), "initially imported as factors. Internally converted to numeric, occurrences of '****************' values converted to 'NaN'."))
-    for (i in (2:(length(te)+1))[te]) {
-      if(is.factor(x[, i])) {
-        x[, i] <- as.character(x[, i])
-        if (length(which(x[, i] == "****************")) > 0){
-          x[which(x[, i] == "****************"), i] <- "NaN"
-        }
-        if (length(which(x[, i] == "-9999")) > 0){
-          x[which(x[, i] == "-9999"), i] <- "NA"
-        }
-        x[, i] <- as.numeric(x[, i])
-      }
-    }
+    ## HypeSingleVar formatting
+    # copy and remove subids
+    sbd <- x[, SUBID]
+    x <- x[, !"SUBID", with = F]
+    # transpose and convert to array (straigtht conversion to array gives error, therefore intermediate matrix)
+    x <- transpose(x)
+    x <- as.array(as.matrix(x))
+    # adding 'iteration' dimension
+    dim(x) <- c(dim(x), 1)
+    x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
   }
   
   return(x)
 }
 
-## DEBUG
-#filename <- "//winfs-proj/data/proj/Fouh/Europe/Projekt/SWITCH-ON/WP3 experiments/experiment_wq_weaver/Analyses/test/test_basin/mapCCIN_0000001.txt"
-#colnames <- NA
+# ## DEBUG
+# filename <- "d:/Rpackage_dev/r302/testdata/mapCCIN.txt"
 # dt.format <- "%Y"
-#rm(filename, colnames, te, x)
+
+
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadTimeOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 #' Read a Time Output File
 #'
-#' This is a convenience wrapper function to import a time output file as data frame or matrix into R.
+#' This is a convenience wrapper function to import a time output file ('time<\emph{HYPE_output_variable}>.txt') into R.
 #' 
 #' @param filename Path to and file name of the time output file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
@@ -626,8 +646,10 @@ ReadMapOutput <- function(filename, dt.format = NULL) {
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
 #' @param hype.var Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
 #' (columns) in \code{x}. See 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}
-#' @param type Character, data type keyword for imported data. \code{"df"} to return a standard data frame, \code{"dt"} to 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
+#' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
+#' time output file names.
+#' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 #' return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
 #' @param select Integer vector, column numbers to import. Note: first column with dates must be imported.
 #' @param nrows Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.
@@ -682,6 +704,11 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
   if (!is.null(select)) {
     sbd <- sbd[select[-1] - 1]
+  }
+  
+  # read hype.var from filename, if not provided by user
+  if (is.null(hype.var)) {
+    hype.var <- substr(strsplit(filename, "time")[[1]][2], start = 1, stop = 4)
   }
   
   # create column names

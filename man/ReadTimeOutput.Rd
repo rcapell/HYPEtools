@@ -17,9 +17,11 @@ be imported as \code{character}, applicable e.g. for files containing just one r
 
 \item{hype.var}{Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
 (columns) in \code{x}. See 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}}
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
+If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
+time output file names.}
 
-\item{type}{Character, data type keyword for imported data. \code{"df"} to return a standard data frame, \code{"dt"} to 
+\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
 
 \item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported.}
@@ -32,7 +34,7 @@ Data frames and data tables contain additional \code{\link{attributes}}: \code{v
 \code{subid}, a vector of subid integers (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
 }
 \description{
-This is a convenience wrapper function to import a time output file as data frame or matrix into R.
+This is a convenience wrapper function to import a time output file ('time<\emph{HYPE_output_variable}>.txt') into R.
 }
 \details{
 \code{ReadTimeOutput} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
