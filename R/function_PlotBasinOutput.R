@@ -257,7 +257,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     if (exi.t["retp"] && exi.t["cctp"]){
       gof.tp <- gof(sim = get("cctp"), obs = get("retp"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/3, y = 0.9, legend = c(paste(names(gof.tp), gof.tn, sep = ": "),"",paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness of fit", cex = .8)')
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/3, y = 0.9, legend = c(paste(names(gof.tp), gof.tp, sep = ": "),"",paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness of fit", cex = .8)')
     }
     
     # conditional: prepare regime plot call depending on data availability
@@ -847,17 +847,14 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
 }
 
 # # debug
-# x <- ReadBasinOutput("//winfs-proj/data/proj/Fouh/Europe/Projekt/SWITCH-ON/WP3 experiments/experiment_wq_weaver/Analyses/cal_wbalance_coarse_open/res1/9548212.txt")
-# x <- ReadBasinOutput("../9548212.txt")
-# names(x)
-# x <- x[, -c(20:25)]
+# x <- ReadBasinOutput("D:/temp/ehype312/res_statefile2/9603469.txt")
 # from <- 10
 # from <- "2005-01-01"
 # to <- nrow(x) +10
 # name <- "Weaver EHYPE3 default"
 # area <- NULL
 # area <- SumUpstreamArea(subid = subid, gd = gd, bd = bd)[, 2]
-# gd <- ReadGeoData("//winfs-proj/data/proj/Fouh/Europe/Projekt/SWITCH-ON/WP3 experiments/experiment_wq_weaver/Analyses/calib_wbalance_coarse_open/GeoData.txt")
+# gd <- ReadGeoData("D:/temp/ehype312/GeoData.txt")
 # log.q <- F
 # subid <- 9548212
 # bd <- NULL

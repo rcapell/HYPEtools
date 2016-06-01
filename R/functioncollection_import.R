@@ -370,7 +370,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
 
 ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
   #res <- read.table(file = filename, header = T, sep = sep)
-  res <- fread(filename, header = T, sep = sep, integer64 = "numeric")
+  res <- fread(filename, header = T, sep = sep, integer64 = "numeric", data.table = F)
   names(res) <- toupper(names(res))
   # force type numeric for selected columns if they exist. Otherwise there can be problem with integer calculation in other functions..
   te <- which(names(res) == "AREA")
@@ -910,32 +910,37 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadLakeData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
-#' Read a 'LakeData.txt' file
+#'Read HYPE data files
 #'
-#' @description
 #' This is a convenience wrapper function to import a LakeData file as data frame into R.
 #' 
 #' @param filename Path to and file name of the LakeData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #'  
 #' @details
-#' \code{ReadLakeData} is a simple \code{\link{read.table}} wrapper, mainly added to provide a comparable 
-#' function to the other RHYPE imports.
+#' Hype data file imports, simple \code{\link{read.table}} wrappers.
 #' 
 #' @return
-#' \code{ReadLakeData} returns a data frame.
+#' Imported files are returned asdata frames.
 #' 
 #' @examples
 #' \dontrun{ReadLakeData("LakeData.txt")}
+#' \dontrun{ReadDamData("DamData.txt")}
 #' 
+#' @name HypeDataImport
+NULL
 
-
+#' @rdname HypeDataImport
 ReadLakeData <- function(filename = "LakeData.txt") {
   read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
 }
+#' @export
 
+#' @rdname HypeDataImport
+ReadDamData <- function(filename = "DamData.txt") {
+  read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
+}
+#' @export
 
 
 

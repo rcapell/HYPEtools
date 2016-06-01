@@ -29,7 +29,7 @@
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{HYPE online documentation for BranchData.txt}.
 #' 
 #' @return
-#' If \code{get.weights} is \code{FALSE} \code{AllUpstreamSubids} returns a vector of SUBIDs, otherwise a two-column data frame with SUBIDs in 
+#' If \code{get.weights} is \code{FALSE}, \code{AllUpstreamSubids} returns a vector of SUBIDs, otherwise a two-column data frame with SUBIDs in 
 #' the first, and flow weight fractions in the second column.
 #' 
 #' @seealso 

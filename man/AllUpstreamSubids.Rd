@@ -24,7 +24,7 @@ downstream order for a working GeoData table.}
 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.}
 }
 \value{
-If \code{get.weights} is \code{FALSE} \code{AllUpstreamSubids} returns a vector of SUBIDs, otherwise a two-column data frame with SUBIDs in 
+If \code{get.weights} is \code{FALSE}, \code{AllUpstreamSubids} returns a vector of SUBIDs, otherwise a two-column data frame with SUBIDs in 
 the first, and flow weight fractions in the second column.
 }
 \description{
