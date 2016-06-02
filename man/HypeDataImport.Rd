@@ -12,25 +12,27 @@
 \alias{ReadPointSourceData}
 \title{Read HYPE data files}
 \usage{
-ReadLakeData(filename = "LakeData.txt")
+ReadDamData(filename = "DamData.txt", verbose = T)
 
-ReadDamData(filename = "DamData.txt")
+ReadLakeData(filename = "LakeData.txt", verbose = T)
 
-ReadMgmtData(filename = "MgmtData.txt")
+ReadMgmtData(filename = "MgmtData.txt", verbose = T)
 
-ReadAquiferData(filename = "AquiferData.txt", sep = "\\t")
+ReadAquiferData(filename = "AquiferData.txt", sep = "\\t", verbose = T)
 
-ReadPointSourceData(filename = "PointSourceData.txt")
+ReadPointSourceData(filename = "PointSourceData.txt", verbose = T)
 
 ReadGlacierData(filename = "GlacierData.txt", sep = "\\t")
 
-ReadCropData(filename = "CropData.txt")
+ReadCropData(filename = "CropData.txt", verbose = T)
 
-ReadBranchData(filename = "BranchData.txt")
+ReadBranchData(filename = "BranchData.txt", verbose = T)
 }
 \arguments{
 \item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
+
+\item{verbose}{Logical, display message if columns contain \code{NA} values.}
 }
 \value{
 Imported files are returned as data frames.

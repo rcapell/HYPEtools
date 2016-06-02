@@ -846,12 +846,13 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HypeDataImport~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#'Read HYPE data files
+#' Read HYPE data files
 #'
 #' These are simple convenience wrapper functions to import various HYPE data files as data frame into R.
 #' 
 #' @param filename Path to and file name of HYPE data file file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
+#' @param verbose Logical, display message if columns contain \code{NA} values.
 #'  
 #' @details
 #' Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
@@ -880,97 +881,98 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 #' \dontrun{ReadMgmtData("MgmtData.txt")}
 #' 
 #' @name HypeDataImport
+
 NULL
 
 #' @rdname HypeDataImport
-ReadLakeData <- function(filename = "LakeData.txt") {
+#' @export
+ReadDamData <- function(filename = "DamData.txt", verbose = T) {
   res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
-#' @export
 
 #' @rdname HypeDataImport
-ReadDamData <- function(filename = "DamData.txt") {
+#' @export
+ReadLakeData <- function(filename = "LakeData.txt", verbose = T) {
   res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
-#' @export
 
 #' @rdname HypeDataImport
-ReadMgmtData <- function(filename = "MgmtData.txt") {
+#' @export
+ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T) {
   # import
   res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "")
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
-#' @export
 
 #' @rdname HypeDataImport
-ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t") {
+#' @export
+ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t", verbose = T) {
   # import
   res <- read.table(file = filename, header = T, na.strings = "-9999", sep = sep, comment.char = "")
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
-#' @export
 
 #' @rdname HypeDataImport
-ReadPointSourceData <- function(filename = "PointSourceData.txt") {
+#' @export
+ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T) {
   res <- read.table(file = filename, header = T, sep = "\t")
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
-#' @export
 
 #' @rdname HypeDataImport
+#' @export
 ReadGlacierData <- function(filename = "GlacierData.txt", sep = "\t") {
   res <- read.table(file = filename, header = T, sep = sep)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
-#' @export
 
 #' @rdname HypeDataImport
-ReadCropData <- function(filename = "CropData.txt") {
+#' @export
+ReadCropData <- function(filename = "CropData.txt", verbose = T) {
   res <- read.table(file = filename, header = T)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
-#' @export
 
 #' @rdname HypeDataImport
-ReadBranchData <- function(filename = "BranchData.txt") {
+#' @export
+ReadBranchData <- function(filename = "BranchData.txt", verbose = T) {
   res <- read.table(file = filename, header = T)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
   return(res)
 }
-#' @export
 
 
 
@@ -997,7 +999,7 @@ ReadBranchData <- function(filename = "BranchData.txt") {
 #' \code{ReadPmsf} returns an integer vector.
 #' 
 #' @examples
-#' \dontrun{ReadLakeData("pmsf.txt")}
+#' \dontrun{ReadPmsf("pmsf.txt")}
 #' 
 
 ReadPmsf <- function(filename = "pmsf.txt") {
