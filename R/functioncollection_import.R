@@ -5,22 +5,18 @@
 #     - ReadBasinOutput()
 #     - ReadXobs()
 #     - ReadGeoData()
-#     - ReadBranchData()
-#     - ReadCropData()
 #     - ReadPar()
 #     - ReadMapOutput()
 #     - ReadTimeOutput()
 #     - ReadPTQobs()
-#     - ReadLakeData()
+#     - HypeDataImport: 
+#         ReadLakeData(), ReadDamData(), ReadMgmtData(), ReadAquiferData(), ReadPointSourceData(), ReadGlacierData(), 
+#         ReadCropData(), ReadBranchData()
 #     - ReadPmsf()
-#     - ReadMgmtData()
-#     - ReadAquiferData()
-#     - ReadPointSourceData()
 #     - ReadAllsim()
 #     - ReadOptpar()
 #     - ReadSubass()
 #     - ReadDescription()
-#     - ReadGlacierData()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -385,66 +381,6 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
 }
 
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadBranchData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' @export
-#' @title
-#' Read a 'BranchData.txt' file
-#'
-#' @description
-#' This is a convenience wrapper function to import a BranchData file as data frame into R.
-#' 
-#' @param filename Path to and file name of the Branchdata file to import. Windows users: Note that 
-#' Paths are separated by '/', not '\\'. 
-#'  
-#' @details
-#' \code{ReadBranchData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
-#' function to the other RHYPE imports.
-#' 
-#' @return
-#' \code{ReadBranchData} returns a data frame.
-#' 
-#' @examples
-#' \dontrun{ReadBranchData("BranchData.txt")}
-#' 
-
-
-ReadBranchData <- function(filename = "BranchData.txt") {
-  te <- read.table(file = filename, header = T)
-}
-
-
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadCropData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' @export
-#' @title
-#' Read a 'CropData.txt' file
-#'
-#' @description
-#' This is a convenience wrapper function to import a CropData file as data frame into R.
-#' 
-#' @param filename Path to and file name of the CropData file to import. Windows users: Note that 
-#' Paths are separated by '/', not '\\'. 
-#'  
-#' @details
-#' \code{ReadCropData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
-#' function to the other RHYPE imports.
-#' 
-#' @return
-#' \code{ReadCropData} returns a data frame.
-#' 
-#' @examples
-#' \dontrun{ReadCropData("CropData.txt")}
-#' 
-
-
-ReadCropData <- function(filename = "CropData.txt") {
-  te <- read.table(file = filename, header = T)
-}
 
 
 
@@ -908,39 +844,136 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadLakeData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HypeDataImport~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 #'Read HYPE data files
 #'
-#' This is a convenience wrapper function to import a LakeData file as data frame into R.
+#' These are simple convenience wrapper functions to import various HYPE data files as data frame into R.
 #' 
-#' @param filename Path to and file name of the LakeData file to import. Windows users: Note that 
+#' @param filename Path to and file name of HYPE data file file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #'  
 #' @details
-#' Hype data file imports, simple \code{\link{read.table}} wrappers.
+#' Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
+#' specifications:
+#' 
+#' \itemize{
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+#' }
+#' 
+#' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
+#' allowed in additional comment columns. Informative warnings will be thrown if \code{NA}s are found during import.
 #' 
 #' @return
-#' Imported files are returned asdata frames.
+#' Imported files are returned as data frames.
 #' 
 #' @examples
 #' \dontrun{ReadLakeData("LakeData.txt")}
 #' \dontrun{ReadDamData("DamData.txt")}
+#' \dontrun{ReadMgmtData("MgmtData.txt")}
 #' 
 #' @name HypeDataImport
 NULL
 
 #' @rdname HypeDataImport
 ReadLakeData <- function(filename = "LakeData.txt") {
-  read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
 }
 #' @export
 
 #' @rdname HypeDataImport
 ReadDamData <- function(filename = "DamData.txt") {
-  read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
 }
 #' @export
+
+#' @rdname HypeDataImport
+ReadMgmtData <- function(filename = "MgmtData.txt") {
+  # import
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "")
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+#' @export
+
+#' @rdname HypeDataImport
+ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t") {
+  # import
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = sep, comment.char = "")
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+#' @export
+
+#' @rdname HypeDataImport
+ReadPointSourceData <- function(filename = "PointSourceData.txt") {
+  res <- read.table(file = filename, header = T, sep = "\t")
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+#' @export
+
+#' @rdname HypeDataImport
+ReadGlacierData <- function(filename = "GlacierData.txt", sep = "\t") {
+  res <- read.table(file = filename, header = T, sep = sep)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+#' @export
+
+#' @rdname HypeDataImport
+ReadCropData <- function(filename = "CropData.txt") {
+  res <- read.table(file = filename, header = T)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+#' @export
+
+#' @rdname HypeDataImport
+ReadBranchData <- function(filename = "BranchData.txt") {
+  res <- read.table(file = filename, header = T)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+#' @export
+
+
+
 
 
 
@@ -974,116 +1007,6 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 }
 
 
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadMgmtData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' @export
-#' @title
-#' Read a 'MgmtData.txt' file
-#'
-#' @description
-#' This is a convenience wrapper function to import a HYPE MgmtData file as data frame into R.
-#' 
-#' @param filename Path to and file name of the MgmtData file to import. Windows users: Note that 
-#' Paths are separated by '/', not '\\'. 
-#'  
-#' @details
-#' \code{ReadMgmtData} is a simple \code{\link{read.table}} wrapper, mainly added to provide a comparable 
-#' function to the other RHYPE imports. Will check for \code{NA} values in imported data and return a warning if any are found. 
-#' HYPE requires \code{NA}-free input in required 'AquiferData.txt' columns, but empty values are allowed in comment 
-#' columns which are not read.
-#' 
-#' @return
-#' \code{ReadMgmtData} returns a data frame.
-#' 
-#' @examples
-#' \dontrun{ReadMgmtData("MgmtData.txt")}
-#' 
-
-
-ReadMgmtData <- function(filename = "MgmtData.txt") {
-  # import
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "")
-  # check for NAs
-  te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
-  return(res)
-}
-
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadAquiferData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' @export
-#' @title
-#' Read an 'AquiferData.txt' file
-#'
-#' @description
-#' This is a convenience wrapper function to import a HYPE AquiferData file as data frame into R.
-#' 
-#' @param filename Path to and file name of the AquiferData file to import. Windows users: Note that 
-#' Paths are separated by '/', not '\\'. 
-#' @param sep Character string, field separator as in \code{\link{read.table}}. 
-#'  
-#' @details
-#' \code{ReadAquiferData} is a simple \code{\link{read.table}} wrapper, mainly added to provide a comparable 
-#' function to other RHYPE import functions. Will check for \code{NA} values in imported data and return a warning if any are found. 
-#' HYPE requires \code{NA}-free input in required 'AquiferData.txt' columns, but empty values are allowed in comment columns 
-#' which are not read.
-#' 
-#' @return
-#' \code{ReadAquiferData} returns a data frame.
-#' 
-#' @examples
-#' \dontrun{ReadAquiferData("../myhype/AquiferData.txt")}
-#' 
-
-
-ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t") {
-  # import
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = sep, comment.char = "")
-  # check for NAs
-  te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
-  return(res)
-}
-
-
-
-
-
-
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPointSourceData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' @export
-#' @title
-#' Read a 'PointSourceData.txt' file
-#'
-#' @description
-#' This is a convenience wrapper function to import a PointSourceData file as data frame into R.
-#' 
-#' @param filename Path to and file name of the PointSourceData file to import. 
-#'  
-#' @details
-#' \code{ReadPointSourceData} is just \code{read.table(file = filename, header = T)}, mainly added to provide a comparable 
-#' function to the other RHYPE imports.
-#' 
-#' @return
-#' \code{ReadPointSourceData} returns a data frame.
-#' 
-#' @examples
-#' \dontrun{ReadPointSourceData("PointSourceData.txt")}
-#' 
-
-
-ReadPointSourceData <- function(filename = "PointSourceData.txt") {
-  read.table(file = filename, header = T, sep = "\t")
-}
 
 
 
@@ -1206,7 +1129,7 @@ ReadOptpar <- function(filename) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadSubass~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' Read an 'subassX.txt' file
+#' Read a 'subassX.txt' file
 #'
 #' This is a convenience wrapper function to import an subassX.txt sub-basin assessment file as data frame into R.
 #' Sub-basins assessment files contain performance criteria results, as defined in 'info.txt', for individual 
@@ -1333,30 +1256,3 @@ ReadDescription <- function(filename, gcl = NULL) {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadGlacierData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' Read a 'GlacierData.txt' file
-#'
-#' This is a convenience wrapper function to import a GlacierData file as data frame into R.
-#' 
-#' @param filename Path to and file name of the GlacierData file to import. Windows users: Note that 
-#' Paths are separated by '/', not '\\'. 
-#' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
-
-#' @details
-#' \code{ReadGlacierData} runs \code{read.table(file = filename, header = T, sep = sep)} and forces upper-case column names.
-#' 
-#' @return
-#' \code{ReadGlacierData} returns a data frame.
-#' 
-#' @examples
-#' \dontrun{ReadGlacierData("GlacierData.txt")}
-#' 
-#' @export
-
-
-ReadGlacierData <- function(filename = "GlacierData.txt", sep = "\t") {
-  res <- read.table(file = filename, header = T, sep = sep)
-  names(res) <- toupper(names(res))
-  return(res)
-}

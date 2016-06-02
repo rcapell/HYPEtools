@@ -2,7 +2,7 @@
 % Please edit documentation in R/functioncollection_import.R
 \name{ReadSubass}
 \alias{ReadSubass}
-\title{Read an 'subassX.txt' file}
+\title{Read a 'subassX.txt' file}
 \usage{
 ReadSubass(filename = "subass1.txt", nhour = NULL)
 }
