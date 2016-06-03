@@ -631,8 +631,8 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10, nsmall = 0L) {
   
-  # test length of string columns elements, throws warning if any element longer than 50, since HYPE does not read them
-  .CheckCharLengthDf(x, maxChar = 50)
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  .CheckCharLengthDf(x, maxChar = 100)
   
   # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
   x[is.na(x)] <- -9999

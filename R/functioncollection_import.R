@@ -853,6 +853,7 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 #' @param filename Path to and file name of HYPE data file file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param verbose Logical, display message if columns contain \code{NA} values.
+#' @param stringsAsFactors Logical, import character columns as \code{link{factor}}.
 #'  
 #' @details
 #' Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
@@ -886,8 +887,8 @@ NULL
 
 #' @rdname HypeDataImport
 #' @export
-ReadDamData <- function(filename = "DamData.txt", verbose = T) {
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
+ReadDamData <- function(filename = "DamData.txt", verbose = T, stringsAsFactors = F) {
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "", stringsAsFactors = stringsAsFactors)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -897,8 +898,8 @@ ReadDamData <- function(filename = "DamData.txt", verbose = T) {
 
 #' @rdname HypeDataImport
 #' @export
-ReadLakeData <- function(filename = "LakeData.txt", verbose = T) {
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "")
+ReadLakeData <- function(filename = "LakeData.txt", verbose = T, stringsAsFactors = F) {
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "", stringsAsFactors = stringsAsFactors)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -908,9 +909,9 @@ ReadLakeData <- function(filename = "LakeData.txt", verbose = T) {
 
 #' @rdname HypeDataImport
 #' @export
-ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T) {
+ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, stringsAsFactors = F) {
   # import
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "")
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "", stringsAsFactors = stringsAsFactors)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -920,9 +921,9 @@ ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T) {
 
 #' @rdname HypeDataImport
 #' @export
-ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t", verbose = T) {
+ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t", verbose = T, stringsAsFactors = F) {
   # import
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = sep, comment.char = "")
+  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = sep, comment.char = "", stringsAsFactors = stringsAsFactors)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -932,8 +933,8 @@ ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t", verbose = 
 
 #' @rdname HypeDataImport
 #' @export
-ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T) {
-  res <- read.table(file = filename, header = T, sep = "\t")
+ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, stringsAsFactors = F) {
+  res <- read.table(file = filename, header = T, sep = "\t", stringsAsFactors = stringsAsFactors)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -943,8 +944,8 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T) {
 
 #' @rdname HypeDataImport
 #' @export
-ReadGlacierData <- function(filename = "GlacierData.txt", sep = "\t") {
-  res <- read.table(file = filename, header = T, sep = sep)
+ReadGlacierData <- function(filename = "GlacierData.txt", sep = "\t", stringsAsFactors = F) {
+  res <- read.table(file = filename, header = T, sep = sep, stringsAsFactors = stringsAsFactors)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -954,8 +955,8 @@ ReadGlacierData <- function(filename = "GlacierData.txt", sep = "\t") {
 
 #' @rdname HypeDataImport
 #' @export
-ReadCropData <- function(filename = "CropData.txt", verbose = T) {
-  res <- read.table(file = filename, header = T)
+ReadCropData <- function(filename = "CropData.txt", verbose = T, stringsAsFactors = F) {
+  res <- read.table(file = filename, header = T, stringsAsFactors = stringsAsFactors)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -965,8 +966,8 @@ ReadCropData <- function(filename = "CropData.txt", verbose = T) {
 
 #' @rdname HypeDataImport
 #' @export
-ReadBranchData <- function(filename = "BranchData.txt", verbose = T) {
-  res <- read.table(file = filename, header = T)
+ReadBranchData <- function(filename = "BranchData.txt", verbose = T, stringsAsFactors = F) {
+  res <- read.table(file = filename, header = T, stringsAsFactors = stringsAsFactors)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})

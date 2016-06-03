@@ -44,8 +44,9 @@
   if (lc > 0) {
     chamat <- as.matrix(x[, chars])
     # test if the longest string in any column is longer than 50 characters, return with warning
-    if (max(apply(chamat, 2, function (z) max(nchar(z)))) > maxChar) {
-      warning("String with more than 50 characters in exported data detected. This will lead to an error in HYPE.")
+    te <- apply(chamat, 2, function (z) max(nchar(z)))
+    if (any(te > maxChar)) {
+      warning(paste0("String with more than ", maxChar, "characters in detected in column() ", paste((1:length(te))[te >maxChar], collapse = ","), ". This will lead to an error in HYPE."))
     }  
   }
 }

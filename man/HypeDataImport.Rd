@@ -12,27 +12,33 @@
 \alias{ReadPointSourceData}
 \title{Read HYPE data files}
 \usage{
-ReadDamData(filename = "DamData.txt", verbose = T)
+ReadDamData(filename = "DamData.txt", verbose = T, stringsAsFactors = F)
 
-ReadLakeData(filename = "LakeData.txt", verbose = T)
+ReadLakeData(filename = "LakeData.txt", verbose = T, stringsAsFactors = F)
 
-ReadMgmtData(filename = "MgmtData.txt", verbose = T)
+ReadMgmtData(filename = "MgmtData.txt", verbose = T, stringsAsFactors = F)
 
-ReadAquiferData(filename = "AquiferData.txt", sep = "\\t", verbose = T)
+ReadAquiferData(filename = "AquiferData.txt", sep = "\\t", verbose = T,
+  stringsAsFactors = F)
 
-ReadPointSourceData(filename = "PointSourceData.txt", verbose = T)
+ReadPointSourceData(filename = "PointSourceData.txt", verbose = T,
+  stringsAsFactors = F)
 
-ReadGlacierData(filename = "GlacierData.txt", sep = "\\t")
+ReadGlacierData(filename = "GlacierData.txt", sep = "\\t",
+  stringsAsFactors = F)
 
-ReadCropData(filename = "CropData.txt", verbose = T)
+ReadCropData(filename = "CropData.txt", verbose = T, stringsAsFactors = F)
 
-ReadBranchData(filename = "BranchData.txt", verbose = T)
+ReadBranchData(filename = "BranchData.txt", verbose = T,
+  stringsAsFactors = F)
 }
 \arguments{
 \item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
 \item{verbose}{Logical, display message if columns contain \code{NA} values.}
+
+\item{stringsAsFactors}{Logical, import character columns as \code{link{factor}}.}
 }
 \value{
 Imported files are returned as data frames.
