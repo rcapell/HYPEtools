@@ -853,7 +853,8 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 #' @param filename Path to and file name of HYPE data file file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param verbose Logical, display message if columns contain \code{NA} values.
-#' @param stringsAsFactors Logical, import character columns as \code{link{factor}}.
+#' @param ... Other parameters passed to \code{\link{read.table}}. Parameters with changed default values denoted 
+#' in \code{Usage} section above.
 #'  
 #' @details
 #' Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
@@ -887,31 +888,11 @@ NULL
 
 #' @rdname HypeDataImport
 #' @export
-ReadDamData <- function(filename = "DamData.txt", verbose = T, stringsAsFactors = F) {
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "", stringsAsFactors = stringsAsFactors)
-  names(res) <- toupper(names(res))
-  # check for NAs
-  te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
-  return(res)
-}
-
-#' @rdname HypeDataImport
-#' @export
-ReadLakeData <- function(filename = "LakeData.txt", verbose = T, stringsAsFactors = F) {
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "\t", comment.char = "", stringsAsFactors = stringsAsFactors)
-  names(res) <- toupper(names(res))
-  # check for NAs
-  te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
-  return(res)
-}
-
-#' @rdname HypeDataImport
-#' @export
-ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, stringsAsFactors = F) {
+ReadAquiferData <- function(filename = "AquiferData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                            stringsAsFactors = F, ...) {
   # import
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = "", comment.char = "", stringsAsFactors = stringsAsFactors)
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -921,9 +902,76 @@ ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, stringsAsFactor
 
 #' @rdname HypeDataImport
 #' @export
-ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t", verbose = T, stringsAsFactors = F) {
+ReadBranchData <- function(filename = "BranchData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                           stringsAsFactors = F, ...) {
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, ...)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+
+#' @rdname HypeDataImport
+#' @export
+ReadCropData <- function(filename = "CropData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                         stringsAsFactors = F, ...) {
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, ...)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+
+#' @rdname HypeDataImport
+#' @export
+ReadDamData <- function(filename = "DamData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                        quote = "", stringsAsFactors = F, ...) {
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, quote = quote, ...)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+
+#' @rdname HypeDataImport
+#' @export
+ReadGlacierData <- function(filename = "GlacierData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                            stringsAsFactors = F, ...) {
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, ...)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+
+#' @rdname HypeDataImport
+#' @export
+ReadLakeData <- function(filename = "LakeData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                         comment.char = "", stringsAsFactors = F, ...) {
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, comment.char = comment.char, 
+                    stringsAsFactors = stringsAsFactors, ...)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+
+#' @rdname HypeDataImport
+#' @export
+ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                         stringsAsFactors = F, ...) {
   # import
-  res <- read.table(file = filename, header = T, na.strings = "-9999", sep = sep, comment.char = "", stringsAsFactors = stringsAsFactors)
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -933,41 +981,10 @@ ReadAquiferData <- function(filename = "AquiferData.txt", sep = "\t", verbose = 
 
 #' @rdname HypeDataImport
 #' @export
-ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, stringsAsFactors = F) {
-  res <- read.table(file = filename, header = T, sep = "\t", stringsAsFactors = stringsAsFactors)
-  names(res) <- toupper(names(res))
-  # check for NAs
-  te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
-  return(res)
-}
-
-#' @rdname HypeDataImport
-#' @export
-ReadGlacierData <- function(filename = "GlacierData.txt", sep = "\t", stringsAsFactors = F) {
-  res <- read.table(file = filename, header = T, sep = sep, stringsAsFactors = stringsAsFactors)
-  names(res) <- toupper(names(res))
-  # check for NAs
-  te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
-  return(res)
-}
-
-#' @rdname HypeDataImport
-#' @export
-ReadCropData <- function(filename = "CropData.txt", verbose = T, stringsAsFactors = F) {
-  res <- read.table(file = filename, header = T, stringsAsFactors = stringsAsFactors)
-  names(res) <- toupper(names(res))
-  # check for NAs
-  te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
-  return(res)
-}
-
-#' @rdname HypeDataImport
-#' @export
-ReadBranchData <- function(filename = "BranchData.txt", verbose = T, stringsAsFactors = F) {
-  res <- read.table(file = filename, header = T, stringsAsFactors = stringsAsFactors)
+ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                                stringsAsFactors = F, ...) {
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})

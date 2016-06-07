@@ -12,25 +12,32 @@
 \alias{ReadPointSourceData}
 \title{Read HYPE data files}
 \usage{
-ReadDamData(filename = "DamData.txt", verbose = T, stringsAsFactors = F)
+ReadAquiferData(filename = "AquiferData.txt", verbose = T, header = T,
+  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
 
-ReadLakeData(filename = "LakeData.txt", verbose = T, stringsAsFactors = F)
+ReadBranchData(filename = "BranchData.txt", verbose = T, header = T,
+  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
 
-ReadMgmtData(filename = "MgmtData.txt", verbose = T, stringsAsFactors = F)
+ReadCropData(filename = "CropData.txt", verbose = T, header = T,
+  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
 
-ReadAquiferData(filename = "AquiferData.txt", sep = "\\t", verbose = T,
-  stringsAsFactors = F)
+ReadDamData(filename = "DamData.txt", verbose = T, header = T,
+  na.strings = "-9999", sep = "\\t", quote = "", stringsAsFactors = F,
+  ...)
+
+ReadGlacierData(filename = "GlacierData.txt", verbose = T, header = T,
+  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
+
+ReadLakeData(filename = "LakeData.txt", verbose = T, header = T,
+  na.strings = "-9999", sep = "\\t", comment.char = "",
+  stringsAsFactors = F, ...)
+
+ReadMgmtData(filename = "MgmtData.txt", verbose = T, header = T,
+  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
 
 ReadPointSourceData(filename = "PointSourceData.txt", verbose = T,
-  stringsAsFactors = F)
-
-ReadGlacierData(filename = "GlacierData.txt", sep = "\\t",
-  stringsAsFactors = F)
-
-ReadCropData(filename = "CropData.txt", verbose = T, stringsAsFactors = F)
-
-ReadBranchData(filename = "BranchData.txt", verbose = T,
-  stringsAsFactors = F)
+  header = T, na.strings = "-9999", sep = "\\t", stringsAsFactors = F,
+  ...)
 }
 \arguments{
 \item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that 
@@ -38,7 +45,8 @@ Paths are separated by '/', not '\\'.}
 
 \item{verbose}{Logical, display message if columns contain \code{NA} values.}
 
-\item{stringsAsFactors}{Logical, import character columns as \code{link{factor}}.}
+\item{...}{Other parameters passed to \code{\link{read.table}}. Parameters with changed default values denoted 
+in \code{Usage} section above.}
 }
 \value{
 Imported files are returned as data frames.
