@@ -29,8 +29,8 @@ ReadGlacierData(filename = "GlacierData.txt", verbose = T, header = T,
   na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
 
 ReadLakeData(filename = "LakeData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", comment.char = "",
-  stringsAsFactors = F, ...)
+  na.strings = "-9999", sep = "\\t", quote = "", stringsAsFactors = F,
+  ...)
 
 ReadMgmtData(filename = "MgmtData.txt", verbose = T, header = T,
   na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)

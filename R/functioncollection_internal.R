@@ -46,7 +46,7 @@
     # test if the longest string in any column is longer than 50 characters, return with warning
     te <- apply(chamat, 2, function (z) max(nchar(z)))
     if (any(te > maxChar)) {
-      warning(paste0("String with more than ", maxChar, "characters in detected in column() ", paste((1:length(te))[te >maxChar], collapse = ","), ". This will lead to an error in HYPE."))
+      warning(paste0("String with more than ", maxChar, " characters in detected in column(s): ", paste(names(te[te > maxChar]), collapse = ","), ". This is not HYPE-comform."))
     }  
   }
 }

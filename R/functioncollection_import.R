@@ -50,7 +50,7 @@
 ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) { 
     
   # read in the data in the file, skipping the comments and header
-  x <- read.table(filename, header = T, skip = headrow - 1, comment.char = "", fill = T)
+  x <- read.table(filename, header = T, skip = headrow - 1, quote = "", fill = T)
   # clean header from remnant of comment character in txt file
   names(x)[1] <- gsub("X.", "", names(x)[1])
   
@@ -955,8 +955,8 @@ ReadGlacierData <- function(filename = "GlacierData.txt", verbose = T, header = 
 #' @rdname HypeDataImport
 #' @export
 ReadLakeData <- function(filename = "LakeData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                         comment.char = "", stringsAsFactors = F, ...) {
-  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, comment.char = comment.char, 
+                         quote = "", stringsAsFactors = F, ...) {
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, quote = quote, 
                     stringsAsFactors = stringsAsFactors, ...)
   names(res) <- toupper(names(res))
   # check for NAs
