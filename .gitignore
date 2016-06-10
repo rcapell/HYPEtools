@@ -11,7 +11,7 @@ src/obsfile_handling.obj
 src/obsfile_handling.lib
 src/obsfile_handling.exp
 src/obsfile_handling.dll
-src/RHYPE.dll
+src/HYPEtools.dll
 src-i386
 src-x64
 .gitignore
