@@ -235,14 +235,15 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", outformat = "df") 
 #' the number of rows to import.
 #'  
 #' @details
-#' \code{ReadXobs} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+#' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{\link[data.table]{data.table-package}}, 
 #' with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as 
 #' attributes (see \code{\link{attr}} on how to access these).
 #' 
 #' Duplicated variable-SUBID combinations are not allowed in HYPE Xobs files, and the function will throw a warning if any are found.
 #' 
 #' @return
-#' If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with four 
+#' If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HypeXobs}} object, a data frame with four 
 #' additional attributes \code{variable}, \code{subid}, \code{comment}, and \code{timestep}: \code{variable} 
 #' and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted). 
 #' \code{comment} contains the content of the Xobs file comment row as single string. \code{timestep} contains a keyword string.
@@ -301,7 +302,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
   xobs[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object."); return(xobs[, 1])})
   
-  # if date conversion worked and time steps are HYPE-conform, add class HydroXobs to returned object 
+  # if date conversion worked and time steps are HYPE-conform, add class HypeXobs to returned object 
   if(!is.character(xobs[, 1]) && duplifree) {
     # check if time steps are equidistant
     tstep <- diff(xobs[, 1])
@@ -349,8 +350,9 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
 #' @param filename Path to and file name of the GeoData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
+
 #' @details
-#' \code{ReadGeoData} runs \code{\link{data.table::fread}} from the \code{\link{data.table-package}} 
+#' \code{ReadGeoData} runs \code{\link[data.table]{fread}} from the \code{\link[data.table]{data.table-package}} 
 #' with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and 
 #' upper-case column names.
 #' 
@@ -454,11 +456,12 @@ ReadPar <- function (filename = "par.txt") {
 #' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
 #' time output file names.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
-#' return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
-#' @param nrows Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.
+#' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
+#' @param nrows Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.
 #' 
 #' @details
-#' \code{ReadMapOutput} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+#' \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{\link[data.table]{data.table-package}}, 
 #' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 #' of the time step period.
 #' 
@@ -475,7 +478,7 @@ ReadPar <- function (filename = "par.txt") {
 #' @examples
 #' \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
 #' 
-#' @importFrom data.table fread transpose
+#' @importFrom data.table fread transpose :=
 #' @export
 
 ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "df", nrows = -1L) {
@@ -594,12 +597,13 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
 #' time output file names.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
-#' return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
+#' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
 #' @param select Integer vector, column numbers to import. Note: first column with dates must be imported.
-#' @param nrows Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.
+#' @param nrows Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.
 #' 
 #' @details
-#' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+#' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{\link[data.table]{data.table-package}}, 
 #' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 #' of the time step period.
 #' 
@@ -703,7 +707,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
       } else {
         xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
         x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(eval(dcol))})
+          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
       }
     }
   } else {
@@ -796,7 +800,8 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' to import.
 #'  
 #' @details
-#' \code{ReadPTQobs} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+#' \code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{\link[data.table]{data.table-package}}, 
 #' with conversion of date-time strings to POSIX time representations. SUBIDs are returned as integer attribute \code{subid} 
 #' (see \code{\link{attr}} on how to access it). 
 #' 
@@ -853,8 +858,12 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 #' @param filename Path to and file name of HYPE data file file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param verbose Logical, display message if columns contain \code{NA} values.
-#' @param ... Other parameters passed to \code{\link{read.table}}. Parameters with changed default values denoted 
-#' in \code{Usage} section above.
+#' @param header \code{\link{read.table}} arguments, with appropriote default for HYPE data file import.
+#' @param na.strings See \code{header}.
+#' @param sep See \code{header}.
+#' @param stringsAsFactors See \code{header}.
+#' @param quote See \code{header}.
+#' @param ... Other parameters passed to \code{\link{read.table}}.
 #'  
 #' @details
 #' Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
@@ -1160,7 +1169,7 @@ ReadOptpar <- function(filename) {
 #'  
 #' @details
 #' \code{ReadSubass} imports a sub-basin assessement file into R. Information on model variables evaluated in the 
-#' file is imported as additional \code{\link{attribute}} \code{variables}, the evaluation time step in an attribute 
+#' file is imported as additional \code{\link{attributes}} \code{variables}, the evaluation time step in an attribute 
 #' \code{timestep}.
 #' 
 #' Sub-daily time steps are reported with time step code '0' in HYPE result files. In order to preserve the time step 

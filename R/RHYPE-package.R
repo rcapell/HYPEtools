@@ -1,6 +1,6 @@
-#' @title RHYPE
+#' @title HYPEtools
 #'
-#' @name RHYPE
+#' @name HYPEtools
 #' @docType package
 #' @description
 #' This package contains functions to handle and analyse input and

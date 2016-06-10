@@ -66,7 +66,7 @@ In standard use cases of this function, plot margins do not need to be changed.}
 \item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
 }
 \value{
-\code{PlotMapPoints} invisibly returns an object of class \code{\link{SpatialPolygonsDataFrame}} as provided in argument 
+\code{PlotMapOutput} invisibly returns an object of class \code{\link{SpatialPolygonsDataFrame}} as provided in argument 
 \code{map}, with plotted values and color codes added as columns in the data slot.
 }
 \description{
@@ -112,6 +112,6 @@ PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPE
 
 }
 \seealso{
-\code{\link{ReadMapOutput}} for HYPE result import; \code{\link{ReadMapPoints}} for a similar plot function
+\code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for a similar plot function
 }
 

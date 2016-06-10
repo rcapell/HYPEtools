@@ -4,10 +4,8 @@
 .Rproj.user
 .Rhistory
 .RData
-script_package_dev.R
-RHYPE.Rproj
+HYPEtools.Rproj
 .Rbuildignore
-roxygen_template.txt
 src/obsfile_handling.o
 src/obsfile_handling.obj
 src/obsfile_handling.lib

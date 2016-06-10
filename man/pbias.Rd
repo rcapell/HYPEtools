@@ -13,7 +13,9 @@
 \item{obs}{\code{\link{HypeSingleVar}} array with observed variable, (one iteration). If several iterations are present
 in the array, only the first will be used.}
 
-\item{progbar}{Logical, if \code{TRUE} progress bars will be printed for main computational steps.}
+\item{na.rm}{Logical. If \code{TRUE}, incomplete sim-obs pairs will be removed prior to PBIAS computation.}
+
+\item{progbar}{Logical. If \code{TRUE}, progress bars will be printed for main computational steps.}
 
 \item{...}{ignored}
 }

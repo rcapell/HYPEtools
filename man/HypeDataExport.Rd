@@ -13,7 +13,8 @@
 WriteAquiferData(x, filename = "AquiferData.txt", digits = 10,
   nsmall = 0L, verbose = T)
 
-WriteBranchData(x, filename = "BranchData.txt")
+WriteBranchData(x, filename = "BranchData.txt", digits = 10, nsmall = 0L,
+  verbose = T)
 
 WriteCropData(x, filename = "CropData.txt", digits = 10, nsmall = 0L,
   verbose = T)

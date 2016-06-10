@@ -23,6 +23,7 @@
 #' 
 #' @param x numeric \code{\link{array}} with three dimensions, which holds HYPE results for one variable as (in order)
 #' \code{[date, subid, iteration]}.
+# #' @param object A \code{HypeSingleVar} array.
 #' @param date \code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
 #' with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 #' period averages, e.g. \code{"2000-2010"}.
@@ -30,6 +31,7 @@
 #' @param hype.var Character string, four-letter keyword to specify HYPE variable ID, see 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}. 
 #' Not case-sensitive.
+# #' @param ... Ignored.
 #' 
 #' @details
 #' S3 class constructor function for array objects which can hold (multiple) HYPE time or map output results. 
@@ -97,9 +99,10 @@ HypeSingleVar <- function(x, date, subid, hype.var) {
 
 # summary method
 #' @export
-summary.HypeSingleVar <- function(x, ...) {
-  vari <- attr(x, "variable")
-  dat <- attr(x, "date")
+# #' @rdname HypeSingleVar
+summary.HypeSingleVar <- function(object, ...) {
+  vari <- attr(object, "variable")
+  dat <- attr(object, "date")
   ldat <- length(dat)
   ans <- list(hypevar = vari, tslen = ldat)
   if (ldat > 1) {
@@ -111,8 +114,8 @@ summary.HypeSingleVar <- function(x, ...) {
     ans$edate <- NA
     ans$period <- dat
   }
-  ans$nsbd <- length(attr(x, "subid"))
-  ans$niter <- dim(x)[3]
+  ans$nsbd <- length(attr(object, "subid"))
+  ans$niter <- dim(object)[3]
   class(ans) <- "summaryHypeSingleVar"
   print(ans)
   invisible(ans)
@@ -153,6 +156,7 @@ print.summaryHypeSingleVar <- function(x, ...) {
 #' @param sim \code{\link{HypeSingleVar}} array with simulated variable (one or several iterations).
 #' @param obs \code{\link{HypeSingleVar}} array with observed variable, (one iteration). If several iterations are present
 #' in the array, only the first will be used.
+#' @param na.rm Logical. If \code{TRUE}, incomplete sim-obs pairs will be removed prior to NSE computation.
 #' @param progbar Logical, if \code{TRUE} progress bars will be printed for main computational steps.
 #' @param ... ignored
 #' 
@@ -231,7 +235,8 @@ NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) {
 #' @param sim \code{\link{HypeSingleVar}} array with simulated variable (one or several iterations).
 #' @param obs \code{\link{HypeSingleVar}} array with observed variable, (one iteration). If several iterations are present
 #' in the array, only the first will be used.
-#' @param progbar Logical, if \code{TRUE} progress bars will be printed for main computational steps.
+#' @param na.rm Logical. If \code{TRUE}, incomplete sim-obs pairs will be removed prior to PBIAS computation.
+#' @param progbar Logical. If \code{TRUE}, progress bars will be printed for main computational steps.
 #' @param ... ignored
 #' 
 #' @return 
@@ -280,7 +285,7 @@ pbias.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...){
                 dim = dm[2:3])  
   } else {
     pb <- array(sapply(dim.seq, 
-                       FUN = function(x, s, o, nr) {pbias.default(sim = s[[x]], obs = o[[y[x]]], nr = na.rm)}, 
+                       FUN = function(x, y, s, o, nr) {pbias.default(sim = s[[x]], obs = o[[y[x]]], nr = na.rm)}, 
                        y = dim.y,
                        s = lapply(dim.seq, array2list, y = dim.y, z = dim.z, a = sim), 
                        o = lapply(dim.seq, array2list, y = dim.y, z = dim.z, a = obs), 

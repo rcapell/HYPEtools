@@ -1,8 +1,8 @@
 # this file contains any actions performed on load
 
 .onUnload <- function(libpath)
-  library.dynam.unload("RHYPE", libpath)
+  library.dynam.unload("HYPEtools", libpath)
 
-.onLoad <- function(...) {
-  packageStartupMessage("RHYPE version 0.3-10. Find the latest release at: https://github.com/rcapell/RHYPE/releases\nPlease report bugs and feature requests at: https://github.com/rcapell/RHYPE/issues")
+.onAttach <- function(libname, pkgname) {
+  packageStartupMessage("HYPEtools version 0.3-10. Find the latest release at: https://github.com/rcapell/RHYPE/releases\nPlease report bugs and feature requests at: https://github.com/rcapell/RHYPE/issues")
 }

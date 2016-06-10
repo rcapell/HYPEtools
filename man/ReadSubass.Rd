@@ -23,7 +23,7 @@ sub-basins with observations.
 }
 \details{
 \code{ReadSubass} imports a sub-basin assessement file into R. Information on model variables evaluated in the 
-file is imported as additional \code{\link{attribute}} \code{variables}, the evaluation time step in an attribute 
+file is imported as additional \code{\link{attributes}} \code{variables}, the evaluation time step in an attribute 
 \code{timestep}.
 
 Sub-daily time steps are reported with time step code '0' in HYPE result files. In order to preserve the time step 

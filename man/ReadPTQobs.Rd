@@ -22,7 +22,8 @@ to import.}
 Import precipitation, temperature, or discharge observation files as data frame into R.
 }
 \details{
-\code{ReadPTQobs} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+\code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+\code{\link[data.table]{data.table-package}}, 
 with conversion of date-time strings to POSIX time representations. SUBIDs are returned as integer attribute \code{subid} 
 (see \code{\link{attr}} on how to access it).
 }

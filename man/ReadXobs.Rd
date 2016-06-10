@@ -16,7 +16,7 @@ Paths are separated by '/', not '\\'.}
 the number of rows to import.}
 }
 \value{
-If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HydroXobs}} object, a data frame with four 
+If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HypeXobs}} object, a data frame with four 
 additional attributes \code{variable}, \code{subid}, \code{comment}, and \code{timestep}: \code{variable} 
 and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted). 
 \code{comment} contains the content of the Xobs file comment row as single string. \code{timestep} contains a keyword string.
@@ -28,7 +28,8 @@ i.e. \code{[variable]_[subid]}. If datetime conversion failed on import, the ret
 This is a convenience wrapper function to import an Xobs file into R.
 }
 \details{
-\code{ReadXobs} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+\code{\link[data.table]{data.table-package}}, 
 with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as 
 attributes (see \code{\link{attr}} on how to access these).
 

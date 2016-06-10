@@ -408,7 +408,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   }
   
   if (plot.scale) {
-    if (!is.projected(map)) {
+    if (!is.projected(sites)) {
       warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = F' to remove it.")
     }
     if (!add) {
@@ -446,7 +446,6 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
                 yb = ly, 
                 len = nlen, cex.lab = .8)
   }
-  
   
   # invisible unless assigned: return map with added data and color codes
   invisible(sites)

@@ -45,8 +45,17 @@ Paths are separated by '/', not '\\'.}
 
 \item{verbose}{Logical, display message if columns contain \code{NA} values.}
 
-\item{...}{Other parameters passed to \code{\link{read.table}}. Parameters with changed default values denoted 
-in \code{Usage} section above.}
+\item{header}{\code{\link{read.table}} arguments, with appropriote default for HYPE data file import.}
+
+\item{na.strings}{See \code{header}.}
+
+\item{sep}{See \code{header}.}
+
+\item{stringsAsFactors}{See \code{header}.}
+
+\item{...}{Other parameters passed to \code{\link{read.table}}.}
+
+\item{quote}{See \code{header}.}
 }
 \value{
 Imported files are returned as data frames.

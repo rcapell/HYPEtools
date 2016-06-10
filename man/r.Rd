@@ -7,13 +7,15 @@
 \usage{
 r(sim, obs, ...)
 
-\method{r}{HypeSingleVar}(sim, obs, progbar = TRUE)
+\method{r}{HypeSingleVar}(sim, obs, progbar = TRUE, ...)
 }
 \arguments{
 \item{sim}{\code{\link[=HypeSingleVar]{HypeSingleVar array}} with simulated variable (one or several iterations).}
 
 \item{obs}{\code{\link[=HypeSingleVar]{HypeSingleVar array}} with observed variable, (one iteration). If several iterations 
 are present in the array, only the first will be used.}
+
+\item{...}{Ignored.}
 
 \item{progbar}{Logical, if \code{TRUE} progress bars will be printed for main computational steps.}
 }

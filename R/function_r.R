@@ -7,6 +7,7 @@
 #' @param obs \code{\link[=HypeSingleVar]{HypeSingleVar array}} with observed variable, (one iteration). If several iterations 
 #' are present in the array, only the first will be used.
 #' @param progbar Logical, if \code{TRUE} progress bars will be printed for main computational steps.
+#' @param ... Ignored.
 #' 
 #' @details 
 #' This function wraps a call to \code{cor(x = obs, y = sim, use = "na.or.complete", method = "pearson")}. 
@@ -32,7 +33,7 @@ r <- function(sim, obs, ...) {
 #' @importFrom pbapply pblapply pbsapply
 
 
-r.HypeSingleVar <- function(sim, obs, progbar = TRUE){ 
+r.HypeSingleVar <- function(sim, obs, progbar = TRUE, ...){ 
   
   # Check that 'sim' and 'obs' have the same dimensions
   if (all.equal(dim(sim)[1:2], dim(obs)[1:2]) != TRUE)
@@ -60,19 +61,17 @@ r.HypeSingleVar <- function(sim, obs, progbar = TRUE){
     o <- pblapply(dim.seq[1:dm[2]], array2list, y = dim.y, z = dim.z, a = obs)
     cat("Calculating CC.\n")
     pc <- array(pbsapply(dim.seq, 
-                         FUN = function(x, y, s, o, nr) {cor(x = s[[x]], y = o[[y[x]]], use = "na.or.complete", method = "pearson")}, 
+                         FUN = function(x, y, s, o) {cor(x = s[[x]], y = o[[y[x]]], use = "na.or.complete", method = "pearson")}, 
                          y = dim.y,
                          s = s, 
-                         o = o, 
-                         nr = na.rm), 
+                         o = o), 
                 dim = dm[2:3])  
   } else {
     pc <- array(sapply(dim.seq, 
-                       FUN = function(x, y, s, o, nr) {pbias.default(x = s[[x]], y = o[[y[x]]], use = "na.or.complete", method = "pearson")}, 
+                       FUN = function(x, y, s, o) {cor(x = s[[x]], y = o[[y[x]]], use = "na.or.complete", method = "pearson")}, 
                        y = dim.y,
                        s = lapply(dim.seq, array2list, y = dim.y, z = dim.z, a = sim), 
-                       o = lapply(dim.seq, array2list, y = dim.y, z = dim.z, a = obs), 
-                       nr = na.rm), 
+                       o = lapply(dim.seq, array2list, y = dim.y, z = dim.z, a = obs)), 
                 dim = dm[2:3])  
   }
   

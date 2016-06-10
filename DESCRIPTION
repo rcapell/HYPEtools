@@ -1,4 +1,4 @@
-Package: RHYPE
+Package: HYPEtools
 Version: 0.3-10
 Date: 
 Title: Tools for Processing and Analysing Files from the Conceptual
@@ -10,8 +10,7 @@ Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
     "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut"),
     person("David", "Gustafsson", role = "aut") )
 Depends:
-    R (>= 2.15.1),
-    hydroGOF
+    R (>= 2.15.1)
 Imports:
     sp,
     pbapply,

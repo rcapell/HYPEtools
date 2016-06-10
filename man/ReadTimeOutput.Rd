@@ -22,11 +22,11 @@ If \code{NULL} (default), the variable ID is extracted from the provided file na
 time output file names.}
 
 \item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
-return a \code{\link{data.table::data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
+return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
 
 \item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported.}
 
-\item{nrows}{Integer, number of rows to import, see documentation in \code{\link{data.table::fread}}.}
+\item{nrows}{Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.}
 }
 \value{
 \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
@@ -37,7 +37,8 @@ Data frames and data tables contain additional \code{\link{attributes}}: \code{v
 This is a convenience wrapper function to import a time output file ('time<\emph{HYPE_output_variable}>.txt') into R.
 }
 \details{
-\code{ReadTimeOutput} is a convenience wrapper function of \code{\link{data.table::fread}} from the \code{\link{data.table-package}}, 
+\code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+\code{\link[data.table]{data.table-package}}, 
 with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 of the time step period.
 }
