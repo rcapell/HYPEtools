@@ -4,16 +4,14 @@
 #     - WritePar()
 #     - WriteGeoData()
 #     - WriteGeoClass()
-#     - WriteBranchData()
 #     - WriteXobs()
 #     - WriteBasinOutput()
 #     - WriteTimeOutput()
-#     - WriteLakeData()
 #     - WritePmsf()
 #     - WritePTQobs()
-#     - WriteMgmtData()
-#     - WriteAquiferData()
-#     - WritePointSourceData()
+#     - HypeDataImport:
+#         WriteAquiferData(), WriteBranchData(), WriteCropData(), WriteDamData(), WriteLakeData(), WriteMgmtData(), 
+#         WritePointSourceData()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -158,53 +156,6 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt") {
 # x <- gec
 # filename <- "GeoClass.txt"
 # rm(x, filename)
-
-
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteBranchData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' @export
-#' @title
-#' Write a 'BranchData.txt' file
-#'
-#' @description
-#' This is a convenience wrapper function to export a 'BranchData.txt' file from R.
-#' 
-#' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadBranchData}}.
-#' @param filename A character string naming a file to write to. Windows users: Note that 
-#' Paths are separated by '/', not '\\'.
-#'  
-#' @details
-#' \code{WriteBranchData} exports a BranchData dataframe with formatting options adjusted for the output to be read by HYPE.
-#' HYPE does neither allow empty values in any BranchData column nor any string elements with more than 50 characters, the 
-#' function will return with warnings if \code{NA}s or long strings were exported.
-#' 
-#' @examples
-#' \dontrun{WriteBranchData(x = mybranchdata)}
-#' 
-
-
-WriteBranchData <- function(x, filename = "BranchData.txt") {
-  
-  # set options for number of digits and scientific notation so that HYPE-compatible decimal strings are returned
-  options(digits = 10, scipen = 5)
-  #
-  if (!is.null(na.action(na.omit(x)))) {
-    warning("NA values in exported object.")
-  }
-  
-  # test length of string columns elements, throws warning if any element longer than 50
-  .CheckCharLengthDf(x, maxChar = 50)
-  
-  # export
-  write.table(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE)
-  
-}
-
-
-
 
 
 
@@ -604,44 +555,6 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 # dt.format <- "%Y"
 # filename <- "test.txt"
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteLakeData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' @export
-#' @title
-#' Write a 'LakeData.txt' file
-#'
-#' @description
-#' This is a convenience wrapper function to export a 'LakeData.txt' file from R.
-#' 
-#' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadLakeData}}. 
-#' @param filename A character string naming a file to write to. Windows users: Note that 
-#' Paths are separated by '/', not '\\'.
-#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
-#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
-#'  
-#' @details
-#' \code{WriteLakeData} exports a LakeData dataframe with formatting options adjusted for the output to be read by HYPE.
-#' HYPE does not allow string elements with more than 50 characters in any LakeData column, the 
-#' function will return with a warning if long strings were exported.
-#' 
-#' @examples
-#' \dontrun{WriteLakeData(x = mylakedata)}
-#' 
-
-
-WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10, nsmall = 0L) {
-  
-  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
-  .CheckCharLengthDf(x, maxChar = 100)
-  
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
-  
-  # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE)
-  
-}
 
 
 
@@ -747,131 +660,172 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 1, nsmall
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteMgmtData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
-#' Write a 'MgmtData.txt' file
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HypeDataExport~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' Read HYPE data files
 #'
-#' @description
-#' This is a convenience wrapper function to export a HYPE 'MgmtData.txt' file from R.
+#' These are simple convenience wrapper functions to export various HYPE data files from R.
 #' 
-#' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadMgmtData}}. 
-#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' @param x The object to be written, a dataframe as returned from the \code{\link{HypeDataImport}} functions. 
+#' @param filename A character string naming a path and file name to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
-#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
+#' @param digits Integer, number of significant digits to export. See \code{\link{format}}.
 #' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+#' @param verbose Logical, display informative warning messages if columns contain \code{NA} values or if character strings are
+#' too long. See Details.
 #'  
 #' @details
-#' \code{WriteMgmtData} exports a MgmtData dataframe with formatting options adjusted for the output to be read by HYPE.
-#' HYPE requires \code{NA}-free data in all mandatory MgmtData column, but \code{NA}s are allowed in optional comment 
-#' columns which are not read by HYPE. The function will return with a warning if \code{NA}s were exported.
+#' Hype data file imports, simple \code{\link{write.table}} wrappers with formatting options adjusted to match HYPE file 
+#' specifications:
+#' 
+#' \itemize{
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+#' }
+#' 
+#' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
+#' allowed in additional comment columns which are not read by HYPE. Informative warnings will be thrown if \code{NA}s are 
+#' found during export. Character string lengths in comment columns of HYPE data files are restricted to 100 characters, 
+#' the functions will return with a warning if longer strings were exported.
 #' 
 #' @examples
-#' \dontrun{WriteMgmtData(x = myMgmtdata, file = "../myhype/MgmtData.txt")}
+#' \dontrun{WriteLakeData(mylakedata, "LakeData.txt")}
+#' \dontrun{WriteDamData(mydamdata, "DamData.txt")}
+#' \dontrun{WriteMgmtData(mymgmtdata, "MgmtData.txt")}
 #' 
+#' @name HypeDataExport
 
+NULL
 
-WriteMgmtData <- function(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L) {
-  
+#' @rdname HypeDataExport
+#' @export
+WriteAquiferData <- function(x, filename = "AquiferData.txt", digits = 10, nsmall = 0L, verbose = T) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
   # warn if NAs in data, since HYPE does not allow empty values in 
-  # check for NAs
   te <- apply(x, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
-  
+  if (any(te) && verbose) {
+    warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
+    }
   # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
   x[is.na(x)] <- -9999
-  
+  # export
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+}
+
+#' @rdname HypeDataExport
+#' @export
+WriteBranchData <- function(x, filename = "BranchData.txt", digits = 10, nsmall = 0L, verbose = T) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
+  #
+  # warn if NAs in data, since HYPE does not allow empty values in 
+  te <- apply(x, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) {
+    warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
+  }
+  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  x[is.na(x)] <- -9999
+  # export
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+}
+
+#' @rdname HypeDataExport
+#' @export
+WriteCropData <- function(x, filename = "CropData.txt", digits = 10, nsmall = 0L, verbose = T) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
+  # warn if NAs in data, since HYPE does not allow empty values in 
+  te <- apply(x, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) {
+    warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
+  }
+  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  x[is.na(x)] <- -9999
+  # export
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+}
+
+#' @rdname HypeDataExport
+#' @export
+WriteDamData <- function(x, filename = "DamData.txt", digits = 10, nsmall = 0L, verbose = T) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
+  # warn if NAs in data, since HYPE does not allow empty values in 
+  te <- apply(x, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) {
+    warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
+  }
+  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  x[is.na(x)] <- -9999
+  # export
+  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+}
+
+#' @rdname HypeDataExport
+#' @export
+WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10, nsmall = 0L, verbose = T) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+    }
+  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  x[is.na(x)] <- -9999
   # export
   write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
               quote = FALSE, sep = "\t", row.names = FALSE)
-  
 }
 
-
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteAquiferData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' @export
-#' @title
-#' Write an 'AquiferData.txt' file
-#'
-#' @description
-#' This is a convenience wrapper function to export a HYPE 'AquiferData.txt' file from R.
-#' 
-#' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadAquiferData}}. 
-#' @param filename A character string naming a file to write to. Windows users: Note that 
-#' Paths are separated by '/', not '\\'.
-#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
-#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
-#'  
-#' @details
-#' \code{WriteAquiferData} exports an AquiferData dataframe with formatting options adjusted for the output to be read by HYPE.
-#' HYPE requires \code{NA}-free data in all mandatory AquiferData columns, but \code{NA}s are allowed in optional comment 
-#' columns which are not read by HYPE. The function will return with a warning if \code{NA}s were exported.
-#' 
-#' @examples
-#' \dontrun{WriteAquiferData(x = myaquiferdata, file = "../myhype/AquiferData.txt")}
-#' 
-
-
-WriteAquiferData <- function(x, filename = "AquiferData.txt", digits = 10, nsmall = 0L) {
-  
+WriteMgmtData <- function(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L, verbose = T) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
   # warn if NAs in data, since HYPE does not allow empty values in 
-  # check for NAs
   te <- apply(x, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
-  
+  if (any(te) && verbose) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
   x[is.na(x)] <- -9999
-  
   # export
   write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
-  
+              quote = FALSE, sep = "\t", row.names = FALSE)
 }
 
-
-
-
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePointSourceData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' Write a 'PointSourceData.txt' file
-#'
-#' This is a convenience wrapper function to export a HYPE 'PointSourceData.txt' file from R.
-#' 
-#' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadPointSourceData}}. 
-#' @param filename A character string naming a file to write to. Windows users: Note that 
-#' Paths are separated by '/', not '\\'.
-#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
-#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
-#'  
-#' @details
-#' \code{WritePointSourceData} exports an PointSourceData dataframe with formatting options adjusted for the output to be read 
-#' by HYPE. HYPE requires \code{NA}-free data in all mandatory PointSourceData columns, but \code{NA}s are allowed in optional 
-#' comment columns which are not read by HYPE. The function will return with a warning if \code{NA}s were exported.
-#' 
-#' @examples
-#' \dontrun{WritePointSourceData(x = mypsd, filename = "PointSourceData.txt")}
-#' 
+#' @rdname HypeDataExport
 #' @export
-
-WritePointSourceData <- function(x, filename = "PointSourceData.txt", digits = 10, nsmall = 0L) {
-  
+WritePointSourceData <- function(x, filename = "PointSourceData.txt", digits = 10, nsmall = 0L, verbose = T) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
   # warn if NAs in data, since HYPE does not allow empty values in 
-  # check for NAs
   te <- apply(x, 2, function(x) {any(is.na(x))})
-  if (any(te)) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
-  
+  if (any(te) && verbose) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
   x[is.na(x)] <- -9999
-  
   # export
   write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
               quote = FALSE, sep = "\t", row.names = FALSE, na = "")
 }
+
