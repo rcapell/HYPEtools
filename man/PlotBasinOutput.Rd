@@ -6,8 +6,8 @@
 \usage{
 PlotBasinOutput(x, filename = NULL, timestep = attr(x, "timestep"),
   hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1,
-  to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL,
-  bd = NULL)
+  to = nrow(x), name = "", area = NULL, subid = attr(x, "subid"),
+  gd = NULL, bd = NULL)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
@@ -42,10 +42,11 @@ interpreted as row indices of \code{x}.}
 \item{area}{Numeric, upstream area of sub-basin in m^2. Required for calculation of accumulated volume error. Optional argument, 
 either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.}
 
-\item{subid}{HYPE SUBID of a target sub-catchment (must exist in \code{gd}). Mandatory in combination with \code{gd} and 
-optionally \code{bd} if argument \code{area} is not defined. Used to calculate upstream area internally with function 
-\code{\link{SumUpstreamArea}}. For repeated calls to \code{PlotBasinOutput} providing \code{area} in combination with a one-off 
-separate call to \code{\link{SumUpstreamArea}} saves computation time, especially in basins with many upstream sub-basins.}
+\item{subid}{Integer, HYPE SUBID of a target sub-catchment (must exist in \code{gd}). Mandatory in combination with \code{gd} and 
+optionally \code{bd} if argument \code{area} is not defined.  If not provided, an attribute \code{timestep} is required in \code{x}. 
+Used to calculate upstream area internally with function \code{\link{SumUpstreamArea}}. For repeated calls to \code{PlotBasinOutput} 
+providing \code{area} in combination with a one-off separate call to \code{\link{SumUpstreamArea}} saves computation time, 
+especially in basins with many upstream sub-basins.}
 
 \item{gd}{A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory with argument 
 \code{subid}, details see there.}

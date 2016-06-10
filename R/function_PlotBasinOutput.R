@@ -30,10 +30,11 @@
 #' @param name Character string, name to be printed on the plot.
 #' @param area Numeric, upstream area of sub-basin in m^2. Required for calculation of accumulated volume error. Optional argument, 
 #' either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.
-#' @param subid HYPE SUBID of a target sub-catchment (must exist in \code{gd}). Mandatory in combination with \code{gd} and 
-#' optionally \code{bd} if argument \code{area} is not defined. Used to calculate upstream area internally with function 
-#' \code{\link{SumUpstreamArea}}. For repeated calls to \code{PlotBasinOutput} providing \code{area} in combination with a one-off 
-#' separate call to \code{\link{SumUpstreamArea}} saves computation time, especially in basins with many upstream sub-basins.
+#' @param subid Integer, HYPE SUBID of a target sub-catchment (must exist in \code{gd}). Mandatory in combination with \code{gd} and 
+#' optionally \code{bd} if argument \code{area} is not defined.  If not provided, an attribute \code{timestep} is required in \code{x}. 
+#' Used to calculate upstream area internally with function \code{\link{SumUpstreamArea}}. For repeated calls to \code{PlotBasinOutput} 
+#' providing \code{area} in combination with a one-off separate call to \code{\link{SumUpstreamArea}} saves computation time, 
+#' especially in basins with many upstream sub-basins.
 #' @param gd A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory with argument 
 #' \code{subid}, details see there. 
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional with argument 
@@ -75,7 +76,7 @@
 #' \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
 
 PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, 
-                            to = nrow(x), name = "", area = NULL, subid = NULL, gd = NULL, bd = NULL) {
+                            to = nrow(x), name = "", area = NULL, subid = attr(x, "subid"), gd = NULL, bd = NULL) {
   
   ## Preliminaries
   
@@ -242,7 +243,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     list.plotexpr[[cp]] <- parse(text = 'frame()')
     # plot name
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'title(main = name, line = -1)')
+    list.plotexpr[[cp]] <- parse(text = 'title(main = name, line = -length(strsplit(x = name, split = "\n")[[1]])*1.1)')
     # compute and plot GoFs for discharge, TN, and TP, if variables are available
     if (exi.t["rout"] && exi.t["cout"]){
       gof.q <- gof(sim = get("cout"), obs = get("rout"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ]
