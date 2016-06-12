@@ -1045,11 +1045,8 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadAllsim~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Read an 'allsim.txt' file
 #'
-#' @description
 #' This is a convenience wrapper function to import an allsim.txt optimisation result file as data frame into R.
 #' 
 #' @param filename Path to and file name of the 'allsim.txt' file to import. 
@@ -1064,6 +1061,7 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 #' @examples
 #' \dontrun{ReadAllsim("allsim.txt")}
 #' 
+#' @export
 
 
 ReadAllsim <- function(filename = "allsim.txt") {

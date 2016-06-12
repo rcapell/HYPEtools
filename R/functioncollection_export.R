@@ -797,6 +797,8 @@ WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10, nsmall = 0L
               quote = FALSE, sep = "\t", row.names = FALSE)
 }
 
+#' @rdname HypeDataExport
+#' @export
 WriteMgmtData <- function(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L, verbose = T) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {

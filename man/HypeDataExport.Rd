@@ -7,6 +7,7 @@
 \alias{WriteCropData}
 \alias{WriteDamData}
 \alias{WriteLakeData}
+\alias{WriteMgmtData}
 \alias{WritePointSourceData}
 \title{Read HYPE data files}
 \usage{
@@ -23,6 +24,9 @@ WriteDamData(x, filename = "DamData.txt", digits = 10, nsmall = 0L,
   verbose = T)
 
 WriteLakeData(x, filename = "LakeData.txt", digits = 10, nsmall = 0L,
+  verbose = T)
+
+WriteMgmtData(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L,
   verbose = T)
 
 WritePointSourceData(x, filename = "PointSourceData.txt", digits = 10,
