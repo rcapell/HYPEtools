@@ -828,7 +828,7 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
   sbd <- as.integer(strsplit(xattr, split = "\t")[[1]][-1])
   
   # read the data
-  x <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = T, data.table = F, nrows = nrows, 
+  x <- fread(filename,  na.strings = "-9999", sep = "\t", header = T, data.table = F, nrows = nrows, 
                 colClasses = c("NA", rep("numeric", length(sbd))))
   
   attr(x, which = "subid") <- sbd
