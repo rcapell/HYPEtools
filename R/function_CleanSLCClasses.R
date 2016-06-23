@@ -147,7 +147,7 @@ CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = 
   if (!is.null(m1.file)) {
     
     # import transfer tables as data frame 
-    transfer.classes <- tryCatch(read.table(m1.file, fill = TRUE, stringsAsFactors = FALSE, header = F), 
+    transfer.classes <- tryCatch(read.table(m1.file, as.is = T, header = F, colClasses = rep("numeric", 100), fill = T, col.names = paste0("V", 1:100)), 
                                  error = function(e) {print("Class transfer table import failed.")})
     transfer.classes <- transfer.classes[, !apply(transfer.classes, 2, function(x) all(is.na(x)))]
     
