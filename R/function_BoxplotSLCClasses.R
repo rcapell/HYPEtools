@@ -3,7 +3,7 @@
 #' Box plots of SLC distributions
 #'
 #' @description
-#' \code{BoxplotSLClasses} plots SLC class distributions for all SUBIDs in a GeoData data frame as boxplots. Boxes can represent distributions 
+#' \code{BoxplotSLCClasses} plots SLC class distributions for all SUBIDs in a GeoData data frame as boxplots. Boxes can represent distributions 
 #' of area fractions
 #' 
 #' @param gd Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
@@ -42,15 +42,15 @@
 #' 
 #' 
 #' @details
-#' \code{BoxplotSLClasses} allows to analyse the occurrence of individual SLCs in a given model set-up. both in terms of area fractions (SLC values) 
+#' \code{BoxplotSLCClasses} allows to analyse the occurrence of individual SLCs in a given model set-up. both in terms of area fractions (SLC values) 
 #' and absolute areas. The function uses \code{\link{boxplot}} to plot distributions of SLCs of all SUBIDs in a GeoData data frame. Land use classes 
 #' are color-coded, and soil classes marked by a point symbol below each box. Box whiskers extend to the data extremes.
 #' 
 #' @return
-#' \code{BoxplotSLClasses} a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
+#' \code{BoxplotSLCClasses} a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
 #' 
 #' @note
-#' There is a maximum of 26 symbols available for marking soil classes. \code{BoxplotSLClasses} can be quite crowded, depending on the number of SLCs 
+#' There is a maximum of 26 symbols available for marking soil classes. \code{BoxplotSLCClasses} can be quite crowded, depending on the number of SLCs 
 #' in a model set-up. Tested and recommended plot device dimensions are 14 x 7 inches (width x height), e.g.:
 #'
 #' \kbd{> x11(width = 14, height = 7)}
@@ -61,11 +61,11 @@
 #' @examples
 #' \dontrun{
 #' x11(width = 14, height = 7)
-#' BoxplotSLClasses(gd = my.gd, gc = my.gc)
+#' BoxplotSLCClasses(gd = my.gd, gc = my.gc)
 #' }
 #' 
 
-BoxplotSLClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 
+BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 
                              mar = c(3,3,1,7)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = T) {
   
   # if lab.legend was specified, check for consistency with number of land use and soil classes

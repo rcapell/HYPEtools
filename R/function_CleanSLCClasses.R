@@ -5,7 +5,7 @@
 #' Clean Soil-Landuse classes (SLCs) from small fractions
 #'
 #' @description
-#' \code{CleanSLClasses} attempts to clean small SLC fractions within each SUBID (sub-catchment) from an imported GeoData file using user-provided
+#' \code{CleanSLCClasses} attempts to clean small SLC fractions within each SUBID (sub-catchment) from an imported GeoData file using user-provided
 #' area thresholds. Cleaning can be performed along class similarity rules or along SLC area alone. 
 #' 
 #' @param gd Data frame containing columns with SUBIDs, SUBID areas in m^2, and SLC fractions, typically a 'GeoData.txt' file 
@@ -42,20 +42,20 @@
 #' is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
-#' \code{CleanSLClasses} performs a clean-up of small SLC fractions in an imported GeoData file. Small SLCs are eliminated either by moving their 
+#' \code{CleanSLCClasses} performs a clean-up of small SLC fractions in an imported GeoData file. Small SLCs are eliminated either by moving their 
 #' area to similar classes according to rules which are passed to the function in a text file (\emph{Method 1}), or by simply moving their area to the 
 #' largest SLC in the SUBID (\emph{Method 2}). Moving rules for the first method can be based on either soil classes or land use classes but these cannot 
 #' be combined in one function call. Run the function two times to combine soil and land use based clean-up. Method 1 and 2, however, can be combined 
 #' in one function call, in which case the rule-based classification will be executed first. Clean-up precedence in method 1: if 
 #' clean-ups based on area fractions and absolute areas are combined (\code{m1.clean = rep(TRUE, 2)}), then area fractions will be cleaned first. In 
-#' order to reverse precedence, call \code{CleanSLClasses} two times with absolute area cleaning activated in first call and area fraction cleaning 
+#' order to reverse precedence, call \code{CleanSLCClasses} two times with absolute area cleaning activated in first call and area fraction cleaning 
 #' in second. In both methods, SLCs in each SUBID are cleaned iteratively in numerical order, starting with SLC_1. This implies a greater likelihood of 
 #' eliminating SLCs with smaller indices.
 #' 
 #' \bold{Method 1}
 #' 
 #' For method one, small SLC fractions are moved to either similar land use classes within the same soil class, or vice versa. Similarities are 
-#' defined by the user in a tab-separated text file, which is read by \code{CleanSLClasses} during runtime. Soil and land use classes correspond to
+#' defined by the user in a tab-separated text file, which is read by \code{CleanSLCClasses} during runtime. Soil and land use classes correspond to
 #' the classes given in column two and three in the \code{GeoClass} file. The file must have the following format:
 #' 
 #' \tabular{cccccc}{
@@ -67,10 +67,10 @@
 #' 
 #' Column 1 contains the source land use or soil classes subjected to clean-up, columns 2 and 3 contain threshold values for area fractions and 
 #' absolute areas. The remaining columns contain classes to which areas below threshold will be transferred, in order of precedence. Each class can 
-#' have one or several transfer classes. \code{CleanSLClasses} will derive SLC classes to clean from the given soil or land use class using the 
+#' have one or several transfer classes. \code{CleanSLCClasses} will derive SLC classes to clean from the given soil or land use class using the 
 #' GeoClass table given in argument \code{gc}.
-#' No header is allowed. At least one transfer class must exist, but classes can be omitted and will then be ignored by \code{CleanSLClasses}. 
-#' The order of transfer classes in the transfer file indicates transfer preference. \code{CleanSLClasses} constructs a transfer list for each SLC 
+#' No header is allowed. At least one transfer class must exist, but classes can be omitted and will then be ignored by \code{CleanSLCClasses}. 
+#' The order of transfer classes in the transfer file indicates transfer preference. \code{CleanSLCClasses} constructs a transfer list for each SLC 
 #' class in the model set-up and per default uses the order to choose a preferred SLC to transfer to. However, if several SLCs exist for a given soil 
 #' or land use class, one of them will be chosen without further sorting. If argument \code{m1.precedence} is set to \code{FALSE} for either area 
 #' fractions or absolute areas, precedence will be ignored and the largest area available will be chosen to transfer small areas to. Area fraction 
@@ -88,18 +88,18 @@
 #' 
 #' 
 #' @return
-#' \code{CleanSLClasses} returns the GeoData data frame passed to the function in argument \code{gd} with cleaned SLC class columns. 
+#' \code{CleanSLCClasses} returns the GeoData data frame passed to the function in argument \code{gd} with cleaned SLC class columns. 
 #' 
 #' @examples
 #' \dontrun{
 #' my.gd <- ReadGeoData("GeoData.txt")
 #' my.gc <- ReadGeoClass("GeoClass.txt")
 #' # Clean-up using method 1 only, between soil classes, and based on area fractions only
-#' CleanSLClasses(gd = my.gd, gc = my.gc, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))
+#' CleanSLCClasses(gd = my.gd, gc = my.gc, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))
 #' }
 #' 
 
-CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), 
+CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), 
                             m2.frac = NULL, m2.abs = NULL, signif.digits = 3, verbose = T, progbar = T) {
   
   
@@ -149,6 +149,7 @@ CleanSLClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = r
     # import transfer tables as data frame 
     transfer.classes <- tryCatch(read.table(m1.file, fill = TRUE, stringsAsFactors = FALSE, header = F), 
                                  error = function(e) {print("Class transfer table import failed.")})
+    transfer.classes <- transfer.classes[, !apply(transfer.classes, 2, function(x) all(is.na(x)))]
     
     # check if there are any transfer classes at all
     if (ncol(transfer.classes) < 4) {

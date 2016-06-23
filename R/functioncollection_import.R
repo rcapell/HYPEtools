@@ -50,7 +50,7 @@
 ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) { 
     
   # read in the data in the file, skipping the comments and header
-  x <- read.table(filename, header = T, skip = headrow - 1, quote = "", fill = T)
+  x <- read.table(filename, header = T, skip = headrow - 1, quote = "", fill = T, comment.char = "")
   # clean header from remnant of comment character in txt file
   names(x)[1] <- gsub("X.", "", names(x)[1])
   
