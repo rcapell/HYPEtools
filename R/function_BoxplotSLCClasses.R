@@ -1,22 +1,16 @@
-#' @export
-#' @title
 #' Box plots of SLC distributions
 #'
-#' @description
 #' \code{BoxplotSLCClasses} plots SLC class distributions for all SUBIDs in a GeoData data frame as boxplots. Boxes can represent distributions 
 #' of area fractions
 #' 
 #' @param gd Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
-#' 
 #' @param gc Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}.
-#' 
 #' @param col.landuse Specification of colors for box outlines, to represent land use classes. Either a keyword character string, or a vector of 
 #' colors with one element for each land use class as given in argument \code{gc} in ascending order. Possible keywords are \code{'rainbow'} (default) 
 #' or \code{'auto'}. \code{'rainbow'} triggers a generation of land use class colors using the \code{\link{rainbow}} palette. \code{'auto'} triggers 
 #' generation of a pretty color palette with similar colors for land use groups. This option requires specification of land use groups in argument 
 #' \code{col.group}.
-#' 
 #' @param col.group Integer vector of the same length as the number of land use classes given in \code{gc}. Specifies a land use group ID for 
 #' each land use class ID, in ascending order. Groups and group IDs to use (in parentheses):
 #' \itemize{
@@ -26,20 +20,15 @@
 #' \item Agriculture and pastures (4)
 #' \item Natural non-forested (5)
 #' }
-#' 
 #' @param lab.legend Character string giving optional land use and soil class names to label the legend. Land use classes first, then soil classes. 
 #' Both following class IDs as given in \code{gc} in ascending order.
 #' @param pos.legend Numeric, legend position in x direction. Given as position on the right hand outside of the plot area in x-axis units.
-#' 
 #' @param abs.area Logical, if \code{TRUE}, boxes will be plotted for absolute areas instead of area fractions.
-#' 
 #' @param log Character string, passed to \code{\link{boxplot}}. Empty string for linearly scaled axes, \code{'y'} for log scaled y-axis 
 #' (particularly in combination with \code{abs.area = TRUE}).
-#' 
 #' @param ylim Numeric vector of length 2, y-axis minimum and maximum. Set automatically if not specified.
-#' 
-#' @param mar,mgp,tcl,xaxs,xpd Arguments to \code{\link{par}} with changed defaults.
-#' 
+#' @param range Argument to \code{\link{boxplot}} with changed default. See documentation in there.
+#' @param mar,mgp,tcl,xaxs,xpd Arguments to \code{\link{par}} with changed defaults. See documentation in there.
 #' 
 #' @details
 #' \code{BoxplotSLCClasses} allows to analyse the occurrence of individual SLCs in a given model set-up. both in terms of area fractions (SLC values) 
@@ -47,7 +36,8 @@
 #' are color-coded, and soil classes marked by a point symbol below each box. Box whiskers extend to the data extremes.
 #' 
 #' @return
-#' \code{BoxplotSLCClasses} a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
+#' \code{BoxplotSLCClasses} invisibly returns a data frame of SLC class fractions with \code{0} values replaced by \code{NA}s. If absolute areas 
+#' are plotted, these are returned in the data frame.
 #' 
 #' @note
 #' There is a maximum of 26 symbols available for marking soil classes. \code{BoxplotSLCClasses} can be quite crowded, depending on the number of SLCs 
@@ -64,9 +54,10 @@
 #' BoxplotSLCClasses(gd = my.gd, gc = my.gc)
 #' }
 #' 
+#' @export
 
 BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 
-                             mar = c(3,3,1,7)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = T) {
+                             range = 0, mar = c(3,3,1,7)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = T) {
   
   # if lab.legend was specified, check for consistency with number of land use and soil classes
   if (!is.null(lab.legend) && length(lab.legend) != length(c(unique(gc[, 2]), unique(gc[,3])))) {
@@ -191,7 +182,7 @@ BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL,
   
   # x11(width = 14, height = 7)
   par(mar = mar, mgp = mgp, tcl = tcl, xaxs = xaxs, xpd = xpd)
-  boxplot(slc, border = col.lu, range = 0, names = rep("", nslc), xlab= "SLC class", ylab = ylabel, xlim = c(0, nslc + 1), ylim = ylimit, 
+  boxplot(slc, border = col.lu, range = range, names = rep("", nslc), xlab= "SLC class", ylab = ylabel, xlim = c(0, nslc + 1), ylim = ylimit, 
           log = log, pars = list(boxlwd = 1.6, whisklwd = 1.6, staplelwd = 1.6, whisklty = 1))
   mtext(seq(1, nslc, by = 2), 1, line = .05, at = seq(1, nslc, by = 2), cex=.8)
   mtext(seq(2, nslc - 1, by = 2), 1, line = .6, at = seq(2, nslc - 1, by = 2), cex=.8)
@@ -219,5 +210,8 @@ BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL,
   # legend plot
   legend(x = nslc + pos.legend, y = legend.y, legend = lab.legend, col = c(legend.lu, rep("black", nsoil)), 
          pch = c(rep(15, length(legend.lu)), 0:(nsoil - 1)), 
-         bty = "n", pt.bg = "grey", cex = .9, pt.cex = 1, yjust = .5)  
+         bty = "n", pt.bg = "grey", cex = .9, pt.cex = 1, yjust = .5)
+  
+  # return (abs area) slcs invisibly
+  invisible(slc)
 }

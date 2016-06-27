@@ -594,11 +594,8 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePTQobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files
 #'
-#' @description
 #' Export precipitation, temperature, or discharge observation files from R.
 #' 
 #' @param x The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs in 
@@ -616,13 +613,18 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' \code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE compliant observation file. 
 #' headers are generated from attribute \code{subid} on export (see \code{\link{attr}} on how to create and access it). 
 #' 
+#' The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
+#' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
+#' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
+#' hard-coded into \code{WritePTQobs}.
 #' 
 #' @examples
 #' \dontrun{WritePTQobs(mytops, "Tobs.txt")}
 #' 
+#' @export
 
 
-WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 1, nsmall = 1, subid = NULL) {
+WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, nsmall = 1, subid = NULL) {
   
   ## check if consistent header information is available, subid arguments take precedence before attribute
   if(!is.null(subid)) {
@@ -678,7 +680,7 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 1, nsmall
 #' too long. See Details.
 #'  
 #' @details
-#' Hype data file imports, simple \code{\link{write.table}} wrappers with formatting options adjusted to match HYPE file 
+#' Hype data file exports, simple \code{\link{write.table}} wrappers with formatting options adjusted to match HYPE file 
 #' specifications:
 #' 
 #' \itemize{
@@ -696,6 +698,12 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 1, nsmall
 #' allowed in additional comment columns which are not read by HYPE. Informative warnings will be thrown if \code{NA}s are 
 #' found during export. Character string lengths in comment columns of HYPE data files are restricted to 100 characters, 
 #' the functions will return with a warning if longer strings were exported.
+#' 
+#' Exported dataframes are formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
+#' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
+#' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
+#' hard-coded into the export functions.
+
 #' 
 #' @examples
 #' \dontrun{WriteLakeData(mylakedata, "LakeData.txt")}

@@ -1,9 +1,6 @@
-#' @export
-#' @title
 #' Calculate sums of SLC classes in a GeoData file
 #'
-#' @description
-#' \code{SumSLClasses} sums all SLC classes for each SUBID in a GeoData data frame and optionally plots the results.
+#' \code{SumSLCClasses} sums all SLC classes for each SUBID in a GeoData data frame and optionally plots the results.
 #' 
 #' @param gd Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
 #' 
@@ -14,25 +11,23 @@
 #' 
 #' 
 #' @details
-#' \code{SumSLClasses} is a wrapper for \code{\link{colSums}} with a boxplot output option, and allows to quickly control if SLCs of all SUBIDs in a
+#' \code{SumSLCClasses} is a wrapper for \code{\link{colSums}} with a boxplot output option, and allows to quickly control if SLCs of all SUBIDs in a
 #' GeoData data frame sum up to 1.
 #' 
 #' 
 #' @return
-#' \code{SumSLClasses} returns a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
+#' \code{SumSLCClasses} returns a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
 #' 
 #' @examples
 #' \dontrun{
 #' my.gd <- ReadGeoData("GeoData.txt")
-#' SumSLClasses(gd = my.gd, plot.box = F)
+#' SumSLCClasses(gd = my.gd, plot.box = F)
 #' }
 #' 
+#' @export
 
 
-
-
-
-SumSLClasses <- function(gd, plot.box = T, ...) {
+SumSLCClasses <- function(gd, plot.box = T, ...) {
   
   # identify SLC columns in gd
   gdcols.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")

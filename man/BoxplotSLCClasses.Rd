@@ -6,8 +6,8 @@
 \usage{
 BoxplotSLCClasses(gd, gc, col.landuse = "rainbow", col.group = NULL,
   lab.legend = NULL, pos.legend = 1, abs.area = F, log = "",
-  ylim = NULL, mar = c(3, 3, 1, 7) + 0.1, mgp = c(1.5, 0.2, 0),
-  tcl = 0.1, xaxs = "i", xpd = T)
+  ylim = NULL, range = 0, mar = c(3, 3, 1, 7) + 0.1, mgp = c(1.5, 0.2,
+  0), tcl = 0.1, xaxs = "i", xpd = T)
 }
 \arguments{
 \item{gd}{Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
@@ -43,10 +43,13 @@ Both following class IDs as given in \code{gc} in ascending order.}
 
 \item{ylim}{Numeric vector of length 2, y-axis minimum and maximum. Set automatically if not specified.}
 
-\item{mar, mgp, tcl, xaxs, xpd}{Arguments to \code{\link{par}} with changed defaults.}
+\item{range}{Argument to \code{\link{boxplot}} with changed default. See documentation in there.}
+
+\item{mar, mgp, tcl, xaxs, xpd}{Arguments to \code{\link{par}} with changed defaults. See documentation in there.}
 }
 \value{
-\code{BoxplotSLCClasses} a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}.
+\code{BoxplotSLCClasses} invisibly returns a data frame of SLC class fractions with \code{0} values replaced by \code{NA}s. If absolute areas 
+are plotted, these are returned in the data frame.
 }
 \description{
 \code{BoxplotSLCClasses} plots SLC class distributions for all SUBIDs in a GeoData data frame as boxplots. Boxes can represent distributions 

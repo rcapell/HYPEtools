@@ -4,7 +4,7 @@
 \alias{WritePTQobs}
 \title{Write 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files}
 \usage{
-WritePTQobs(x, filename, dt.format = "\%Y-\%m-\%d", digits = 1,
+WritePTQobs(x, filename, dt.format = "\%Y-\%m-\%d", digits = 3,
   nsmall = 1, subid = NULL)
 }
 \arguments{
@@ -29,7 +29,12 @@ Export precipitation, temperature, or discharge observation files from R.
 }
 \details{
 \code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE compliant observation file. 
-headers are generated from attribute \code{subid} on export (see \code{\link{attr}} on how to create and access it).
+headers are generated from attribute \code{subid} on export (see \code{\link{attr}} on how to create and access it). 
+
+The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
+scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
+arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
+hard-coded into \code{WritePTQobs}.
 }
 \examples{
 \dontrun{WritePTQobs(mytops, "Tobs.txt")}

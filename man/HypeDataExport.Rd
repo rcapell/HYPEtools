@@ -49,7 +49,7 @@ too long. See Details.}
 These are simple convenience wrapper functions to export various HYPE data files from R.
 }
 \details{
-Hype data file imports, simple \code{\link{write.table}} wrappers with formatting options adjusted to match HYPE file 
+Hype data file exports, simple \code{\link{write.table}} wrappers with formatting options adjusted to match HYPE file 
 specifications:
 
 \itemize{
@@ -67,6 +67,11 @@ In most files, HYPE requires \code{NA}-free input in required columns, but empty
 allowed in additional comment columns which are not read by HYPE. Informative warnings will be thrown if \code{NA}s are 
 found during export. Character string lengths in comment columns of HYPE data files are restricted to 100 characters, 
 the functions will return with a warning if longer strings were exported.
+
+Exported dataframes are formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
+scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
+arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
+hard-coded into the export functions.
 }
 \examples{
 \dontrun{WriteLakeData(mylakedata, "LakeData.txt")}
