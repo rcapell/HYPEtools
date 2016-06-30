@@ -468,7 +468,7 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   conn <- file(description = filename, open = "w")
   # write header lines
   writeLines(paste(names(x), collapse = "\t"), con = conn)
-  writeLines(paste(attr(x, "unit"), collapse = "\t"), con = conn)
+  writeLines(paste(c("UNITS", attr(x, "unit")), collapse = "\t"), con = conn)
   # close the connection
   close(conn)
   
@@ -538,7 +538,7 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
   # attempt to format the date column if it is POSIX (double number) to the given format string, otherwise return unchanged with a warning
   if (is.double(x[, 1])) {
-    x[,1] <- format(x[,1], format = dt.format)
+    x[, 1] <- format(x[, 1], format = dt.format)
   } else {
     warning("Date column not formatting failed. Exported unchanged.")
   }

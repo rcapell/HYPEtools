@@ -4,7 +4,7 @@
 \alias{ReadBasinOutput}
 \title{Read a Basin Output File}
 \usage{
-ReadBasinOutput(filename, dt.format = "\%Y-\%m-\%d", outformat = "df")
+ReadBasinOutput(filename, dt.format = "\%Y-\%m-\%d", type = "df")
 }
 \arguments{
 \item{filename}{Path to and file name of the basin output file to import. Windows users: Note that 
@@ -14,21 +14,21 @@ Paths are separated by '/', not '\\'.}
 and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.}
 
-\item{outformat}{Format of the returned object. Character string, either \code{'dataframe'} (the standard choice) or 
-\code{'matrix'}, can be abbreviated.}
+\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
+return a \code{\link[data.table]{data.table}} object, or \code{"hmv"} to return a \code{\link{HypeMultiVar}} array.}
 }
 \value{
 \code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
 is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed. 
 Variable units are imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'. 
 The catchment's SUBID is extracted from the \code{filename} argument if possible and stored in \code{attribute} 'subid'.
-If a matrix is returned, these attributes will not be preserved.
 }
 \description{
 This is a convenience wrapper function to import a basin output file as data frame or matrix into R.
 }
 \details{
-\code{ReadBasinOutput} is a convenience wrapper function of \code{\link{read.table}}, with conversion of date-time strings to
+\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+\code{\link[data.table]{data.table-package}}, with conversion of date-time strings to
 POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
 }
 \note{
@@ -36,8 +36,8 @@ For the conversion of date/time strings, time zone "GMT" is assumed. This is don
 side effects when working with the imported data (and possibly converting to string representations during the process).
 
 HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
-decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. Results will
-then contain values of '****************'. \code{ReadBasinOutput} will convert those cases to 'NaN' entries and throw a warning.
+decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
+Results will then contain values of '****************'. \code{ReadBasinOutput} will convert those cases to 'NA' entries.
 }
 \examples{
 \dontrun{ReadBasinOutput("0000001.txt")}
