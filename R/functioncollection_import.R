@@ -186,7 +186,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
   munit <- readLines(filename, n = 2)
   munit <- strsplit(munit[2], split = "\t")[[1]][-1]
   sbd <- strsplit(filename, "/")[[1]]
-  sbd <- as.integer(gsub("[[:alpha:][:punct:]]", "", te[length(te)]))
+  sbd <- as.integer(gsub("[[:alpha:][:punct:]]", "", sbd[length(sbd)]))
   
   
   
