@@ -184,7 +184,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
   
   # extract attributes to hold measurement units and SUBID
   munit <- readLines(filename, n = 2)
-  munit <- strsplit(xattr[2], split = "\t")[[1]][-1]
+  munit <- strsplit(munit[2], split = "\t")[[1]][-1]
   sbd <- strsplit(filename, "/")[[1]]
   sbd <- as.integer(gsub("[[:alpha:][:punct:]]", "", te[length(te)]))
   
@@ -227,15 +227,11 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
     dim(x) <- c(dim(x), 1)
     x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, subid = sbd)
   }
+  
+  return(x)
 }
 
 
-## DEBUG
-# ReadBasinOutput(filename=te)
-# dt.format <- "%Y-%m-%d"
-# outformat <- "df"
-# filename <- "d:/2014_soils2sea/WP5/2014-09_NorsmindeHYPE/EHYPERes/EHYPEData/res/9001282.txt"
-# rm(te, x, xd, dt.format, filename, tdff, xattr, outformat)
 
 
 

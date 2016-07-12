@@ -8,7 +8,7 @@ ReadMapOutput(filename, dt.format = NULL, hype.var = NULL, type = "df",
   nrows = -1L)
 }
 \arguments{
-\item{filename}{Path to and file name of the basin output file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the map output file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in column 

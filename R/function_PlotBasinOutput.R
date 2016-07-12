@@ -1,11 +1,6 @@
-#' @export
-#' @importFrom hydroGOF gof gof.default
-# #' @import hydroGOF
-#' @title
-#' Plot a suite of evaluation plots from a HYPE basin output file
+#' Plot a suite of time series plots from a HYPE basin output file
 #'
-#' @description
-#' Plot a standard suite of evaluation plots from a basin output file, typically used for model performance inspection and/or 
+#' Plot a standard suite of time series plots from a basin output file, typically used for model performance inspection and/or 
 #' during manual calibration
 #'
 #' @param x Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
@@ -74,6 +69,9 @@
 #' 
 #' @examples
 #' \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
+#' 
+#' @importFrom hydroGOF gof gof.default
+#' @export
 
 PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, 
                             to = nrow(x), name = "", area = NULL, subid = attr(x, "subid"), gd = NULL, bd = NULL) {

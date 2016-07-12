@@ -18,10 +18,9 @@ be imported as \code{character}, applicable e.g. for files containing just one r
 return a \code{\link[data.table]{data.table}} object, or \code{"hmv"} to return a \code{\link{HypeMultiVar}} array.}
 }
 \value{
-\code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
-is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed. 
-Variable units are imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'. 
-The catchment's SUBID is extracted from the \code{filename} argument if possible and stored in \code{attribute} 'subid'.
+\code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
+Data frames and data tables contain additional \code{\link{attributes}}: \code{unit}, a vector of HYPE variable units, 
+\code{subid}, the HYPE SUBID, to which the time series belong, and \code{timestep} with a time step keyword attribute.
 }
 \description{
 This is a convenience wrapper function to import a basin output file as data frame or matrix into R.

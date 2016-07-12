@@ -2,7 +2,7 @@
 % Please edit documentation in R/function_PlotBasinOutput.R
 \name{PlotBasinOutput}
 \alias{PlotBasinOutput}
-\title{Plot a suite of evaluation plots from a HYPE basin output file}
+\title{Plot a suite of time series plots from a HYPE basin output file}
 \usage{
 PlotBasinOutput(x, filename = NULL, timestep = attr(x, "timestep"),
   hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1,
@@ -58,7 +58,7 @@ especially in basins with many upstream sub-basins.}
 Returns a multi-panel plot in a new graphics device.
 }
 \description{
-Plot a standard suite of evaluation plots from a basin output file, typically used for model performance inspection and/or 
+Plot a standard suite of time series plots from a basin output file, typically used for model performance inspection and/or 
 during manual calibration
 }
 \details{
@@ -89,6 +89,7 @@ resp ccpp repp cctp retp wcom wstr}
 }
 \examples{
 \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
+
 }
 \seealso{
 \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
