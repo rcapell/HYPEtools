@@ -94,11 +94,10 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
 #' 
 #' @return
-#' \code{ReadBasinOutput} returns a data frame or a matrix, see argument 'outformat'. In the matrix case, date-time information
-#' is converted to numeric POSIX representations (seconds since 1970-01-01). This will lead to NAs if Date-time conversion failed. 
-#' Variable units are imported as string \code{attribute} 'unit' and a time step keyword string in \code{attribute} 'timestep'. 
-#' The catchment's SUBID is extracted from the \code{filename} argument if possible and stored in \code{attribute} 'subid'.
-#' 
+#' \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
+#' Data frames and data tables contain additional \code{\link{attributes}}: \code{unit}, a vector of HYPE variable units, 
+#' \code{subid}, the HYPE SUBID, to which the time series belong, and \code{timestep} with a time step keyword attribute.
+
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and possibly converting to string representations during the process).
@@ -466,7 +465,7 @@ ReadPar <- function (filename = "par.txt") {
 #'
 #' This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') into R.
 #' 
-#' @param filename Path to and file name of the basin output file to import. Windows users: Note that 
+#' @param filename Path to and file name of the map output file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in column 
 #' headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
