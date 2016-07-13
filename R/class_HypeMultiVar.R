@@ -36,10 +36,11 @@
 #' \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
 #' \item{\strong{variable}}{A character vector of HYPE output variable IDs.}
 #' \item{\strong{subid}}{A single SUBID.}
+#' \item{\strong{timestep}}{A character keyword for the time step.}
 #' }
 #' 
 #' @examples
-#' \dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", ccon), , subid = 23}
+#' \dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", ccon), , subid = 23, tstep = "day"}
 #' 
 #' @export
 
@@ -61,10 +62,31 @@ HypeMultiVar <- function(x, date, hype.var, subid) {
     if (length(hype.var) != dim(x)[2]) {
       stop("Different lengths of argument 'hype.var' and corresponding dimension of 'x'.")
     }
+    
+    # conditional: timestep attribute identified by difference between first two entries in date
+    tdff <- as.numeric(difftime(date[2], date[1], units = "hours"))
+    if (!is.na(tdff)) {
+      if (tdff == 24) {
+        tstep <- "day"
+      } else if (tdff == 168) {
+        tstep <- "week"
+      } else if (tdff %in% c(744, 720, 696, 672)) {
+        tstep <- "month"
+      } else if (tdff %in% c(8760, 8784)) {
+        tstep <- "year"
+      } else {
+        tstep <- paste(tdff, "hour", sep = "")
+      }
+    } else {
+      # add timestep attribute with placeholder value
+      tstep <- "none"
+    }
+    
     class(x) <- c("HypeMultiVar", "array")
     attr(x, "date") <- date
     attr(x, "variable") <- toupper(hype.var)
     attr(x, "subid") <- subid
+    attr(x, "timestep") <- tstep
     return(x)
     
   } else {
@@ -81,9 +103,10 @@ HypeMultiVar <- function(x, date, hype.var, subid) {
 #' @export
 `[.HypeMultiVar` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], ...) {
   y <- NextMethod("[", drop = F)
-  attr(y, "subid") <- attr(x, "subid")
   attr(y, "date") <- attr(x, "date")[i]
   attr(y, "variable") <- attr(x, "variable")[j]
+  attr(y, "subid") <- attr(x, "subid")
+  attr(y, "timestep") <- attr(x, "timestep")
   class(y) <- c("HypeMultiVar", "array")
   return(y)
 }

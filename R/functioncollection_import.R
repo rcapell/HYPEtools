@@ -187,8 +187,24 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
   munit <- strsplit(munit[2], split = "\t")[[1]][-1]
   sbd <- strsplit(filename, "/")[[1]]
   sbd <- as.integer(gsub("[[:alpha:][:punct:]]", "", sbd[length(sbd)]))
-  
-  
+  # conditional: timestep attribute identified by difference between first two entries
+  tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+  if (!is.na(tdff)) {
+    if (tdff == 24) {
+      tstep <- "day"
+    } else if (tdff == 168) {
+      tstep <- "week"
+    } else if (tdff %in% c(744, 720, 696, 672)) {
+      tstep <- "month"
+    } else if (tdff %in% c(8760, 8784)) {
+      tstep <- "year"
+    } else {
+      tstep <- paste(tdff, "hour", sep = "")
+    }
+  } else {
+    # add timestep attribute with placeholder value
+    tstep <- "none"
+  }
   
   # conditional on user choice: output formatting
   if (type %in% c("dt", "df")) {
@@ -196,25 +212,8 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
     # update with new attributes
     attr(x, which = "unit") <- munit
     attr(x, which = "subid") <- sbd
+    attr(x, which = "timestep") <- tstep
     
-    # conditional: timestep attribute identified by difference between first two entries
-    tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
-    if (!is.na(tdff)) {
-      if (tdff == 24) {
-        attr(x, which = "timestep") <- "day"
-      } else if (tdff == 168) {
-        attr(x, which = "timestep") <- "week"
-      } else if (tdff %in% c(744, 720, 696, 672)) {
-        attr(x, which = "timestep") <- "month"
-      } else if (tdff %in% c(8760, 8784)) {
-        attr(x, which = "timestep") <- "year"
-      } else {
-        attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
-      }
-    } else {
-      # add timestep attribute with placeholder value
-      attr(x, which = "timestep") <- "none"
-    }
     
   } else {
     ## HypeMultiVar formatting
@@ -225,7 +224,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
     x <- as.array(as.matrix(x))
     # adding 'iteration' dimension
     dim(x) <- c(dim(x), 1)
-    x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, subid = sbd)
+    x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, subid = sbd, tstep = tstep)
   }
   
   return(x)

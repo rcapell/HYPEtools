@@ -9,7 +9,7 @@
 #' \code{"p25p75"} to include bands of variation. See details.
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
 #' @param l.legend Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.
-#' @param ylim  Numeric vector of length two, giving y-axis limits. \code{NULL} for default values.
+#' @param ylim  Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Default prints the time period on which the 
 #' regime is based, read from \code{x$period}.
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label, with a default for discharge regimes.
@@ -19,7 +19,6 @@
 #' series in \code{freq}.
 #' @param lwd Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
-#' 
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
 #' 
 #' @details
@@ -118,17 +117,11 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
   axis.POSIXct(side = 1, at = vline)
   box()
   
-  # internal function to calculate transparent colors for variation polygon, used below
-  # from: http://stackoverflow.com/questions/8047668/transparent-equivalent-of-given-color
-  makeTransparent <- function(someColor, alpha=60) {
-    newColor<-col2rgb(someColor)
-    apply(newColor, 2, function(curcoldata){rgb(red = curcoldata[1], green = curcoldata[2], blue = curcoldata[3],alpha = alpha, maxColorValue = 255)})
-  }
   
-  # plot regimes, incl transparent variation polygons if requested
+  # plot regimes, incl transparent variation polygons if requested, using internal function
   if (type == "minmax") {
     
-    polcol <- makeTransparent(lcol, 30)
+    polcol <- .makeTransparent(lcol, 30)
     for (i in 3:(nq + 2)) {
       polcoor <- rbind(x$minimum[, c(1, i)], x$maximum[nrow(x$maximum):1, c(1, i)])
       polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)

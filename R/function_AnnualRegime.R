@@ -10,8 +10,8 @@
 #' Typically an imported basin or time output file from HYPE. See details.
 #' @param stat Character string, either \code{"mean"} or \code{"sum"}. Defines the type of aggregation to be computed for output 
 #' time periods, see Details. Defaults to \code{"mean"}.
-#' @param ts.in Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
-#' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
+#' @param ts.in Character string, timestep of \code{x}, searches for an attribute \code{timestep} in \code{x} per default. 
+#' Otherwise one of \code{"month"}, \code{"week"}, \code{"day"}, or \code{"nhour"} (n = number of hours).
 #' @param ts.out Character string, timestep for results, defaults to \code{ts.in}. This timestep must be equal to or longer than 
 #' \code{ts.in}.
 #' @param start.mon Integer between 1 and 12, starting month of the hydrological year, used to order the output.
@@ -66,7 +66,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   if (is.null(ts.in)) {
     ts.in <- attr(x, "timestep")
     if (is.null(ts.in)) {
-      stop("No attribute 'timestep' found in 'x', and no argument 'ts_in' provided.")
+      stop("No attribute 'timestep' found in 'x', and no argument 'ts.in' provided.")
     }
   }
   

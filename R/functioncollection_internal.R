@@ -8,6 +8,7 @@
 #     - .NorthArrow()
 #     - .ColNITR(), .ColPHOS(), .ColPREC(), .ColTEMP(), .ColCOUT(), .Coldiff()
 #     - .FillWeek()
+#     - .makeTransparent()
 #     - 
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -206,5 +207,17 @@
   # reverse to original order again
   y <- rev(y)
   return(y)
+}
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.makeTransparent~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+
+# internal function to calculate transparent colors for variation polygon, used below
+# from: http://stackoverflow.com/questions/8047668/transparent-equivalent-of-given-color
+.makeTransparent <- function(someColor, alpha=60) {
+  newColor <- col2rgb(someColor)
+  apply(newColor, 2, function(curcoldata){rgb(red = curcoldata[1], green = curcoldata[2], blue = curcoldata[3], alpha = alpha, maxColorValue = 255)})
 }
 

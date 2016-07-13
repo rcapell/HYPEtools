@@ -27,6 +27,7 @@ Returns a 3-dimensional array with
 \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
 \item{\strong{variable}}{A character vector of HYPE output variable IDs.}
 \item{\strong{subid}}{A single SUBID.}
+\item{\strong{timestep}}{A character keyword for the time step.}
 }
 }
 \description{
@@ -37,7 +38,7 @@ multiple model runs, typically imported HYPE basin output results.
 S3 class constructor function for array objects which can hold (multiple) HYPE basin output results.
 }
 \examples{
-\dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", ccon), , subid = 23}
+\dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", ccon), , subid = 23, tstep = "day"}
 
 }
 
