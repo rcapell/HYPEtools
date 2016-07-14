@@ -47,7 +47,9 @@ SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
   
   # internal copies of relevant gd and bd columns
   igd <- gd[, c(geocol.sbd, geocol.md)]
-  ibd <- bd[, c(brcol.sr, brcol.br)]
+  if (!is.null(bd)) {
+    ibd <- bd[, c(brcol.sr, brcol.br)]
+  }
   
   
   ## create dummy outlets for independent basins connected through BranchData
