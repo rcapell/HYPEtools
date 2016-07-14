@@ -113,8 +113,9 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
     tformat <- format(x[, 1], format = "%m-%d")
   } else if (ts.out == "week") {
     tformat <- format(x[, 1], format = "%W")
-    # merge boundary half-weeks no. 00 and 53 to one group
-    tformat[which(tformat == "53")] <- "00"
+    # merge boundary half-weeks, those which go across new year, to one group
+    # this can be weeks "00", "52", "00", and "53"
+    tformat[tformat %in% c("00", "52", "53")] <- "52"
   } else if (ts.out == "month") {
     tformat <- format(x[, 1], format = "%m")
   } else { # this should never occur, leave it just for safety...

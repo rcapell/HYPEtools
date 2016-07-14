@@ -129,7 +129,7 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
     
   } else if (type == "p25p75") {
     
-    polcol <- makeTransparent(lcol, 30)
+    polcol <- .makeTransparent(lcol, 30)
     for (i in 3:(nq + 2)) {
       polcoor <- rbind(x$p25[, c(1, i)], x$p75[nrow(x$maximum):1, c(1, i)])
       polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)

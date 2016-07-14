@@ -21,7 +21,7 @@ See Details and Value description there.}
 
 \item{l.legend}{Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.}
 
-\item{ylim}{Numeric vector of length two, giving y-axis limits. \code{NULL} for default values.}
+\item{ylim}{Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.}
 
 \item{ylab}{Character or \code{\link{plotmath}} expression string. Y-axis label, with a default for discharge regimes.}
 
