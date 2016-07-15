@@ -1,8 +1,8 @@
 #' Plot annual regimes of simulated and observed variables
 #' 
-#' A combined plot for annual regimes with box plot elements for observed and ribbon elements 
+#' A combined plot for annual regimes with box plot elements for observed variables and ribbon elements 
 #' for simulated variables. Particularly designed for comparisons of sparse observations with
-#' model high-density model results, e.g. for in-stream nutrients.
+#' high-density model results, e.g. for in-stream nutrients.
 #' 
 #' @param x Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
 #' \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
@@ -10,8 +10,8 @@
 #' @param sim,obs Character string keywords, observed and simulated HYPE variable IDs to plot. Not case-sensitive, but must exist in \code{x}.
 #' @param ts.in Character string, timestep of \code{x}, searches for an attribute \code{timestep} in \code{x} per default. 
 #' Otherwise one of \code{"month"}, \code{"week"}, \code{"day"}, or \code{"nhour"} (n = number of hours).
-#' @param ts.out Character string, timestep for results, defaults to \code{ts.in}. This timestep must be equal to or longer than 
-#' \code{ts.in}.
+#' @param ts.out Character string, aggregation timestep for simulation results, defaults to \code{ts.in}. This timestep must be equal 
+#' to or longer than \code{ts.in}.
 #' @param start.mon Integer between 1 and 12, starting month of the hydrological year, used to order the output.
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
 #' @param pos.legend Character string keyword for legend positioning. See Details in \code{link{legend}}.
@@ -24,13 +24,26 @@
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
 #' 
 #' @details 
-#' \code{PlotSimObsRegime}
+#' \code{PlotSimObsRegime} combines ribbons and box plot elements. Box plot elements are composed as defaults from \code{\link{boxplot}}, 
+#' i.e. boxes with 25\% to 75\% percentile ranges and horizontal bar at median value, whiskers extending to 1.5 times standard deviation, and 
+#' extreme values as points. Observation counts per month over the observation period are printed above the x-axis.
+#' 
+#' Aggregation time length of the simulated variable can be chosen in argument \code{ts.out}, resulting in more or less smoothed ribbons. 
+#' For the observed variable, the aggregation is fixed to months, in order to aggregate enough values for each box plot element.
+#' 
+#' @return 
+#' \code{PlotSimObsRegime} invisibly returns a \code{\link{list}} object containing three elements with the plotted data and variable IDs. 
+#' Element \code{obs} contains a list as returned by \code{\link{AnnualRegime}}. Element \code{obs} contains a list with two elements, a 
+#' vector \code{refdate} with x positions of box plots elements, and a list \code{reg.obs} with observations for the monthly box plot elements. 
+#' Element \code{variable} contains a named vector with HYPE variable IDs for observations and simulations.
 #' 
 #' @seealso 
 #' \code{\link{PlotAnnualRegime}} for a more generic annual regime plot, \code{\link{AnnualRegime}} to compute annual regimes only.
 #' 
-#' @export
+#' @examples
+#' \dontrun{PlotSimObsRegime(x = mybasinoutput, sim = "ccin", obs = "rein", start.mon = 10)}
 #' 
+#' @export
 
 
 PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.mon = 1, add.legend = TRUE, pos.legend = "topright", 
@@ -136,17 +149,24 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
     
     # create legend labels, conditional on if user provided names manually and if number of observations for frequencies is known
     if (is.null(l.legend)) {
-      lgnd <- c(sim, obs, "mean", "median", "25 to 75 %ile", "min. to max.")
+      lgnd <- c(toupper(c(sim, obs)), "mean", "median", "25 to 75 %ile", "min. to max.")
     } else {
       lgnd <- c(l.legend[1:2], "mean", "median", "25 to 75 %ile", "min. to max.")
       if (length(l.legend) > 2) {
         warning("Argument 'l.legend': only first 2 elements used.")
       }
     }
+    # create legend item properties
+    lcol <- c(.makeTransparent(2:1, alpha = 200), rep("grey40", 2), .makeTransparent(2, alpha = 120), .makeTransparent(2, alpha = 60))
+    lpch <- c(15, 15, NA, NA, 15, 15)
+    llty <- c(NA, NA, 1, 2, NA, NA)
+    llwd <- c(NA, NA, 2, 2, NA, NA)
     
     # print legend
-    legend(pos.legend, legend = lgnd, bty = "n", lty = 1, col = col, cex=.9, lwd = llwd)
+    legend(pos.legend, legend = lgnd, bty = "n", col = lcol, pch = lpch, lty = llty, cex=.75, pt.cex = 1.5, lwd = llwd)
   }
   
+  # return results as list invisibly
+  invisible(list(reg.sim, reg.obs = list(refdate = reg.obs.date, obs = reg.obs), variable = c(sim = sim, obs = obs)))
 }
 

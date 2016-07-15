@@ -39,7 +39,6 @@ This function is now superseeded by \code{\link{UpstreamGeoData}}, which returns
 \dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}
 }
 \seealso{
-\code{\link{SumUpstreamArea}}
-\code{\link{UpstreamGeoData}}
+\code{\link{SumUpstreamArea}}, \code{\link{UpstreamGeoData}}, \code{\link{UpstreamGroupSLCClasses}}
 }
 

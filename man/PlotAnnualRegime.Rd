@@ -56,6 +56,6 @@ Vertical lines of background grid are mid-month lines.
 
 }
 \seealso{
-\code{\link{AnnualRegime}}
+\code{\link{AnnualRegime}}, \code{\link{PlotSimObsRegime}}
 }
 

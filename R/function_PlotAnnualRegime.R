@@ -31,7 +31,7 @@
 #' \code{PlotAnnualRegime} returns a plot to the currently active plot device.
 #' 
 #' @seealso
-#' \code{\link{AnnualRegime}}
+#' \code{\link{AnnualRegime}}, \code{\link{PlotSimObsRegime}}
 #' 
 #' @examples
 #' \dontrun{AnnualRegime(x = myregime)}

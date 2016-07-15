@@ -35,8 +35,7 @@
 #' This function is now superseeded by \code{\link{UpstreamGeoData}}, which returns more upstream variables.
 #' 
 #' @seealso
-#' \code{\link{SumUpstreamArea}}
-#' \code{\link{UpstreamGeoData}}
+#' \code{\link{SumUpstreamArea}}, \code{\link{UpstreamGeoData}}, \code{\link{UpstreamGroupSLCClasses}}
 #' 
 #' @examples
 #' \dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}
