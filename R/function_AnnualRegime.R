@@ -99,7 +99,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
     # create daily date vector over time period
     days <- data.frame(DATE = seq(x[1, 1], x[nrow(x), 1], by = "day"))
     x <- merge(days, x, by = 1, all.x = T)
-    # use internal function to fill NAs fith next available value, apply to all columns
+    # use internal function to fill NAs with next available value, apply to all columns
     x <- data.frame(DATE = x[, 1], apply(x[, -1], 2, .FillWeek))
     tformat <- format(x[, 1], format = "%j")
   }
@@ -127,6 +127,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   # calculate results, conditional on type of aggregation for output periods
   if (stat == "mean") {
     res_ave <- aggregate(x[, -1], list(tformat), mean, na.rm = na.rm)
+    res_med <- aggregate(x[, -1], list(tformat), median, na.rm = na.rm)
     res_min <- aggregate(x[, -1], list(tformat), min, na.rm = na.rm)
     res_max <- aggregate(x[, -1], list(tformat), max, na.rm = na.rm)
     res_25p <- aggregate(x[, -1], list(tformat), quantile, probs = 0.25, na.rm = na.rm)
@@ -134,6 +135,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   } else if (stat == "sum") {
     te <- aggregate(x[, -1], list(tformat, yformat), sum, na.rm = na.rm)
     res_ave <- aggregate(te[, -c(1:2)], list(te[, 1]), mean, na.rm = na.rm)
+    res_med <- aggregate(te[, -c(1:2)], list(te[, 1]), median, na.rm = na.rm)
     res_min <- aggregate(te[, -c(1:2)], list(te[, 1]), min, na.rm = na.rm)
     res_max <- aggregate(te[, -c(1:2)], list(te[, 1]), max, na.rm = na.rm)
     res_25p <- aggregate(te[, -c(1:2)], list(te[, 1]), quantile, probs = 0.25, na.rm = na.rm)
@@ -145,6 +147,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   
   # prettify header
   names(res_ave)[1] <- ts.out
+  names(res_med)[1] <- ts.out
   names(res_min)[1] <- ts.out
   names(res_max)[1] <- ts.out
   names(res_25p)[1] <- ts.out
@@ -153,6 +156,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   # remove leap day from daily results if requested by user (and if it exists in results)
   if (ts.out == "day" && !incl.leap && res_ave[60, 1] == "02-29") {
     res_ave <- res_ave[-60, ]
+    res_med <- res_med[-60, ]
     res_min <- res_min[-60, ]
     res_max <- res_max[-60, ]
     res_25p <- res_25p[-60, ]
@@ -164,6 +168,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
     te <- which(substr(res_ave[, 1], 1, 5) == "02-29")
     if (length(te) > 0) {
       res_ave <- res_ave[-te, ]
+      res_med <- res_med[-te, ]
       res_min <- res_min[-te, ]
       res_max <- res_max[-te, ]
       res_25p <- res_25p[-te, ]
@@ -199,6 +204,7 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
     
     # re-order all results
     res_ave <- res_ave[c(ind.sm:ind.nrow, 1:(ind.sm - 1)), ]
+    res_med <- res_med[c(ind.sm:ind.nrow, 1:(ind.sm - 1)), ]
     res_min <- res_min[c(ind.sm:ind.nrow, 1:(ind.sm - 1)), ]
     res_max <- res_max[c(ind.sm:ind.nrow, 1:(ind.sm - 1)), ]
     res_25p <- res_25p[c(ind.sm:ind.nrow, 1:(ind.sm - 1)), ]
@@ -256,13 +262,14 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   
   # add reference dates to all results
   res_ave <- data.frame(refdate = te, res_ave)
+  res_med <- data.frame(refdate = te, res_med)
   res_min <- data.frame(refdate = te, res_min)
   res_max <- data.frame(refdate = te, res_max)
   res_25p <- data.frame(refdate = te, res_25p)
   res_75p <- data.frame(refdate = te, res_75p)
   
   # combine to result list
-  res <- list(mean = res_ave, minimum = res_min, maximum = res_max, p25 = res_25p, p75 = res_75p)
+  res <- list(mean = res_ave, median = res_med, minimum = res_min, maximum = res_max, p25 = res_25p, p75 = res_75p)
   
   # add period and timestep attributes
   attr(res, "timestep") <- ts.out

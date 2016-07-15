@@ -13,6 +13,9 @@
 #' @param ts.out Character string, timestep for results, defaults to \code{ts.in}. This timestep must be equal to or longer than 
 #' \code{ts.in}.
 #' @param start.mon Integer between 1 and 12, starting month of the hydrological year, used to order the output.
+#' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
+#' @param pos.legend Character string keyword for legend positioning. See Details in \code{link{legend}}.
+#' @param l.legend Character vector of length 2. If non-NULL, variable labels are read from here instead of from \code{sim} and \code{obs}.
 #' @param ylim  Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Defaults to a string giving the 
 #' time period on which the regime is based.
@@ -25,10 +28,13 @@
 #' 
 #' @seealso 
 #' \code{\link{PlotAnnualRegime}} for a more generic annual regime plot, \code{\link{AnnualRegime}} to compute annual regimes only.
+#' 
+#' @export
+#' 
 
 
-PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.mon = 1, ylim = NULL, xlab = NULL, ylab = NULL, 
-                             mar = c(3, 3, 1, 1) + .1) {
+PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.mon = 1, add.legend = TRUE, pos.legend = "topright", 
+                             l.legend = NULL, ylim = NULL, xlab = NULL, ylab = NULL, mar = c(3, 3, 1, 1) + .1) {
   
   ## check arguments and prepare data
   
@@ -97,7 +103,7 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   
   # plot background grid
   grid(nx = NA, ny = NULL)
-  vline <- reg.obs.date - 15*86400
+  vline <- reg.obs.date - 14*86400
   abline(v = vline, col = "lightgray", lty = "dotted", lwd = par("lwd"))
   
   # manually add axes and framing box
@@ -113,17 +119,34 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   polygon(polcoor.p25p75[, 1], polcoor.p25p75[, 2], col = polcol, border = NA)
   # add mean and median lines, median needs to be calculated
   lines(reg.sim$mean[, c(1, 3)], col = .makeTransparent("red", 200))
-  reg.sim.median <- sapply(tapply(x.sim[, 2], format(x.sim[, 1], format = "%m"), c), median, na.rm = T)[sort.mon]
-  lines(reg.sim$mean[, 1], reg.sim.median, lty = 2, col = .makeTransparent("red", 200))
+  lines(reg.sim$median[, c(1, 3)], lty = 2, col = .makeTransparent("red", 200))
   
   # plot observation box plots
   boxplot(reg.obs, at = reg.obs.date, add = T, boxwex = 1600000, show.names = F, axes = F, outpch = 20, outcol = .makeTransparent("black", 150), col = .makeTransparent("grey30", 60))
-  text(x = reg.obs.date, y = ylim[1], as.character(sapply(reg.obs, length)), adj = c(.5, .9), cex = .75, font = 3)
+  # obs counts
+  text(x = reg.obs.date, y = ylim[1], as.character(sapply(reg.obs, length)), adj = c(.5, .9), cex = .75, font = 3, col = "grey50")
+  text(x = par("usr")[1], y = ylim[1], "n obs.", adj = c(1, .9), cex = .75, font = 3, xpd = T, col = "grey50")
   # add mean and median lines
   lines(x = reg.obs.date, y = sapply(reg.obs, mean), col = .makeTransparent("black", 200))
   lines(x = reg.obs.date, y = sapply(reg.obs, median), lty = 2, col = .makeTransparent("black", 200))
   
   
+  # add legend if requested
+  if (add.legend) {
+    
+    # create legend labels, conditional on if user provided names manually and if number of observations for frequencies is known
+    if (is.null(l.legend)) {
+      lgnd <- c(sim, obs, "mean", "median", "25 to 75 %ile", "min. to max.")
+    } else {
+      lgnd <- c(l.legend[1:2], "mean", "median", "25 to 75 %ile", "min. to max.")
+      if (length(l.legend) > 2) {
+        warning("Argument 'l.legend': only first 2 elements used.")
+      }
+    }
+    
+    # print legend
+    legend(pos.legend, legend = lgnd, bty = "n", lty = 1, col = col, cex=.9, lwd = llwd)
+  }
   
 }
 
