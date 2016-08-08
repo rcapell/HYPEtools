@@ -109,7 +109,7 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
                       by = "month", length.out = 12)
   
   # set plot parameters
-  par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0))
+  par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0), tcl = .2)
   
   # set up the plot region, but do not plot yet. Background grid will be plotted first
   plot(reg.sim$mean[, c(1, 3)], axes = F, type = "n", ylab = ylab, xlab = xlab, ylim = ylim)
@@ -138,7 +138,7 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   boxplot(reg.obs, at = reg.obs.date, add = T, boxwex = 1600000, show.names = F, axes = F, outpch = 20, outcol = .makeTransparent("black", 150), col = .makeTransparent("grey30", 60))
   # obs counts
   text(x = reg.obs.date, y = ylim[1], as.character(sapply(reg.obs, length)), adj = c(.5, .9), cex = .75, font = 3, col = "grey50")
-  text(x = par("usr")[1], y = ylim[1], "n obs.", adj = c(1, .9), cex = .75, font = 3, xpd = T, col = "grey50")
+  text(x = par("usr")[1] - diff(par("usr")[1:2])/25, y = ylim[1], "n obs.", adj = c(1, .9), cex = .75, font = 3, xpd = T, col = "grey50")
   # add mean and median lines
   lines(x = reg.obs.date, y = sapply(reg.obs, mean), col = .makeTransparent("black", 200))
   lines(x = reg.obs.date, y = sapply(reg.obs, median), lty = 2, col = .makeTransparent("black", 200))

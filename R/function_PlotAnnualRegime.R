@@ -98,7 +98,7 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
   }
   
   # set plot parameters
-  par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0))
+  par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0), tcl = .2)
   
   # set up the plot region, but do not plot yet. Background grid will be plotted first
   plot(x$mean[, c(1, 3)], axes = F, type = "n", ylab = ylab, xlab = xlab, ylim = ylim)

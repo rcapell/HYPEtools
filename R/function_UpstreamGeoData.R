@@ -251,7 +251,6 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
     up.sum <- data.frame(SUBID = subid, te)
     names(up.sum)[2] <- names(gd)[pos.sum]
   }
-  rm(te)
   
   
   #######################################################
@@ -262,21 +261,28 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   # round to requested number of digits, conditional on existing results for lake_depth and stddev variables
   # the data frame dummy column adding and removing is a workaround for single-column cases (names get messed up because apply returns a names vector then..)
   if (!is.null(signif.digits)) {
-    te <- names(up.wmean)
-    up.wmean[, -1] <- apply(data.frame(1, up.wmean[, -1]), 2, signif, digits = signif.digits)[, -1]
-    names(up.wmean) <- te
+    te <- apply(data.frame(1, up.wmean[, -1]), 2, signif, digits = signif.digits)
+    # te is a vector for single-subid cases
+    if (length(subid) == 1) {
+      up.wmean[, -1] <- te[-1]
+    } else {
+      up.wmean[, -1] <- te[, -1]
+    }
     if (!is.null(up.wmean.ldepth)) {
       up.wmean.ldepth[, -1] <- signif(up.wmean.ldepth[, -1], digits = signif.digits)
-      }
+    }
     if (!is.null(up.wsd.elev)) {
       up.wsd.elev[, -1] <- signif(up.wsd.elev[, -1], digits = signif.digits)
-      }
+    }
     if (!is.null(up.wsd.slope)) {
       up.wsd.slope[, -1] <- signif(up.wsd.slope[, -1], digits = signif.digits)
-      }
-    te <- names(up.sum)
-    up.sum[, -1] <- apply(data.frame(1, up.sum[, -1]), 2, signif, digits = signif.digits)[, -1]
-    names(up.sum) <- te
+    }
+    te <- apply(data.frame(1, up.sum[, -1]), 2, signif, digits = signif.digits)
+    if (length(subid) == 1) {
+      up.sum[, -1] <- te[-1]
+    } else {
+      up.sum[, -1] <- te[, -1]
+    }
   }
   
   ## copy all upstream calculations to result GeoData, replacing the originals, conditional on presence of argument subid

@@ -1244,7 +1244,7 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #' \code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
 #' e.g. plotting legends or examining imported GeoClass files. The text file must contain 10 lines as follows: HYPE 
 #' set-up name (2nd line), set-up version (4th line), tab-separated land use class names (6th line), tab-separated 
-#' soil class names (8th line),  tab-separated crop class names (8th line). Lines in between can contain headers, 
+#' soil class names (8th line),  tab-separated crop class names (10th line). Lines in between can contain headers, 
 #' but are not read by the function.
 #' 
 #' @return
