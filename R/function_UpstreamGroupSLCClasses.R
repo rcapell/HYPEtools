@@ -1,29 +1,18 @@
-#' @export
-#' @importFrom pbapply pblapply pbsapply
 #' 
-#' @title
 #' Calculate area-weighted upstream averages of grouped SLC class fractions.
 #'
-#' @description
 #' Function to calculate averages of grouped SLC class fractions calculated from imported GeoData.txt and GeoClass.txt or any other user-defined grouping. 
 #'
 #' @param subid Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
 #' If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.
-#' 
 #' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
-#' 
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
-#' 
 #' @param gc Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.
-#' 
 #' @param type Keyword character string for use with \code{gc}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
 #' can be abbreviated.
-#' 
 #' @param group Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gc} + \code{type}.
-#' 
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
-#'
 #' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
 #' is \code{NULL} or contains many SUBIDs.
 #' 
@@ -49,8 +38,9 @@
 #' 
 #' @examples
 #' \dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gc = mygeoclass, bd = mybranchdata, type = "landuse")}
-
-
+#' 
+#' @export
+#' @importFrom pbapply pblapply pbsapply
 
 
 UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gc = NULL, type = "landuse", group = NULL, signif.digits = 3, progbar = T) {

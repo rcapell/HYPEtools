@@ -1234,21 +1234,54 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #' Read a 'description.txt' file
 #'
 #' Read a 'description.txt' file as \code{list} object into R. A 'description.txt' file contains land use, soil, and crop 
-#' class names of a HYPE set-up, as well as set-up name and version. 
+#' class names of a HYPE set-up, as well as model set-up name and version. 
 #' 
-#' @param filename Path to and file name of the 'subassX.txt' file to import. 
-#' @param gcl dataframe, imported GeoClass table to compare number of class names with. A warning will be thrown if numbers 
-#' are not identical. 
+#' @param filename Path to and file name of the 'description.txt' file to import. 
+#' @param gcl dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare number of class names with. 
+#' A warning will be thrown if numbers are not identical.
 #'  
 #' @details
 #' \code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
-#' e.g. plotting legends or examining imported GeoClass files. The text file must contain 10 lines as follows: HYPE 
-#' set-up name (2nd line), set-up version (4th line), tab-separated land use class names (6th line), tab-separated 
-#' soil class names (8th line),  tab-separated crop class names (10th line). Lines in between can contain headers, 
-#' but are not read by the function.
+#' e.g. plotting legend labels or examining imported GeoClass files. \code{\link{PlotBasinEvaluation}} requires a list 
+#' as returned from \code{ReadDescription} for labeling. 
+#' 
+#' A description.txt file consists of 16 lines, alternating names and semicolon-separated content. Lines 
+#' with names are not actually read by the function, they just make it easier to read the actual text file.
+#' 
+#' File contents read by \code{ReadDescription}: 
+#' \itemize{
+#'  \item HYPE set-up name (line 2)
+#'  \item HYPE set-up version (line 4)
+#'  \item Land use class names (line 6)
+#'  \item Land use class short names (line 8)
+#'  \item Soil class names (line 10)
+#'  \item Soil class short names (line 12)
+#'  \item Crop class names (line 14)
+#'  \item Crop class short names (line 16)
+#' }
+#' 
+#' 
+#' Formatting example for description.txt files: 
+#' 
+#' \code{# Name} \cr
+#' \code{MyHYPE} \cr
+#' \code{# Version} \cr
+#' \code{0.1} \cr
+#' \code{# Land use class names} \cr
+#' \code{Agriculture;Coniferous forest} \cr
+#' \code{# Short land use class names} \cr
+#' \code{Agric.;Conif. f.} \cr
+#' \code{# Soil class names} \cr
+#' \code{Coarse soils;Medium to fine soils} \cr
+#' \code{# Short soil class names} \cr
+#' \code{Coarse;Medium} \cr
+#' \code{# Crop class names} \cr
+#' \code{Row crops;Autumn-sown cereal} \cr
+#' \code{# Short crop class names} \cr
+#' \code{Row;Aut.-sown} \cr
 #' 
 #' @return
-#' \code{ReadDescription} returns a list with 5 elements, corresponding to the imported lines.
+#' \code{ReadDescription} returns a named list with 11 elements, corresponding to the imported lines.
 #' 
 #' @examples
 #' \dontrun{ReadDescription("description.txt")}
@@ -1260,13 +1293,24 @@ ReadDescription <- function(filename, gcl = NULL) {
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read description file into a character vector (one string per row in file)
   x <- scan(file = filename, what = "", sep = "\n", quiet = T)
-  # split string elements along tabs, returns list of character vectors
-  x <- strsplit(x, split = "\t")
+  # split string elements along semicolons, returns list of character vectors
+  x <- strsplit(x, split = ";")
   # remove empty strings (excel export artefacts)
   x <- sapply(x, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
   # create result list, assign names
-  res <- x[c(2, 4, 6, 8, 10)]
-  names(res) <- c("Name", "Version", "Landuse", "Soil", "Crop")
+  res <- x[c(2, 4, 6, 8, 10, 12, 14, 16)]
+  names(res) <- c("Name", "Version", "Landuse", "lu", "Soil", "so", "Crop", "cr")
+  
+  # check conformity of names and short names
+  if (length(res$Landuse) != length(res$lu)) {
+    warning("Diffent numbers of land use names and short names in imported file.")
+  }
+  if (length(res$Soil) != length(res$so)) {
+    warning("Diffent numbers of soil names and short names in imported file.")
+  }
+  if (length(res$Crop) != length(res$cr)) {
+    warning("Diffent numbers of crop names and short names in imported file.")
+  }
   
   # check conformity with geoclass if provided
   if (!is.null(gcl)) {

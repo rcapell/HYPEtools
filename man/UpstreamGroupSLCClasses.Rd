@@ -46,6 +46,7 @@ The function builds on \code{\link{GroupSLCClasses}}, which provides grouped sum
 }
 \examples{
 \dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gc = mygeoclass, bd = mybranchdata, type = "landuse")}
+
 }
 \seealso{
 \code{\link{GroupSLCClasses}}
