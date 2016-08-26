@@ -37,6 +37,6 @@ point source (including the sub-basin itself), summed emission volumes and volum
 HYPE point source types ('ps_type') are returned in separate rows. Water abstraction point sources are ignored
 }
 \examples{
-\dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypointsourcedata, bd = mybranchdata)}
+\dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypsdata, bd = mybranchdata)}
 }
 

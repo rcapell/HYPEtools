@@ -28,7 +28,7 @@
 #' concentrations, and total phosphorus concentrations.
 #' 
 #' @examples
-#' \dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypointsourcedata, bd = mybranchdata)}
+#' \dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypsdata, bd = mybranchdata)}
 
 
 UpstreamPointSources <- function(subid = NULL, gd, psd, bd = NULL, signif.digits = 4, progbar = T) {
