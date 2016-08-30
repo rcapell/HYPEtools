@@ -1246,7 +1246,7 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #' as returned from \code{ReadDescription} for labeling. 
 #' 
 #' A description.txt file consists of 16 lines, alternating names and semicolon-separated content. Lines 
-#' with names are not actually read by the function, they just make it easier to read the actual text file.
+#' with names are not read by the import function, they just make it easier to compose and read the actual text file.
 #' 
 #' File contents read by \code{ReadDescription}: 
 #' \itemize{
@@ -1281,7 +1281,11 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #' \code{Row;Aut.-sown} \cr
 #' 
 #' @return
-#' \code{ReadDescription} returns a named list with 11 elements, corresponding to the imported lines.
+#' \code{ReadDescription} returns a named list with 8 named character elements, corresponding to the 
+#' imported lines:
+#' 
+#' \code{Name}, \code{Version}, \code{Landuse}, \code{lu} (short names), \code{Soil}, \code{so} (short names), 
+#' \code{Crop}, \code{cr} (short names)
 #' 
 #' @examples
 #' \dontrun{ReadDescription("description.txt")}
@@ -1303,13 +1307,13 @@ ReadDescription <- function(filename, gcl = NULL) {
   
   # check conformity of names and short names
   if (length(res$Landuse) != length(res$lu)) {
-    warning("Diffent numbers of land use names and short names in imported file.")
+    warning("Diffent numbers of names and short names for land uses in imported file.")
   }
   if (length(res$Soil) != length(res$so)) {
-    warning("Diffent numbers of soil names and short names in imported file.")
+    warning("Diffent numbers of names and short names for soils in imported file.")
   }
   if (length(res$Crop) != length(res$cr)) {
-    warning("Diffent numbers of crop names and short names in imported file.")
+    warning("Diffent numbers of names and short names for crops in imported file.")
   }
   
   # check conformity with geoclass if provided

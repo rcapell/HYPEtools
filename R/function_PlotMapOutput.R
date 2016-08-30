@@ -142,42 +142,42 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
     # Specific palettes get a generic class break points if not provided with another by the user
     # THIS CODE IS REPETITIVE, COULD BE STREAMLINED BY BREAKING OUT cbrks ASSIGNMENT
     if (col.ramp.fun == "ColNitr") {
-      crfun <- .ColNitr
+      crfun <- ColNitr
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
         cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColPhos") {
-      crfun <- .ColPhos
+      crfun <- ColPhos
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
         cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColTemp") {
-      crfun <- .ColTemp
+      crfun <- ColTemp
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
         cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColPrec") {
-      crfun <- .ColPrec
+      crfun <- ColPrec
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
         cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColQ") {
-      crfun <- .ColQ
+      crfun <- ColQ
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
         cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else if (col.ramp.fun == "ColDiffTemp") {
-      crfun <- .ColDiffTemp
+      crfun <- ColDiffTemp
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
@@ -186,7 +186,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
       }
       
     } else if (col.ramp.fun == "ColDiffGeneric") {
-      crfun <- .ColDiffGeneric
+      crfun <- ColDiffGeneric
       if (!is.null(col.breaks)) {
         cbrks <- col.breaks
       } else {
@@ -200,31 +200,31 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
       # Here follows a limited set of pre-defined color ramps and break point vectors for select HYPE variables, and
       # at the end a generic "catch the rest" treatment for undefined variables
       if (toupper(var.name) == "CCTN") {
-        crfun <- .ColNitr
+        crfun <- ColNitr
         cbrks <- c(0, 10, 50, 100, 250, 500, 1000, 2500, 5000, ifelse(max(x[,2]) > 5000, max(x[,2]) + 1, 10000))
         if (is.null(legend.title)) {
           legend.title <- expression(paste("Total N (", mu, "g l"^"-1", ")"))
         }
       } else if (toupper(var.name) == "CCTP") {
-        crfun <- .ColPhos
+        crfun <- ColPhos
         cbrks <- c(0, 5, 10, 25, 50, 100, 150, 200, 250, ifelse(max(x[,2]) > 250, max(x[,2]) + 1, 1000))
         if (is.null(legend.title)) {
           legend.title <- expression(paste("Total P (", mu, "g l"^"-1", ")"))
         }
       } else if (toupper(var.name) == "COUT") {
-        crfun <- .ColQ
+        crfun <- ColQ
         cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(x[,2]) > 500, max(x[,2]) + 1, 2000))
         if (is.null(legend.title)) {
           legend.title <- expression(paste("Q (m"^3, "s"^"-1", ")"))
         }
       } else if (toupper(var.name) == "TEMP") {
-        crfun <- .ColTemp
+        crfun <- ColTemp
         cbrks <- c(ifelse(min(x[,2]) < -7.5, min(x[,2]) - 1, -30), -7.5, -5, -2.5, 1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2]) > 7.5, max(x[,2]) + 1, 30))
         if (is.null(legend.title)) {
           legend.title <- expression(paste("Air Temp. ("*degree, "C)"))
         }
       } else {
-        crfun <- .ColDiffGeneric
+        crfun <- ColDiffGeneric
         cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
     } else {

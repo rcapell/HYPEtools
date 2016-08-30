@@ -13,7 +13,11 @@ ReadDescription(filename, gcl = NULL)
 A warning will be thrown if numbers are not identical.}
 }
 \value{
-\code{ReadDescription} returns a named list with 11 elements, corresponding to the imported lines.
+\code{ReadDescription} returns a named list with 8 named character elements, corresponding to the 
+imported lines:
+
+\code{Name}, \code{Version}, \code{Landuse}, \code{lu} (short names), \code{Soil}, \code{so} (short names), 
+\code{Crop}, \code{cr} (short names)
 }
 \description{
 Read a 'description.txt' file as \code{list} object into R. A 'description.txt' file contains land use, soil, and crop 
@@ -25,7 +29,7 @@ e.g. plotting legend labels or examining imported GeoClass files. \code{\link{Pl
 as returned from \code{ReadDescription} for labeling. 
 
 A description.txt file consists of 16 lines, alternating names and semicolon-separated content. Lines 
-with names are not actually read by the function, they just make it easier to read the actual text file.
+with names are not read by the import function, they just make it easier to compose and read the actual text file.
 
 File contents read by \code{ReadDescription}: 
 \itemize{

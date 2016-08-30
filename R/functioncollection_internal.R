@@ -6,7 +6,6 @@
 #     - .CreateLabelsFromBreaks()
 #     - .Scalebar()
 #     - .NorthArrow()
-#     - .ColNITR(), .ColPHOS(), .ColPREC(), .ColTEMP(), .ColCOUT(), .Coldiff()
 #     - .FillWeek()
 #     - .makeTransparent()
 #     - 
@@ -173,24 +172,6 @@
 }
 
 
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Color ramp palettes~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-# color ramp palettes with strong saturation and value gradients, for quantitative differences
-.ColNitr <- colorRampPalette(c("#fff5a8", "#6b0601"))
-.ColPhos <- colorRampPalette(c("#dcf5e9", "#226633"))
-.ColPrec <- colorRampPalette(c("#e0e7e8", "#00508c"))
-.ColTemp <- colorRampPalette(c("#0000ff", "#0080ff", "#80ffff", "#f0f0f0", "#ffff00", "#ff8000", "#ff0000"))
-.ColQ <- colorRampPalette(c("#ede7ff", "#2300ff"))
-.ColDiffTemp <- colorRampPalette(c("#2892c7", "#d5f6d0", "#e81515"))
-.ColDiffGeneric <- colorRampPalette(c("#e81515", "#d5f6d0", "#2892c7"))
-
-# color ramp palettes with dominant color and saturation gradient, for qualitative differences
-.ColBlues <- colorRampPalette(c("#0a0a96", "#a3a3db"))
-.ColReds <- colorRampPalette(c("#f77497", "#670101"))
-.ColGreens <- colorRampPalette(c("#04eb04", "#004400"))
-.ColYOB <- colorRampPalette(c("#ffe851", "#da531d", "#5b1e00"))
-.ColPurples <- colorRampPalette(c("#da62ed", "#300275"))
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.FillWeek~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#

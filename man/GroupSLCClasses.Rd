@@ -14,7 +14,7 @@ imported with \code{\link{ReadGeoData}}.}
 \item{gc}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.}
 
-\item{type}{Keyword character string for use with \code{gc}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
+\item{type}{Character string keyword for use with \code{gc}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
 can be abbreviated.}
 
 \item{group}{Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gc} + \code{type}.}

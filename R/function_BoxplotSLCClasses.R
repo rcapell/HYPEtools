@@ -127,11 +127,11 @@ BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL,
       
       # get a pretty color for each SLC class using internal color ramp functions for each land use group
       col.gr <- col.group
-      col.gr[col.gr == 1] <- .ColBlues(length(col.gr[col.gr == 1]))
-      col.gr[col.gr == 2] <- .ColReds(length(col.gr[col.gr == 2]))
-      col.gr[col.gr == 3] <- .ColGreens(length(col.gr[col.gr == 3]))
-      col.gr[col.gr == 4] <- .ColYOB(length(col.gr[col.gr == 4]))
-      col.gr[col.gr == 5] <- .ColPurples(length(col.gr[col.gr == 5]))
+      col.gr[col.gr == 1] <- ColBlues(length(col.gr[col.gr == 1]))
+      col.gr[col.gr == 2] <- ColReds(length(col.gr[col.gr == 2]))
+      col.gr[col.gr == 3] <- ColGreens(length(col.gr[col.gr == 3]))
+      col.gr[col.gr == 4] <- ColYOB(length(col.gr[col.gr == 4]))
+      col.gr[col.gr == 5] <- ColPurples(length(col.gr[col.gr == 5]))
       levels(col.lu) <- col.gr
       legend.lu <- col.gr
       col.lu <- as.character(col.lu)
