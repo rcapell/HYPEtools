@@ -18,14 +18,17 @@
 #' @details
 #' \code{UpstreamGeoData} calculates upstream averages or sums of selected variables in a GeoData data frame, including branch connections 
 #' in case of stream bifurcations but not including potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area, with 
-#' the exception of outlet lake depths provided in GeoData variable 'lake_depth'. These are weighted by outlet lake area and the GeoData column with 
-#' SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Elevation and slope standard deviations are 
+#' the exception of outlet lake depths and rural household emission concentrations provided in GeoData variables 'lake_depth', 'loc_tn', 
+#' and 'loc_tp'. Outlet lake depths are weighted by outlet lake area and the GeoData column with 
+#' SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Rural household emissions are weighted by 
+#' emission volume as provided in column 'loc_vol'. Elevation and slope standard deviations are 
 #' averaged if the corresponding mean values exist (sample means are required to calculate overall means of std. devs.).
 #' 
 #' Currently, the following variables are considered:
 #' \describe{
-#'   \item{Area-weighted average}{elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, elev_std, slope_std}
-#'   \item{Sum}{area, rivlen}
+#'   \item{Area-weighted average}{elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, lake depths, elev_std, slope_std}
+#'   \item{Volume-weighted average}{loc_tn, loc_tp}
+#'   \item{Sum}{area, rivlen, loc_vol}
 #' }
 #' 
 #' @return
@@ -84,7 +87,10 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   # lake depths are special, because they will be weighted by lake area, if olake slc is provided by user
   pos.wmean.ldepth <- which(tolower(names(gd)) == "lake_depth")
   pos.wmean.slc.olake <- which(toupper(names(gd)) == paste0("SLC_", olake.slc))
-  pos.sum <- which(tolower(names(gd)) %in% c("area", "rivlen"))
+  pos.wmean.lconc <- which(tolower(names(gd))  %in% c("loc_tn", "loc_tp"))
+  # loc_vol is extracted two times, first for using it as weight for loc_tn/p, then for summing
+  pos.wmean.lvol <- which(tolower(names(gd))  %in% c("loc_vol"))
+  pos.sum <- which(tolower(names(gd)) %in% c("area", "rivlen", "loc_vol"))
   pos.wsd.elev <- which(tolower(names(gd)) %in% c("elev_std", "elev_mean"))
   pos.wsd.slope <- which(tolower(names(gd)) %in% c("slope_std", "slope_mean"))
   
@@ -97,6 +103,11 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   }
   if (length(pos.wmean.ldepth) == 1 && length(pos.wmean.slc.olake) == 0) {
     warning("'lake_depth' found in GeoData, but outlet lake SLC class provided in argument 'olake.slc' does not exist. Skipping upstream 'lake_depth'.")
+  }
+  
+  # warn user if rural household releases cannot be calculated
+  if (length(pos.wmean.lconc) >= 1 && is.null(pos.wmean.lvol)) {
+    warning("'loc_tn' and/or 'loc_tp' found in GeoData, but no corresponding 'loc_vol'. Skipping upstream rural household releases.")
   }
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
@@ -214,6 +225,26 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
     up.wmean.ldepth <- NULL
   }
   
+  # volume-weighted rural household concentrations
+  if (length(pos.wmean.lconc) >= 1 && !is.null(pos.wmean.lvol)) {
+    cat("\nCalculating upstream volume-weighted rural household releases.\n")
+    if (progbar) {
+      te <- pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean.lconc, p.area = pos.wmean.lvol)
+    } else {
+      te <- sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean.lconc, p.area = pos.wmean.lvol)
+    }
+    # create result dataframe, conditional on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
+    if(length(pos.wmean.lconc) > 1) {
+      up.wmean.lconc <- data.frame(SUBID = subid, t(te))
+    } else {
+      up.wmean.lconc <- data.frame(SUBID = subid, te)
+      names(up.wmean.lconc)[2] <- names(gd)[pos.wmean.lconc]
+    }
+    rm(te)
+  } else {
+    up.wmean.lconc <- NULL
+  }
+  
   # apply area-weighted sd function to all SUBIDs in variable 'subid'
   # do separately for slope and elev, if they exist in gd
   if (length(pos.wsd.elev) == 2) {
@@ -259,7 +290,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   cat("\nPost-processing.\n")
   
   # round to requested number of digits, conditional on existing results for lake_depth and stddev variables
-  # the data frame dummy column adding and removing is a workaround for single-column cases (names get messed up because apply returns a names vector then..)
+  # the data frame dummy column adding and removing is a workaround for single-column cases (names get messed up because 
+  # apply returns a names vector then..)
   if (!is.null(signif.digits)) {
     te <- apply(data.frame(1, up.wmean[, -1]), 2, signif, digits = signif.digits)
     # te is a vector for single-subid cases
@@ -270,6 +302,15 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
     }
     if (!is.null(up.wmean.ldepth)) {
       up.wmean.ldepth[, -1] <- signif(up.wmean.ldepth[, -1], digits = signif.digits)
+    }
+    if (!is.null(up.wmean.lconc)) {
+      te <- apply(data.frame(1, up.wmean.lconc[, -1]), 2, signif, digits = signif.digits)
+      # te is a vector for single-subid cases
+      if (length(subid) == 1) {
+        up.wmean.lconc[, -1] <- te[-1]
+      } else {
+        up.wmean.lconc[, -1] <- te[, -1]
+      }
     }
     if (!is.null(up.wsd.elev)) {
       up.wsd.elev[, -1] <- signif(up.wsd.elev[, -1], digits = signif.digits)
@@ -297,6 +338,9 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   if (!is.null(up.wmean.ldepth)) {
     res[, pos.wmean.ldepth] <- up.wmean.ldepth[2]
   }
+  if (!is.null(up.wmean.lconc)) {
+    res[, pos.wmean.lconc] <- up.wmean.lconc[, -1]
+  }
   if (!is.null(up.wsd.elev)) {
     res[, pos.wsd.elev[2]] <- up.wsd.elev[, -1]
   }
@@ -308,8 +352,9 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   
   # rename upstream variables to clarify they are upstream values
   pos.up <- c(pos.wmean, pos.sum, if (length(pos.wmean.ldepth) == 1 && length(pos.wmean.slc.olake) == 1) pos.wmean.ldepth else NULL, 
+              if (length(pos.wmean.lconc) >= 1 && length(pos.wmean.lvol) == 1) pos.wmean.lconc else NULL, 
               if (length(pos.wsd.elev) == 2) pos.wsd.elev[2] else NULL, if (length(pos.wsd.slope) == 2) pos.wsd.slope[2] else NULL)
-  names(res)[pos.up] <- paste("UP_", names(res)[pos.up], sep = "")
+  names(res)[pos.up] <- paste0("UP_", names(res)[pos.up])
   
   # return result
   return(res)

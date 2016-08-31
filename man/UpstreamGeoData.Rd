@@ -36,14 +36,17 @@ Function to calculate upstream sums and averages for selected variables of impor
 \details{
 \code{UpstreamGeoData} calculates upstream averages or sums of selected variables in a GeoData data frame, including branch connections 
 in case of stream bifurcations but not including potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area, with 
-the exception of outlet lake depths provided in GeoData variable 'lake_depth'. These are weighted by outlet lake area and the GeoData column with 
-SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Elevation and slope standard deviations are 
+the exception of outlet lake depths and rural household emission concentrations provided in GeoData variables 'lake_depth', 'loc_tn', 
+and 'loc_tp'. Outlet lake depths are weighted by outlet lake area and the GeoData column with 
+SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Rural household emissions are weighted by 
+emission volume as provided in column 'loc_vol'. Elevation and slope standard deviations are 
 averaged if the corresponding mean values exist (sample means are required to calculate overall means of std. devs.).
 
 Currently, the following variables are considered:
 \describe{
-  \item{Area-weighted average}{elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, elev_std, slope_std}
-  \item{Sum}{area, rivlen}
+  \item{Area-weighted average}{elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, lake depths, elev_std, slope_std}
+  \item{Volume-weighted average}{loc_tn, loc_tp}
+  \item{Sum}{area, rivlen, loc_vol}
 }
 }
 \examples{
