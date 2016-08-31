@@ -54,9 +54,6 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
     stop("Number of classes in arguments 'x' and 'class.names' do not match.")
   }
   
-  # set plot parameters
-  par(pars)
-  
   # axis and bar label and color construction, conditional on function arguments
   if (type == "landuse" || type == "l") {
     # bar labels
@@ -136,25 +133,31 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
     }
   }
   
+  # set plot parameters
+  par(pars)
+  
   # plot bars and labels
   res <- barplot(height = as.matrix(x[, -1]), names.arg = names.arg, beside = T, xlab = xlab, ylab = ylab, 
-                 ylim = ylim, border = NA, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = leg.t, 
-                 args.legend = list(border = NA, bty = "n", x = legend.pos, cex = cex.names))
-  mtext(text = lgroup, side = 3, at = colMeans(res), line = -.1, padj = .5, cex = cex.names, las = 3, adj = 1)
+                 ylim = ylim, border = NA, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = NULL)
+  mtext(text = lgroup, side = 3, at = colMeans(res), line = -.1, padj = .3, cex = cex.names, las = 3, adj = 1)
   mtext(xlab, side = 1, line = .5, cex = cex.axis)
+  abline(v = diff(colMeans(res))/2 + colMeans(res)[-ncol(res)] - .1, col = "grey90")
+  if (!is.null(leg.t)) {
+    legend(x = legend.pos, legend = leg.t, border = NA, cex = cex.names, fill = col, bg = "#FFFFFFB3", box.lty = 0)
+  }
   box()
   
   # return barplot value invisibly
   invisible(res)
 }
 
-# # DEBUG
+# DEBUG
 # gd <- ReadGeoData("../PlotBasinSummary/GeoData.txt")
 # gcl <- ReadGeoClass("../PlotBasinSummary/GeoClass.txt", headrow = 4)
 # type <- "landuse"
-# x <- UpstreamGroupSLCClasses(subid = c(8000152, 8127943), gd = gd, gc = gcl, type = type)
+# x <- UpstreamGroupSLCClasses(subid = c(8000152, 8127943, 8213537), gd = gd, gc = gcl, type = type)
 # desc <- ReadDescription("../PlotBasinSummary/description.txt")
-# pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA)
+# pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")
 # ylab <- "Area fraction (%)"
 # ylim <- c(0,  max(x[, -1] * 1.5))
 # names.arg = rep("", ncol(x) - 1)
