@@ -26,7 +26,7 @@
 #' @param area Numeric, upstream area of sub-basin in m^2. Required for calculation of accumulated volume error. Optional argument, 
 #' either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.
 #' @param subid Integer, HYPE SUBID of a target sub-catchment (must exist in \code{gd}). Mandatory in combination with \code{gd} and 
-#' optionally \code{bd} if argument \code{area} is not defined.  If not provided, an attribute \code{timestep} is required in \code{x}. 
+#' optionally \code{bd} if argument \code{area} is not defined.  If not provided, an attribute \code{subid} is required in \code{x}. 
 #' Used to calculate upstream area internally with function \code{\link{SumUpstreamArea}}. For repeated calls to \code{PlotBasinOutput} 
 #' providing \code{area} in combination with a one-off separate call to \code{\link{SumUpstreamArea}} saves computation time, 
 #' especially in basins with many upstream sub-basins.
@@ -106,12 +106,12 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   if (is.numeric(to)) {
     tw <- to
     if (tw > nrow(x)) {
-      date.plot <- seq(x[1, 1], by = "day", length.out = tw)
+      date.plot <- seq(x[1, 1], by = timestep, length.out = tw)
     }
   } else if (is.character(to)) {
     tw.d <- strptime(to, format = "%F", tz = "GMT")
     if (tw.d > x[nrow(x), 1]) {
-      date.plot <- seq(x[1, 1], tw.d, by = "day")
+      date.plot <- seq(x[1, 1], tw.d, by = timestep)
       tw <- length(date.plot)
     } else {
       tw <- which(x[, 1] == tw.d)

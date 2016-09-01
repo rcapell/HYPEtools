@@ -112,8 +112,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if requested by user
-  cat("\nFinding upstream SUBIDs.\n")
   if (progbar) {
+    cat("\nFinding upstream SUBIDs.\n")
     up.sbd <- pblapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b, get.weights = bd.weight)}, g = gd, b = bd)
   } else {
     up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b, get.weights = bd.weight)}, g = gd, b = bd)
@@ -196,8 +196,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
 
   # apply area-weighted mean function to all SUBIDs in variable 'subid', for all relevant variables
   # conditional: use the progress bar version of sapply if set by function argument
-  cat("\nCalculating upstream area-weighted means.\n")
   if (progbar) {
+    cat("\nCalculating upstream area-weighted means.\n")
     te <- pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
   } else {
     te <- sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
@@ -213,8 +213,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   
   # olake-area weighted mean for lake depths
   if (length(pos.wmean.ldepth) == 1 && length(pos.wmean.slc.olake) == 1) {
-    cat("\nCalculating upstream lake-area-weighted lake depths.\n")
     if (progbar) {
+      cat("\nCalculating upstream lake-area-weighted lake depths.\n")
       up.wmean.ldepth <- data.frame(SUBID = subid, LAKE_DEPTH = pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean.ldepth, p.area = pos.wmean.slc.olake))
     } else {
       up.wmean.ldepth <- data.frame(SUBID = subid, LAKE_DEPTH = sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean.ldepth, p.area = pos.wmean.slc.olake))
@@ -227,8 +227,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   
   # volume-weighted rural household concentrations
   if (length(pos.wmean.lconc) >= 1 && !is.null(pos.wmean.lvol)) {
-    cat("\nCalculating upstream volume-weighted rural household releases.\n")
     if (progbar) {
+      cat("\nCalculating upstream volume-weighted rural household releases.\n")
       te <- pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean.lconc, p.area = pos.wmean.lvol)
     } else {
       te <- sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean.lconc, p.area = pos.wmean.lvol)
@@ -248,8 +248,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   # apply area-weighted sd function to all SUBIDs in variable 'subid'
   # do separately for slope and elev, if they exist in gd
   if (length(pos.wsd.elev) == 2) {
-    cat("\nCalculating upstream area-weighted elevation standard deviations.\n")
     if (progbar) {
+      cat("\nCalculating upstream area-weighted elevation standard deviations.\n")
       up.wsd.elev <- data.frame(SUBID = subid, ELEV_STD = pbsapply(up.sbd, WeightedSd, g = gd, p.sbd = pos.sbd, p.wsd = pos.wsd.elev, p.area = pos.area))
     } else {
       up.wsd.elev <- data.frame(SUBID = subid, ELEV_STD = sapply(up.sbd, WeightedSd, g = gd, p.sbd = pos.sbd, p.wsd = pos.wsd.elev, p.area = pos.area))
@@ -258,8 +258,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
     up.wsd.elev <- NULL
   }
   if (length(pos.wsd.slope) == 2) {
-    cat("\nCalculating upstream area-weighted slope standard deviations.\n")
     if (progbar) {
+      cat("\nCalculating upstream area-weighted slope standard deviations.\n")
       up.wsd.slope <- data.frame(SUBID = subid, SLOPE_STD = pbsapply(up.sbd, WeightedSd, g = gd, p.sbd = pos.sbd, p.wsd = pos.wsd.slope, p.area = pos.area))
     } else {
       up.wsd.slope <- data.frame(SUBID = subid, SLOPE_STD = sapply(up.sbd, WeightedSd, g = gd, p.sbd = pos.sbd, p.wsd = pos.wsd.slope, p.area = pos.area))
@@ -269,8 +269,8 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   }
   
   # apply sum function to all SUBIDs in variable 'subid', for all relevant variables
-  cat("\nCalculating upstream sums.\n")
   if (progbar) {
+    cat("\nCalculating upstream sums.\n")
     te <- pbsapply(up.sbd, Sum, g = gd, p.sum = pos.sum, p.sbd = pos.sbd)
   } else {
     te <- sapply(up.sbd, Sum, g = gd, p.sum = pos.sum, p.sbd = pos.sbd)
@@ -287,7 +287,9 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   #######################################################
   
   ## post-processing
-  cat("\nPost-processing.\n")
+  if (progbar) {
+    cat("\nPost-processing.\n")
+    }
   
   # round to requested number of digits, conditional on existing results for lake_depth and stddev variables
   # the data frame dummy column adding and removing is a workaround for single-column cases (names get messed up because 

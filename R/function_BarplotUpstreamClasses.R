@@ -39,16 +39,16 @@
 #' \code{\link{barplot}}
 #' 
 #' @examples 
-#' \dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gc = mygeoclass, bd = mybranchdata, type = "soil")}
+#' \dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "soil")}
 #' \dontrun{BarplotUpstreamClasses(x = res, type = "s", desc = mydescription)}
 #' 
 #' @export
 
 BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, ylab = "Area fraction (%)", 
-                                    ylim = c(0,  max(x[, -1] * 1.5)), class.names = NULL, names.arg = rep("", ncol(x) - 1), 
+                                    ylim = c(0,  max(x[, -1] * 150)), class.names = NULL, names.arg = rep("", ncol(x) - 1), 
                                     cex.axis = 1, cex.names = .9, col = NULL, legend.text = NULL, 
                                     legend.pos = "left", 
-                                    pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA)) {
+                                    pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")) {
   # input argument checks
   if (!is.null(class.names) && ncol(x) -1 != length(class.names)) {
     stop("Number of classes in arguments 'x' and 'class.names' do not match.")
@@ -137,11 +137,11 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
   par(pars)
   
   # plot bars and labels
-  res <- barplot(height = as.matrix(x[, -1]), names.arg = names.arg, beside = T, xlab = xlab, ylab = ylab, 
+  res <- barplot(height = as.matrix(x[, -1]) * 100, names.arg = names.arg, beside = T, xlab = xlab, ylab = ylab, 
                  ylim = ylim, border = NA, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = NULL)
-  mtext(text = lgroup, side = 3, at = colMeans(res), line = -.1, padj = .3, cex = cex.names, las = 3, adj = 1)
+  mtext(text = lgroup, side = 3, at = colMeans(res), line = -.2, padj = .3, cex = cex.names, las = 3, adj = 1)
   mtext(xlab, side = 1, line = .5, cex = cex.axis)
-  abline(v = diff(colMeans(res))/2 + colMeans(res)[-ncol(res)] - .1, col = "grey90")
+  abline(v = diff(colMeans(res))/2 + colMeans(res)[-ncol(res)] - .05, col = "grey90")
   if (!is.null(leg.t)) {
     legend(x = legend.pos, legend = leg.t, border = NA, cex = cex.names, fill = col, bg = "#FFFFFFB3", box.lty = 0)
   }
@@ -151,7 +151,7 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
   invisible(res)
 }
 
-# DEBUG
+# # DEBUG
 # gd <- ReadGeoData("../PlotBasinSummary/GeoData.txt")
 # gcl <- ReadGeoClass("../PlotBasinSummary/GeoClass.txt", headrow = 4)
 # type <- "landuse"
@@ -168,3 +168,4 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
 # col = NULL
 # legend.text = NULL
 # legend.pos <- "left"
+

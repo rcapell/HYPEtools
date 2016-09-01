@@ -43,7 +43,7 @@ interpreted as row indices of \code{x}.}
 either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.}
 
 \item{subid}{Integer, HYPE SUBID of a target sub-catchment (must exist in \code{gd}). Mandatory in combination with \code{gd} and 
-optionally \code{bd} if argument \code{area} is not defined.  If not provided, an attribute \code{timestep} is required in \code{x}. 
+optionally \code{bd} if argument \code{area} is not defined.  If not provided, an attribute \code{subid} is required in \code{x}. 
 Used to calculate upstream area internally with function \code{\link{SumUpstreamArea}}. For repeated calls to \code{PlotBasinOutput} 
 providing \code{area} in combination with a one-off separate call to \code{\link{SumUpstreamArea}} saves computation time, 
 especially in basins with many upstream sub-basins.}

@@ -4,7 +4,7 @@
 \alias{UpstreamGroupSLCClasses}
 \title{Calculate area-weighted upstream averages of grouped SLC class fractions.}
 \usage{
-UpstreamGroupSLCClasses(subid = NULL, gd, bd = NULL, gc = NULL,
+UpstreamGroupSLCClasses(subid = NULL, gd, bd = NULL, gcl = NULL,
   type = "landuse", group = NULL, signif.digits = 3, progbar = T)
 }
 \arguments{
@@ -15,13 +15,13 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
-\item{gc}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.}
 
-\item{type}{Keyword character string for use with \code{gc}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
+\item{type}{Keyword character string for use with \code{gcl}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
 can be abbreviated.}
 
-\item{group}{Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gc} + \code{type}.}
+\item{group}{Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gcl} + \code{type}.}
 
 \item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding.}
 
@@ -45,7 +45,7 @@ The function builds on \code{\link{GroupSLCClasses}}, which provides grouped sum
 \code{UpstreamGroupSLCClasses} expects SLC class columns in argument \code{gd} to be ordered in ascending order.
 }
 \examples{
-\dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gc = mygeoclass, bd = mybranchdata, type = "landuse")}
+\dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "landuse")}
 
 }
 \seealso{

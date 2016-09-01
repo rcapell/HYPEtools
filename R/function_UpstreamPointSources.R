@@ -62,8 +62,8 @@ UpstreamPointSources <- function(subid = NULL, gd, psd, bd = NULL, signif.digits
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if subid is long
-  cat("\nFinding upstream SUBIDs.\n")
   if (progbar) {
+    cat("\nFinding upstream SUBIDs.\n")
     up.sbd <- pblapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   } else {
     up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
@@ -102,8 +102,8 @@ UpstreamPointSources <- function(subid = NULL, gd, psd, bd = NULL, signif.digits
   }
   
   # apply function to list of upstream subid vectors
-  cat("\nCalculating upstream point sources.\n")
   if (progbar) {
+    cat("\nCalculating upstream point sources.\n")
     res <- pblapply(up.sbd, UpPs, psd = psd, psd.type = psd.type, psd.vol = psd.vol, psd.tn = psd.tn, psd.tp = psd.tp)
   } else {
     res <- lapply(up.sbd, UpPs, psd = psd, psd.type = psd.type, psd.vol = psd.vol, psd.tn = psd.tn, psd.tp = psd.tp)
@@ -119,8 +119,8 @@ UpstreamPointSources <- function(subid = NULL, gd, psd, bd = NULL, signif.digits
     res[is.na(res[, 5]), 5] <- 0
   }
   
-  # round to requested number of digits
-  if (!is.null(signif.digits)) {
+  # round to requested number of digits, if there are any upstream point sources
+  if (!is.null(signif.digits) && nrow(res) > 0) {
     res[, -c(1:2)] <- apply(res[, -c(1:2)], 2, signif, digits = signif.digits)
   }
   

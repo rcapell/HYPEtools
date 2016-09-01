@@ -7,11 +7,11 @@
 #' If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.
 #' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
-#' @param gc Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+#' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.
-#' @param type Keyword character string for use with \code{gc}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
+#' @param type Keyword character string for use with \code{gcl}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
 #' can be abbreviated.
-#' @param group Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gc} + \code{type}.
+#' @param group Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gcl} + \code{type}.
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
 #' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
 #' is \code{NULL} or contains many SUBIDs.
@@ -37,13 +37,13 @@
 #' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gc = mygeoclass, bd = mybranchdata, type = "landuse")}
+#' \dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "landuse")}
 #' 
 #' @export
 #' @importFrom pbapply pblapply pbsapply
 
 
-UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gc = NULL, type = "landuse", group = NULL, signif.digits = 3, progbar = T) {
+UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, type = "landuse", group = NULL, signif.digits = 3, progbar = T) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
@@ -64,12 +64,12 @@ UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gc = NULL, type
   }
   
   # create grouped slc classes using existing function
-  grclass <- GroupSLCClasses(gd = gd, gc = gc, type = type, group = group, abs.area = FALSE, verbose = progbar)
+  grclass <- GroupSLCClasses(gd = gd, gc = gcl, type = type, group = group, abs.area = FALSE, verbose = progbar)
   
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if requested by user
-  cat("\nFinding upstream SUBIDs.\n")
   if (progbar) {
+    cat("\nFinding upstream SUBIDs.\n")
     up.sbd <- pblapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   } else {
     up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
@@ -104,8 +104,8 @@ UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gc = NULL, type
   
   # apply area-weighted mean function to all SUBIDs in variable 'subid', for all relevant variables
   # conditional: use the progress bar version of sapply if set by function argument
-  cat("\nCalculating upstream area-weighted means.\n")
   if (progbar) {
+    cat("\nCalculating upstream area-weighted means.\n")
     te <- pbsapply(up.sbd, WeightedMean, g = grclass, p.sbd = 1, p.wmean = 3:ncol(grclass), p.area = 2)
   } else {
     te <- sapply(up.sbd, WeightedMean, g = grclass, p.sbd = 1, p.wmean = 3:ncol(grclass), p.area = 2)
