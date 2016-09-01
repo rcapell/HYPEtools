@@ -169,7 +169,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL, gcl
   # layout() matrix initialisation
   lay.mat <- matrix(ncol = 6, nrow = 0)
   # layout() panel widths (hard-coded for now)
-  lay.widths <- c(.5, rep(1, 3), rep(.5, 2))
+  lay.widths <- c(.25, rep(1, 3), rep(.5, 2))
   # layout() panel heights initialisation
   lay.heights <- NULL
   
@@ -194,13 +194,82 @@ PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL, gcl
   cp <- cp + 1
   list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(subid, gd = gd, bd = bd, gc = gcl, type = "c", progbar = F), type = "c", desc = desc)')
   
-  ## panel 4: upstream TN load in ton/year
+  ## panels 4 and 5: upstream TN and TP loads in ton/year, conditional on if nutrients requested, alternatively plot empty frame
+  if (hype.vars[1] %in% c("all", "nutrients")) {
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'barplot(loads.tn / 1000, col = ColNitr(3), border = NA, ylab = expression(paste("kiloton y"^"-1")), ylim = c(0, max(loads.tn / 1000) * 1.5))')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ."), side = 3, at = c(.7, 1.9, 3.1), line = -.2, padj = .3, cex = .9, las = 3, adj = 1)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext("Modeled TN loads", side = 1, line = .5, cex = .9)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'box()')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'barplot(loads.tp / 1000, col = ColPhos(3), border = NA, ylab = expression(paste("kiloton y"^"-1")), ylim = c(0, max(loads.tp / 1000) * 1.5))')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ."), side = 3, at = c(.7, 1.9, 3.1), line = -.2, padj = .3, cex = .9, las = 3, adj = 1)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext("Modeled TP loads", side = 1, line = .5, cex = .9)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'box()')
+  } else {
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'frame()')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'frame()')
+  }
+  
+  
+  #### 2nd row: 5 panels (one unused atm) with GOFs, sim-obs, FDC, and regime for Q , conditional on if Q is requested
+  
+  if (hype.vars[1] %in% c("all", "hydro")) {
+    
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, c(seq(max(lay.mat) + 1, by = 1, length.out = 5), max(lay.mat) + 5)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 3)
+    
+    
+    ## panel 1: compute and plot GoFs for discharge, TN, and TP, if variables are available
+    # empty frame first, then GoFs as legend
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(0, 4))')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'frame()')
+    
+    if (exi.t["rout"] && exi.t["cout"]){
+      gof.q <- tryCatch(gof(sim = get("cout"), obs = get("rout"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+                        error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.8, legend = c(paste(names(gof.q), gof.q, sep = ": "),"",paste0("(", length(na.omit(rout)), " obs.)")), bty = "n", title = "Q, goodness of fit", cex = 1)')
+    }
+    
+    ## panel 2: unused
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'frame()')
+    
+    ## panel 3: sim-obs comparison dotty plot
+    if (exi.t["rout"] && exi.t["cout"]){
+      
+    }
+  }
+  
+  # fill layout matrix with panel IDs
+  lay.mat <- rbind(lay.mat, c(seq(max(lay.mat) + 1, by = 1, length.out = 5), max(lay.mat) + 5)) 
+  # add layout height for this row
+  lay.heights <- c(lay.heights, 3)
+  
+  cp <- cp + 1
+  list.plotexpr[[cp]] <- parse(text = '')
   
   
   
   
-  
-  
+  {
   ## plot information texts
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(0, 4))')

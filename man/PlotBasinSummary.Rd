@@ -4,15 +4,15 @@
 \alias{PlotBasinSummary}
 \title{Plot a summary of model results for a single sub-basin}
 \usage{
-PlotBasinSummary(x, filename = NULL, gd = gd, bd = NULL, gcl = gcl,
-  psd = NULL, desc = NULL, from = 1, to = nrow(x))
+PlotBasinSummary(x, filename = "plot_basin", gd = gd, bd = NULL,
+  gcl = gcl, psd = NULL, desc = NULL, from = 1, to = nrow(x))
 }
 \arguments{
 \item{x}{Data frame, with column-wise daily time series of HYPE variables. Date-times in 
 \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 See details for HYPE output variables required for plotting.}
 
-\item{filename}{String, file name for plotting to \code{\link{png}} device. \code{NULL}, the default, triggers a plot on a new
+\item{filename}{String, file name for plotting to \code{\link{png}} device. \code{NULL} triggers a plot on a new
 screen device. \emph{Device dimensions are currently hard-coded.}}
 
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
