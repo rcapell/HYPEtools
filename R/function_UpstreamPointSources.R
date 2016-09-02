@@ -12,7 +12,7 @@
 #' If \code{NULL}, upstream areas for all SUBIDs will be calculated.
 #' @param gd A data frame containing columns 'SUBID' with SUBIDs and 'MAINDOWN' with downstream SUBIDs, 
 #' e.g. an imported 'GeoData.txt' file.
-#' @param psd A data frame with HYPE point source specifications, e.g. and imported 'PointSourceData.txt' file.
+#' @param psd A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}.
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
 #' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 

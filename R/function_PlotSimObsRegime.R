@@ -15,7 +15,8 @@
 #' @param start.mon Integer between 1 and 12, starting month of the hydrological year, used to order the output.
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
 #' @param pos.legend Character string keyword for legend positioning. See Details in \code{link{legend}}.
-#' @param l.legend Character vector of length 2. If non-NULL, variable labels are read from here instead of from \code{sim} and \code{obs}.
+#' @param l.legend Character vector of length 2 containing variable labels for legend, first for \code{sim}, then for \code{obs}. 
+#' If non-NULL, variable labels are read from here instead of \code{sim} and \code{obs}.
 #' @param ylim  Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Defaults to a string giving the 
 #' time period on which the regime is based.

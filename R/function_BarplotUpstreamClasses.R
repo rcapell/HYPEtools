@@ -62,7 +62,7 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
     } else if (!is.null(class.names)) {
       lgroup <- class.names
     } else {
-      lgroup <- names(x[[, -1]])
+      lgroup <- names(x[, -1])
     }
     # default value for x axis label
     if (is.null(xlab)) {
@@ -70,7 +70,7 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
     }
     # color for bars
     if (is.null(col)) {
-      col <- ColGreens(nrow(x))
+      col <- "chartreuse3"
     }
     
   } else if (type == "soil" || type == "s") {
@@ -79,13 +79,13 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
     } else if (!is.null(class.names)) {
       lgroup <- class.names
     } else {
-      lgroup <- names(x[[, -1]])
+      lgroup <- names(x[, -1])
     }
     if (is.null(xlab)) {
       xlab <- "Soil group"
     }
     if (is.null(col)) {
-      col <- ColReds(nrow(x))
+      col <- "indianred"
     }
     
   } else if (type == "crop" || type == "c") {
@@ -94,13 +94,13 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
     } else if (!is.null(class.names)) {
       lgroup <- class.names
     } else {
-      lgroup <- names(x[[, -1]])
+      lgroup <- names(x[, -1])
     }
     if (is.null(xlab)) {
       xlab <- "Crop group"
     }
     if (is.null(col)) {
-      col <- ColPurples(nrow(x))
+      col <- "plum3"
     }
     
   } else {
@@ -140,7 +140,7 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
   res <- barplot(height = as.matrix(x[, -1]) * 100, names.arg = names.arg, beside = T, xlab = xlab, ylab = ylab, 
                  ylim = ylim, border = NA, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = NULL)
   mtext(text = lgroup, side = 3, at = colMeans(res), line = -.2, padj = .3, cex = cex.names, las = 3, adj = 1)
-  mtext(xlab, side = 1, line = .5, cex = cex.axis)
+  mtext(xlab, side = 1, line = .5, cex = cex.names)
   abline(v = diff(colMeans(res))/2 + colMeans(res)[-ncol(res)] - .05, col = "grey90")
   if (!is.null(leg.t)) {
     legend(x = legend.pos, legend = leg.t, border = NA, cex = cex.names, fill = col, bg = "#FFFFFFB3", box.lty = 0)

@@ -14,7 +14,7 @@ If \code{NULL}, upstream areas for all SUBIDs will be calculated.}
 \item{gd}{A data frame containing columns 'SUBID' with SUBIDs and 'MAINDOWN' with downstream SUBIDs, 
 e.g. an imported 'GeoData.txt' file.}
 
-\item{psd}{A data frame with HYPE point source specifications, e.g. and imported 'PointSourceData.txt' file.}
+\item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}.}
 
 \item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
 

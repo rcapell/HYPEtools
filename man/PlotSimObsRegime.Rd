@@ -28,7 +28,8 @@ to or longer than \code{ts.in}.}
 
 \item{pos.legend}{Character string keyword for legend positioning. See Details in \code{link{legend}}.}
 
-\item{l.legend}{Character vector of length 2. If non-NULL, variable labels are read from here instead of from \code{sim} and \code{obs}.}
+\item{l.legend}{Character vector of length 2 containing variable labels for legend, first for \code{sim}, then for \code{obs}. 
+If non-NULL, variable labels are read from here instead of \code{sim} and \code{obs}.}
 
 \item{ylim}{Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.}
 

@@ -5,7 +5,9 @@
 \title{Plot a summary of model results for a single sub-basin}
 \usage{
 PlotBasinSummary(x, filename = "plot_basin", gd = gd, bd = NULL,
-  gcl = gcl, psd = NULL, desc = NULL, from = 1, to = nrow(x))
+  gcl = gcl, psd = NULL, desc = NULL, timestep = attr(x, "timestep"),
+  hype.vars = "all", from = 1, to = nrow(x), log.q = FALSE,
+  start.mon = 10)
 }
 \arguments{
 \item{x}{Data frame, with column-wise daily time series of HYPE variables. Date-times in 
@@ -15,14 +17,73 @@ See details for HYPE output variables required for plotting.}
 \item{filename}{String, file name for plotting to \code{\link{png}} device. \code{NULL} triggers a plot on a new
 screen device. \emph{Device dimensions are currently hard-coded.}}
 
+\item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
+
+\item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
+
+\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.}
+
+\item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}.}
+
+\item{desc}{List for use with \code{type}. Class description labels imported from a 'description.txt' file, for bar labeling.
+See \code{\link{ReadDescription}} for formatting details.}
+
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
+
+\item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables 
+to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details 
+for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of 
+(available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown 
+to the function will be ignored with a warning.}
+
+\item{from, to}{Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
+interpreted as row indices of \code{x}.}
+
+\item{log.q}{Logical, y-axis scaling for flow duration curve and discharge time series, set to \code{TRUE} for log-scaling.}
+
+\item{start.mon}{Integer between 1 and 12, starting month of the hydrological year. For regime plots, see also 
+\code{\link{AnnualRegime}}.}
+}
+\value{
+Returns a multi-panel plot in a new graphics device.
 }
 \description{
 Plot a standard suite of plots summarising properties of a sub-basin including upstream area and model performance 
 for discharge and nutrients.
 }
 \details{
+\code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a 
+chosen sub-basin. Performance plots include discharge and HYPE-modelled nutrient species for nitrogen (total, inorganic, organic) 
+and phosphorus (total, particulate, soluble).
 
+The generated plot provides information about: 
+\itemize{
+\item{Summarised catchment characteristics as bar charts}
+\item{Goodness-of-fit measures for discharge and nutrients}
+\item{Simulation-observation relationships for discharge and nutrients}
+\item{Duration curves for flow and nutrient concentrations}
+\item{Annual regimes for flow and nutrient concentrations}
+\item{Concentration-discharge relationships for nutrients}
+\item{Corresponding plots for IN/TN and SP/TP ratios}
+}
+
+Per default, the function plots from available model variables in an imported HYPE basin output file, and missing variables will be 
+automatically omitted. Variable selection can be additionally fine-tuned using argument \code{hype.vars}.
+
+Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file. 
+For a detailed description of the variables, see the 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
+
+\code{basinoutput variable cout rout ccin rein ccon reon cctn retn ccsp resp ccpp repp cctp retp totn totp}
+}
+\examples{
+\dontrun{PlotBasinSummary(x = mybasin, gd = mygd, gcl = mygcl, psd = mypsd, desc = mydesc)}
+
+}
+\seealso{
+\code{\link{PlotUpstreamClasses}}, \code{\link{PlotSimObsRegime}}, \code{\link{PlotAnnualRegime}}, 
+\code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 }
 

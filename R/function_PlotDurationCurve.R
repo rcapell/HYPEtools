@@ -107,9 +107,9 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
   
   
   # conditional: create y-axis label strings
-  if (ylab == "m3s") {
+  if (!is.expression(ylab) && ylab == "m3s") {
     ylabel <- expression(paste("Q (m"^3, " s"^{-1}, ")"))
-  } else if (ylab == "mmd") {
+  } else if (!is.expression(ylab) && ylab == "mmd") {
     ylabel <- expression(paste("Q (mmm d"^{-1}, ")"))
   } else {
     ylabel <- ylab
