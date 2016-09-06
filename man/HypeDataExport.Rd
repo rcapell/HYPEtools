@@ -9,7 +9,7 @@
 \alias{WriteLakeData}
 \alias{WriteMgmtData}
 \alias{WritePointSourceData}
-\title{Read HYPE data files}
+\title{Write HYPE data files}
 \usage{
 WriteAquiferData(x, filename = "AquiferData.txt", digits = 10,
   nsmall = 0L, verbose = T)

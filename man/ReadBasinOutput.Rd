@@ -4,7 +4,8 @@
 \alias{ReadBasinOutput}
 \title{Read a Basin Output File}
 \usage{
-ReadBasinOutput(filename, dt.format = "\%Y-\%m-\%d", type = "df")
+ReadBasinOutput(filename, dt.format = "\%Y-\%m-\%d", type = "df",
+  subid = NULL)
 }
 \arguments{
 \item{filename}{Path to and file name of the basin output file to import. Windows users: Note that 
@@ -16,6 +17,10 @@ be imported as \code{character}, applicable e.g. for files containing just one r
 
 \item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 return a \code{\link[data.table]{data.table}} object, or \code{"hmv"} to return a \code{\link{HypeMultiVar}} array.}
+
+\item{subid}{Integer, SUBID of the imported sub-basin results. If \code{NULL} (default), the function attempts to read this 
+from the imported file's name, which only works for standard HYPE basin output file names or any where the first 7 digits 
+give the SUBID with leading zeros.}
 }
 \value{
 \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 

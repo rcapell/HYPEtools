@@ -86,7 +86,10 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
-#' return a \code{\link[data.table]{data.table}} object, or \code{"hmv"} to return a \code{\link{HypeMultiVar}} array.
+#' return a \code{\link[data.table]{data.table}} object, or \code{"hmv"} to return a \code{\link{HypeMultiVar}} array. 
+#' @param subid Integer, SUBID of the imported sub-basin results. If \code{NULL} (default), the function attempts to read this 
+#' from the imported file's name, which only works for standard HYPE basin output file names or any where the first 7 digits 
+#' give the SUBID with leading zeros.
 #' 
 #' @details
 #' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
@@ -112,7 +115,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
 #' @importFrom data.table fread
 #' @export
 
-ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
+ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid = NULL) {
   
   # handling output type user choice
   if (type == "df") {
@@ -120,7 +123,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
   } else if (type %in% c("dt", "hmv")) {
     d.t <- T
   } else {
-    stop(paste("Unknown type", type, "."))
+    stop(paste0("Unknown type ", type, "."))
   }
   nm <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
   x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = d.t, 
@@ -182,11 +185,17 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df") {
     xd <- NA
   }
   
-  # extract attributes to hold measurement units and SUBID
+  ## extract attributes to hold measurement units and SUBID
   munit <- readLines(filename, n = 2)
   munit <- strsplit(munit[2], split = "\t")[[1]][-1]
-  sbd <- strsplit(filename, "/")[[1]]
-  sbd <- as.integer(gsub("[[:alpha:][:punct:]]", "", sbd[length(sbd)]))
+  # subid conditional on user argument
+  if (is.null(subid)) {
+    sbd <- strsplit(filename, "/")[[1]]
+    sbd <- substr(sbd[length(sbd)], start = 1, stop = 7)
+    #as.integer(gsub("[[:alpha:][:punct:]]", "", sbd[length(sbd)]))
+  } else {
+    sbd  <- subid
+  }
   # conditional: timestep attribute identified by difference between first two entries
   tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
   if (!is.na(tdff)) {

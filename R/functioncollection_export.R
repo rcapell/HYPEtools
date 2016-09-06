@@ -667,7 +667,7 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, nsmall
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HypeDataExport~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' Read HYPE data files
+#' Write HYPE data files
 #'
 #' These are simple convenience wrapper functions to export various HYPE data files from R.
 #' 
