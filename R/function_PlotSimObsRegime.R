@@ -94,7 +94,7 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   }
   if (is.null(ylab)) {
     ylab <- attr(x, "unit")[col.sim]
-    }
+  }
   
   # prepare observation regime, remove NAs, group by month, construct dates from sim regime for positioning in plot
   reg.obs <- na.omit(x.obs)
@@ -104,6 +104,14 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
     sort.mon <- 1:12
   } else {
     sort.mon <- c(start.mon:12, 1:(start.mon - 1))
+  }
+  # conditional: if months without observations, add empty list elements for them
+  if (length(reg.obs) < 12) {
+    # create dummy list with all month elements
+    te <- lapply(1:12, function(x){NA})
+    names(te) <- sprintf("%02d", 1:12)
+    # fill dummy with existing data
+    reg.obs <- modifyList(te, reg.obs)
   }
   reg.obs <- reg.obs[sort.mon]
   reg.obs.date <- seq(from = as.POSIXct(strptime(paste(format(reg.sim[[1]][1, 1], "%Y"), start.mon, 15, sep = "-"), "%F", tz = "GMT")), 
@@ -138,7 +146,7 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   # plot observation box plots
   boxplot(reg.obs, at = reg.obs.date, add = T, boxwex = 1600000, show.names = F, axes = F, outpch = 20, outcol = .makeTransparent("black", 150), col = .makeTransparent("grey30", 60))
   # obs counts
-  text(x = reg.obs.date, y = ylim[1], as.character(sapply(reg.obs, length)), adj = c(.5, .9), cex = .75, font = 3, col = "grey50")
+  text(x = reg.obs.date, y = ylim[1], as.character(sapply(reg.obs, function(x) length(na.omit(x)))), adj = c(.5, .9), cex = .75, font = 3, col = "grey50")
   text(x = par("usr")[1] - diff(par("usr")[1:2])/25, y = ylim[1], "n obs.", adj = c(1, .9), cex = .75, font = 3, xpd = T, col = "grey50")
   # add mean and median lines
   lines(x = reg.obs.date, y = sapply(reg.obs, mean), col = .makeTransparent("black", 200))
