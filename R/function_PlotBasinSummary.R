@@ -30,7 +30,9 @@
 #' to the function will be ignored with a warning.
 #' @param from,to Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
 #' interpreted as row indices of \code{x}.
-#' @param log.q Logical, y-axis scaling for flow duration curve and discharge time series, set to \code{TRUE} for log-scaling.
+#' @param log Logical, log scaling discharge and concentrations.
+#' @param xscale Character string, keyword for x-axis scaling. Either \code{"lin"} for linear scaling or \code{"gauss"} for gaussian scaling. 
+#' See description in \code{\link{PlotDurationCurve}}.
 #' @param start.mon Integer between 1 and 12, starting month of the hydrological year. For regime plots, see also 
 #' \code{\link{AnnualRegime}}.
 #' 
