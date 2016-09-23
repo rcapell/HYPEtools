@@ -9,6 +9,7 @@
 #' \code{"p25p75"} to include bands of variation. See details.
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
 #' @param l.legend Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.
+#' @param log Logical, if \code{TRUE}, y-axis will be log-scaled.
 #' @param ylim  Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Default prints the time period on which the 
 #' regime is based, read from \code{x$period}.
@@ -40,7 +41,7 @@
 
 
 
-PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NULL, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
+PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NULL, log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
                  xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1) {
   
   # save current state of par() variables which are altered below, for restoring on function exit
@@ -78,6 +79,17 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
     ylim <- range(unlist(rbind(x$p25, x$p75)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
   }
   
+  # log scaling for y axis, with treatment for negative lower limit in combination with log scaling
+  if (log) {
+    lg <- "y"
+    if (ylim[1] <= 0) {
+      warning("Negative or 0 values not allowed with log scaling. Reverting to linear scaling.")
+      lg <- ""
+    }
+  } else {
+    lg = ""
+  }
+  
   # conditional: create vectors of line properties if only single values were provided. assign to local object
   if (nq > 1 && length(col) == 1) {
     lcol <- rep(col, times = nq)
@@ -101,7 +113,7 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
   par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0), tcl = .2)
   
   # set up the plot region, but do not plot yet. Background grid will be plotted first
-  plot(x$mean[, c(1, 3)], axes = F, type = "n", ylab = ylab, xlab = xlab, ylim = ylim)
+  plot(x$mean[, c(1, 3)], axes = F, type = "n", ylab = ylab, xlab = xlab, ylim = ylim, log = lg)
   
   # plot background grid
   grid(nx = NA, ny = NULL)

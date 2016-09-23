@@ -5,16 +5,17 @@
 \title{Plot annual regimes of simulated and observed variables}
 \usage{
 PlotSimObsRegime(x, sim, obs, ts.in = NULL, ts.out = "month",
-  start.mon = 1, add.legend = TRUE, pos.legend = "topright",
-  l.legend = NULL, ylim = NULL, xlab = NULL, ylab = NULL, mar = c(3,
-  3, 1, 1) + 0.1)
+  start.mon = 1, add.legend = TRUE, pos.legend = "topright", inset = 0,
+  l.legend = NULL, log = FALSE, ylim = NULL, xlab = NULL, ylab = NULL,
+  mar = c(3, 3, 1, 1) + 0.1)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
 \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 See details for HYPE output variables required for plotting.}
 
-\item{sim, obs}{Character string keywords, observed and simulated HYPE variable IDs to plot. Not case-sensitive, but must exist in \code{x}.}
+\item{sim, obs}{Character string keywords, observed and simulated HYPE variable IDs to plot. Not case-sensitive, but must exist in \code{x}. 
+Set to \code{NULL} to omit corresponding elements in plot.}
 
 \item{ts.in}{Character string, timestep of \code{x}, searches for an attribute \code{timestep} in \code{x} per default. 
 Otherwise one of \code{"month"}, \code{"week"}, \code{"day"}, or \code{"nhour"} (n = number of hours).}
@@ -28,8 +29,12 @@ to or longer than \code{ts.in}.}
 
 \item{pos.legend}{Character string keyword for legend positioning. See Details in \code{link{legend}}.}
 
+\item{inset}{Integer, legend inset as fraction of plot region, one or two values for x and y. See \code{link{legend}}.}
+
 \item{l.legend}{Character vector of length 2 containing variable labels for legend, first for \code{sim}, then for \code{obs}. 
 If non-NULL, variable labels are read from here instead of \code{sim} and \code{obs}.}
+
+\item{log}{Logical, if \code{TRUE}, y-axis will be log-scaled.}
 
 \item{ylim}{Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.}
 
@@ -45,7 +50,8 @@ time period on which the regime is based.}
 \code{PlotSimObsRegime} invisibly returns a \code{\link{list}} object containing three elements with the plotted data and variable IDs. 
 Element \code{obs} contains a list as returned by \code{\link{AnnualRegime}}. Element \code{obs} contains a list with two elements, a 
 vector \code{refdate} with x positions of box plots elements, and a list \code{reg.obs} with observations for the monthly box plot elements. 
-Element \code{variable} contains a named vector with HYPE variable IDs for observations and simulations.
+Element \code{variable} contains a named vector with HYPE variable IDs for observations and simulations. \code{sim} and \code{obs} returned 
+empty if corresponding function argument was \code{NULL}.
 }
 \description{
 A combined plot for annual regimes with box plot elements for observed variables and ribbon elements 

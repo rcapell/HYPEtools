@@ -5,9 +5,10 @@
 \title{Plot annual regimes}
 \usage{
 PlotAnnualRegime(x, type = "mean", add.legend = FALSE, l.legend = NULL,
-  ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{     -1 }, ")")),
-  xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse = " to "),
-  col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + 0.1)
+  log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{    
+  -1 }, ")")), xlab = paste(format(attr(x, "period"), format = "\%Y"),
+  collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1,
+  1) + 0.1)
 }
 \arguments{
 \item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
@@ -20,6 +21,8 @@ See Details and Value description there.}
 \item{add.legend}{Logical. If \code{TRUE}, a legend will be added to the plot.}
 
 \item{l.legend}{Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.}
+
+\item{log}{Logical, if \code{TRUE}, y-axis will be log-scaled.}
 
 \item{ylim}{Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.}
 

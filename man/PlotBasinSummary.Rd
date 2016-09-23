@@ -4,10 +4,10 @@
 \alias{PlotBasinSummary}
 \title{Plot a summary of model results for a single sub-basin}
 \usage{
-PlotBasinSummary(x, filename = "plot_basin", gd = gd, bd = NULL,
-  gcl = gcl, psd = NULL, subid = NULL, desc = NULL, timestep = attr(x,
-  "timestep"), hype.vars = "all", from = 1, to = nrow(x), log.q = FALSE,
-  start.mon = 10)
+PlotBasinSummary(x, filename = "plot_basin", panels = 1, gd = gd,
+  bd = NULL, gcl = gcl, psd = NULL, subid = NULL, desc = NULL,
+  timestep = attr(x, "timestep"), hype.vars = "all", from = 1,
+  to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10)
 }
 \arguments{
 \item{x}{Data frame, with column-wise daily time series of HYPE variables. Date-times in 
@@ -17,20 +17,25 @@ See details for HYPE output variables required for plotting.}
 \item{filename}{String, file name for plotting to \code{\link{png}} device. \code{NULL} triggers a plot on a new
 screen device. \emph{Device dimensions are currently hard-coded.}}
 
-\item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
+\item{panels}{Integer, either\code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.}
 
-\item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
+\item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with 
+\code{\link{ReadGeoData}}. Only needed with bar chart panels, see Details.}
+
+\item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument. Only needed with 
+bar chart panels, see Details.}
 
 \item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
-file imported with \code{\link{ReadGeoClass}}.}
+file imported with \code{\link{ReadGeoClass}}. Only needed with bar chart panels, see Details.}
 
-\item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}.}
+\item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}. 
+Only needed with bar chart panels, see Details.}
 
 \item{subid}{Integer, SUBID of sub-basin for which results are plotted. If \code{NULL} (default), a \code{subid} attribute is 
-required in \code{x}.}
+required in \code{x}. Only needed with bar chart panels, see Details.}
 
 \item{desc}{List for use with \code{type}. Class description labels imported from a 'description.txt' file, for bar labeling.
-See \code{\link{ReadDescription}} for formatting details.}
+See \code{\link{ReadDescription}} for formatting details. Only needed with bar chart panels, see Details.}
 
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
@@ -44,10 +49,10 @@ to the function will be ignored with a warning.}
 \item{from, to}{Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
 interpreted as row indices of \code{x}.}
 
-\item{log.q}{Logical, y-axis scaling for flow duration curve and discharge time series, set to \code{TRUE} for log-scaling.}
-
 \item{start.mon}{Integer between 1 and 12, starting month of the hydrological year. For regime plots, see also 
 \code{\link{AnnualRegime}}.}
+
+\item{log.q}{Logical, y-axis scaling for flow duration curve and discharge time series, set to \code{TRUE} for log-scaling.}
 }
 \value{
 Returns a multi-panel plot in a new graphics device.
@@ -74,6 +79,11 @@ The generated plot provides information about:
 
 Per default, the function plots from available model variables in an imported HYPE basin output file, and missing variables will be 
 automatically omitted. Variable selection can be additionally fine-tuned using argument \code{hype.vars}.
+
+Argument \code{panels} allows to choose if bar chart panels should be plotted. This can be time-consuming for sites with many upstream 
+sub-basins and might not necessary e.g. during calibration. If \code{1} (default), all panels are plotted. If set to \code{2}, bar 
+charts will be excluded. If \code{3}, only bar charts will be plotted. Arguments \code{gd}, \code{bd}, \code{gcl}, \code{psd}, \code{subid}, 
+and \code{desc} are only needed for bar chart plotting.
 
 Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file. 
 For a detailed description of the variables, see the 
