@@ -5,8 +5,8 @@
 \title{Plot a summary of model results for a single sub-basin}
 \usage{
 PlotBasinSummary(x, filename = "plot_basin", gd = gd, bd = NULL,
-  gcl = gcl, psd = NULL, desc = NULL, timestep = attr(x, "timestep"),
-  hype.vars = "all", from = 1, to = nrow(x), log.q = FALSE,
+  gcl = gcl, psd = NULL, subid = NULL, desc = NULL, timestep = attr(x,
+  "timestep"), hype.vars = "all", from = 1, to = nrow(x), log.q = FALSE,
   start.mon = 10)
 }
 \arguments{
@@ -22,9 +22,12 @@ screen device. \emph{Device dimensions are currently hard-coded.}}
 \item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
 \item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
-file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.}
+file imported with \code{\link{ReadGeoClass}}.}
 
 \item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}.}
+
+\item{subid}{Integer, SUBID of sub-basin for which results are plotted. If \code{NULL} (default), a \code{subid} attribute is 
+required in \code{x}.}
 
 \item{desc}{List for use with \code{type}. Class description labels imported from a 'description.txt' file, for bar labeling.
 See \code{\link{ReadDescription}} for formatting details.}

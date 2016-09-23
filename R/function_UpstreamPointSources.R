@@ -8,8 +8,8 @@
 #' Function to calculate point source emissions over all upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table. 
 #' Only total nitrogen and total phosphorus emissions are summarised.
 #'
-#' @param subid Integer vector of SUBIDs to calculate upstream SUBID fractions for (must exist in \code{gd}). 
-#' If \code{NULL}, upstream areas for all SUBIDs will be calculated.
+#' @param subid Integer vector of SUBIDs to calculate upstream point sources for (must exist in \code{gd}). 
+#' If \code{NULL}, upstream point sources for all SUBIDs in 'gd' will be calculated.
 #' @param gd A data frame containing columns 'SUBID' with SUBIDs and 'MAINDOWN' with downstream SUBIDs, 
 #' e.g. an imported 'GeoData.txt' file.
 #' @param psd A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}.

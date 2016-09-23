@@ -191,7 +191,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
   # subid conditional on user argument
   if (is.null(subid)) {
     sbd <- strsplit(filename, "/")[[1]]
-    sbd <- substr(sbd[length(sbd)], start = 1, stop = 7)
+    sbd <- as.integer(substr(sbd[length(sbd)], start = 1, stop = 7))
     #as.integer(gsub("[[:alpha:][:punct:]]", "", sbd[length(sbd)]))
   } else {
     sbd  <- subid

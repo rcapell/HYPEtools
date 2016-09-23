@@ -11,8 +11,10 @@
 #' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
-#' file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.
+#' file imported with \code{\link{ReadGeoClass}}.
 #' @param psd A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}.
+#' @param subid Integer, SUBID of sub-basin for which results are plotted. If \code{NULL} (default), a \code{subid} attribute is 
+#' required in \code{x}.
 #' @param desc List for use with \code{type}. Class description labels imported from a 'description.txt' file, for bar labeling.
 #' See \code{\link{ReadDescription}} for formatting details.
 #' @param timestep Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
@@ -67,12 +69,23 @@
 #' @export
 
 
-PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL, 
-                             gcl = gcl, psd = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
+PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL, gcl = gcl, psd = NULL, 
+                             subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
                              from = 1, to = nrow(x), log.q = FALSE, start.mon = 10) {
   
   ## Preliminaries
   
+  # get subid for which to plot summary from attribute of x if not user-provided
+  if (is.null(subid)) {
+    sbd <- attr(x, "subid")
+    if (is.null(sbd)) {
+      stop("No 'subid' attribute in 'x', please provide argument 'subid'.")
+    }
+  }
+  # check type
+  if (!is.numeric(sbd)) {
+    stop("Non-numeric 'subid'.")
+  }
   
   # identify rows to plot, time window
   if (is.numeric(from)) {
@@ -166,7 +179,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL,
   
   ## calculate upstream point sources if psd supplied
   if (!is.null(psd)) {
-    upsd <- UpstreamPointSources(subid = subid, gd = gd, psd = psd, bd = bd, progbar = F)
+    upsd <- UpstreamPointSources(subid = sbd, gd = gd, psd = psd, bd = bd, progbar = F)
     # calculate load in ton/year, proceed only if upstream point sources exist
     if (nrow(upsd) > 0) {
       load.psn <- weighted.mean(x = upsd$up_ps_tnconc, w = upsd$up_ps_vol) * sum(upsd$up_ps_vol) * .000365
@@ -183,7 +196,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL,
   ## calculate upstream rural household emissions if possible
   # calculate upstream loads in ton/year, proceed only if all necessary variables exist in gd
   if (all(c("loc_vol", "loc_tn", "loc_tp") %in% tolower(names(gd)))) {
-    ugd <- suppressWarnings(UpstreamGeoData(subid = subid, gd = gd, bd = bd, progbar = F))
+    ugd <- suppressWarnings(UpstreamGeoData(subid = sbd, gd = gd, bd = bd, progbar = F))
     pos.lvol <- which(tolower(names(ugd)) == "up_loc_vol")
     pos.ltn <- which(tolower(names(ugd)) == "up_loc_tn")
     pos.ltp <- which(tolower(names(ugd)) == "up_loc_tp")
@@ -212,8 +225,9 @@ PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL,
   
   
   ## Q axis limits for conc-Q plots
-  lim.q <- range(cout, na.rm = T)
-  
+  if(exi.t["cout"]) {
+    lim.q <- range(cout, na.rm = T)
+  }
   
   ## parse plot commands based on existing or requested HYPE variables to a list
   ## create layout() arguments based on existinng HYPE variables
@@ -240,15 +254,15 @@ PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL,
   
   ## panel 1: upstream land use bars
   cp <- cp + 1
-  list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(subid, gd = gd, bd = bd, gc = gcl, type = "l", progbar = F), type = "l", desc = desc, cex.names = .8)')
+  list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "l", progbar = F), type = "l", desc = desc, cex.names = .8)')
   
   ## panel 2: upstream soil bars
   cp <- cp + 1
-  list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(subid, gd = gd, bd = bd, gc = gcl, type = "s", progbar = F), type = "s", desc = desc, cex.names = .8)')
+  list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "s", progbar = F), type = "s", desc = desc, cex.names = .8)')
   
   ## panel 3: upstream crop bars
   cp <- cp + 1
-  list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(subid, gd = gd, bd = bd, gc = gcl, type = "c", progbar = F), type = "c", desc = desc, cex.names = .8)')
+  list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "c", progbar = F), type = "c", desc = desc, cex.names = .8)')
   
   ## panels 4 and 5: upstream TN and TP loads in ton/year
   cp <- cp + 1
@@ -312,6 +326,9 @@ PlotBasinSummary <- function(x, filename = "plot_basin", gd = gd, bd = NULL,
       list.plotexpr[[cp]] <- parse(text = 'plot(rout, cout, col = "#8873FF80", pch = 16, xlab = expression(paste("observed Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")))')
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'abline(a = 0, b = 1, col = "#00000080")')
+    } else {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'frame()')
     }
     
     

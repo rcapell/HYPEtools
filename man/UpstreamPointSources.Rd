@@ -8,8 +8,8 @@ UpstreamPointSources(subid = NULL, gd, psd, bd = NULL, signif.digits = 4,
   progbar = T)
 }
 \arguments{
-\item{subid}{Integer vector of SUBIDs to calculate upstream SUBID fractions for (must exist in \code{gd}). 
-If \code{NULL}, upstream areas for all SUBIDs will be calculated.}
+\item{subid}{Integer vector of SUBIDs to calculate upstream point sources for (must exist in \code{gd}). 
+If \code{NULL}, upstream point sources for all SUBIDs in 'gd' will be calculated.}
 
 \item{gd}{A data frame containing columns 'SUBID' with SUBIDs and 'MAINDOWN' with downstream SUBIDs, 
 e.g. an imported 'GeoData.txt' file.}

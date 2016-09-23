@@ -98,7 +98,7 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   
   # prepare observation regime, remove NAs, group by month, construct dates from sim regime for positioning in plot
   reg.obs <- na.omit(x.obs)
-  reg.obs <- tapply(reg.obs[, 2], format(reg.obs[, 1], format = "%m"), c)
+  reg.obs <- tapply(reg.obs[, 2], format(reg.obs[, 1], format = "%m"), c, simplify = F)
   # create sorting vector to match start.mon
   if (start.mon == 1) {
     sort.mon <- 1:12
@@ -149,8 +149,10 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   text(x = reg.obs.date, y = ylim[1], as.character(sapply(reg.obs, function(x) length(na.omit(x)))), adj = c(.5, .9), cex = .75, font = 3, col = "grey50")
   text(x = par("usr")[1] - diff(par("usr")[1:2])/25, y = ylim[1], "n obs.", adj = c(1, .9), cex = .75, font = 3, xpd = T, col = "grey50")
   # add mean and median lines
-  lines(x = reg.obs.date, y = sapply(reg.obs, mean), col = .makeTransparent("black", 200))
-  lines(x = reg.obs.date, y = sapply(reg.obs, median), lty = 2, col = .makeTransparent("black", 200))
+  obs.mm <- data.frame(reg.obs.date, sapply(reg.obs, mean), sapply(reg.obs, mean))
+  obs.mm <- na.omit(obs.mm)
+  lines(x = obs.mm[, 1], y = obs.mm[, 2], col = .makeTransparent("black", 200))
+  lines(x = obs.mm[, 1], y = obs.mm[, 3], lty = 2, col = .makeTransparent("black", 200))
   
   
   # add legend if requested
