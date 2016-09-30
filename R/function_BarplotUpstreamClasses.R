@@ -5,7 +5,8 @@
 #' land use or soils.
 #' 
 #' @param x Data frame, containing column-wise class group fractions with SUBIDs in first column. Typically a result 
-#' from \code{\link{UpstreamGroupSLCClasses}}.
+#' from \code{\link{UpstreamGroupSLCClasses}}. Column names of class group fractions _must_ end with \code{_x}, with x giving the
+#' class group ID, see details.
 #' @param type Character string keyword for use with \code{desc}. Type of class groups, either \code{"landuse"}, 
 #' \code{"soil"}, or \code{"crop"}, can be abbreviated.
 #' @param desc List for use with \code{type}. Class description labels imported from a 'description.txt' file, for bar labeling.
@@ -30,6 +31,12 @@
 #' @details 
 #' \code{BarplotUpstreamClasses} is a wrapper for \code{\link{barplot}}, with vertical labels plotted over the class group bars. 
 #' Most arguments have sensible defaults, but can be adapted for fine-tuning if necessary.
+#' 
+#' Column names of \code{x} are used to link class groups to class IDs in \code{desc}. HYPE has no formal 
+#' requirements on how class IDs are numbered and when one of the standard groups land use, soil, or crop are provided in \code{x}, 
+#' there might be missing class IDs. Class names in \code{desc} are matched against column name endings \code{'_x'} in \code{x}. 
+#' If manual names are provided in \code{class.names}, the column name endings must be a consecutive sequence from 1 to number of elements 
+#' in \code{class.names}.
 #' 
 #' @return 
 #' The function returns bar midpoints, see description in \code{\link{barplot}}.
@@ -59,10 +66,13 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
     # bar labels
     if (!is.null(desc)) {
       lgroup <- desc$lu
+      lid <- desc$lu.id
     } else if (!is.null(class.names)) {
       lgroup <- class.names
+      lid <- 1:length(class.names)
     } else {
-      lgroup <- names(x[, -1])
+      lgroup <- names(x)[-1]
+      lid <- sapply(strsplit(names(x)[-1], "_"), function(x) {as.numeric(x[2])})
     }
     # default value for x axis label
     if (is.null(xlab)) {
@@ -76,10 +86,13 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
   } else if (type == "soil" || type == "s") {
     if (!is.null(desc)) {
       lgroup <- desc$so
+      lid <- desc$so.id
     } else if (!is.null(class.names)) {
       lgroup <- class.names
+      lid <- 1:length(class.names)
     } else {
       lgroup <- names(x[, -1])
+      lid <- sapply(strsplit(names(x)[-1], "_"), function(x) {as.numeric(x[2])})
     }
     if (is.null(xlab)) {
       xlab <- "Soil group"
@@ -91,10 +104,13 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
   } else if (type == "crop" || type == "c") {
     if (!is.null(desc)) {
       lgroup <- desc$cr
+      lid <- desc$cr.id
     } else if (!is.null(class.names)) {
       lgroup <- class.names
+      lid <- 1:length(class.names)
     } else {
       lgroup <- names(x[, -1])
+      lid <- sapply(strsplit(names(x)[-1], "_"), function(x) {as.numeric(x[2])})
     }
     if (is.null(xlab)) {
       xlab <- "Crop group"
@@ -136,10 +152,13 @@ BarplotUpstreamClasses <- function (x, type = NULL, desc = NULL, xlab = NULL, yl
   # set plot parameters
   par(pars)
   
+  # get class IDs from column names in x
+  cid <- sapply(strsplit(names(x)[-1], "_"), function(x) {as.numeric(x[2])})
+  
   # plot bars and labels
   res <- barplot(height = as.matrix(x[, -1]) * 100, names.arg = names.arg, beside = T, xlab = xlab, ylab = ylab, 
                  ylim = ylim, border = NA, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = NULL)
-  mtext(text = lgroup, side = 3, at = colMeans(res), line = -.2, padj = .3, cex = cex.names, las = 3, adj = 1)
+  mtext(text = lgroup[match(cid, lid)], side = 3, at = colMeans(res), line = -.2, padj = .3, cex = cex.names, las = 3, adj = 1)
   mtext(xlab, side = 1, line = .5, cex = cex.names)
   abline(v = diff(colMeans(res))/2 + colMeans(res)[-ncol(res)] - .05, col = "grey90")
   if (!is.null(leg.t)) {

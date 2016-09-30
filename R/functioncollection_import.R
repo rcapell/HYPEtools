@@ -1246,29 +1246,33 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #' class names of a HYPE set-up, as well as model set-up name and version. 
 #' 
 #' @param filename Path to and file name of the 'description.txt' file to import. 
-#' @param gcl dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare number of class names with. 
-#' A warning will be thrown if numbers are not identical.
+#' @param gcl dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare class IDs with. 
+#' A warning will be thrown if not all class IDs in \code{gcl} exist in the description file.
 #'  
 #' @details
 #' \code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
 #' e.g. plotting legend labels or examining imported GeoClass files. \code{\link{PlotBasinEvaluation}} requires a list 
 #' as returned from \code{ReadDescription} for labeling. 
 #' 
-#' A description.txt file consists of 16 lines, alternating names and semicolon-separated content. Lines 
+#' A description.txt file consists of 22 lines, alternating names and semicolon-separated content. Lines 
 #' with names are not read by the import function, they just make it easier to compose and read the actual text file.
 #' 
 #' File contents read by \code{ReadDescription}: 
 #' \itemize{
 #'  \item HYPE set-up name (line 2)
 #'  \item HYPE set-up version (line 4)
+#'  \item Land use class IDs (line 6)
 #'  \item Land use class names (line 6)
 #'  \item Land use class short names (line 8)
+#'  \item Soil class IDs (line 10)
 #'  \item Soil class names (line 10)
 #'  \item Soil class short names (line 12)
+#'  \item Crop class IDs (line 14)
 #'  \item Crop class names (line 14)
 #'  \item Crop class short names (line 16)
 #' }
 #' 
+#' Note that Crop class IDs start from \code{0}, which means no crop, whereas land use and soil IDs start from \code{1} (or higher).
 #' 
 #' Formatting example for description.txt files: 
 #' 
@@ -1276,25 +1280,31 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #' \code{MyHYPE} \cr
 #' \code{# Version} \cr
 #' \code{0.1} \cr
+#' \code{# Land use class IDs} \cr
+#' \code{1;2} \cr
 #' \code{# Land use class names} \cr
 #' \code{Agriculture;Coniferous forest} \cr
 #' \code{# Short land use class names} \cr
 #' \code{Agric.;Conif. f.} \cr
+#' \code{# Soil class IDs} \cr
+#' \code{1;2} \cr
 #' \code{# Soil class names} \cr
 #' \code{Coarse soils;Medium to fine soils} \cr
 #' \code{# Short soil class names} \cr
 #' \code{Coarse;Medium} \cr
+#' \code{# Crop class IDs} \cr
+#' \code{0;1;2} \cr
 #' \code{# Crop class names} \cr
-#' \code{Row crops;Autumn-sown cereal} \cr
+#' \code{None;Row crops;Autumn-sown cereal} \cr
 #' \code{# Short crop class names} \cr
-#' \code{Row;Aut.-sown} \cr
+#' \code{None;Row;Aut.-sown} \cr
 #' 
 #' @return
-#' \code{ReadDescription} returns a named list with 8 named character elements, corresponding to the 
+#' \code{ReadDescription} returns a named list with 11 named character elements, corresponding to the 
 #' imported lines:
 #' 
-#' \code{Name}, \code{Version}, \code{Landuse}, \code{lu} (short names), \code{Soil}, \code{so} (short names), 
-#' \code{Crop}, \code{cr} (short names)
+#' \code{Name}, \code{Version}, \code{lu.id}, \code{Landuse}, \code{lu} (short names), \code{so.id}, 
+#' \code{Soil}, \code{so} (short names), \code{cr.id}, \code{Crop}, \code{cr} (short names)
 #' 
 #' @examples
 #' \dontrun{ReadDescription("description.txt")}
@@ -1311,45 +1321,44 @@ ReadDescription <- function(filename, gcl = NULL) {
   # remove empty strings (excel export artefacts)
   x <- sapply(x, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
   # create result list, assign names
-  res <- x[c(2, 4, 6, 8, 10, 12, 14, 16)]
-  names(res) <- c("Name", "Version", "Landuse", "lu", "Soil", "so", "Crop", "cr")
+  res <- x[c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22)]
+  names(res) <- c("Name", "Version", "lu.id", "Landuse", "lu", "so.id", "Soil", "so", "cr.id", "Crop", "cr")
+  
+  # convert IDs to numeric
+  res$lu.id <- as.numeric(res$lu.id)
+  res$so.id <- as.numeric(res$so.id)
+  res$cr.id <- as.numeric(res$cr.id)
   
   # check conformity of names and short names
-  if (length(res$Landuse) != length(res$lu)) {
-    warning("Diffent numbers of names and short names for land uses in imported file.")
+  if (length(res$Landuse) != length(res$lu) || length(res$Landuse) != length(res$lu.id)) {
+    warning("Diffent numbers of IDs, names, or short names for land uses in imported file.")
   }
-  if (length(res$Soil) != length(res$so)) {
-    warning("Diffent numbers of names and short names for soils in imported file.")
+  if (length(res$Soil) != length(res$so) || length(res$Soil) != length(res$so.id)) {
+    warning("Diffent numbers of IDs, names, or short names for soils in imported file.")
   }
-  if (length(res$Crop) != length(res$cr)) {
-    warning("Diffent numbers of names and short names for crops in imported file.")
+  if (length(res$Crop) != length(res$cr) || length(res$Crop) != length(res$cr.id)) {
+    warning("Diffent numbers of IDs, names, or short names for crops in imported file.")
   }
   
-  # check conformity with geoclass if provided
+  # check conformity with geoclass if provided, missing classes allowed in gcl, but not in description
   if (!is.null(gcl)) {
-    lu.g <- length(unique(gcl[, 2]))
-    lu.d <- length(res$Landuse)
-    if (lu.g != lu.d) {
-      warning(paste0("Land use classes: Number in description (", lu.d, ") != number of land use classes in 'gcl' (", lu.g, ")."))
+    te <- unique(gcl[, 2])
+    if (any(!(te %in% res$lu.id))) {
+      warning("Not all land use classes IDs in 'gcl' present in description file.")
     }
-    s.g <- length(unique(gcl[, 3]))
-    s.d <- length(res$Soil)
-    if (s.g != s.d) {
-      warning(paste0("Soil classes: Number in description (", s.d, ") != number in 'gcl' (", s.g, ")."))
+    te <- unique(gcl[, 3])
+    if (any(!(te %in% res$so.id))) {
+      warning("Not all soil classes IDs in 'gcl' present in description file.")
     }
-    # crop classes in two columns, and can be 0
+    # crop classes in two columns
     te <- unique(c(gcl[, 4], gcl[, 5]))
-    c.g <- length(te[te > 0])
-    c.d <- length(res$Crop)
-    if (c.g != c.d) {
-      warning(paste0("Crop classes: Number in description (", c.d, ") != number in 'gcl' (", c.g, ")."))
+    if (any(!(te %in% res$cr.id))) {
+      warning("Not all crop classes IDs in 'gcl' present in description file.")
     }
   }
   return(res)
 }
 
-# filename <- "../description.txt"
-# rm(filename, x, res, lu.d, lu.g, s.g, s.d, c.d, c.g, te)
 
 
 

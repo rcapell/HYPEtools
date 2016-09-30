@@ -9,15 +9,15 @@ ReadDescription(filename, gcl = NULL)
 \arguments{
 \item{filename}{Path to and file name of the 'description.txt' file to import.}
 
-\item{gcl}{dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare number of class names with. 
-A warning will be thrown if numbers are not identical.}
+\item{gcl}{dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare class IDs with. 
+A warning will be thrown if not all class IDs in \code{gcl} exist in the description file.}
 }
 \value{
-\code{ReadDescription} returns a named list with 8 named character elements, corresponding to the 
+\code{ReadDescription} returns a named list with 11 named character elements, corresponding to the 
 imported lines:
 
-\code{Name}, \code{Version}, \code{Landuse}, \code{lu} (short names), \code{Soil}, \code{so} (short names), 
-\code{Crop}, \code{cr} (short names)
+\code{Name}, \code{Version}, \code{lu.id}, \code{Landuse}, \code{lu} (short names), \code{so.id}, 
+\code{Soil}, \code{so} (short names), \code{cr.id}, \code{Crop}, \code{cr} (short names)
 }
 \description{
 Read a 'description.txt' file as \code{list} object into R. A 'description.txt' file contains land use, soil, and crop 
@@ -28,21 +28,25 @@ class names of a HYPE set-up, as well as model set-up name and version.
 e.g. plotting legend labels or examining imported GeoClass files. \code{\link{PlotBasinEvaluation}} requires a list 
 as returned from \code{ReadDescription} for labeling. 
 
-A description.txt file consists of 16 lines, alternating names and semicolon-separated content. Lines 
+A description.txt file consists of 22 lines, alternating names and semicolon-separated content. Lines 
 with names are not read by the import function, they just make it easier to compose and read the actual text file.
 
 File contents read by \code{ReadDescription}: 
 \itemize{
  \item HYPE set-up name (line 2)
  \item HYPE set-up version (line 4)
+ \item Land use class IDs (line 6)
  \item Land use class names (line 6)
  \item Land use class short names (line 8)
+ \item Soil class IDs (line 10)
  \item Soil class names (line 10)
  \item Soil class short names (line 12)
+ \item Crop class IDs (line 14)
  \item Crop class names (line 14)
  \item Crop class short names (line 16)
 }
 
+Note that Crop class IDs start from \code{0}, which means no crop, whereas land use and soil IDs start from \code{1} (or higher).
 
 Formatting example for description.txt files: 
 
@@ -50,18 +54,24 @@ Formatting example for description.txt files:
 \code{MyHYPE} \cr
 \code{# Version} \cr
 \code{0.1} \cr
+\code{# Land use class IDs} \cr
+\code{1;2} \cr
 \code{# Land use class names} \cr
 \code{Agriculture;Coniferous forest} \cr
 \code{# Short land use class names} \cr
 \code{Agric.;Conif. f.} \cr
+\code{# Soil class IDs} \cr
+\code{1;2} \cr
 \code{# Soil class names} \cr
 \code{Coarse soils;Medium to fine soils} \cr
 \code{# Short soil class names} \cr
 \code{Coarse;Medium} \cr
+\code{# Crop class IDs} \cr
+\code{0;1;2} \cr
 \code{# Crop class names} \cr
-\code{Row crops;Autumn-sown cereal} \cr
+\code{None;Row crops;Autumn-sown cereal} \cr
 \code{# Short crop class names} \cr
-\code{Row;Aut.-sown} \cr
+\code{None;Row;Aut.-sown} \cr
 }
 \examples{
 \dontrun{ReadDescription("description.txt")}

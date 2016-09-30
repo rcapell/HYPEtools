@@ -794,10 +794,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
       lay.heights <- c(lay.heights, 2)
       
       # calculate IN/TN ratio in percent
-      if (exi.t["rein"]) {
+      if (exi.t["rein"] && exi.t["retn"]) {
         reintn <- rein * 100 / retn
       }
-      if (exi.t["ccin"]) {
+      if (exi.t["ccin"] && exi.t["cctn"]) {
         ccintn <- ccin * 100 / cctn
       }
       
@@ -1264,10 +1264,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
       lay.heights <- c(lay.heights, 2)
       
       # calculate SP/TP ratio in percent
-      if (exi.t["resp"]) {
+      if (exi.t["resp"] && exi.t["retp"]) {
         resptp <- resp * 100 / retp
       }
-      if (exi.t["ccsp"]) {
+      if (exi.t["ccsp"] && exi.t["cctp"]) {
         ccsptp <- ccsp * 100 / cctp
       }
       

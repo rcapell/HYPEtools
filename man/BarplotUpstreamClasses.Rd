@@ -13,7 +13,8 @@ BarplotUpstreamClasses(x, type = NULL, desc = NULL, xlab = NULL,
 }
 \arguments{
 \item{x}{Data frame, containing column-wise class group fractions with SUBIDs in first column. Typically a result 
-from \code{\link{UpstreamGroupSLCClasses}}.}
+from \code{\link{UpstreamGroupSLCClasses}}. Column names of class group fractions _must_ end with \code{_x}, with x giving the
+class group ID, see details.}
 
 \item{type}{Character string keyword for use with \code{desc}. Type of class groups, either \code{"landuse"}, 
 \code{"soil"}, or \code{"crop"}, can be abbreviated.}
@@ -58,6 +59,12 @@ land use or soils.
 \details{
 \code{BarplotUpstreamClasses} is a wrapper for \code{\link{barplot}}, with vertical labels plotted over the class group bars. 
 Most arguments have sensible defaults, but can be adapted for fine-tuning if necessary.
+
+Column names of \code{x} are used to link class groups to class IDs in \code{desc}. HYPE has no formal 
+requirements on how class IDs are numbered and when one of the standard groups land use, soil, or crop are provided in \code{x}, 
+there might be missing class IDs. Class names in \code{desc} are matched against column name endings \code{'_x'} in \code{x}. 
+If manual names are provided in \code{class.names}, the column name endings must be a consecutive sequence from 1 to number of elements 
+in \code{class.names}.
 }
 \examples{
 \dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "soil")}
