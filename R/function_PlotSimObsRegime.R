@@ -137,9 +137,9 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   }
   if (is.null(ylab)) {
     if (is.null(obs)) {
-      ylab <- attr(x, "unit")[col.sim]
+      ylab <- attr(x, "unit")[col.sim - 1]
     } else {
-      ylab <- attr(x, "unit")[col.obs]
+      ylab <- attr(x, "unit")[col.obs - 1]
     }
   }
   

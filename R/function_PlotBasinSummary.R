@@ -8,7 +8,7 @@
 #' See details for HYPE output variables required for plotting.
 #' @param filename String, file name for plotting to \code{\link{png}} device. \code{NULL} triggers a plot on a new
 #' screen device. \emph{Device dimensions are currently hard-coded.}
-#' @param panels Integer, either\code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.
+#' @param panels Integer, either \code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.
 #' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with 
 #' \code{\link{ReadGeoData}}. Only needed with bar chart panels, see Details. 
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument. Only needed with 
@@ -34,7 +34,8 @@
 #' @param xscale Character string, keyword for x-axis scaling. Either \code{"lin"} for linear scaling or \code{"gauss"} for gaussian scaling. 
 #' See description in \code{\link{PlotDurationCurve}}.
 #' @param start.mon Integer between 1 and 12, starting month of the hydrological year. For regime plots, see also 
-#' \code{\link{AnnualRegime}}.
+#' \code{\link{AnnualRegime}}. 
+#' @param name Character or expression string. Site name to plot besides bar chart panels. Only relevant with \code{panels} \code{1} or \code{3}.
 #' 
 #' @details
 #' \code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a 
@@ -82,7 +83,7 @@
 
 PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd = NULL, gcl = gcl, psd = NULL, 
                              subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
-                             from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10) {
+                             from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = NULL) {
   
   ## Preliminaries
   
@@ -201,7 +202,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
   
   
   
-  ## calculate upstream inf for bar charts, conditional on panels
+  ## calculate upstream info for bar charts and sub-basin info, conditional on panels
   
   if (panels %in% c(1, 3)) {
     # get subid for which to plot summary from attribute of x if not user-provided
@@ -210,6 +211,8 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
       if (is.null(sbd)) {
         stop("No 'subid' attribute in 'x', please provide argument 'subid'.")
       }
+    } else {
+      sbd <- subid
     }
     # check type
     if (!is.numeric(sbd)) {
@@ -225,11 +228,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
         load.psp <- weighted.mean(x = upsd$up_ps_tpconc, w = upsd$up_ps_vol) * sum(upsd$up_ps_vol) * .000365
       } else {
         load.psn <- NA
-        load.psd <- NA
+        load.psp <- NA
       }
     } else {
       load.psn <- NA
-      load.psd <- NA
+      load.psp <- NA
     }
     
     ## calculate upstream rural household emissions if possible
@@ -261,6 +264,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
     # combine all loads
     loads.tn <- c(load.outn, load.psn, load.rurn)
     loads.tp <- c(load.outp, load.psp, load.rurp)
+    
+    # upstream area in km2 and number of subids
+    uarea <- signif(SumUpstreamArea(subid = sbd, gd = gd, bd = bd)[1, 2] / 10^6, digits = 2)
+    nsbd <- length(AllUpstreamSubids(subid = sbd, gd = gd, bd = bd))
   }
  
   
@@ -291,23 +298,32 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
   if (panels %in% c(1, 3)) {
     
     # fill layout matrix with panel IDs
-    lay.mat <- rbind(lay.mat, 0:5)
+    lay.mat <- rbind(lay.mat, 1:6)
     # add layout height for this row
     lay.heights <- c(lay.heights, 2)
     
-    ## panel 1: upstream land use bars
+    ## panel 1: plot basin infos
+    # empty frame first, then infos as legend
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "l", progbar = F), type = "l", desc = desc, cex.names = .8)')
-    
-    ## panel 2: upstream soil bars
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(0, 4))')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "s", progbar = F), type = "s", desc = desc, cex.names = .8)')
-    
-    ## panel 3: upstream crop bars
+    list.plotexpr[[cp]] <- parse(text = 'frame()')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "c", progbar = F), type = "c", desc = desc, cex.names = .8)')
+    list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(as.expression(bquote("Area (km"^2*"):"~.(uarea))), as.expression(bquote("Sub-basins:"~.(nsbd)))), bty = "n", title = name, cex = 1)')
     
-    ## panels 4 and 5: upstream TN and TP loads in ton/year
+    ## panel 2: upstream land use bars
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "l", progbar = F), type = "l", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
+    
+    ## panel 3: upstream soil bars
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "s", progbar = F), type = "s", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
+    
+    ## panel 4: upstream crop bars
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "c", progbar = F), type = "c", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
+    
+    ## panels 5 and 6: upstream TN and TP loads in ton/year
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")')
     cp <- cp + 1
@@ -1371,7 +1387,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
   }
   
   # layout definition
-  nf <- layout(mat = lay.mat[-1, ], widths = lay.widths, heights = lay.heights)
+  nf <- layout(mat = lay.mat[-1, , drop = FALSE], widths = lay.widths, heights = lay.heights)
   # layout.show(nf)
   
   # plot all commands in list

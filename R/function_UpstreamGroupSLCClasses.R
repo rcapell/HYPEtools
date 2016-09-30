@@ -63,9 +63,6 @@ UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, typ
     subid <- gd[, pos.sbd]
   }
   
-  # create grouped slc classes using existing function
-  grclass <- GroupSLCClasses(gd = gd, gc = gcl, type = type, group = group, abs.area = FALSE, verbose = progbar)
-  
   # get a list of upstream SUBIDs for all SUBIDs in subid
   # conditional: use the progress bar version of lapply if requested by user
   if (progbar) {
@@ -74,6 +71,11 @@ UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, typ
   } else {
     up.sbd <- lapply(subid, function(x, g, b) {AllUpstreamSubids(subid = x, g, b)}, g = gd, b = bd)
   }
+  
+  # create grouped slc classes using existing function, just for upstream subids
+  gd.sel <- gd[gd[, pos.sbd] %in% unlist(up.sbd), ]
+  grclass <- GroupSLCClasses(gd = gd.sel, gc = gcl, type = type, group = group, abs.area = FALSE, verbose = progbar)
+  
   
   ## calculate upstream average groups
   

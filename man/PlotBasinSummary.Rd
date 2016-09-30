@@ -7,7 +7,8 @@
 PlotBasinSummary(x, filename = "plot_basin", panels = 1, gd = gd,
   bd = NULL, gcl = gcl, psd = NULL, subid = NULL, desc = NULL,
   timestep = attr(x, "timestep"), hype.vars = "all", from = 1,
-  to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10)
+  to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10,
+  name = NULL)
 }
 \arguments{
 \item{x}{Data frame, with column-wise daily time series of HYPE variables. Date-times in 
@@ -17,7 +18,7 @@ See details for HYPE output variables required for plotting.}
 \item{filename}{String, file name for plotting to \code{\link{png}} device. \code{NULL} triggers a plot on a new
 screen device. \emph{Device dimensions are currently hard-coded.}}
 
-\item{panels}{Integer, either\code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.}
+\item{panels}{Integer, either \code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.}
 
 \item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with 
 \code{\link{ReadGeoData}}. Only needed with bar chart panels, see Details.}
@@ -49,10 +50,15 @@ to the function will be ignored with a warning.}
 \item{from, to}{Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
 interpreted as row indices of \code{x}.}
 
+\item{log}{Logical, log scaling discharge and concentrations.}
+
+\item{xscale}{Character string, keyword for x-axis scaling. Either \code{"lin"} for linear scaling or \code{"gauss"} for gaussian scaling. 
+See description in \code{\link{PlotDurationCurve}}.}
+
 \item{start.mon}{Integer between 1 and 12, starting month of the hydrological year. For regime plots, see also 
 \code{\link{AnnualRegime}}.}
 
-\item{log.q}{Logical, y-axis scaling for flow duration curve and discharge time series, set to \code{TRUE} for log-scaling.}
+\item{name}{Character or expression string. Site name to plot besides bar chart panels. Only relevant with \code{panels} \code{1} or \code{3}.}
 }
 \value{
 Returns a multi-panel plot in a new graphics device.
