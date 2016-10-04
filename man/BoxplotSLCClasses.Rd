@@ -48,8 +48,8 @@ Both following class IDs as given in \code{gc} in ascending order.}
 \item{mar, mgp, tcl, xaxs, xpd}{Arguments to \code{\link{par}} with changed defaults. See documentation in there.}
 }
 \value{
-\code{BoxplotSLCClasses} invisibly returns a data frame of SLC class fractions with \code{0} values replaced by \code{NA}s. If absolute areas 
-are plotted, these are returned in the data frame.
+\code{BoxplotSLCClasses} returns a plot to the currently active plot device, and invisibly a data frame of SLC class fractions with \code{0} 
+values replaced by \code{NA}s. If absolute areas are plotted, these are returned in the data frame.
 }
 \description{
 \code{BoxplotSLCClasses} plots SLC class distributions for all SUBIDs in a GeoData data frame as boxplots. Boxes can represent distributions 

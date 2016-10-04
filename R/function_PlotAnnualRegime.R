@@ -21,6 +21,7 @@
 #' @param lwd Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
+#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
 #' 
 #' @details
 #' If \code{"minmax"} or \code{"p25p75"} are chosen for argument \code{type}, transparent bands of inter-annual variation are plotted along the 
@@ -42,14 +43,17 @@
 
 
 PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NULL, log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
-                 xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1) {
+                 xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, 
+                 restore.par = FALSE) {
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar <- par("mar")
   par.xaxs <- par("xaxs")
   par.mgp <- par("mgp")
   par.tcl <- par("tcl")
-  on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl))
+  if (restore.par) {
+    on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl))
+  }
   
   # number of time series in freq
   nq <- ncol(x$mean) - 2

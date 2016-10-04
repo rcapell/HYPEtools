@@ -135,14 +135,6 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     xw[, 1] <- date.plot[fw:length(date.plot)]
   }
   
-  # save current state of par() variables which are altered below, for restoring on function exit
-  par.mar <- par("mar")
-  par.xaxs <- par("xaxs")
-  par.mgp <- par("mgp")
-  par.tcl <- par("tcl")
-  par.las <- par("las")
-  on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl, las = par.las))
-  
   
   ## identify column indices of target variables and total number of variables to plot
   
@@ -835,7 +827,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   } else {
     png(filename = paste0(filename, ".png"), width=wdth, height = hght, units = "in", res = 300, pointsize = 20)
     # close the file device on exit
-    on.exit(dev.off(), add = T)
+    on.exit(dev.off())
   }
   
   # layout definition
@@ -848,20 +840,3 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   }
 }
 
-# # debug
-# x <- ReadBasinOutput("D:/temp/ehype312/res_statefile2/9603469.txt")
-# from <- 10
-# from <- "2005-01-01"
-# to <- nrow(x) +10
-# name <- "Weaver EHYPE3 default"
-# area <- NULL
-# area <- SumUpstreamArea(subid = subid, gd = gd, bd = bd)[, 2]
-# gd <- ReadGeoData("D:/temp/ehype312/GeoData.txt")
-# log.q <- F
-# subid <- 9548212
-# bd <- NULL
-# timestep <- "day"
-# start.mon <- 10
-# filename <- NULL
-# hype.vars <- "hydro"
-# PlotBasinOutput(x = ReadBasinOutput("../9548212.txt"), name = "Weaver EHYPE3 default", gd = gd, subid = subid, hype.vars = "nutrients", filename = "../test3")

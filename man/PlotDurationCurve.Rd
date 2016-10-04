@@ -7,7 +7,7 @@
 PlotDurationCurve(freq, xscale = "lin", yscale = "log",
   add.legend = FALSE, l.legend = NULL, ylim = NULL,
   xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue",
-  lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + 0.1)
+  lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + 0.1, restore.par = FALSE)
 }
 \arguments{
 \item{freq}{Data frame with at least two columns, containing probabilities in the first and series of data quantiles in the remaining columns. Typically 
@@ -40,6 +40,8 @@ series in \code{freq}.}
 series in \code{freq}.}
 
 \item{mar}{Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.}
+
+\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
 }
 \value{
 \code{PlotDurationCurve} returns a plot to the currently active plot device.
@@ -54,6 +56,7 @@ function it can be used to visualise and compare time series properties.
 }
 \examples{
 \dontrun{PlotDurationCurve(freq = myfreq, print.n.obs = T)}
+
 }
 \seealso{
 \code{\link{ExtractFreq}}

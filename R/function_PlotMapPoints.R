@@ -38,8 +38,8 @@
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 #' In standard use cases of this function, plot margins do not need to be changed.
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.
-#' @param reset.par Logical, default \code{TRUE}. Re-set changes to \code{\link{par}} after function call. Set to 
-#' \code{FALSE} to add other layers to the result plot.
+#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
+
 #' @details
 #' \code{PlotMapPoints} can be used to print point information on a mapped surface. The primary target are model performance 
 #' measures as written to 
@@ -55,8 +55,9 @@
 #' specification see \code{inset} in \code{\link{legend}}. 
 #' 
 #' @return 
-#' \code{PlotMapPoints} invisibly returns an object of class \code{\link{SpatialPointsDataFrame}} as provided in argument 
-#' \code{sites}, with plotted values and color codes added as columns in the data slot.
+#' \code{PlotMapPoints} returns a plot to the currently active plot device, and invisibly an object of class 
+#' \code{\link{SpatialPointsDataFrame}} as provided in argument \code{sites}, with plotted values and color codes added as columns 
+#' in the data slot.
 #'
 #' @seealso 
 #' \code{\link{ReadSubass}} for HYPE result import; \code{\link{ReadMapOutput}} for a similar plot function
@@ -75,7 +76,7 @@
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj = 0, plot.legend = T, 
                           legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0), col = NULL, 
                           col.breaks = NULL, plot.scale = T, plot.arrow = T, pt.cex = 1, 
-                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, reset.par = TRUE) {
+                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE) {
   
   # input argument checks
   stopifnot(is.data.frame(x), dim(x)[2] == 2, class(sites)=="SpatialPointsDataFrame", 
@@ -98,7 +99,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   
   # save current state of par() variables which are altered below, for restoring on function exit
   # conditional on argument reset.par'
-  if (reset.par) {
+  if (restore.par) {
     par.mar0 <- par("mar")
     par.xaxs <- par("xaxs")
     par.yaxs <- par("yaxs")

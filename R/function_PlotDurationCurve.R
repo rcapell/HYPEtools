@@ -1,40 +1,28 @@
-#' @export
-#' @title
+
 #' Plot duration curves
 #'
-#' @description
 #' Convenience wrapper function for a (multiple) line \code{\link{plot}}, with pretty defaults for axis annotation and a Gaussian scaling option for the x-axis.
 #'
 #' @param freq Data frame with at least two columns, containing probabilities in the first and series of data quantiles in the remaining columns. Typically 
 #' an object as returned by \code{\link{ExtractFreq}} or a subset thereof.
-#' 
 #' @param xscale Character string, keyword for x-axis scaling. Either \code{"lin"} for linear scaling or \code{"gauss"} for gaussian scaling as in a normal 
 #' probability plot, which allows for for better comparison of low flow and high flow frequencies.
-#' 
 #' @param yscale Character string, keyword for y-axis scaling. Either \code{"lin"} for linear scaling or \code{"log"} for common logarithm scaling.
-#' 
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot, including the number of observations on which the quantiles are based for 
 #' each curve if \code{freq} is a result from \code{\link{ExtractFreq}}.
-#' 
 #' @param l.legend Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{freq}.
-#' 
 #' @param ylim  Numeric vector of length two, giving y-axis limits. \code{NULL} for default values.
-#' 
 #' @param xlab Character string, x-axis label.
-#' 
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label, either as keyword \code{"m3s"} or \code{"mmd"} for pre-defined pretty 
 #' discharge labels, or any other string which will be plotted unchanged.
-#' 
 #' @param col Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
-#' 
 #' @param lty Line type specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
-#'
 #' @param lwd Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
-#' 
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
+#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
 #' 
 #' @details
 #' \code{PlotDurationCurve} plots a duration curve with pretty formatting defaults. The function sets \code{\link{par}} parameters \code{tcl} and \code{mgp} 
@@ -49,19 +37,22 @@
 #' 
 #' @examples
 #' \dontrun{PlotDurationCurve(freq = myfreq, print.n.obs = T)}
-
+#' 
+#' @export
 
 
 PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend = FALSE, l.legend = NULL, ylim = NULL, 
                               xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue", lty = 1, lwd = 1, 
-                              mar = c(3, 3, 1, 1) + .1) {
+                              mar = c(3, 3, 1, 1) + .1, restore.par = FALSE) {
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar <- par("mar")
   par.xaxs <- par("xaxs")
   par.mgp <- par("mgp")
   par.tcl <- par("tcl")
-  on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl))
+  if (restore.par) {
+    on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl))
+  }
   
   # number of quantile series in freq
   nq <- ncol(freq) - 1

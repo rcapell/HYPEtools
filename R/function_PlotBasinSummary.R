@@ -1383,7 +1383,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
   } else {
     png(filename = paste0(filename, ".png"), width=wdth * 1.5, height = hght * 1.5, units = "in", res = 300, pointsize = 15)
     # close the file device on exit
-    on.exit(dev.off(), add = T)
+    on.exit(dev.off())
   }
   
   # layout definition

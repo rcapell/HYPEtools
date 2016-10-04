@@ -36,8 +36,8 @@
 #' are color-coded, and soil classes marked by a point symbol below each box. Box whiskers extend to the data extremes.
 #' 
 #' @return
-#' \code{BoxplotSLCClasses} invisibly returns a data frame of SLC class fractions with \code{0} values replaced by \code{NA}s. If absolute areas 
-#' are plotted, these are returned in the data frame.
+#' \code{BoxplotSLCClasses} returns a plot to the currently active plot device, and invisibly a data frame of SLC class fractions with \code{0} 
+#' values replaced by \code{NA}s. If absolute areas are plotted, these are returned in the data frame.
 #' 
 #' @note
 #' There is a maximum of 26 symbols available for marking soil classes. \code{BoxplotSLCClasses} can be quite crowded, depending on the number of SLCs 

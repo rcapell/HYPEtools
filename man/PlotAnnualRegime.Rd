@@ -8,7 +8,7 @@ PlotAnnualRegime(x, type = "mean", add.legend = FALSE, l.legend = NULL,
   log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{    
   -1 }, ")")), xlab = paste(format(attr(x, "period"), format = "\%Y"),
   collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1,
-  1) + 0.1)
+  1) + 0.1, restore.par = FALSE)
 }
 \arguments{
 \item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
@@ -41,6 +41,8 @@ series in \code{freq}.}
 series in \code{freq}.}
 
 \item{mar}{Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.}
+
+\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
 }
 \value{
 \code{PlotAnnualRegime} returns a plot to the currently active plot device.

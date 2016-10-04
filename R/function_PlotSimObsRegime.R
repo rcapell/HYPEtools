@@ -26,6 +26,7 @@
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label. Defaults to a measurement unit string taken from 
 #' \code{x} \code{\link{attribute}} \code{'unit'}.
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
+#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
 #' 
 #' @details 
 #' \code{PlotSimObsRegime} combines ribbons and box plot elements. Box plot elements are composed as defaults from \code{\link{boxplot}}, 
@@ -36,7 +37,8 @@
 #' For the observed variable, the aggregation is fixed to months, in order to aggregate enough values for each box plot element.
 #' 
 #' @return 
-#' \code{PlotSimObsRegime} invisibly returns a \code{\link{list}} object containing three elements with the plotted data and variable IDs. 
+#' \code{PlotSimObsRegime} returns a plot to the currently active plot device, and invisibly a \code{\link{list}} object containing three 
+#' elements with the plotted data and variable IDs. 
 #' Element \code{obs} contains a list as returned by \code{\link{AnnualRegime}}. Element \code{obs} contains a list with two elements, a 
 #' vector \code{refdate} with x positions of box plots elements, and a list \code{reg.obs} with observations for the monthly box plot elements. 
 #' Element \code{variable} contains a named vector with HYPE variable IDs for observations and simulations. \code{sim} and \code{obs} returned 
@@ -52,13 +54,22 @@
 
 
 PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.mon = 1, add.legend = TRUE, pos.legend = "topright", inset = 0, 
-                             l.legend = NULL, log = FALSE, ylim = NULL, xlab = NULL, ylab = NULL, mar = c(3, 3, 1, 1) + .1) {
+                             l.legend = NULL, log = FALSE, ylim = NULL, xlab = NULL, ylab = NULL, mar = c(3, 3, 1, 1) + .1, restore.par = FALSE) {
   
   ## check arguments and prepare data
   
   if (is.null(sim) && is.null(obs)) {
     stop("Provide at least one of 'sim' and 'obs'.")
   }
+  
+  # save current state of par() variables which are altered below, for restoring on function exit
+  par.mar <- par("mar")
+  par.mgp <- par("mgp")
+  par.tcl <- par("tcl")
+  if (restore.par) {
+    on.exit(par(mar = par.mar, mgp = par.mgp, tcl = par.tcl))
+  }
+  
   
   # make data frames of obs and sim variables if they exist in x _and_ contain data
   if (!is.null(sim)) {
@@ -175,7 +186,7 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   }
   
   # set plot parameters
-  par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0), tcl = .2)
+  par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0))
   
   # set up the plot region, but do not plot yet. Background grid will be plotted first
   if (!is.null(sim)) {

@@ -7,7 +7,7 @@
 PlotSimObsRegime(x, sim, obs, ts.in = NULL, ts.out = "month",
   start.mon = 1, add.legend = TRUE, pos.legend = "topright", inset = 0,
   l.legend = NULL, log = FALSE, ylim = NULL, xlab = NULL, ylab = NULL,
-  mar = c(3, 3, 1, 1) + 0.1)
+  mar = c(3, 3, 1, 1) + 0.1, restore.par = FALSE)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
@@ -45,9 +45,12 @@ time period on which the regime is based.}
 \code{x} \code{\link{attribute}} \code{'unit'}.}
 
 \item{mar}{Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.}
+
+\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
 }
 \value{
-\code{PlotSimObsRegime} invisibly returns a \code{\link{list}} object containing three elements with the plotted data and variable IDs. 
+\code{PlotSimObsRegime} returns a plot to the currently active plot device, and invisibly a \code{\link{list}} object containing three 
+elements with the plotted data and variable IDs. 
 Element \code{obs} contains a list as returned by \code{\link{AnnualRegime}}. Element \code{obs} contains a list with two elements, a 
 vector \code{refdate} with x positions of box plots elements, and a list \code{reg.obs} with observations for the monthly box plot elements. 
 Element \code{variable} contains a named vector with HYPE variable IDs for observations and simulations. \code{sim} and \code{obs} returned 

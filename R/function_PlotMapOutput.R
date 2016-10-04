@@ -41,6 +41,7 @@
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 #' In standard use cases of this function, plot margins do not need to be changed.
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.
+#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
 #' 
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
@@ -76,8 +77,8 @@
 #' specification see \code{inset} in \code{\link{legend}}. 
 #' 
 #' @return 
-#' \code{PlotMapOutput} invisibly returns an object of class \code{\link{SpatialPolygonsDataFrame}} as provided in argument 
-#' \code{map}, with plotted values and color codes added as columns in the data slot.
+#' \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}} 
+#' as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot.
 #' 
 #' @seealso 
 #' \code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for a similar plot function
@@ -95,7 +96,7 @@
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj = 0, plot.legend = T, 
                           legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0), 
                           col.ramp.fun = "auto", col.breaks = NULL, plot.scale = T, plot.arrow = T, 
-                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE) {
+                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE) {
   
   # input argument checks
   stopifnot(is.data.frame(x), dim(x)[2] == 2, class(map)=="SpatialPolygonsDataFrame", 
@@ -123,7 +124,9 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   par.lend <- par("lend")
   par.xpd <- par("xpd")
   par.cex0 <- par("cex")
-  on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex0))
+  if (restore.par) {
+    on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex0))
+  }
   
   # data preparation and conditional assignment of color ramp functions and break point vectors 
   # to internal variables crfun and cbrks

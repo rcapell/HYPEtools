@@ -8,7 +8,7 @@ PlotMapOutput(x, map, map.subid.column = 1, var.name = "", map.adj = 0,
   plot.legend = T, legend.pos = "right", legend.title = NULL,
   legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NULL,
   plot.scale = T, plot.arrow = T, par.cex = 1, par.mar = rep(0, 4) +
-  0.1, add = FALSE)
+  0.1, add = FALSE, restore.par = FALSE)
 }
 \arguments{
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
@@ -64,10 +64,12 @@ projected maps based on meter units, not geographical projections}
 In standard use cases of this function, plot margins do not need to be changed.}
 
 \item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
+
+\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
 }
 \value{
-\code{PlotMapOutput} invisibly returns an object of class \code{\link{SpatialPolygonsDataFrame}} as provided in argument 
-\code{map}, with plotted values and color codes added as columns in the data slot.
+\code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}} 
+as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot.
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables.
