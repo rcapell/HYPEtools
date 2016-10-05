@@ -7,10 +7,10 @@
 #' \code{EquallySpacedObs} creates equally spaced time series with missing observations from a data frame with irregular 
 #' observations.
 #' 
-#' @param x A \code{data.frame}, containing columns with observations and a datetime column in \code{\link{POSIXt}} or 
-#' \code{\link{Date}} format.
-#' @param sort.data Logical, if \code{TRUE}, \code{x} will be sorted by datetime.
-#' @param timestep Character string keyword, giving the target time step width. \code{"day"} or \code{"hour"} currently allowed.
+#' @param x A \code{data.frame}, with a date-time column in \code{\link{POSIXt}} or 
+#' \code{\link{Date}} format, and one or several columns with observed variables.
+#' @param sort.data Logical, if \code{TRUE}, \code{x} will be sorted by date-time.
+#' @param timestep Character string keyword, giving the target time step length. Either \code{"day"} or \code{"hour"}.
 #' @param ts.col Integer, column index of datetime column.
 #' 
 #' @details
@@ -39,8 +39,13 @@ EquallySpacedObs <- function(x, sort.data = TRUE, timestep, ts.col = 1) {
     stop("Datetime column neither of class 'POSIXt' nor of class 'Date'.")
   }
   
+  # check if there are NAs in the date-time column
+  if (any(is.na(x[, ts.col]))) {
+    stop("NAs in date-time column of 'x'.")
+  }
+  
   # check if there are any duplicated dates in x or y
-  if (anyDuplicated(x[, ts.col])) {
+  if (any(duplicated(x[, ts.col]))) {
     stop("Duplicated dates in 'x'.")
   }
   
