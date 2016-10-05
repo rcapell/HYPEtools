@@ -274,6 +274,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
   ## Q axis limits for conc-Q plots
   if(exi.t["cout"]) {
     lim.q <- range(cout, na.rm = T)
+    # change lower limit to >0 if log-scale
+    if (log && lim.q[1] <= 0) {
+      lim.q[1] <- min(cout[cout > 0])
+    }
   }
   
   ## parse plot commands based on existing or requested HYPE variables to a list
@@ -461,6 +465,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.tn <- range(c(retn, cctn), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.tn[1] <= 0) {
+            lim.tn[1] <- min(c(retn, cctn)[c(retn, cctn) > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -475,6 +483,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.tn <- range(retn, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.tn[1] <= 0) {
+            lim.tn[1] <- min(retn[retn > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -487,6 +499,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.tn <- range(cctn, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.tn[1] <= 0) {
+            lim.tn[1] <- min(cctn[cctn > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -579,6 +595,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.in <- range(c(rein, ccin), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.in[1] <= 0) {
+            lim.in[1] <- min(c(rein, ccin)[c(rein, ccin) > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -593,6 +613,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.in <- range(rein, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.in[1] <= 0) {
+            lim.in[1] <- min(rein[rein > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -605,6 +629,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.in <- range(ccin, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.in[1] <= 0) {
+            lim.in[1] <- min(ccin[ccin > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -697,6 +725,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.on <- range(c(reon, ccon), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.on[1] <= 0) {
+            lim.on[1] <- min(c(reon, ccon)[c(reon, ccon) > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -711,6 +743,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.on <- range(reon, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.on[1] <= 0) {
+            lim.on[1] <- min(reon[reon > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -723,6 +759,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.on <- range(ccon, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.on[1] <= 0) {
+            lim.on[1] <- min(ccon[ccon > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -813,6 +853,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.intn <- range(c(reintn, ccintn), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.intn[1] <= 0) {
+            lim.intn[1] <- mintn(c(reintn, ccintn)[c(reintn, ccintn) > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -827,6 +871,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.intn <- range(reintn, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.intn[1] <= 0) {
+            lim.intn[1] <- mintn(reintn[reintn > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -839,6 +887,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.intn <- range(ccintn, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.intn[1] <= 0) {
+            lim.intn[1] <- mintn(ccintn[ccintn > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -931,6 +983,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.tp <- range(c(retp, cctp), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.tp[1] <= 0) {
+            lim.tp[1] <- mtp(c(retp, cctp)[c(retp, cctp) > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -945,6 +1001,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.tp <- range(retp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.tp[1] <= 0) {
+            lim.tp[1] <- mtp(retp[retp > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -957,6 +1017,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.tp <- range(cctp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.tp[1] <= 0) {
+            lim.tp[1] <- mtp(cctp[cctp > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1049,6 +1113,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.sp <- range(c(resp, ccsp), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.sp[1] <= 0) {
+            lim.sp[1] <- msp(c(resp, ccsp)[c(resp, ccsp) > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1063,6 +1131,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.sp <- range(resp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.sp[1] <= 0) {
+            lim.sp[1] <- msp(resp[resp > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1075,6 +1147,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.sp <- range(ccsp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.sp[1] <= 0) {
+            lim.sp[1] <- msp(ccsp[ccsp > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1167,6 +1243,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.pp <- range(c(repp, ccpp), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.pp[1] <= 0) {
+            lim.pp[1] <- mpp(c(repp, ccpp)[c(repp, ccpp) > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1181,6 +1261,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.pp <- range(repp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.pp[1] <= 0) {
+            lim.pp[1] <- mpp(repp[repp > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1193,6 +1277,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.pp <- range(ccpp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.pp[1] <= 0) {
+            lim.pp[1] <- mpp(ccpp[ccpp > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1283,6 +1371,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.sptp <- range(c(resptp, ccsptp), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.sptp[1] <= 0) {
+            lim.sptp[1] <- msptp(c(resptp, ccsptp)[c(resptp, ccsptp) > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1297,6 +1389,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.sptp <- range(resptp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.sptp[1] <= 0) {
+            lim.sptp[1] <- msptp(resptp[resptp > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1309,6 +1405,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           
           # calculate y axis limits
           lim.sptp <- range(ccsptp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.sptp[1] <= 0) {
+            lim.sptp[1] <- msptp(ccsptp[ccsptp > 0])
+          }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
