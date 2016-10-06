@@ -1,0 +1,90 @@
+
+#' Calculate groundwater retention of nutrients
+#' 
+#' Function to calculate fraction of nutrient load retention in groundwater parts of HYPE, i.e. after roozone retention. See Details for 
+#' exact definition.
+#' 
+#' @param nfrz Data frame with two-columns. Sub-basin IDs in first column, net loads from root zone in kg/year in second column. Typically an 
+#' imported HYPE map output file. See Details. 
+#' @param gts3 Data frame with two-columns. Sub-basin IDs in first column, gross loads to soil layer 3 in kg/year in second column. 
+#' Typically an imported HYPE map output file. See Details. 
+#' @param nfs3 Data frame with two-columns. Sub-basin IDs in first column, net loads from soil layer 3 in kg/year in second column. 
+#' Typically an imported HYPE map output file. See Details. 
+#' @param gd Data frame, with columns containing sub-basin IDs and rural household emissions, e.g. an imported 'GeoData.txt' file. 
+#' See details. 
+#' @param par List, HYPE parameter list, typically an imported 'par.txt' file. Must contain parameter \emph{locsoil} (not case-sensitive). 
+#' @param nutrient Character keyword, one of the HYPE-modelled nutrient groups, for which to calculate groundwater retention. Not 
+#' case-sensitive. \emph{Currently, only \code{tn} {total nitrogen} is implemented.}
+#' 
+#' @details 
+#' \code{GwRetention} calculates a groundwater nutrient retention as fractions of outgoing and incoming loads using HYPE soil load variables. Incoming loads  
+#' include drainage into layer 3 from the root zone (defined as soil layer 1 and 2), rural load fractions into soil (dependent on parameter \emph{locsoil}), 
+#' tile drainage, surface flow, and flow from layer 1 and 2. Outgoing loads include runoff from all soil layers, tile drain, and surface flow.
+#' 
+#' The retention fraction \emph{R} is calculated as (see also the 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_model_description:hype_np_soil#diagnostic_output_variables_of_soil_nutrients}{variable description in the HYPE online documentation}):
+#' 
+#' \eqn{R = 1 - \frac{OUT}{IN} = 1 - \frac{nfrz - gts3 + nfs3 + locsoil * lr}{nfrz + locsoil * lr}}{R = 1 - OUT/IN = 1 - (nfrz - gts3 + nfs3 + locsoil * lr)/(nfrz + locsoil * lr)} [-]
+#'
+#'  \eqn{lr = LOC_VOL * LOC_TN * 0.365} [kg/y]
+#' 
+#' , where \emph{lr} is rural load into soil layer 3, and \emph{nfrz}, \emph{gts3}, \emph{nfs3} are soil loads as in function arguments described above.
+#' See Examples for HYPE variable names for \code{TN} loads.
+#' 
+#' Columns \code{SUBID}, \code{LOC_VOL}, and code{LOC_TN} must be present in \code{gd}, for a description of column contents see the
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData file description in the HYPE online documentation}. 
+#' Column names are not case-sensitive. 
+#' 
+#' @return 
+#' \code{GwRetention} returns a two-column data frame, with SUBIDs and retention in groundwater (kg/y).
+#' 
+#' @examples
+#' \dontrun{
+#' # HYPE soil load (sl) variables for TN
+#' GwRetention(nfrz = sl06, gts3 = sl17, nfs3 = sl18, gd = mygd, par = mypar)}
+#' 
+#' @export
+
+
+GwRetention <- function(nfrz, nfs3, gts3, gd, par, nutrient = "tn") {
+  
+  # input checks
+  if (tolower(nutrient) == "tn") {
+    loc_c <- "loc_tn"
+  } else {
+    stop("Unknown 'substance' keyword.")
+  }
+  
+  if(!all(nrow(gd) == c(nrow(nfrz), nrow(nfs3), nrow(gts3)))) {
+    warning("Different number of SUBIDs in input arguments.")
+  }
+  
+  
+  # extract relevant columns from geodata
+  rural <- tryCatch(gd[, match(c("subid", "loc_vol", loc_c), tolower(colnames(gd)))], error = function(e) {NULL})
+  # check that all were found
+  if (is.null(rural)) {
+    stop("Missing column(s) in 'gd'.")
+  }
+  
+  # calculate rural load in kg/y
+  rural <- data.frame(rural, lr = rural[, 2] * rural[, 3] * 0.365)
+  
+  # get locsoil from par
+  locsoil <- tryCatch(par[[which(tolower(names(par)) == "locsoil")]], error = function(e) {NULL})
+  # check that it was found
+  if (is.null(locsoil)) {
+    stop("Missing parameter LOCSOIL in 'par'.")
+  }
+  
+  # merge all soil load inputs with rural loads
+  loads <- merge(rural[, -c(2:3)], nfrz, by = 1, all = FALSE, sort = FALSE)
+  loads <- merge(loads, nfs3, by = 1, all = FALSE, sort = FALSE)
+  loads <- merge(loads, gts3, by = 1, all = FALSE, sort = FALSE)
+  names(loads)[3:5] <- c("nfrz", "nfs3", "gts3")
+  
+  # calculate groundwater retention
+  retention <- data.frame(SUBID = loads[, 1], ret.gw = with(loads, 1 - (nfrz - gts3 + nfs3 + locsoil * lr)/(nfrz + locsoil * lr)))
+  
+  return(retention)
+}

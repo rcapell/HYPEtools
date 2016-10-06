@@ -7,12 +7,12 @@
 EquallySpacedObs(x, sort.data = TRUE, timestep, ts.col = 1)
 }
 \arguments{
-\item{x}{A \code{data.frame}, containing columns with observations and a datetime column in \code{\link{POSIXt}} or 
-\code{\link{Date}} format.}
+\item{x}{A \code{data.frame}, with a date-time column in \code{\link{POSIXt}} or 
+\code{\link{Date}} format, and one or several columns with observed variables.}
 
-\item{sort.data}{Logical, if \code{TRUE}, \code{x} will be sorted by datetime.}
+\item{sort.data}{Logical, if \code{TRUE}, \code{x} will be sorted by date-time.}
 
-\item{timestep}{Character string keyword, giving the target time step width. \code{"day"} or \code{"hour"} currently allowed.}
+\item{timestep}{Character string keyword, giving the target time step length. Either \code{"day"} or \code{"hour"}.}
 
 \item{ts.col}{Integer, column index of datetime column.}
 }
