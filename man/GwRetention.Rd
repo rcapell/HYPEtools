@@ -25,7 +25,8 @@ See details.}
 case-sensitive. \emph{Currently, only \code{tn} {total nitrogen} is implemented.}}
 }
 \value{
-\code{GwRetention} returns a two-column data frame, with SUBIDs and retention in groundwater (kg/y).
+\code{GwRetention} returns a two-column data frame, with SUBIDs and retention in groundwater as a fraction of incoming loads. 
+If multiplied by 100, it becomes %.
 }
 \description{
 Function to calculate fraction of nutrient load retention in groundwater parts of HYPE, i.e. after roozone retention. See Details for 
@@ -43,8 +44,8 @@ The retention fraction \emph{R} is calculated as (see also the
 
  \eqn{lr = LOC_VOL * LOC_TN * 0.365} [kg/y]
 
-, where \emph{lr} is rural load into soil layer 3, and \emph{nfrz}, \emph{gts3}, \emph{nfs3} are soil loads as in function arguments described above.
-See Examples for HYPE variable names for \code{TN} loads.
+, where \emph{lr} is rural load (total from geodata converted to kg/yr; \emph{locsoil} in the formula converts it to rural load into soil layer 3), and 
+\emph{nfrz}, \emph{gts3}, \emph{nfs3} are soil loads as in function arguments described above. See Examples for HYPE variable names for \code{TN} loads.
 
 Columns \code{SUBID}, \code{LOC_VOL}, and code{LOC_TN} must be present in \code{gd}, for a description of column contents see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData file description in the HYPE online documentation}. 
