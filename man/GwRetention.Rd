@@ -29,7 +29,7 @@ case-sensitive. \emph{Currently, only \code{tn} {total nitrogen} is implemented.
 If multiplied by 100, it becomes %.
 }
 \description{
-Function to calculate fraction of nutrient load retention in groundwater parts of HYPE, i.e. after roozone retention. See Details for 
+Function to calculate nutrient load retention fractions in groundwater parts of HYPE, i.e. after rootzone retention. See Details for 
 exact definition.
 }
 \details{

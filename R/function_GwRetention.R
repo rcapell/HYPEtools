@@ -1,7 +1,7 @@
 
 #' Calculate groundwater retention of nutrients
 #' 
-#' Function to calculate fraction of nutrient load retention in groundwater parts of HYPE, i.e. after roozone retention. See Details for 
+#' Function to calculate nutrient load retention fractions in groundwater parts of HYPE, i.e. after rootzone retention. See Details for 
 #' exact definition.
 #' 
 #' @param nfrz Data frame with two-columns. Sub-basin IDs in first column, net loads from root zone in kg/year in second column. Typically an 

@@ -467,7 +467,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.tn <- range(c(retn, cctn), na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.tn[1] <= 0) {
-            lim.tn[1] <- min(c(retn, cctn)[c(retn, cctn) > 0])
+            lim.tn[1] <- min(c(retn, cctn)[c(retn, cctn) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.tn))) {
+              lim.tn <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -485,7 +489,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.tn <- range(retn, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.tn[1] <= 0) {
-            lim.tn[1] <- min(retn[retn > 0])
+            lim.tn[1] <- min(retn[retn > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.tn))) {
+              lim.tn <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -501,7 +509,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.tn <- range(cctn, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.tn[1] <= 0) {
-            lim.tn[1] <- min(cctn[cctn > 0])
+            lim.tn[1] <- min(cctn[cctn > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.tn))) {
+              lim.tn <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -597,7 +609,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.in <- range(c(rein, ccin), na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.in[1] <= 0) {
-            lim.in[1] <- min(c(rein, ccin)[c(rein, ccin) > 0])
+            lim.in[1] <- min(c(rein, ccin)[c(rein, ccin) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.in))) {
+              lim.in <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -615,7 +631,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.in <- range(rein, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.in[1] <= 0) {
-            lim.in[1] <- min(rein[rein > 0])
+            lim.in[1] <- min(rein[rein > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.in))) {
+              lim.in <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -631,7 +651,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.in <- range(ccin, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.in[1] <= 0) {
-            lim.in[1] <- min(ccin[ccin > 0])
+            lim.in[1] <- min(ccin[ccin > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.in))) {
+              lim.in <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -727,7 +751,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.on <- range(c(reon, ccon), na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.on[1] <= 0) {
-            lim.on[1] <- min(c(reon, ccon)[c(reon, ccon) > 0])
+            lim.on[1] <- min(c(reon, ccon)[c(reon, ccon) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.on))) {
+              lim.on <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -745,7 +773,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.on <- range(reon, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.on[1] <= 0) {
-            lim.on[1] <- min(reon[reon > 0])
+            lim.on[1] <- min(reon[reon > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.on))) {
+              lim.on <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -761,7 +793,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.on <- range(ccon, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.on[1] <= 0) {
-            lim.on[1] <- min(ccon[ccon > 0])
+            lim.on[1] <- min(ccon[ccon > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.on))) {
+              lim.on <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -855,7 +891,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.intn <- range(c(reintn, ccintn), na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.intn[1] <= 0) {
-            lim.intn[1] <- mintn(c(reintn, ccintn)[c(reintn, ccintn) > 0])
+            lim.intn[1] <- min(c(reintn, ccintn)[c(reintn, ccintn) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.intn))) {
+              lim.intn <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -873,7 +913,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.intn <- range(reintn, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.intn[1] <= 0) {
-            lim.intn[1] <- mintn(reintn[reintn > 0])
+            lim.intn[1] <- min(reintn[reintn > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.intn))) {
+              lim.intn <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -889,7 +933,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.intn <- range(ccintn, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.intn[1] <= 0) {
-            lim.intn[1] <- mintn(ccintn[ccintn > 0])
+            lim.intn[1] <- min(ccintn[ccintn > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.intn))) {
+              lim.intn <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -985,7 +1033,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.tp <- range(c(retp, cctp), na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.tp[1] <= 0) {
-            lim.tp[1] <- mtp(c(retp, cctp)[c(retp, cctp) > 0])
+            lim.tp[1] <- min(c(retp, cctp)[c(retp, cctp) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.tp))) {
+              lim.tp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1003,7 +1055,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.tp <- range(retp, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.tp[1] <= 0) {
-            lim.tp[1] <- mtp(retp[retp > 0])
+            lim.tp[1] <- min(retp[retp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.tp))) {
+              lim.tp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1019,7 +1075,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.tp <- range(cctp, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.tp[1] <= 0) {
-            lim.tp[1] <- mtp(cctp[cctp > 0])
+            lim.tp[1] <- min(cctp[cctp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.tp))) {
+              lim.tp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1115,7 +1175,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.sp <- range(c(resp, ccsp), na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.sp[1] <= 0) {
-            lim.sp[1] <- msp(c(resp, ccsp)[c(resp, ccsp) > 0])
+            lim.sp[1] <- min(c(resp, ccsp)[c(resp, ccsp) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.sp))) {
+              lim.sp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1133,7 +1197,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.sp <- range(resp, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.sp[1] <= 0) {
-            lim.sp[1] <- msp(resp[resp > 0])
+            lim.sp[1] <- min(resp[resp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.sp))) {
+              lim.sp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1149,7 +1217,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.sp <- range(ccsp, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.sp[1] <= 0) {
-            lim.sp[1] <- msp(ccsp[ccsp > 0])
+            lim.sp[1] <- min(ccsp[ccsp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.sp))) {
+              lim.sp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1245,8 +1317,13 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.pp <- range(c(repp, ccpp), na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- mpp(c(repp, ccpp)[c(repp, ccpp) > 0])
+            lim.pp[1] <- min(c(repp, ccpp)[c(repp, ccpp) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.pp))) {
+              lim.pp <- rep(0, 2)
+            }
           }
+          
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1263,7 +1340,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.pp <- range(repp, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- mpp(repp[repp > 0])
+            lim.pp[1] <- min(repp[repp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.pp))) {
+              lim.pp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1279,7 +1360,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.pp <- range(ccpp, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- mpp(ccpp[ccpp > 0])
+            lim.pp[1] <- min(ccpp[ccpp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.pp))) {
+              lim.pp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1373,7 +1458,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.sptp <- range(c(resptp, ccsptp), na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.sptp[1] <= 0) {
-            lim.sptp[1] <- msptp(c(resptp, ccsptp)[c(resptp, ccsptp) > 0])
+            lim.sptp[1] <- min(c(resptp, ccsptp)[c(resptp, ccsptp) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.sptp))) {
+              lim.sptp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1391,7 +1480,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.sptp <- range(resptp, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.sptp[1] <= 0) {
-            lim.sptp[1] <- msptp(resptp[resptp > 0])
+            lim.sptp[1] <- min(resptp[resptp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.sptp))) {
+              lim.sptp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
@@ -1407,7 +1500,11 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
           lim.sptp <- range(ccsptp, na.rm = T)
           # change lower limit to >0 if log-scale
           if (log && lim.sptp[1] <= 0) {
-            lim.sptp[1] <- msptp(ccsptp[ccsptp > 0])
+            lim.sptp[1] <- min(ccsptp[ccsptp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.sptp))) {
+              lim.sptp <- rep(0, 2)
+            }
           }
           
           cp <- cp + 1
