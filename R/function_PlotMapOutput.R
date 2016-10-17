@@ -107,7 +107,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
     col.breaks <- range(x[, 2], na.rm = T)
     warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
   }
-  if (!is.null(col.breaks) && (min(col.breaks) >= min(x[, 2], na.rm = T) || max(col.breaks) <= max(x[, 2], na.rm = T))) {
+  if (!is.null(col.breaks) && (min(col.breaks) > min(x[, 2], na.rm = T) || max(col.breaks) < max(x[, 2], na.rm = T))) {
     warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2]. 
             Areas outside range will be excluded from plot.")
   }
