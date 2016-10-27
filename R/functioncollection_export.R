@@ -12,6 +12,7 @@
 #     - HypeDataImport:
 #         WriteAquiferData(), WriteBranchData(), WriteCropData(), WriteDamData(), WriteLakeData(), WriteMgmtData(), 
 #         WritePointSourceData()
+#     - WriteOptpar()
 #     - 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
@@ -20,11 +21,8 @@
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write a 'par.txt' File
 #'
-#' @description
 #' \code{WritePar} prints its required argument \code{x} to a file.
 #' 
 #' @param x The object to be written, a list with named vector elements, as an object returned from \code{\link{ReadPar}}.
@@ -39,7 +37,7 @@
 #' @examples
 #' \dontrun{WritePar(mypar)}
 #' 
-
+#' @export
 
 
 WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
@@ -837,5 +835,53 @@ WritePointSourceData <- function(x, filename = "PointSourceData.txt", digits = 1
   # export
   write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
               quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+}
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteOptpar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' Write an 'optpar.txt' File
+#'
+#' \code{WriteOptpar} prints a HYPE parameter optimisation list to a file.
+#' 
+#' @param x The object to be written, a list with named elements, as an object returned from \code{\link{ReadOptpar}}.
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#' @param digits Integer, number of significant digits to export. See \code{\link{format}}.
+#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+#' 
+#' @details
+#' \code{WriteOptpar} writes an 'optpar.txt' file, typically originating from an imported and modified 'optpar.txt'.
+#' 
+#' @examples
+#' \dontrun{WriteOptpar(myoptpar)}
+#' 
+#' @export
+
+
+WriteOptpar <- function (x, filename = "optpar.txt", digits = 10, nsmall = 1) {
+  
+  # convert all data frames in x$pars to lists of vectors and then flatten list of lists to list with vector elements
+  px <- unlist(lapply(x$pars, as.list), recursive = FALSE)
+  # format list contents to avoid scientific format in output
+  px <- sapply(px, format, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T, justify = "none")
+  # add parameter names in first position of vector elements
+  px <- sapply(1:length(px), function(x, y, z) {c(y[x], z[[x]])}, y = rep(names(x$pars), each = 3), z = px)
+  
+  # create and open file device
+  out <- file(description = filename, open = "w")
+  # write comment row
+  writeLines(text = x$comment, con = out)
+  # write optimisation settings
+  write(apply(x$tasks, 1, paste, collapse = "\t"), file = out)
+  # write parameter ranges
+  write(sapply(px, paste, collapse = "\t"), file = out)
+  close(out)
+  
 }
 

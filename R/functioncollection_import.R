@@ -1137,7 +1137,7 @@ ReadAllsim <- function(filename = "allsim.txt") {
 ReadOptpar <- function(filename) {
   
   # read tasks and settings into a character vector (one string per row in file)
-  tasks <- scan(filename, what = "", sep = "\n", nlines = 21)
+  tasks <- scan(filename, what = "", sep = "\n", nlines = 21, quiet = TRUE)
   # split string elements along whitespaces, returns list of character vectors
   tasks <- strsplit(tasks, split = "[[:space:]]+")
   # re-merge and separate first-row comment string
@@ -1145,11 +1145,12 @@ ReadOptpar <- function(filename) {
   #remove comment from tasks
   tasks <- tasks[-1]
   # convert tasks and settings to two-column dataframe (they are always combinations of single key single value)
-  tasks <- do.call(rbind.data.frame, tasks)
+  te <- function(x) {rbind.data.frame(x, stringsAsFactors = FALSE)}
+  tasks <- do.call(rbind.data.frame, c(tasks, stringsAsFactors = FALSE))
   names(tasks) <- c("key", "value")
   
   # read parameters
-  x <- scan(filename, what = "", sep = "\n", skip = 21)
+  x <- scan(filename, what = "", sep = "\n", skip = 21, quiet = TRUE)
   x <- strsplit(x, split = "[[:space:]]+")
   # assign first vector elements as list element names and convert to lower-case (as standardisation)
   names(x) <- sapply(x, `[[`, 1)
@@ -1172,7 +1173,7 @@ ReadOptpar <- function(filename) {
     calib[[i]] <- which(pars[[i]][, 1] - pars[[i]][, 2] != 0)
     names(calib)[i] <- names(pars)[i]
   }
-  return(list(comment = comm, tasks, pars, calib))
+  return(list(comment = comm, tasks = tasks, pars = pars, calib = calib))
 }
 
 
