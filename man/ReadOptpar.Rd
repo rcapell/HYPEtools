@@ -10,16 +10,13 @@ ReadOptpar(filename)
 \item{filename}{Path to and file name of the 'optpar.txt' file to import.}
 }
 \value{
-\code{ReadOptpar} returns a \code{\link{list}} object with four elements: \itemize{ 
+\code{ReadOptpar} returns a \code{\link{list}} object with three elements: \itemize{ 
 \item \code{comment}, the file's first-row comment string.
 \item \code{tasks}, a two-column dataframe with row-wise key-value pairs for tasks and settings.
 \item \code{pars}, a list of dataframes, each containing values for one parameter. Three columns each, holding parameter 
 range minima, maxima, and intervals. 
 The number of rows in each dataframe corresponds to the number of soil or land use classes for class-specific parameters. 
 Parameter names as list element names.
-\item \code{calib}, a list of vectors with (soil or land use) class numbers of parameters included in calibration (parameters 
-with identical min and max values are omitted in calibration, but need to be specified in optpar files). Parameter names 
-as list element names.
 }
 }
 \description{

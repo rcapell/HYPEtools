@@ -4,13 +4,42 @@
 \alias{CreateOptpar}
 \title{Create an optpar list}
 \usage{
-CreateOptpar(x, pars, tasks, comment = "")
+CreateOptpar(x, pars, tasks = data.frame(character(), character()),
+  comment = "")
 }
 \arguments{
 \item{x}{a list with named vector elements, as an object returned from \code{\link{ReadPar}}.}
+
+\item{pars}{Character vector with HYPE parameter names to be included in optpar list. Parameters must 
+exist in \code{x}. Not case-sensitive. For a complete list of HYPE parameters, see the
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:par.txt}{par.txt online documentation}.}
+
+\item{tasks}{Data frame with two columns providing optimisation tasks and settings (key-value pairs) as 
+described in the
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
+Defaults to an empty task section.}
+
+\item{comment}{Character string, comment (first row in optpar.txt file).}
+}
+\value{
+The function returns a list with elements as described in \code{\link{ReadOptpar}}.
 }
 \description{
 \code{CreateOptpar} creates a list representing a HYPE optpar.txt file from an imported par.txt file 
 and a selection of parameters.
+}
+\details{
+\code{CreateOptpar} makes it a bit more convenient to compose a HYPE optimisation file. The function creates a template 
+with all parameters to be included in an optimisation run. Parameter boundaries for individual classes have to be adapted 
+after creation of the template.
+}
+\examples{
+\dontrun{
+mytasks <- data.frame(key = c("task", "num_mc", "task"), value = c("MC", 1000, "WS"))
+CreateOptpar(x = mypar, pars = c("rrcs1", "rrcs2"), tasks = mytasks)}
+
+}
+\seealso{
+\code{\link{ReadOptpar}} \code{\link{WriteOptpar}} \code{\link{OptimisedClasses}}
 }
 

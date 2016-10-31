@@ -1,0 +1,32 @@
+
+#' Get optimised classes from an imported optpar.txt file
+#' 
+#' \code{OptimisedClasses} checks which classes (land use or soil) of parameters in an imported optpar list are actually 
+#' optimised, i.e. have a min/max range larger than zero.
+#' 
+#' @param x list with named elements, as an object returned from \code{\link{ReadOptpar}}. 
+#' 
+#' @details 
+#' \code{OptimisedClasses} allows to quickly check which classes of parameters in an optpar.txt file are actually optimised 
+#' during a HYPE otimisation run. The function compares min and max values in the \code{pars} element of an imported HYPE 
+#' optpar.txt file to identify those.
+#' 
+#' @return 
+#' \code{OptimisedClasses} returns a named list with one vector element for each parameter found in \code{x}. List element 
+#' names are HYPE parameter names. Each vector contains the optimised class numbers for the respective parameter.
+#' 
+#' \item \code{calib}, a list of vectors with (soil or land use) class numbers of parameters included in calibration (parameters 
+#' with identical min and max values are omitted in calibration, but need to be specified in optpar files). Parameter names 
+#' as list element names.
+
+OptimisedClasses <- function(x) {
+  
+  # extract calibrated classes (as vector of class number per parameter)
+  calib <- list()
+  for (i in 1:length(x$pars)) {
+    calib[[i]] <- which(x$pars[[i]][, 1] - x$pars[[i]][, 2] != 0)
+    names(calib)[i] <- names(x$pars)[i]
+  }
+  
+  return(calib)
+}

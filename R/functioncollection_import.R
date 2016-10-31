@@ -1115,16 +1115,13 @@ ReadAllsim <- function(filename = "allsim.txt") {
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' 
 #' @return 
-#' \code{ReadOptpar} returns a \code{\link{list}} object with four elements: \itemize{ 
+#' \code{ReadOptpar} returns a \code{\link{list}} object with three elements: \itemize{ 
 #' \item \code{comment}, the file's first-row comment string.
 #' \item \code{tasks}, a two-column dataframe with row-wise key-value pairs for tasks and settings.
 #' \item \code{pars}, a list of dataframes, each containing values for one parameter. Three columns each, holding parameter 
 #' range minima, maxima, and intervals. 
 #' The number of rows in each dataframe corresponds to the number of soil or land use classes for class-specific parameters. 
 #' Parameter names as list element names.
-#' \item \code{calib}, a list of vectors with (soil or land use) class numbers of parameters included in calibration (parameters 
-#' with identical min and max values are omitted in calibration, but need to be specified in optpar files). Parameter names 
-#' as list element names.
 #' }
 #' 
 #' @seealso \code{\link{ReadPar}}
@@ -1167,13 +1164,8 @@ ReadOptpar <- function(filename) {
     pars[[j]] <- data.frame(min = x[[i]], max = x[[i + 1]], ival = x[[i + 2]])
     names(pars)[j] <- names(x)[i]
   }
-  # extract calibrated classes (as vector of class number per parameter)
-  calib <- list()
-  for (i in 1:length(pars)) {
-    calib[[i]] <- which(pars[[i]][, 1] - pars[[i]][, 2] != 0)
-    names(calib)[i] <- names(pars)[i]
-  }
-  return(list(comment = comm, tasks = tasks, pars = pars, calib = calib))
+  
+  return(list(comment = comm, tasks = tasks, pars = pars))
 }
 
 

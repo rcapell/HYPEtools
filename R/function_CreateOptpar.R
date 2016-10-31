@@ -4,13 +4,38 @@
 #' \code{CreateOptpar} creates a list representing a HYPE optpar.txt file from an imported par.txt file 
 #' and a selection of parameters.
 #' 
-#' @param x a list with named vector elements, as an object returned from \code{\link{ReadPar}}.
+#' @param x a list with named vector elements, as an object returned from \code{\link{ReadPar}}. 
+#' @param pars Character vector with HYPE parameter names to be included in optpar list. Parameters must 
+#' exist in \code{x}. Not case-sensitive. For a complete list of HYPE parameters, see the
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:par.txt}{par.txt online documentation}. 
+#' @param tasks Data frame with two columns providing optimisation tasks and settings (key-value pairs) as 
+#' described in the
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
+#' Defaults to an empty task section.
+#' @param comment Character string, comment (first row in optpar.txt file).
 #' 
+#' @details 
+#' \code{CreateOptpar} makes it a bit more convenient to compose a HYPE optimisation file. The function creates a template 
+#' with all parameters to be included in an optimisation run. Parameter boundaries for individual classes have to be adapted 
+#' after creation of the template.
+#' 
+#' @return 
+#' The function returns a list with elements as described in \code{\link{ReadOptpar}}.
+#' 
+#' @seealso 
+#' \code{\link{ReadOptpar}} \code{\link{WriteOptpar}} \code{\link{OptimisedClasses}} 
+#' 
+#' @examples
+#' \dontrun{
+#' mytasks <- data.frame(key = c("task", "num_mc", "task"), value = c("MC", 1000, "WS"))
+#' CreateOptpar(x = mypar, pars = c("rrcs1", "rrcs2"), tasks = mytasks)}
+#' 
+#' @export
 
-CreateOptpar <- function(x, pars, tasks, comment = "") {
+CreateOptpar <- function(x, pars, tasks = data.frame(character(), character()), comment = "") {
   
-  # check existense of pars in x
-  te <- pars %in% names(x)
+  # convert parameter names check existense of pars in x
+  te <- tolower(pars) %in% tolower(names(x))
   if (!all(te)) {
     stop(paste0("Parameter(s) '", paste(pars[!te], collapse = "', '"), "' missing in 'x'."))
   }
@@ -23,12 +48,21 @@ CreateOptpar <- function(x, pars, tasks, comment = "") {
     stop("Too many elements in argument 'tasks'. Maximum number of tasks and settings = 20.")
   }
   
-  # fill tasks with empty rows
+  # fill tasks with empty rows and add header
+  nrt <- nrow(tasks)
+  if (nrt < 20) {
+    # create and name empty task rows (identical names required for rbind)
+    etr <- data.frame(rep("", 20 - nrt), rep("", 20 - nrt))
+    names(etr) <- names(tasks)
+    # combine with user-provided task rows
+    tasks <- rbind(tasks, etr)
+  }
   
   # extract parameter from x
-  pr <- x[names(x) %in% pars]
+  pr <- x[tolower(names(x)) %in% tolower(pars)]
   
   # create par list with data frame elements (as in Optpar lists)
   prs <- lapply(pr, function(x) {data.frame(min = x, max = x, ival = 10^floor(log10(x/1000)))})
   
+  return(list(comment = comment, tasks = tasks, pars = prs))
 }
