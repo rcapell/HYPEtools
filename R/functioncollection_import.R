@@ -471,9 +471,6 @@ ReadPar <- function (filename = "par.txt") {
       res[[j]] <- x[[i]][1:(te[[i]][1] - 1)]
       # update result name
       names(res)[j] <- names(x)[i]
-      j <- j + 1# copy comment to new result row
-      res[[j]] <- x[[i]][(te[[i]][1] + 1):length(x[[i]])]
-      names(res)[j] <- "!!"
       j <- j + 1
     } else {
       res[[j]] <- x[[i]]
