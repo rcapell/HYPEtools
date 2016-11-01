@@ -8,16 +8,16 @@
 #' 
 #' @details 
 #' \code{OptimisedClasses} allows to quickly check which classes of parameters in an optpar.txt file are actually optimised 
-#' during a HYPE otimisation run. The function compares min and max values in the \code{pars} element of an imported HYPE 
+#' during a HYPE optimisation run. The function compares min and max values in the \code{pars} element of an imported HYPE 
 #' optpar.txt file to identify those.
 #' 
 #' @return 
 #' \code{OptimisedClasses} returns a named list with one vector element for each parameter found in \code{x}. List element 
 #' names are HYPE parameter names. Each vector contains the optimised class numbers for the respective parameter.
 #' 
-#' \item \code{calib}, a list of vectors with (soil or land use) class numbers of parameters included in calibration (parameters 
-#' with identical min and max values are omitted in calibration, but need to be specified in optpar files). Parameter names 
-#' as list element names.
+#' \dontrun{OptimisedClasses(myoptpar)}
+#' 
+#' @export
 
 OptimisedClasses <- function(x) {
   

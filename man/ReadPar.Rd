@@ -11,14 +11,16 @@ ReadPar(filename = "par.txt")
 Paths are separated by '/', not '\\'.}
 }
 \value{
-\code{ReadPar} returns a list with one vector for each row in 'par.txt'. HYPE parameter names (first entries in 'par.txt') 
-are returned as vector names.
+\code{ReadPar} returns a list of named vectors. Parameters are returned as numeric vectors with HYPE parameter names as list 
+element names. Comments are returned in separate list elements as single character strings, former inline comments are moved 
+to elements preceding the original comment position (i.e. to a line above in the par.txt file structure). Comment elements are 
+named \code{`!!`}.
 }
 \description{
 Import a HYPE parameter file as list into R.
 }
 \details{
-\code{ReadPar} does not check for comment lines in 'par.txt' files, the file structure is imported unchanged.
+\code{ReadPar} checks for inline comments in 'par.txt' files, these are moved to separate "lines" (list elements).
 }
 \examples{
 \dontrun{ReadPar("par.txt")}

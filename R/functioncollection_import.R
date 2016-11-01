@@ -417,43 +417,73 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Read a 'par.txt' file
 #'
-#' @description
 #' Import a HYPE parameter file as list into R.
 #' 
 #' @param filename Path to and file name of the parameter file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #'  
 #' @details
-#' \code{ReadPar} does not check for comment lines in 'par.txt' files, the file structure is imported unchanged.
+#' \code{ReadPar} checks for inline comments in 'par.txt' files, these are moved to separate "lines" (list elements).
 #' 
 #' @return
-#' \code{ReadPar} returns a list with one vector for each row in 'par.txt'. HYPE parameter names (first entries in 'par.txt') 
-#' are returned as vector names.
-#' 
-#' 
+#' \code{ReadPar} returns a list of named vectors. Parameters are returned as numeric vectors with HYPE parameter names as list 
+#' element names. Comments are returned in separate list elements as single character strings, former inline comments are moved 
+#' to elements preceding the original comment position (i.e. to a line above in the par.txt file structure). Comment elements are 
+#' named \code{`!!`}.
 #' 
 #' @examples
 #' \dontrun{ReadPar("par.txt")}
 #' 
+#' @export
 
 ReadPar <- function (filename = "par.txt") {
   
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read par file into a character vector (one string per row in file)
   x <- scan(filename, what = "", sep = "\n")
+  # insert blank after comment character, to make sure they get split apart for comment identification below
+  x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
   # split string elements along whitespaces, returns list of character vectors
   x <- strsplit(x, split = "[[:space:]]+")
   # assign first vector elements as list element names and convert to lower-case (as standardisation)
   names(x) <- sapply(x, `[[`, 1)
   names(x) <- tolower(names(x))
-  # remove first vector elements
+  # # replace comment row names
+  # names(x) <- ifelse(names(x) == "!!", "comment", names(x))
+  # remove first vector elements (parameter names)
   x <- lapply(x, `[`, -1)
-  # convert list elements to numeric, if possible, catch conversion errors and return non-numeric strings untouched (typically comment lines)
-  lapply(x, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) return(x)))
+  
+  ## identify inline comments and move to separate list elements (preceding elemend)
+  # list of vector indices in x with comment characters
+  te <- sapply(x, function(x){grep(pattern = "!!", x)})
+  # initialise result list and result list element counter
+  res <- list()
+  j <- 1
+  for (i in 1:length(te)) {
+    if (length(te[[i]] > 0)) {
+      # copy comment to new result row
+      res[[j]] <- x[[i]][(te[[i]][1] + 1):length(x[[i]])]
+      names(res)[j] <- "!!"
+      j <- j + 1
+      # copy parameter value(s) without comments to result list
+      res[[j]] <- x[[i]][1:(te[[i]][1] - 1)]
+      # update result name
+      names(res)[j] <- names(x)[i]
+      j <- j + 1# copy comment to new result row
+      res[[j]] <- x[[i]][(te[[i]][1] + 1):length(x[[i]])]
+      names(res)[j] <- "!!"
+      j <- j + 1
+    } else {
+      res[[j]] <- x[[i]]
+      names(res)[j] <- names(x)[i]
+      j <- j + 1
+    }
+  }
+  # convert list elements to numeric, if possible, catch conversion errors and collapse non-numeric vectors to single strings
+  lapply(res, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) return(x)))
+  lapply(res, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) paste(x, collapse = " ")))
 }
 
 
