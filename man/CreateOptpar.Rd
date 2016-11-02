@@ -5,7 +5,7 @@
 \title{Create an optpar list}
 \usage{
 CreateOptpar(x, pars, tasks = data.frame(character(), character()),
-  comment = "")
+  comment = "", fun.ival = NULL)
 }
 \arguments{
 \item{x}{a list with named vector elements, as an object returned from \code{\link{ReadPar}}.}
@@ -20,6 +20,8 @@ described in the
 Defaults to an empty task section.}
 
 \item{comment}{Character string, comment (first row in optpar.txt file).}
+
+\item{fun.ival}{Either \code{NULL} (default), or a function with a single argument. See Details.}
 }
 \value{
 The function returns a list with elements as described in \code{\link{ReadOptpar}}.
@@ -30,8 +32,18 @@ and a selection of parameters.
 }
 \details{
 \code{CreateOptpar} makes it a bit more convenient to compose a HYPE optimisation file. The function creates a template 
-with all parameters to be included in an optimisation run. Parameter boundaries for individual classes have to be adapted 
-after creation of the template.
+with all parameters to be included in an optimisation run.
+
+Parameter boundaries for individual classes have to be adapted after creation of the template, the function takes the 
+existing parameter value(s) in \code{x} as upper and lower boundaries. 
+
+Parameter step width intervals (third parameter rows in optpar.txt files) are calculated with an internal function 
+which per default returns the nearest single 1/1000th of the parameter value: 
+
+\code{function(x) {10^floor(log10(x/1000))}}
+
+Alternative functions can be passed to \code{CreateOptpar} using argument \code{fun.ival}. Such functions must have a 
+single argument \code{x}, which represents the parameter value taken from \code{x}.
 }
 \examples{
 \dontrun{

@@ -12,12 +12,23 @@
 #' described in the
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' Defaults to an empty task section.
-#' @param comment Character string, comment (first row in optpar.txt file).
+#' @param comment Character string, comment (first row in optpar.txt file). 
+#' @param fun.ival Either \code{NULL} (default), or a function with a single argument. See Details.
 #' 
 #' @details 
 #' \code{CreateOptpar} makes it a bit more convenient to compose a HYPE optimisation file. The function creates a template 
-#' with all parameters to be included in an optimisation run. Parameter boundaries for individual classes have to be adapted 
-#' after creation of the template.
+#' with all parameters to be included in an optimisation run.
+#' 
+#' Parameter boundaries for individual classes have to be adapted after creation of the template, the function takes the 
+#' existing parameter value(s) in \code{x} as upper and lower boundaries. 
+#' 
+#' Parameter step width intervals (third parameter rows in optpar.txt files) are calculated with an internal function 
+#' which per default returns the nearest single 1/1000th of the parameter value: 
+#' 
+#' \code{function(x) {10^floor(log10(x/1000))}}
+#' 
+#' Alternative functions can be passed to \code{CreateOptpar} using argument \code{fun.ival}. Such functions must have a 
+#' single argument \code{x}, which represents the parameter value taken from \code{x}.
 #' 
 #' @return 
 #' The function returns a list with elements as described in \code{\link{ReadOptpar}}.
@@ -32,7 +43,7 @@
 #' 
 #' @export
 
-CreateOptpar <- function(x, pars, tasks = data.frame(character(), character()), comment = "") {
+CreateOptpar <- function(x, pars, tasks = data.frame(character(), character()), comment = "", fun.ival = NULL) {
   
   # convert parameter names check existense of pars in x
   te <- tolower(pars) %in% tolower(names(x))
@@ -61,8 +72,21 @@ CreateOptpar <- function(x, pars, tasks = data.frame(character(), character()), 
   # extract parameter from x
   pr <- x[tolower(names(x)) %in% tolower(pars)]
   
+  # function to calculate ival with
+  if (!is.null(fun.ival)) {
+    if (is.function(fun.ival)) {
+      
+    } else {
+      stop("'fun.ival' is not a function.")
+    }
+  } else {
+    fival <- function(x) {
+      10^floor(log10(x/1000))
+    }
+  }
+  
   # create par list with data frame elements (as in Optpar lists)
-  prs <- lapply(pr, function(x) {data.frame(min = x, max = x, ival = 10^floor(log10(x/1000)))})
+  prs <- lapply(pr, function(x) {data.frame(min = x, max = x, ival = fival)})
   
   return(list(comment = comment, tasks = tasks, pars = prs))
 }
