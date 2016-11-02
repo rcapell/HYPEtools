@@ -39,7 +39,7 @@ arguments above).}
 
 \item{cex.names}{Numeric, character expansion factor for class group labels.}
 
-\item{col}{Colors for bars. Defaults to pre-defined color (sequences if multiple catchments).}
+\item{col}{Colors for bars. Defaults to pre-defined color (use vector of same length as number of SUBIDs if multiple catchments).}
 
 \item{legend.text}{Character, if provided, a legend will be plotted. Defaults to none if one sub-basin is plotted, and SUBIDs 
 if several sub-basins are plotted. Set to \code{NA} to prevent legend plotting in any case.}

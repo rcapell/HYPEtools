@@ -21,7 +21,7 @@
 #' arguments above).
 #' @param cex.axis Numeric, character expansion factor for axis annotation and labels.
 #' @param cex.names Numeric, character expansion factor for class group labels.
-#' @param col Colors for bars. Defaults to pre-defined color (sequences if multiple catchments). 
+#' @param col Colors for bars. Defaults to pre-defined color (use vector of same length as number of SUBIDs if multiple catchments). 
 #' @param legend.text Character, if provided, a legend will be plotted. Defaults to none if one sub-basin is plotted, and SUBIDs 
 #' if several sub-basins are plotted. Set to \code{NA} to prevent legend plotting in any case.
 #' @param legend.pos Character keyword for legend positioning, most likely \code{"left"} or \code{"right"}. For details, see 
