@@ -38,9 +38,12 @@ Parameter boundaries for individual classes have to be adapted after creation of
 existing parameter value(s) in \code{x} as upper and lower boundaries. 
 
 Parameter step width intervals (third parameter rows in optpar.txt files) are calculated with an internal function 
-which per default returns the nearest single 1/1000th of the parameter value: 
+which per default returns the nearest single 1/1000th of the parameter value, with conditional replacement of '0' intervals: 
 
-\code{function(x) {10^floor(log10(x/1000))}}
+\preformatted{function(x) {
+  res <- 10^floor(log10(x/1000))
+  ifelse(res == 0, .1, res)
+}}
 
 Alternative functions can be passed to \code{CreateOptpar} using argument \code{fun.ival}. Such functions must have a 
 single argument \code{x}, which represents the parameter value taken from argument \code{x}. The function is applied to 
