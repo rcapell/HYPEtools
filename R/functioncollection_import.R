@@ -32,7 +32,8 @@
 #' 
 #' @param filename Path to and file name of the GeoClass file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
-#' @param headrow Row number with header information, defaults to 3 (i.e., two comment rows preceding the header).
+#' @param headrow Row number with header information. HYPE allows an unlimited number of comment rows above the actual file content, 
+#' and the last comment row usually contains some header information. See Details.
 #' 
 #' @details
 #' \code{ReadGeoClass} is a convenience wrapper function of \code{\link{read.table}}, with treatment of leading 
@@ -47,7 +48,7 @@
 #' 
 #' @export
 
-ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) { 
+ReadGeoClass <- function(filename = "GeoClass.txt", headrow) { 
     
   # read in the data in the file, skipping the comments and header
   x <- read.table(filename, header = T, skip = headrow - 1, quote = "", fill = T, comment.char = "")
@@ -58,6 +59,11 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow = 3) {
   xattr <- readLines(filename, n = headrow)
   attr(x, which = "comment") <- xattr[1:headrow - 1]
   attr(x, which = "header") <- xattr[headrow]
+  
+  # check if all columns are numeric, with a useful error message
+  if (!all(apply(x, 2, is.numeric))) {
+    stop("Non-numeric contents in imported file. Is argument 'headrow' specified correctly?")
+  }
   
   return(x)
 }
@@ -930,6 +936,7 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
 #' }
 #' 
 #' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
@@ -1053,6 +1060,11 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, h
   return(res)
 }
 
+#' @rdname HypeDataImport
+#' @export
+ReadAllsim <- function(filename = "allsim.txt") {
+  read.table(file = filename, header = T, sep = ",")
+}
 
 
 
@@ -1083,42 +1095,10 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, h
 
 ReadPmsf <- function(filename = "pmsf.txt") {
   x <- read.table(filename, header = T)
-  x <- as.integer(x[,1])
+  x <- as.integer(x[, 1])
   return(x)
 }
 
-
-
-
-
-
-
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadAllsim~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
-
-#' Read an 'allsim.txt' file
-#'
-#' This is a convenience wrapper function to import an allsim.txt optimisation result file as data frame into R.
-#' 
-#' @param filename Path to and file name of the 'allsim.txt' file to import. 
-#'  
-#' @details
-#' \code{ReadAllsim} is just \code{read.table(file = filename, header = T, sep = ",")}, mainly added to provide a 
-#' comparable function to the other RHYPE imports.
-#' 
-#' @return
-#' \code{ReadAllsim} returns a data frame.
-#' 
-#' @examples
-#' \dontrun{ReadAllsim("allsim.txt")}
-#' 
-#' @export
-
-
-ReadAllsim <- function(filename = "allsim.txt") {
-  read.table(file = filename, header = T, sep = ",")
-}
 
 
 

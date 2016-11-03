@@ -28,7 +28,8 @@
 #' \code{function(x) {10^floor(log10(x/1000))}}
 #' 
 #' Alternative functions can be passed to \code{CreateOptpar} using argument \code{fun.ival}. Such functions must have a 
-#' single argument \code{x}, which represents the parameter value taken from \code{x}.
+#' single argument \code{x}, which represents the parameter value taken from argument \code{x}. The function is applied to 
+#' all parameters in the resulting optpar list.
 #' 
 #' @return 
 #' The function returns a list with elements as described in \code{\link{ReadOptpar}}.
@@ -86,7 +87,7 @@ CreateOptpar <- function(x, pars, tasks = data.frame(character(), character()), 
   }
   
   # create par list with data frame elements (as in Optpar lists)
-  prs <- lapply(pr, function(x) {data.frame(min = x, max = x, ival = fival)})
+  prs <- lapply(pr, function(x) {data.frame(min = x, max = x, ival = fun.ival)})
   
   return(list(comment = comment, tasks = tasks, pars = prs))
 }

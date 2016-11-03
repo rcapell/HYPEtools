@@ -2,6 +2,7 @@
 % Please edit documentation in R/functioncollection_import.R
 \name{HypeDataImport}
 \alias{HypeDataImport}
+\alias{ReadAllsim}
 \alias{ReadAquiferData}
 \alias{ReadBranchData}
 \alias{ReadCropData}
@@ -38,6 +39,8 @@ ReadMgmtData(filename = "MgmtData.txt", verbose = T, header = T,
 ReadPointSourceData(filename = "PointSourceData.txt", verbose = T,
   header = T, na.strings = "-9999", sep = "\\t", stringsAsFactors = F,
   ...)
+
+ReadAllsim(filename = "allsim.txt")
 }
 \arguments{
 \item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that 
@@ -76,6 +79,7 @@ specifications:
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
 }
 
 In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 

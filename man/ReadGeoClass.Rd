@@ -4,13 +4,14 @@
 \alias{ReadGeoClass}
 \title{Read a 'GeoClass.txt' File}
 \usage{
-ReadGeoClass(filename = "GeoClass.txt", headrow = 3)
+ReadGeoClass(filename = "GeoClass.txt", headrow)
 }
 \arguments{
 \item{filename}{Path to and file name of the GeoClass file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
-\item{headrow}{Row number with header information, defaults to 3 (i.e., two comment rows preceding the header).}
+\item{headrow}{Row number with header information. HYPE allows an unlimited number of comment rows above the actual file content, 
+and the last comment row usually contains some header information. See Details.}
 }
 \value{
 \code{ReadGeoClass} returns a data frame with added attribute 'comment'.

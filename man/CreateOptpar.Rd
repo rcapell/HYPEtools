@@ -43,7 +43,8 @@ which per default returns the nearest single 1/1000th of the parameter value:
 \code{function(x) {10^floor(log10(x/1000))}}
 
 Alternative functions can be passed to \code{CreateOptpar} using argument \code{fun.ival}. Such functions must have a 
-single argument \code{x}, which represents the parameter value taken from \code{x}.
+single argument \code{x}, which represents the parameter value taken from argument \code{x}. The function is applied to 
+all parameters in the resulting optpar list.
 }
 \examples{
 \dontrun{
