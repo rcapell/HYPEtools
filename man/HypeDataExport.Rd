@@ -6,6 +6,7 @@
 \alias{WriteBranchData}
 \alias{WriteCropData}
 \alias{WriteDamData}
+\alias{WriteForcKey}
 \alias{WriteLakeData}
 \alias{WriteMgmtData}
 \alias{WritePointSourceData}
@@ -31,6 +32,8 @@ WriteMgmtData(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L,
 
 WritePointSourceData(x, filename = "PointSourceData.txt", digits = 10,
   nsmall = 0L, verbose = T)
+
+WriteForcKey(x, filename = "ForcKey.txt")
 }
 \arguments{
 \item{x}{The object to be written, a dataframe as returned from the \code{\link{HypeDataImport}} functions.}
@@ -61,6 +64,7 @@ specifications:
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{BranchData.txt}
 }
 
 In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 

@@ -1066,6 +1066,12 @@ ReadAllsim <- function(filename = "allsim.txt") {
   read.table(file = filename, header = T, sep = ",")
 }
 
+#' @rdname HypeDataImport
+#' @export
+ReadForcKey <- function(filename = "allsim.txt", sep = "\t") {
+  read.table(file = filename, header = T, sep = sep)
+}
+
 
 
 

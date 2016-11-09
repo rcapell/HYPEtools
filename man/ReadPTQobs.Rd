@@ -16,7 +16,7 @@ Paths are separated by '/', not '\\'.}
 to import.}
 }
 \value{
-\code{ReadPTQobs} returns a data frame with an additional attribute \code{subid}.
+\code{ReadPTQobs} returns a data frame with an additional attribute \code{obsid}.
 }
 \description{
 Import precipitation, temperature, or discharge observation files as data frame into R.

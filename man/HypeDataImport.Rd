@@ -7,6 +7,7 @@
 \alias{ReadBranchData}
 \alias{ReadCropData}
 \alias{ReadDamData}
+\alias{ReadForcKey}
 \alias{ReadGlacierData}
 \alias{ReadLakeData}
 \alias{ReadMgmtData}
@@ -41,6 +42,8 @@ ReadPointSourceData(filename = "PointSourceData.txt", verbose = T,
   ...)
 
 ReadAllsim(filename = "allsim.txt")
+
+ReadForcKey(filename = "allsim.txt", sep = "\\t")
 }
 \arguments{
 \item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that 

@@ -5,7 +5,7 @@
 \title{Write 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files}
 \usage{
 WritePTQobs(x, filename, dt.format = "\%Y-\%m-\%d", digits = 3,
-  nsmall = 1, subid = NULL)
+  nsmall = 1, obsid = NULL)
 }
 \arguments{
 \item{x}{The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs in 
@@ -20,16 +20,16 @@ Paths are separated by '/', not '\\'.}
 
 \item{nsmall}{Integer, number of significant decimals to export. See \code{\link{format}}.}
 
-\item{subid}{Integer vector containing SUBIDs in same order as columns in \code{x}. To be exported as header in the obs file. 
-Must contain the same number of SUBIDs as \code{x}. If \code{NULL}, an attribute \code{subid} in \code{x} is mandatory.
-An existing \code{subid} argument takes precedence over a \code{subid} attribute.}
+\item{obsid}{Integer vector containing OBSIDs in same order as columns in \code{x}. To be exported as header in the obs file. 
+Must contain the same number of OBSIDs as \code{x}. If \code{NULL}, an attribute \code{obsid} in \code{x} is mandatory.
+An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.}
 }
 \description{
 Export precipitation, temperature, or discharge observation files from R.
 }
 \details{
-\code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE compliant observation file. 
-headers are generated from attribute \code{subid} on export (see \code{\link{attr}} on how to create and access it). 
+\code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE-compliant observation file. 
+headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
 
 The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
 scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 

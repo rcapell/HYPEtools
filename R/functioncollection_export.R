@@ -690,6 +690,7 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, nsmall
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{BranchData.txt}
 #' }
 #' 
 #' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
@@ -835,6 +836,12 @@ WritePointSourceData <- function(x, filename = "PointSourceData.txt", digits = 1
   # export
   write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
               quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+}
+
+#' @rdname HypeDataExport
+#' @export
+WriteForcKey <- function(x, filename = "ForcKey.txt") {
+  write.table(x, filename, col.names = T, sep = "\t", quote = F, row.names = F)
 }
 
 
