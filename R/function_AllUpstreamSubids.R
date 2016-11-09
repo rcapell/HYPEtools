@@ -226,15 +226,13 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
   
   # try to write arcgis select string to clipboard, with error recovery
   if (write.arcgis == T && !get.weights) {
-    to.arc <- paste(paste("\"SUBID\" =", us, 'OR'), collapse=" ")
-    to.arc <- substr(to.arc, 1, nchar(to.arc) - 3)
+    to.arc <- paste0("\"SUBID\" IN (", paste(us, collapse = ","), ")")
     tryCatch(writeClipboard(to.arc), error = function(e) {
       print("Writing to clipboard failed, this is probably not a Windows environment")})
   }
   
   if (write.arcgis == T && get.weights) {
-    to.arc <- paste(paste("\"SUBID\" =", us[, 1], 'OR'), collapse=" ")
-    to.arc <- substr(to.arc, 1, nchar(to.arc) - 3)
+    to.arc <- paste0("\"SUBID\" IN (", paste(us[, 1], collapse = ","), ")")
     tryCatch(writeClipboard(to.arc), error = function(e) {
       print("Writing to clipboard failed, this is probably not a Windows environment")})
   }

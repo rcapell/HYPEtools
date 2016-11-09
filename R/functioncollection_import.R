@@ -864,7 +864,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' (see \code{\link{attr}} on how to access it). 
 #' 
 #' @return
-#' \code{ReadPTQobs} returns a data frame with an additional attribute \code{subid}.
+#' \code{ReadPTQobs} returns a data frame with an additional attribute \code{obsid}.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -882,14 +882,14 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
   ## import ptqobs file header, extract attribute
   # import
   xattr <- readLines(filename,n = 1)
-  # extract SUBIDs
+  # extract obsids
   sbd <- as.integer(strsplit(xattr, split = "\t")[[1]][-1])
   
   # read the data
-  x <- fread(filename,  na.strings = "-9999", sep = "\t", header = T, data.table = F, nrows = nrows, 
-                colClasses = c("NA", rep("numeric", length(sbd))))
+  x <- fread(filename,  na.strings = "-9999", sep = "\t", header = T, data.table = F, nrows = nrows)
+                #colClasses = c("NA", rep("numeric", length(sbd))))
   
-  attr(x, which = "subid") <- sbd
+  attr(x, which = "obsid") <- sbd
   
   # date conversion 
   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")

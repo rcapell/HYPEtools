@@ -601,15 +601,15 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
-#' @param subid Integer vector containing SUBIDs in same order as columns in \code{x}. To be exported as header in the obs file. 
-#' Must contain the same number of SUBIDs as \code{x}. If \code{NULL}, an attribute \code{subid} in \code{x} is mandatory.
-#' An existing \code{subid} argument takes precedence over a \code{subid} attribute.
+#' @param obsid Integer vector containing OBSIDs in same order as columns in \code{x}. To be exported as header in the obs file. 
+#' Must contain the same number of OBSIDs as \code{x}. If \code{NULL}, an attribute \code{obsid} in \code{x} is mandatory.
+#' An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.
 #' @param digits Integer, number significant digits to export. See \code{\link{format}}.
 #' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #'  
 #' @details
-#' \code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE compliant observation file. 
-#' headers are generated from attribute \code{subid} on export (see \code{\link{attr}} on how to create and access it). 
+#' \code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE-compliant observation file. 
+#' headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
 #' 
 #' The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
 #' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
@@ -622,23 +622,23 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @export
 
 
-WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, nsmall = 1, subid = NULL) {
+WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, nsmall = 1, obsid = NULL) {
   
-  ## check if consistent header information is available, subid arguments take precedence before attribute
-  if(!is.null(subid)) {
-    if (length(subid) == ncol(x) - 1) {
-      header <- c("DATE", subid)
+  ## check if consistent header information is available, obsid arguments take precedence before attribute
+  if(!is.null(obsid)) {
+    if (length(obsid) == ncol(x) - 1) {
+      header <- c("DATE", obsid)
     } else {
-      stop("Length of function argument 'subid' does not match number of subid columns in export object.")
+      stop("Length of function argument 'obsid' does not match number of obsid columns in export object.")
     }
-  } else if (!is.null(attr(x, which = "subid"))) {
-      if (length(attr(x, which = "subid")) == ncol(x) - 1) {
-        header <- c("DATE", attr(x, which = "subid"))
+  } else if (!is.null(attr(x, which = "obsid"))) {
+      if (length(attr(x, which = "obsid")) == ncol(x) - 1) {
+        header <- c("DATE", attr(x, which = "obsid"))
       } else {
-        stop("Length of attribute 'subid' does not match number of subid columns in export object.")
+        stop("Length of attribute 'obsid' does not match number of obsid columns in export object.")
       }
   } else {
-    stop("No information available from 'subid' argument or 'subid' attribute to construct export header.")
+    stop("No information available from 'obsid' argument or 'obsid' attribute to construct export header.")
   }
   
   # date conversion, conditional on that the date column is a posix class
