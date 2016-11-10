@@ -23,10 +23,10 @@
 #' See \code{\link{ReadDescription}} for formatting details. Only needed with bar chart panels, see Details. 
 #' @param timestep Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
-#' @param hype.vars Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables 
+#' @param hype.vars Either a keyword string or a character vector of HYPE output variables. User-specified selection of HYPE variables 
 #' to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details 
 #' for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of 
-#' (available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown 
+#' (available) result variables is plotted. Alternatively, a character vector holding HYPE output variable IDs to be plotted. Variables unknown 
 #' to the function will be ignored with a warning.
 #' @param from,to Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
 #' interpreted as row indices of \code{x}.
@@ -42,15 +42,19 @@
 #' chosen sub-basin. Performance plots include discharge and HYPE-modelled nutrient species for nitrogen (total, inorganic, organic) 
 #' and phosphorus (total, particulate, soluble).
 #' 
-#' The generated plot provides information about: 
+#' Plotted panels show: 
 #' \itemize{
-#' \item{Summarised catchment characteristics as bar charts}
-#' \item{Goodness-of-fit measures for discharge and nutrients}
-#' \item{Simulation-observation relationships for discharge and nutrients}
-#' \item{Duration curves for flow and nutrient concentrations}
-#' \item{Annual regimes for flow and nutrient concentrations}
-#' \item{Concentration-discharge relationships for nutrients}
-#' \item{Corresponding plots for IN/TN and SP/TP ratios}
+#' \item{\emph{Summarised catchment characteristics as bar charts}: Upstream-averaged land use, soil, and crop group fractions; modelled nutrient loads 
+#' in sub-basin outlet, and summed upstream gross loads from point sources and rural households (if necessary variables available, omitted otherwise).}
+#' \item{\emph{Goodness-of-fit measures for discharge and nutrients}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS (Percentage 
+#' Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency). See package 
+#' \code{\link{hydroGOF}} for details.}
+#' \item{\emph{Simulation-observation relationships for discharge and nutrients}: Simulated and observed concentration-discharge relationships, 
+#' relationship between observed and simulated nutrient concentrations.}
+#' \item{\emph{Duration curves for flow and nutrient concentrations}: Pairwise simulated and observed curves.}
+#' \item{\emph{Annual regimes for flow and nutrient concentrations}: Pairwise simulated and observed regime plots at monthly aggregation, with 
+#' number of observations for nutrient concentration regimes.}
+#' \item{\emph{Corresponding plots for IN/TN and SP/TP ratios}.}
 #' }
 #' 
 #' Per default, the function plots from available model variables in an imported HYPE basin output file, and missing variables will be 
@@ -224,8 +228,9 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
       upsd <- UpstreamPointSources(subid = sbd, gd = gd, psd = psd, bd = bd, progbar = F)
       # calculate load in ton/year, proceed only if upstream point sources exist
       if (nrow(upsd) > 0) {
-        load.psn <- weighted.mean(x = upsd$up_ps_tnconc, w = upsd$up_ps_vol) * sum(upsd$up_ps_vol) * .000365
-        load.psp <- weighted.mean(x = upsd$up_ps_tpconc, w = upsd$up_ps_vol) * sum(upsd$up_ps_vol) * .000365
+        # conc mg/l * vol m3/d * 10^3 l/m3 * 365.25 d/y * 10^-9 ton/mg
+        load.psn <- weighted.mean(x = upsd$up_ps_tnconc, w = upsd$up_ps_vol) * sum(upsd$up_ps_vol) * .00036525
+        load.psp <- weighted.mean(x = upsd$up_ps_tpconc, w = upsd$up_ps_vol) * sum(upsd$up_ps_vol) * .00036525
       } else {
         load.psn <- NA
         load.psp <- NA
@@ -242,6 +247,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
       pos.lvol <- which(tolower(names(ugd)) == "up_loc_vol")
       pos.ltn <- which(tolower(names(ugd)) == "up_loc_tn")
       pos.ltp <- which(tolower(names(ugd)) == "up_loc_tp")
+      # conc mg/l * vol m3/d * 10^3 l/m3 * 365.25 d/y * 10^-9 ton/mg
       load.rurn <- ugd[, pos.ltn] * ugd[, pos.lvol] * .00036525
       load.rurp <- ugd[, pos.ltp] * ugd[, pos.lvol] * .00036525
     } else {
@@ -250,13 +256,14 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
     }
     
     ## calculate mean annual N and P loads at outlet in ton/year if they exist in x
-    if (exi.t["totn"] && exi.t["cout"]) {
-      load.outn <- mean(totn * cout * 0.36525)
+    if (exi.t["totn"]) {
+      # mean(load kg/d) * 365.25 d/y * 10^-3 ton/kg
+      load.outn <- mean(totn) * 0.36525
     } else {
       load.outn <- NA
     }
-    if (exi.t["totp"] && exi.t["cout"]) {
-      load.outp <- mean(totp * cout * 0.031536)
+    if (exi.t["totp"]) {
+      load.outp <- mean(totp) * 0.36525
     } else {
       load.outp <- NA
     }
@@ -333,7 +340,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'barplot(loads.tn / 1000, col = ColNitr(3), border = NA, ylab = expression(paste("kiloton y"^"-1")), ylim = c(0, ifelse(all(is.na(loads.tn)), 1, max(loads.tn / 1000, na.rm = T) * 1.5)))')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ."), side = 3, at = c(.7, 1.9, 3.1), line = -.2, padj = .3, cex = .8, las = 3, adj = 1)')
+    list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ.")[!is.na(loads.tn)], side = 3, at = c(.7, 1.9, 3.1)[!is.na(loads.tn)], line = -.2, padj = .3, cex = .8, las = 3, adj = 1)')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext("Modeled TN loads", side = 1, line = .5, cex = .8)')
     cp <- cp + 1
@@ -343,7 +350,7 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'barplot(loads.tp / 1000, col = ColPhos(3), border = NA, ylab = expression(paste("kiloton y"^"-1")), ylim = c(0, ifelse(all(is.na(loads.tp)), 1, max(loads.tp / 1000, na.rm = T) * 1.5)))')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ."), side = 3, at = c(.7, 1.9, 3.1), line = -.2, padj = .3, cex = .8, las = 3, adj = 1)')
+    list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ.")[!is.na(loads.tp)], side = 3, at = c(.7, 1.9, 3.1)[!is.na(loads.tp)], line = -.2, padj = .3, cex = .8, las = 3, adj = 1)')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext("Modeled TP loads", side = 1, line = .5, cex = .8)')
     cp <- cp + 1

@@ -41,10 +41,10 @@ See \code{\link{ReadDescription}} for formatting details. Only needed with bar c
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
 
-\item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables 
+\item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-specified selection of HYPE variables 
 to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details 
 for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of 
-(available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown 
+(available) result variables is plotted. Alternatively, a character vector holding HYPE output variable IDs to be plotted. Variables unknown 
 to the function will be ignored with a warning.}
 
 \item{from, to}{Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
@@ -72,15 +72,19 @@ for discharge and nutrients.
 chosen sub-basin. Performance plots include discharge and HYPE-modelled nutrient species for nitrogen (total, inorganic, organic) 
 and phosphorus (total, particulate, soluble).
 
-The generated plot provides information about: 
+Plotted panels show: 
 \itemize{
-\item{Summarised catchment characteristics as bar charts}
-\item{Goodness-of-fit measures for discharge and nutrients}
-\item{Simulation-observation relationships for discharge and nutrients}
-\item{Duration curves for flow and nutrient concentrations}
-\item{Annual regimes for flow and nutrient concentrations}
-\item{Concentration-discharge relationships for nutrients}
-\item{Corresponding plots for IN/TN and SP/TP ratios}
+\item{\emph{Summarised catchment characteristics as bar charts}: Upstream-averaged land use, soil, and crop group fractions; modelled nutrient loads 
+in sub-basin outlet, and summed upstream gross loads from point sources and rural households (if necessary variables available, omitted otherwise).}
+\item{\emph{Goodness-of-fit measures for discharge and nutrients}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS (Percentage 
+Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency). See package 
+\code{\link{hydroGOF}} for details.}
+\item{\emph{Simulation-observation relationships for discharge and nutrients}: Simulated and observed concentration-discharge relationships, 
+relationship between observed and simulated nutrient concentrations.}
+\item{\emph{Duration curves for flow and nutrient concentrations}: Pairwise simulated and observed curves.}
+\item{\emph{Annual regimes for flow and nutrient concentrations}: Pairwise simulated and observed regime plots at monthly aggregation, with 
+number of observations for nutrient concentration regimes.}
+\item{\emph{Corresponding plots for IN/TN and SP/TP ratios}.}
 }
 
 Per default, the function plots from available model variables in an imported HYPE basin output file, and missing variables will be 
