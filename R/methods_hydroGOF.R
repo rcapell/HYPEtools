@@ -30,7 +30,6 @@
 #' 
 #' @seealso \code{\link[hydroGOF]{NSE}}, the S3 generic function defined in package 'hydroGOF'.
 #' 
-# #' @importFrom hydroGOF NSE NSE.default
 #' @importFrom pbapply pblapply
 #' @export
 
@@ -87,9 +86,8 @@ NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#'
 #' Percent bias
-#'  
+#' 
 #' Percent bias (PBIAS) calculation for imported HYPE outputs with single variables for several catchments, i.e. time and 
 #' map files, optionally multiple model runs combined.
 #' 
@@ -105,11 +103,10 @@ NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) {
 #' argument \code{sim}, with values in the same order 
 #' as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 #' 
-# # @rdname pbias
+#' @name pbias
 #' 
 #' @seealso \code{\link[hydroGOF]{pbias}}, the S3 generic function defined in package 'hydroGOF'.
 #' 
-# #' @importFrom hydroGOF pbias pbias.default
 #' @importFrom pbapply pblapply
 #' @export
 

@@ -879,6 +879,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
       # calculate IN/TN ratio in percent
       if (exi.t["rein"] && exi.t["retn"]) {
         reintn <- rein * 100 / retn
+        # remove vector if it does not contain any data, i.e. no days with concurrent observations
+        if (!any(!is.na(reintn))) {
+          rm(reintn)
+        }
       }
       if (exi.t["ccin"] && exi.t["cctn"]) {
         ccintn <- ccin * 100 / cctn
@@ -1446,6 +1450,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
       # calculate SP/TP ratio in percent
       if (exi.t["resp"] && exi.t["retp"]) {
         resptp <- resp * 100 / retp
+        # remove vector if it does not contain any data, i.e. no days with concurrent observations
+        if (!any(!is.na(resptp))) {
+          rm(resptp)
+        }
       }
       if (exi.t["ccsp"] && exi.t["cctp"]) {
         ccsptp <- ccsp * 100 / cctp
