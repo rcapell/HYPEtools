@@ -592,18 +592,19 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePTQobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' Write 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files
+#' Write 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files
 #'
 #' Export precipitation, temperature, or discharge observation files from R.
 #' 
 #' @param x The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs in 
-#' remaining columns, with an additional attribute \code{subid} containing SUBIDs in column order.
+#' remaining columns. If argument \code{obsid} is not provided, \code{x} must have an additional attribute \code{obsid} containing 
+#' observation IDs/SUBIDs in column order.
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
-#' @param obsid Integer vector containing OBSIDs in same order as columns in \code{x}. To be exported as header in the obs file. 
-#' Must contain the same number of OBSIDs as \code{x}. If \code{NULL}, an attribute \code{obsid} in \code{x} is mandatory.
-#' An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.
+#' @param obsid Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
+#' in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 
+#' in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.
 #' @param digits Integer, number significant digits to export. See \code{\link{format}}.
 #' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #'  
@@ -611,10 +612,17 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' \code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE-compliant observation file. 
 #' headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
 #' 
+#' Observation IDs are SUBIDs or IDs connected to SUBIDs with a 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
+#' 
 #' The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
 #' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
 #' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
 #' hard-coded into \code{WritePTQobs}.
+#' 
+#' @seealso 
+#' \code{\link{ReadPTQobs}}
+#' \code{\link{WriteXobs}}
 #' 
 #' @examples
 #' \dontrun{WritePTQobs(mytops, "Tobs.txt")}

@@ -847,7 +847,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPTQobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' Read 'Pobs.txt', 'Tobs.txt', or 'Qobs.txt' files
+#' Read 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files
 #'
 #' Import precipitation, temperature, or discharge observation files as data frame into R.
 #' 
@@ -860,8 +860,9 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' @details
 #' \code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
 #' \code{\link[data.table]{data.table-package}}, 
-#' with conversion of date-time strings to POSIX time representations. SUBIDs are returned as integer attribute \code{subid} 
-#' (see \code{\link{attr}} on how to access it). 
+#' with conversion of date-time strings to POSIX time representations. Observation IDs (SUBIDs or IDs connected to SUBIDs with a 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 
+#' attribute \code{obsid} (see \code{\link{attr}} on how to access it). 
 #' 
 #' @return
 #' \code{ReadPTQobs} returns a data frame with an additional attribute \code{obsid}.
@@ -869,6 +870,10 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and e.g. converting to string representations during the process).
+#' 
+#' @seealso 
+#' \code{\link{ReadXobs}}
+#' \code{\link{WritePTQobs}}
 #' 
 #' @examples
 #' \dontrun{ReadPTQobs("Tobs.txt")}
