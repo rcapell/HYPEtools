@@ -19,7 +19,7 @@ to import.}
 \code{ReadPTQobs} returns a data frame with an additional attribute \code{obsid}.
 }
 \description{
-Import precipitation, temperature, or discharge observation files as data frame into R.
+Import forcing data and discharge observation files as data frame into R.
 }
 \details{
 \code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
@@ -37,7 +37,7 @@ side effects when working with the imported data (and e.g. converting to string 
 
 }
 \seealso{
-\code{\link{ReadXobs}}
 \code{\link{WritePTQobs}}
+\code{\link{ReadXobs}}
 }
 

@@ -101,7 +101,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   if (length(pos.wmean.ldepth) == 0 && !is.null(olake.slc)) {
     warning("Outlet lake SLC class provided in argument 'olake.slc', but no 'lake_depth' found in GeoData. Skipping upstream 'lake_depth'.")
   }
-  if (length(pos.wmean.ldepth) == 1 && length(pos.wmean.slc.olake) == 0) {
+  if (length(pos.wmean.ldepth) == 1 && !is.null(olake.slc) && length(pos.wmean.slc.olake) == 0) {
     warning("'lake_depth' found in GeoData, but outlet lake SLC class provided in argument 'olake.slc' does not exist. Skipping upstream 'lake_depth'.")
   }
   
@@ -126,7 +126,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   # x: vector of upstream subids
   WeightedMean <- function(x, g, p.sbd, p.wmean, p.area) {
     
-    # extract dataframe with areas and variables in x, for which to calculate weighted means
+    # extract dataframe with areas and variables in x for which to calculate weighted means
     if (bd.weight) {
       df.wmean <- g[g[, p.sbd] %in% x[, 1], c(p.area, p.wmean)]
       df.wmean[, 1] <- df.wmean[, 1] * x[, 2]
@@ -137,9 +137,13 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
     # averaging only necessary if more than one subid, also avoids NaN result if stddev is 0
     if (nrow(df.wmean) > 1) {
       
-      # area-weighted mean of all columns
+      # area-weighted mean of all columns, with exception handling where all weights are 0
       res <- apply(as.data.frame(df.wmean[, -1]), 2, weighted.mean, w = df.wmean[, 1])
+      if (all(df.wmean[, 1] == 0)) {
+        res[] <- 0
+      }
       
+      # catch
     } else {
       res <- as.numeric(df.wmean[, -1])
       names(res) <- names(df.wmean)[-1]

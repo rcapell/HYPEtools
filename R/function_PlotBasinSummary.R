@@ -232,8 +232,8 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
         load.psn <- weighted.mean(x = upsd$up_ps_tnconc, w = upsd$up_ps_vol) * sum(upsd$up_ps_vol) * .00036525
         load.psp <- weighted.mean(x = upsd$up_ps_tpconc, w = upsd$up_ps_vol) * sum(upsd$up_ps_vol) * .00036525
       } else {
-        load.psn <- NA
-        load.psp <- NA
+        load.psn <- 0
+        load.psp <- 0
       }
     } else {
       load.psn <- NA
@@ -339,8 +339,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'barplot(loads.tn / 1000, col = ColNitr(3), border = NA, ylab = expression(paste("kiloton y"^"-1")), ylim = c(0, ifelse(all(is.na(loads.tn)), 1, max(loads.tn / 1000, na.rm = T) * 1.5)))')
-    cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ.")[!is.na(loads.tn)], side = 3, at = c(.7, 1.9, 3.1)[!is.na(loads.tn)], line = -.2, padj = .3, cex = .8, las = 3, adj = 1)')
+    if (!all(is.na(loads.tn))) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ.")[!is.na(loads.tn)], side = 3, at = c(.7, 1.9, 3.1)[!is.na(loads.tn)], line = -.2, padj = .3, cex = .8, las = 3, adj = 1)')
+    }
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext("Modeled TN loads", side = 1, line = .5, cex = .8)')
     cp <- cp + 1
@@ -349,8 +351,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'barplot(loads.tp / 1000, col = ColPhos(3), border = NA, ylab = expression(paste("kiloton y"^"-1")), ylim = c(0, ifelse(all(is.na(loads.tp)), 1, max(loads.tp / 1000, na.rm = T) * 1.5)))')
-    cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ.")[!is.na(loads.tp)], side = 3, at = c(.7, 1.9, 3.1)[!is.na(loads.tp)], line = -.2, padj = .3, cex = .8, las = 3, adj = 1)')
+    if (!all(is.na(loads.tp))) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'mtext(text = c("River", "Point srces.", "Rural househ.")[!is.na(loads.tp)], side = 3, at = c(.7, 1.9, 3.1)[!is.na(loads.tp)], line = -.2, padj = .3, cex = .8, las = 3, adj = 1)')
+    }
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext("Modeled TP loads", side = 1, line = .5, cex = .8)')
     cp <- cp + 1

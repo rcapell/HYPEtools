@@ -849,7 +849,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 
 #' Read 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files
 #'
-#' Import precipitation, temperature, or discharge observation files as data frame into R.
+#' Import forcing data and discharge observation files as data frame into R.
 #' 
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
@@ -872,8 +872,8 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' side effects when working with the imported data (and e.g. converting to string representations during the process).
 #' 
 #' @seealso 
-#' \code{\link{ReadXobs}}
 #' \code{\link{WritePTQobs}}
+#' \code{\link{ReadXobs}}
 #' 
 #' @examples
 #' \dontrun{ReadPTQobs("Tobs.txt")}
@@ -1073,7 +1073,7 @@ ReadAllsim <- function(filename = "allsim.txt") {
 
 #' @rdname HypeDataImport
 #' @export
-ReadForcKey <- function(filename = "allsim.txt", sep = "\t") {
+ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t") {
   read.table(file = filename, header = T, sep = sep)
 }
 

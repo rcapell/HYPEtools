@@ -271,7 +271,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
     } else {
       # export the variable argument with padded 'name' string and newline, if length matches no. of observation data cols in x
       if (length(variable) == ncol(x) - 1) {
-        tmp <- paste(c("name", variable), collapse ="\t")
+        tmp <- paste(c("x", variable), collapse ="\t")
         writeLines(tmp, con = fcon)
       } else {
         # mismatch in length, stop with error
@@ -594,7 +594,7 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 
 #' Write 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files
 #'
-#' Export precipitation, temperature, or discharge observation files from R.
+#' Export forcing data and discharge observation files from R.
 #' 
 #' @param x The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs in 
 #' remaining columns. If argument \code{obsid} is not provided, \code{x} must have an additional attribute \code{obsid} containing 

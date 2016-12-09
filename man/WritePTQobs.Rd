@@ -26,7 +26,7 @@ in the obs file. Must contain the same number of IDs as observation series in \c
 in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.}
 }
 \description{
-Export precipitation, temperature, or discharge observation files from R.
+Export forcing data and discharge observation files from R.
 }
 \details{
 \code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE-compliant observation file. 

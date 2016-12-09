@@ -43,7 +43,7 @@ ReadPointSourceData(filename = "PointSourceData.txt", verbose = T,
 
 ReadAllsim(filename = "allsim.txt")
 
-ReadForcKey(filename = "allsim.txt", sep = "\\t")
+ReadForcKey(filename = "ForcKey.txt", sep = "\\t")
 }
 \arguments{
 \item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that 
