@@ -25,7 +25,7 @@ class names of a HYPE set-up, as well as model set-up name and version.
 }
 \details{
 \code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
-e.g. plotting legend labels or examining imported GeoClass files. \code{\link{PlotBasinEvaluation}} requires a list 
+e.g. plotting legend labels or examining imported GeoClass files. E.g., \code{\link{PlotBasinSummary}} requires a list 
 as returned from \code{ReadDescription} for labeling. 
 
 A description.txt file consists of 22 lines, alternating names and semicolon-separated content. Lines 

@@ -24,7 +24,7 @@
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Defaults to a string giving the 
 #' time period on which the regime is based.
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label. Defaults to a measurement unit string taken from 
-#' \code{x} \code{\link{attribute}} \code{'unit'}.
+#' \code{x} \code{\link{attributes}} \code{'unit'}.
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
 #' 

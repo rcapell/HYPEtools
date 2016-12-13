@@ -29,7 +29,7 @@ bar chart panels, see Details.}
 \item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 file imported with \code{\link{ReadGeoClass}}. Only needed with bar chart panels, see Details.}
 
-\item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{PointSourceData}}. 
+\item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{ReadPointSourceData}}. 
 Only needed with bar chart panels, see Details.}
 
 \item{subid}{Integer, SUBID of sub-basin for which results are plotted. If \code{NULL} (default), a \code{subid} attribute is 
@@ -106,7 +106,7 @@ For a detailed description of the variables, see the
 
 }
 \seealso{
-\code{\link{PlotUpstreamClasses}}, \code{\link{PlotSimObsRegime}}, \code{\link{PlotAnnualRegime}}, 
+\code{\link{BarplotUpstreamClasses}}, \code{\link{PlotSimObsRegime}}, \code{\link{PlotAnnualRegime}}, 
 \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 }
 

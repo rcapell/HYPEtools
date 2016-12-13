@@ -31,6 +31,7 @@
 #' @seealso \code{\link[hydroGOF]{NSE}}, the S3 generic function defined in package 'hydroGOF'.
 #' 
 #' @importFrom pbapply pblapply
+#' @importFrom hydroGOF NSE NSE.default
 #' @export
 
 NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) { 
@@ -108,6 +109,7 @@ NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) {
 #' @seealso \code{\link[hydroGOF]{pbias}}, the S3 generic function defined in package 'hydroGOF'.
 #' 
 #' @importFrom pbapply pblapply
+#' @importFrom hydroGOF pbias pbias.default
 #' @export
 
 

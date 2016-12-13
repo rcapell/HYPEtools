@@ -114,7 +114,7 @@ SUBROUTINE count_datestring_len(infile, infile_len, dslen, tslen, lclen)
         INTEGER, INTENT(out) :: dslen, tslen, lclen    ! date, time string lengths, leading characters before datestring
         ! local variables
         CHARACTER(LEN=1700000) line
-        INTEGER i,n, j
+        INTEGER i,n
     
     
         OPEN(UNIT = 10,FILE = infile, STATUS = 'old')
@@ -171,16 +171,14 @@ SUBROUTINE wmean(infile, infile_len, sbd, weight, m, nc, nr, tslen, res)
     REAL(8), INTENT(out) :: res(nr-1)
         
     ! local variables
-    INTEGER :: n, pos(m), i, j, dscol          ! pos=position of subid in obs file
+    INTEGER :: pos(m), i, j          ! pos=position of subid in obs file
     CHARACTER(4) :: dummy
     CHARACTER(10) :: ddummy
     CHARACTER(5) :: tdummy
     INTEGER :: obsid(nc-1)
     REAL(8) :: obs(nc-1)
-    REAL(8) :: wobs(m)
     REAL(8) :: lobs(m)          ! local obs with just the obs of interest
     REAL(8) :: wm
-    REAL :: t1, t2
         
     ! read header line and match subids of interest positions therein
     OPEN(unit = 10, file = infile, status = 'old', action = 'read', form = 'formatted')

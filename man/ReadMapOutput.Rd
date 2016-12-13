@@ -37,7 +37,7 @@ This is a convenience wrapper function to import a map output file ('map<\emph{H
 }
 \details{
 \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
-\code{\link[data.table]{data.table-package}}, 
+\code{\link{data.table}}, 
 with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 of the time step period.
 }

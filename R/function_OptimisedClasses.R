@@ -15,6 +15,7 @@
 #' \code{OptimisedClasses} returns a named list with one vector element for each parameter found in \code{x}. List element 
 #' names are HYPE parameter names. Each vector contains the optimised class numbers for the respective parameter.
 #' 
+#' @examples 
 #' \dontrun{OptimisedClasses(myoptpar)}
 #' 
 #' @export

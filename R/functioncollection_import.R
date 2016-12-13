@@ -99,7 +99,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow) {
 #' 
 #' @details
 #' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
-#' \code{\link[data.table]{data.table-package}}, with conversion of date-time strings to
+#' \code{\link{data.table}}, with conversion of date-time strings to
 #' POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
 #' 
 #' @return
@@ -120,6 +120,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow) {
 #' 
 #' @importFrom data.table fread
 #' @export
+
 
 ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid = NULL) {
   
@@ -267,7 +268,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
 #'  
 #' @details
 #' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
-#' \code{\link[data.table]{data.table-package}}, 
+#' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as 
 #' attributes (see \code{\link{attr}} on how to access these).
 #' 
@@ -383,7 +384,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
 #' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
 
 #' @details
-#' \code{ReadGeoData} runs \code{\link[data.table]{fread}} from the \code{\link[data.table]{data.table-package}} 
+#' \code{ReadGeoData} runs \code{\link[data.table]{fread}} from the \code{\link{data.table}} 
 #' with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and 
 #' upper-case column names.
 #' 
@@ -519,7 +520,7 @@ ReadPar <- function (filename = "par.txt") {
 #' 
 #' @details
 #' \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
-#' \code{\link[data.table]{data.table-package}}, 
+#' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 #' of the time step period.
 #' 
@@ -661,7 +662,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' 
 #' @details
 #' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
-#' \code{\link[data.table]{data.table-package}}, 
+#' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 #' of the time step period.
 #' 
@@ -859,7 +860,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #'  
 #' @details
 #' \code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
-#' \code{\link[data.table]{data.table-package}}, 
+#' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Observation IDs (SUBIDs or IDs connected to SUBIDs with a 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 
 #' attribute \code{obsid} (see \code{\link{attr}} on how to access it). 
@@ -1262,7 +1263,7 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #'  
 #' @details
 #' \code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
-#' e.g. plotting legend labels or examining imported GeoClass files. \code{\link{PlotBasinEvaluation}} requires a list 
+#' e.g. plotting legend labels or examining imported GeoClass files. E.g., \code{\link{PlotBasinSummary}} requires a list 
 #' as returned from \code{ReadDescription} for labeling. 
 #' 
 #' A description.txt file consists of 22 lines, alternating names and semicolon-separated content. Lines 

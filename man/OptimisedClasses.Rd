@@ -12,8 +12,6 @@ OptimisedClasses(x)
 \value{
 \code{OptimisedClasses} returns a named list with one vector element for each parameter found in \code{x}. List element 
 names are HYPE parameter names. Each vector contains the optimised class numbers for the respective parameter.
-
-\dontrun{OptimisedClasses(myoptpar)}
 }
 \description{
 \code{OptimisedClasses} checks which classes (land use or soil) of parameters in an imported optpar list are actually 
@@ -23,5 +21,9 @@ optimised, i.e. have a min/max range larger than zero.
 \code{OptimisedClasses} allows to quickly check which classes of parameters in an optpar.txt file are actually optimised 
 during a HYPE optimisation run. The function compares min and max values in the \code{pars} element of an imported HYPE 
 optpar.txt file to identify those.
+}
+\examples{
+\dontrun{OptimisedClasses(myoptpar)}
+
 }
 
