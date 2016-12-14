@@ -30,7 +30,8 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return 
 \value{
 \code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
-\code{date}, a vector of date-times (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
+\code{date}, a vector of date-times (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
+and \code{comment} with the first line of the imported file as text string.
 }
 \description{
 This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') into R.
