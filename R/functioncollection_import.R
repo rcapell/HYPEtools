@@ -527,7 +527,8 @@ ReadPar <- function (filename = "par.txt") {
 #' @return
 #' \code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
-#' \code{date}, a vector of date-times (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
+#' \code{date}, a vector of date-times (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
+#' and \code{comment} with the first line of the imported file as text string.
 #' 
 #' @note
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
@@ -561,7 +562,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
     hype.var <- substr(strsplit(filename, "map")[[1]][2], start = 1, stop = 4)
   }
   
-  # import dates, prepare subid attribute vector
+  # import comment and dates, prepare date attribute vector
   xattr <- readLines(filename, n = 2)
   xd <- strsplit(xattr[2], split = ",")[[1]][-1]
   
@@ -596,6 +597,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
     
     attr(x, which = "date") <- xd
     attr(x, "variable") <- toupper(hype.var)
+    attr(x, "comment") <- xattr[1]
     
     # conditional: timestep attribute identified by difference between first two entries
     tdff <- tryCatch(as.numeric(difftime(xd[2], xd[1], units = "hours")), error = function(e) {NA})
