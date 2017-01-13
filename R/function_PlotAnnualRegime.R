@@ -4,9 +4,10 @@
 #'
 #' @param x List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
 #' regime data and two attributes \code{period} and \code{timestep}.
-#' See Details and Value description there.
-#' @param type Character string, keyword for plot type. Either \code{"mean"} to plot long-term averages only, or \code{"minmax"} or 
-#' \code{"p25p75"} to include bands of variation. See details.
+#' See Details and Value sections there.
+#' @param line Character string, keyword for type of average line to plot. Either \code{"mean"} or \code{"median"}.
+#' @param band Character string, keyword for variation bands. Either \code{NULL} to plot long-term averages only, or \code{"minmax"} or 
+#' \code{"quartile"} to include bands of variation. See details.
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
 #' @param l.legend Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.
 #' @param log Logical, if \code{TRUE}, y-axis will be log-scaled.
@@ -24,7 +25,7 @@
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
 #' 
 #' @details
-#' If \code{"minmax"} or \code{"p25p75"} are chosen for argument \code{type}, transparent bands of inter-annual variation are plotted along the 
+#' If \code{"minmax"} or \code{"quartile"} are chosen for argument \code{band}, transparent bands of inter-annual variation are plotted along the 
 #' long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
 #' 
 #' Vertical lines of background grid are mid-month lines.
@@ -42,9 +43,10 @@
 
 
 
-PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NULL, log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
-                 xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, 
-                 restore.par = FALSE) {
+PlotAnnualRegime <- function(x, line = "mean", band = NULL, add.legend = FALSE, l.legend = NULL, log = FALSE, ylim = NULL, 
+                             ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
+                             xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", 
+                             lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, restore.par = FALSE) {
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar <- par("mar")
@@ -59,7 +61,8 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
   nq <- ncol(x$mean) - 2
   
   # input check for type specification arguments
-  stopifnot(any(type == "mean", type == "minmax", type == "p25p75"))
+  stopifnot(any(line == "mean", line == "median"))
+  stopifnot(any(band == "minmax", band == "quartile"))
   
   
   # input checks for line property specification arguments
@@ -75,11 +78,13 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
   
     
   # conditional: extract automatic y-axis limits by finding global maxima in all provided data series
-  if (is.null(ylim) && type == "mean") {
+  if (is.null(ylim) && line == "mean" && is.null(band)) {
     ylim <- range(unlist(x$mean[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
-  } else if (is.null(ylim) && type == "minmax") {
+  } else if (is.null(ylim) && line == "median" && is.null(band)) {
+    ylim <- range(unlist(x$median[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
+  } else if (is.null(ylim) && band == "minmax") {
     ylim <- range(unlist(rbind(x$min, x$max)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
-  } else if (is.null(ylim) && type == "p25p75") {
+  } else if (is.null(ylim) && band == "quartile") {
     ylim <- range(unlist(rbind(x$p25, x$p75)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
   }
   
@@ -123,8 +128,12 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
   grid(nx = NA, ny = NULL)
   if (attr(x, "timestep") == "month") {
     vline <- x$mean[, 1]
-  } else {
+  } else if (attr(x, "timestep") == "day") {
     vline <- x$mean[which(format(x$mean[, 1], format = "%d") == "15"), 1]
+  } else if (attr(x, "timestep") == "week") {
+    # expand to daily dates and pick the 15th of each month
+    te <- seq(from = x$mean[1, 1], to = x$mean[nrow(x$mean), 1], by = "day")
+    vline <- te[which(format(te, format = "%d") == "15")]
   }
   abline(v = vline, col = "lightgray", lty = "dotted", lwd = par("lwd"))
   
@@ -135,7 +144,7 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
   
   
   # plot regimes, incl transparent variation polygons if requested, using internal function
-  if (type == "minmax") {
+  if (band == "minmax") {
     
     polcol <- .makeTransparent(lcol, 30)
     for (i in 3:(nq + 2)) {
@@ -143,18 +152,26 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
       polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)
     }
     
-  } else if (type == "p25p75") {
+  }
+  if (band == "quartile") {
     
     polcol <- .makeTransparent(lcol, 30)
     for (i in 3:(nq + 2)) {
-      polcoor <- rbind(x$p25[, c(1, i)], x$p75[nrow(x$maximum):1, c(1, i)])
+      polcoor <- rbind(x$p25[, c(1, i)], x$p75[nrow(x$p75):1, c(1, i)])
       polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)
     }
   }
-  for (i in 3:(nq + 2)) {
+  if (line == "mean") {
+    for (i in 3:(nq + 2)) {
       lines(x$mean[, 1], x$mean[, i], type = "l", pch = 16, cex = 0.4, col = lcol[i - 2], lty = llty[i - 2], lwd = llwd[i - 2])
+    }
   }
-      
+  if (line == "median") {
+    for (i in 3:(nq + 2)) {
+      lines(x$median[, 1], x$median[, i], type = "l", pch = 16, cex = 0.4, col = lcol[i - 2], lty = llty[i - 2], lwd = llwd[i - 2])
+    }
+  }
+  
   # add legend if requested
   if (add.legend) {
     
@@ -176,11 +193,12 @@ PlotAnnualRegime <- function(x, type = "mean", add.legend = FALSE, l.legend = NU
 # mar <- c(3, 3, 1, 1) + .1
 # ylab <- expression(paste("Q (m"^3, " s"^{-1}, ")"))
 # xlab <- paste(format(attr(x, "period"), format = "%Y"), collapse = " to ")
-# col <- "blue"
+# col <- 1:4
 # lty <- 1
 # lwd <- 1
-# type <- "mean"
+# line <- "mean"
+# band <- "quartile"
 # add.legend <- FALSE
 # l.legend <- NULL
 # ylim <- NULL
-
+# log <- F

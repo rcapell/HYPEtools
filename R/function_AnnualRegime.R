@@ -21,9 +21,9 @@
 #' 
 #' @details
 #' \code{AnnualRegime} uses \code{\link{aggregate}} to calculate long-term average regimes for all data columns provided in \code{x}, 
-#' including long-term arithmetic means, minima and maxima, and 25\% and 75\% percentiles. In a HYPE context, \code{AnnualRegime} 
+#' including long-term arithmetic means, medians, minima and maxima, and 25\% and 75\% percentiles. In HYPE context, \code{AnnualRegime} 
 #' is particularly applicable to model basin and time results imported using \code{\link{ReadBasinOutput}} and 
-#' \code{\link{ReadTimeOutput}}. The function currently does not check if equally spaced time steps are provided in \code{x} or if the 
+#' \code{\link{ReadTimeOutput}}. The function does not check if equally spaced time steps are provided in \code{x} or if the 
 #' overall time period in \code{x} covers full years so that the calculated averages are based on the same number of values.
 #' 
 #' Values within each output time period can be aggregated either by arithmetic means or by sums within each period, e.g. typically 
@@ -41,11 +41,11 @@
 #' \code{'53'} are merged to week \code{'00'} prior to average computations.
 #' 
 #' @return 
-#' \code{AnnualRegime} returns a list with 7 elements and two additional \code{\link{attributes}}. 
-#' 
-#' Each element contains a data frame with, in column-wise order: reference dates in \code{POSIXct} format, date information as string, 
+#' \code{AnnualRegime} returns a list with 8 elements and two additional \code{\link{attributes}}. Each list element contains a 
+#' named data frame with, in column-wise order: reference dates in \code{POSIXct} format, date information as string, 
 #' mean values, min values, max values, and 25\% and 75\% percentiles.
-#' Reference dates are given as dates in 1911/1912/1913 (just because a leap day and weeks '00'/'53' occurr during these years) and can 
+#' 
+#' Reference dates are given as dates in 1911/1912/1913 (just because a leap day and weeks '00'/'53' occur during these years) and can 
 #' be used for plots starting at the beginning of the hydrological year (with axis annotations set to months only). Daily and hourly 
 #' time steps are given as is, weekly time steps are given as mid-week dates (Wednesday), monthly time steps as mid month dates (15th). 
 #' 

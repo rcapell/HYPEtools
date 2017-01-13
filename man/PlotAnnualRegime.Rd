@@ -4,19 +4,22 @@
 \alias{PlotAnnualRegime}
 \title{Plot annual regimes}
 \usage{
-PlotAnnualRegime(x, type = "mean", add.legend = FALSE, l.legend = NULL,
-  log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{    
-  -1 }, ")")), xlab = paste(format(attr(x, "period"), format = "\%Y"),
-  collapse = " to "), col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1,
-  1) + 0.1, restore.par = FALSE)
+PlotAnnualRegime(x, line = "mean", band = NULL, add.legend = FALSE,
+  l.legend = NULL, log = FALSE, ylim = NULL,
+  ylab = expression(paste("Q (m"^3, " s"^{     -1 }, ")")),
+  xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse = " to "),
+  col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + 0.1,
+  restore.par = FALSE)
 }
 \arguments{
 \item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
 regime data and two attributes \code{period} and \code{timestep}.
-See Details and Value description there.}
+See Details and Value sections there.}
 
-\item{type}{Character string, keyword for plot type. Either \code{"mean"} to plot long-term averages only, or \code{"minmax"} or 
-\code{"p25p75"} to include bands of variation. See details.}
+\item{line}{Character string, keyword for type of average line to plot. Either \code{"mean"} or \code{"median"}.}
+
+\item{band}{Character string, keyword for variation bands. Either \code{NULL} to plot long-term averages only, or \code{"minmax"} or 
+\code{"quartile"} to include bands of variation. See details.}
 
 \item{add.legend}{Logical. If \code{TRUE}, a legend will be added to the plot.}
 
@@ -51,7 +54,7 @@ series in \code{freq}.}
 Convenience wrapper function for a combined line \code{\link{plot}} with \code{\link{polygon}} variation ranges.
 }
 \details{
-If \code{"minmax"} or \code{"p25p75"} are chosen for argument \code{type}, transparent bands of inter-annual variation are plotted along the 
+If \code{"minmax"} or \code{"quartile"} are chosen for argument \code{band}, transparent bands of inter-annual variation are plotted along the 
 long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
 
 Vertical lines of background grid are mid-month lines.
