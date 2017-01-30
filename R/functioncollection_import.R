@@ -634,9 +634,6 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
   return(x)
 }
 
-# ## DEBUG
-# filename <- "d:/Rpackage_dev/r302/testdata/mapCCIN.txt"
-# dt.format <- "%Y"
 
 
 
@@ -703,17 +700,22 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     stop(paste("Unknown type", type, "."))
   }
   
-  # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
-  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = d.t, 
-             select = select, nrows = nrows)
-  
-  
   # import subids, prepare subid attribute vector
   xattr <- readLines(filename, n = 2)
   sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
   if (!is.null(select)) {
     sbd <- sbd[select[-1] - 1]
   }
+  
+  # create select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
+  if (is.null(select)) {
+    select <- 1:(length(sbd) + 1)
+  }
+  
+  # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
+  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = d.t, 
+             select = select, nrows = nrows)
+  
   
   # read hype.var from filename, if not provided by user
   if (is.null(hype.var)) {
