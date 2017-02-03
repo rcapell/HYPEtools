@@ -28,6 +28,7 @@
 
 SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
   
+  # input data checks
   if (!is.null(bd)) {
     brcol.br <- which(tolower(colnames(bd)) == "branchid")
     brcol.sr <- which(tolower(colnames(bd)) == "sourceid")
@@ -57,21 +58,23 @@ SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
   
   if (!is.null(bd)) {
     
-    # find outlet subids for all subids in bd
+    ## find outlet subids for all subids in bd
     te <- ibd
+    # get outlets for main stream in branchings
     te[, 1] <- sapply(te[, 1], function(x, y) {sort(AllDownstreamSubids(subid = x, gd = y), decreasing = T)[1]}, y = igd)
+    # get outlets for branches, conditional on that they exist in gd (they can go out of the domain)
     te[, 2] <- sapply(te[, 2], function(x, y) {ifelse(x %in% y[, 1], sort(AllDownstreamSubids(subid = x, gd = y), decreasing = T)[1], 0)}, y = igd)
     
-    # identify and remove rows with identical numbers
+    # identify and remove rows with identical numbers (which means that the branch is a "shortcut" within a basin)
     te <- te[ifelse(te[, 1] == te[, 2], F, T), ]
     
     # identify and remove rows with branches to outside domain
     te <- te[which(te[, 2] != 0), ]
     
     # identify and remove row duplicates (in case of several branch connections between different basins)
-    te <- unique(t(apply(te, 1, sort)))
+    te <- te[!duplicated(te), ]
     
-    # conditional on any cases being left
+    # conditional on any cases being left (meaning there are inter-basin connections)
     if (nrow(te) > 0) {
       
       # convert outlet data frame to list, which is then iteratively regrouped below if necessary
@@ -79,7 +82,8 @@ SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
       
       # conditional on existence of duplicated outlet SUBIDs in branch-connected basins:
       # find and group all branch-connected outlets (this can theoretically be several in a chain)
-      ve <- as.vector(te)
+      # WRONG? ve <- as.vector(te)
+      ve <- unlist(te)
       if (length(ve[duplicated(ve)]) > 0) {
         ve <- unique(ve[duplicated(ve)])
         
@@ -96,7 +100,7 @@ SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
         }
       }
       
-      # dummy outlet subids, larger than max allowed subid size (HYPE restriction)
+      # dummy outlet subids, larger than max allowed subid number of digits (HYPE restriction)
       dsbd <- 1:length(le) + 10^8
       
       # add dummy outlets to internal gd
