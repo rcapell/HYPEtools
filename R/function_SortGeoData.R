@@ -61,14 +61,14 @@ SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
     ## find outlet subids for all subids in bd
     te <- ibd
     # get outlets for main stream in branchings
-    te[, 1] <- sapply(te[, 1], function(x, y) {sort(AllDownstreamSubids(subid = x, gd = y), decreasing = T)[1]}, y = igd)
+    te[, 1] <- sapply(te[, 1], function(x, y) {rev(AllDownstreamSubids(subid = x, gd = y))[2]}, y = igd)
     # get outlets for branches, conditional on that they exist in gd (they can go out of the domain)
-    te[, 2] <- sapply(te[, 2], function(x, y) {ifelse(x %in% y[, 1], sort(AllDownstreamSubids(subid = x, gd = y), decreasing = T)[1], 0)}, y = igd)
+    te[, 2] <- sapply(te[, 2], function(x, y) {ifelse(x %in% y[, 1], rev(AllDownstreamSubids(subid = x, gd = y))[2], 0)}, y = igd)
     
-    # identify and remove rows with identical numbers (which means that the branch is a "shortcut" within a basin)
+    # identify and remove rows where maindown and branch outlets are the same (which means that the branch is a "shortcut" within a basin)
     te <- te[ifelse(te[, 1] == te[, 2], F, T), ]
     
-    # identify and remove rows with branches to outside domain
+    # identify and remove rows with branches to outside domain (e.g. karstic sinks)
     te <- te[which(te[, 2] != 0), ]
     
     # identify and remove row duplicates (in case of several branch connections between different basins)
@@ -82,7 +82,6 @@ SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
       
       # conditional on existence of duplicated outlet SUBIDs in branch-connected basins:
       # find and group all branch-connected outlets (this can theoretically be several in a chain)
-      # WRONG? ve <- as.vector(te)
       ve <- unlist(te)
       if (length(ve[duplicated(ve)]) > 0) {
         ve <- unique(ve[duplicated(ve)])
@@ -105,7 +104,9 @@ SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
       
       # add dummy outlets to internal gd
       for (i in 1:length(le)) {
+        # add dummy subbasin as maindown to connected basin outlets
         igd[igd[, 1] %in% le[[i]], 2] <- dsbd[i]
+        # add dummy subbasin as new basin outlet
         igd <- rbind(igd, c(dsbd[i], 0))
       }
     }

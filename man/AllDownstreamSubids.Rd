@@ -33,4 +33,7 @@ is provided, the function will also include information on downstream bifurcatio
 \examples{
 \dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
 }
+\seealso{
+\code{\link{AllUpstreamSubids}}, \code{\link{OutletSubids}}, \code{\link{OutletIds}}
+}
 

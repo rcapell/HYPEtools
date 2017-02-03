@@ -50,6 +50,6 @@ For details on bifurcation handling in HYPE, see the
 
 }
 \seealso{
-\code{\link{UpstreamGeoData}}
+\code{\link{UpstreamGeoData}}, \code{\link{AllDownstreamSubids}}
 }
 

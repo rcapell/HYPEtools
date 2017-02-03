@@ -33,7 +33,7 @@
 #' the first, and flow weight fractions in the second column.
 #' 
 #' @seealso 
-#' \code{\link{UpstreamGeoData}}
+#' \code{\link{UpstreamGeoData}}, \code{\link{AllDownstreamSubids}}
 #' 
 #' @examples
 #' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
@@ -162,8 +162,9 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
       } else {
         us.exists <- FALSE
       }
-      #us <- unique(c(us, this.us), fromLast = T)
-      us <- unique(c(us, this.us))
+      # append newly found upstreams to existing
+      # ff duplicates found, keep the newest one, which is the most upstream (this only happens with branches)
+      us <- unique(c(us, this.us), fromLast = T)
     }
     
     # add outlet SUBID to result vector
