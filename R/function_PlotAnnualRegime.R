@@ -37,7 +37,7 @@
 #' \code{\link{AnnualRegime}}, \code{\link{PlotSimObsRegime}}
 #' 
 #' @examples
-#' \dontrun{AnnualRegime(x = myregime)}
+#' \dontrun{PlotAnnualRegime(x = myregime)}
 #' 
 #' @export
 

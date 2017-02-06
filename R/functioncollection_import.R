@@ -314,12 +314,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
   xobs <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, nrows = nrows, 
                 colClasses = c("NA", rep("numeric", length(sbd))))
   
-  attr(xobs, which = "comment") <- cmt
-  attr(xobs, which = "variable") <- hype.var
-  attr(xobs, which = "subid") <- sbd
-  
   # update header, composite of variable and subid
-  names(xobs) <- c("DATE", paste(attr(xobs, "variable"), attr(xobs, "subid"), sep = "_"))
+  names(xobs) <- c("DATE", paste(hype.var, sbd, sep = "_"))
   
   # warn if duplicate columns found, throw useful msg
   if (length(names(xobs)) != length(unique(names(xobs)))) {
@@ -332,37 +328,30 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
   # date conversion 
   xd <- as.POSIXct(strptime(xobs[, 1], format = dt.format), tz = "GMT")
   xobs[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-    cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object."); return(xobs[, 1])})
+    cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object.\n"); return(xobs[, 1])})
   
-  # if date conversion worked and time steps are HYPE-conform, add class HypeXobs to returned object 
-  if(!is.character(xobs[, 1]) && duplifree) {
-    # check if time steps are equidistant
-    tstep <- diff(xobs[, 1])
-    hypexobsclass <- TRUE
-    if (min(tstep) != max(tstep)) {
-      hypexobsclass <- FALSE
-      warning("Non-equidistant time steps in 'x'.")
-    }
-    # check if time steps are at least daily
-    tunits <- attr(tstep, "units")
-    if (tunits == "days" && tstep[1] > 1) {
-      hypexobsclass <- FALSE
-      warning("Longer-than-daily time steps not allowed in HypeXobs objects.")
-    }
+  
+  # if date conversion worked and time steps are HYPE-conform (need at least 2 time steps), make returned object class HypeXobs
+  if(!is.character(xobs[, 1]) && duplifree && nrow(xobs > 1)) {
     
-    # add new class and timestep attribute, conditional on time step conformity
-    if (hypexobsclass) {
-      class(xobs) <- c("HypeXobs", "data.frame")
-      if (tunits == "days") {
-        attr(xobs, "timestep") <- "day"
-      } else {
-        attr(xobs, "timestep") <- paste0(tstep[1], tunits)
-      }
-    } else {
+    # create HypeXobs object, can fail if multi-day time steps in imported table
+    xobs <- tryCatch(HypeXobs(x = xobs, comment = cmt, variable = hype.var, subid = sbd), 
+                     error = function(e) {cat("Longer-than-daily time steps not allowed in HypeXobs objects.\n"); return(xobs)})
+    
+    # update with additional attributes if HypeXobs class assignment failed
+    if (!any(class(xobs) == "HypeXobs")) {
+      attr(xobs, which = "comment") <- cmt
+      attr(xobs, which = "variable") <- hype.var
+      attr(xobs, which = "subid") <- sbd
       warning("Imported as data frame, not as 'HypeXobs' object.")
     }
     
   } else {
+    # update with additional attributes if not a HypeXobs object
+    attr(xobs, which = "comment") <- cmt
+    attr(xobs, which = "variable") <- hype.var
+    attr(xobs, which = "subid") <- sbd
+    
     warning("Imported as data frame, not as 'HypeXobs' object.")
   }
   
