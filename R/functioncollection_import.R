@@ -332,7 +332,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
   
   
   # if date conversion worked and time steps are HYPE-conform (need at least 2 time steps), make returned object class HypeXobs
-  if(!is.character(xobs[, 1]) && duplifree && nrow(xobs > 1)) {
+  if(!is.character(xobs[, 1]) && duplifree && nrow(xobs) > 1) {
     
     # create HypeXobs object, can fail if multi-day time steps in imported table
     xobs <- tryCatch(HypeXobs(x = xobs, comment = cmt, variable = hype.var, subid = sbd), 

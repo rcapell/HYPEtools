@@ -60,7 +60,7 @@ long-term average line plots, either based on minimum and maximum values or on 2
 Vertical lines of background grid are mid-month lines.
 }
 \examples{
-\dontrun{AnnualRegime(x = myregime)}
+\dontrun{PlotAnnualRegime(x = myregime)}
 
 }
 \seealso{
