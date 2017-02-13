@@ -112,7 +112,7 @@ CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = 
     stop("Class transfer file provided for method 1, but no cleaning requested in 'm1.clean'")
   }
   
-  # record start time, to print calculatation time later on
+  # record start time, to print calculation time later on
   starttime <- Sys.time()
   
   ## Common data preparation operations

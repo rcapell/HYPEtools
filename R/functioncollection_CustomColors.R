@@ -35,10 +35,10 @@ ColTemp <- colorRampPalette(c("#0000ff", "#0080ff", "#80ffff", "#f0f0f0", "#ffff
 ColQ <- colorRampPalette(c("#ede7ff", "#2300ff"))
 #' @rdname CustomColors
 #' @export
-ColDiffTemp <- colorRampPalette(c("#2892c7", "#d5f6d0", "#e81515"))
+ColDiffTemp <- colorRampPalette(c("#2892c7", "#e9f0e8", "#e81515"))
 #' @rdname CustomColors
 #' @export
-ColDiffGeneric <- colorRampPalette(c("#e81515", "#d5f6d0", "#2892c7"))
+ColDiffGeneric <- colorRampPalette(c("#e81515", "#e9f0e8", "#2892c7"))
 
 # color ramp palettes with dominant color and saturation gradient, for qualitative differences
 #' @rdname CustomColors

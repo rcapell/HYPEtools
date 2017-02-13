@@ -53,7 +53,7 @@ r.HypeSingleVar <- function(sim, obs, progbar = TRUE, ...){
   # internal function to split HypeSingleVar array into a list of time series, used in (pb)lapply below
   array2list <- function(x, y, z, a) {as.numeric(a[, y[x], z[x]])}
   
-  # calculate NSEs, with conditional verbosity
+  # calculate correlation coefs, with conditional verbosity
   if (progbar) {
     cat("Preparing 'sim'.\n")
     s <- pblapply(dim.seq, array2list, y = dim.y, z = dim.z, a = sim)
