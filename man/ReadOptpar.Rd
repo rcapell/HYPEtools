@@ -4,7 +4,7 @@
 \alias{ReadOptpar}
 \title{Read an 'optpar.txt' file}
 \usage{
-ReadOptpar(filename)
+ReadOptpar(filename = "optpar.txt")
 }
 \arguments{
 \item{filename}{Path to and file name of the 'optpar.txt' file to import.}

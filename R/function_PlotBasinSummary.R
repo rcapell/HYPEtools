@@ -85,11 +85,20 @@
 #' @export
 
 
-PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd = NULL, gcl = gcl, psd = NULL, 
+PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd = NULL, gcl = NULL, psd = NULL, 
                              subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
                              from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = NULL) {
   
   ## Preliminaries
+  
+  # check if panels argument is ok
+  if (length(panels) != 1 && !(panels %in% 1:3)) {
+    stop("Wrong 'panels' specification.")
+  }
+  # check if gcl is specified if bar plots are requested
+  if (is.null(gcl) && (panels %in% c(1, 3))) {
+    stop("Argument 'gcl' required for bar plot panels.")
+  }
   
   
   # set axis scaling parameters, conditional on arguments
@@ -197,11 +206,6 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
     } else {
       stop("Wrong specification of argument 'hype.vars'.")
     }
-  }
-  
-  # check if panels argument is ok
-  if (length(panels) != 1 && !(panels %in% 1:3)) {
-    stop("Wrong 'panels' specification.")
   }
   
   

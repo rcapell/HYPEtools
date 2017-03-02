@@ -4,14 +4,14 @@
 #' of area fractions
 #' 
 #' @param gd Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
-#' @param gc Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+#' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}.
 #' @param col.landuse Specification of colors for box outlines, to represent land use classes. Either a keyword character string, or a vector of 
-#' colors with one element for each land use class as given in argument \code{gc} in ascending order. Possible keywords are \code{'rainbow'} (default) 
+#' colors with one element for each land use class as given in argument \code{gcl} in ascending order. Possible keywords are \code{'rainbow'} (default) 
 #' or \code{'auto'}. \code{'rainbow'} triggers a generation of land use class colors using the \code{\link{rainbow}} palette. \code{'auto'} triggers 
 #' generation of a pretty color palette with similar colors for land use groups. This option requires specification of land use groups in argument 
 #' \code{col.group}.
-#' @param col.group Integer vector of the same length as the number of land use classes given in \code{gc}. Specifies a land use group ID for 
+#' @param col.group Integer vector of the same length as the number of land use classes given in \code{gcl}. Specifies a land use group ID for 
 #' each land use class ID, in ascending order. Groups and group IDs to use (in parentheses):
 #' \itemize{
 #' \item Water, snow, and ice (1)
@@ -21,7 +21,7 @@
 #' \item Natural non-forested (5)
 #' }
 #' @param lab.legend Character string giving optional land use and soil class names to label the legend. Land use classes first, then soil classes. 
-#' Both following class IDs as given in \code{gc} in ascending order.
+#' Both following class IDs as given in \code{gcl} in ascending order.
 #' @param pos.legend Numeric, legend position in x direction. Given as position on the right hand outside of the plot area in x-axis units.
 #' @param abs.area Logical, if \code{TRUE}, boxes will be plotted for absolute areas instead of area fractions.
 #' @param log Character string, passed to \code{\link{boxplot}}. Empty string for linearly scaled axes, \code{'y'} for log scaled y-axis 
@@ -51,22 +51,22 @@
 #' @examples
 #' \dontrun{
 #' x11(width = 14, height = 7)
-#' BoxplotSLCClasses(gd = my.gd, gc = my.gc)
+#' BoxplotSLCClasses(gd = my.gd, gcl = my.gcl)
 #' }
 #' 
 #' @export
 
-BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 
+BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 
                              range = 0, mar = c(3,3,1,7)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = T) {
   
   # if lab.legend was specified, check for consistency with number of land use and soil classes
-  if (!is.null(lab.legend) && length(lab.legend) != length(c(unique(gc[, 2]), unique(gc[,3])))) {
-    stop("Length of 'lab.legend' does not match the combined number of land use and soil classes in 'gc'. Exiting.")
+  if (!is.null(lab.legend) && length(lab.legend) != length(c(unique(gcl[, 2]), unique(gcl[,3])))) {
+    stop("Length of 'lab.legend' does not match the combined number of land use and soil classes in 'gcl'. Exiting.")
   }
   
-  # if lab.legend was not specified, fill with land use and soil class IDs from gc
+  # if lab.legend was not specified, fill with land use and soil class IDs from gcl
   if (is.null(lab.legend)) {
-    lab.legend <- c(paste("landuse_", sort(unique(gc[, 2])), sep = ""), paste("soil_", sort(unique(gc[, 3])), sep = ""))
+    lab.legend <- c(paste("landuse_", sort(unique(gcl[, 2])), sep = ""), paste("soil_", sort(unique(gcl[, 3])), sep = ""))
   }
   
   # identify SLC columns in gd
@@ -105,21 +105,21 @@ BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL,
   if (length(col.landuse) == 1) {
     if (col.landuse == "rainbow") {
       
-      col.lu <- as.factor(gc[, 2])
+      col.lu <- as.factor(gcl[, 2])
       levels(col.lu) <- rainbow(length(levels(col.lu)), s = 0.8)
       legend.lu <- levels(col.lu)
       col.lu <- as.character(col.lu)
       
     } else if (col.landuse == "auto") {
       
-      col.lu <- as.factor(gc[, 2])
+      col.lu <- as.factor(gcl[, 2])
       
-      # check if required argument col.group exists has the same length as the number of land use classes in gc, and is vector within 1 and 5
+      # check if required argument col.group exists has the same length as the number of land use classes in gcl, and is vector within 1 and 5
       if (is.null(col.group)) {
         stop("'col.landuse = \"auto\"' requires non-NULL 'col.group'. Exiting.")
       }
       if (length(col.group) != length(levels(col.lu))) {
-        stop("'col.group' length and number of land use classes in 'gc' do not match. Exiting.")
+        stop("'col.group' length and number of land use classes in 'gcl' do not match. Exiting.")
       }
       if (min(col.group) < 1 || max(col.group) > 5) {
         stop("'col.group' not within a range from 1 to 5. Exiting.")
@@ -142,11 +142,11 @@ BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL,
   # vector specified for col.landuse
   } else {
     
-    col.lu <- as.factor(gc[, 2])
+    col.lu <- as.factor(gcl[, 2])
     
     # check of number of colors matches number of land use classes
     if (length(col.landuse) != length(levels(col.lu))) {
-      stop("'col.landuse' length and number of land use classes in 'gc' do not match. Exiting.")
+      stop("'col.landuse' length and number of land use classes in 'gcl' do not match. Exiting.")
     }
     
     # assign colors to SLCs
@@ -196,11 +196,11 @@ BoxplotSLCClasses <- function(gd, gc, col.landuse = "rainbow", col.group = NULL,
   } else {
     soil.y <- usr.cur[3] + (ylimit[1] - usr.cur[3])/2
   }
-  points(x = 1:nslc, y = rep(soil.y, nslc), pch = gc[, 3] - 1)
+  points(x = 1:nslc, y = rep(soil.y, nslc), pch = gcl[, 3] - 1)
   
   ## add legend
   # number of soil classes, number of land use classes
-  nsoil <- length(unique(gc[, 3]))
+  nsoil <- length(unique(gcl[, 3]))
   # legend y position, conditional on axis scaling
   if (log == "y") {
     legend.y <- 10^(mean(usr.cur[3:4]))

@@ -1143,7 +1143,7 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 #' 
 #' @export
 
-ReadOptpar <- function(filename) {
+ReadOptpar <- function(filename = "optpar.txt") {
   
   # read tasks and settings into a character vector (one string per row in file)
   tasks <- scan(filename, what = "", sep = "\n", nlines = 21, quiet = TRUE)

@@ -7,6 +7,7 @@
 #     - WriteXobs()
 #     - WriteBasinOutput()
 #     - WriteTimeOutput()
+#     - 
 #     - WritePmsf()
 #     - WritePTQobs()
 #     - HypeDataImport:
@@ -538,7 +539,7 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   if (is.double(x[, 1])) {
     x[, 1] <- format(x[, 1], format = dt.format)
   } else {
-    warning("Date column not formatting failed. Exported unchanged.")
+    warning("Date column formatting failed. Exported unchanged.")
   }
   
   # export the object, omitting header
@@ -552,6 +553,63 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 # x[,1]
 # dt.format <- "%Y"
 # filename <- "test.txt"
+
+
+
+
+
+
+
+
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteMapOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#' @export
+#' @title
+#' Write a 'mapXXXX.txt' file
+#'
+#' @description
+#' Function to export a map output file from R.
+#' 
+#' @param x The object to be written, a dataframe with \code{comment}, \code{date}, and \code{timestep} 
+#' attributes, as an object returned from \code{\link{ReadMapOutput}}.
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'.
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
+#' and annual values allowed, e.g. '\%Y'.
+#'  
+#' @details
+#' \code{WriteTimeOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's map output files.
+#  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
+#' 
+#' @examples
+#' \dontrun{WriteMapOutput(x = myCCTN, filename = "mapCCTN.txt")}
+#' 
+
+WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
+  
+  # create and open a file connection to write header to
+  conn <- file(description = filename, open = "w")
+  # write header lines
+  writeLines(attr(x, "comment"), con = conn)
+  writeLines(paste(c("SUBID", attr(x, "subid")), collapse = "\t"), con = conn)
+  # close the connection
+  close(conn)
+  
+  # attempt to format the date column if it is POSIX (double number) to the given format string, otherwise return unchanged with a warning
+  if (is.double(x[, 1])) {
+    x[, 1] <- format(x[, 1], format = dt.format)
+  } else {
+    warning("Date column not formatting failed. Exported unchanged.")
+  }
+  
+  # export the object, omitting header
+  write.table(x, file = filename, append = T, sep = "\t", row.names = F, col.names = F, na = "-9999", quote = F)
+  
+}
+
+
 
 
 

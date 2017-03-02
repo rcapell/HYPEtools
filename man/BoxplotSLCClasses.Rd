@@ -4,7 +4,7 @@
 \alias{BoxplotSLCClasses}
 \title{Box plots of SLC distributions}
 \usage{
-BoxplotSLCClasses(gd, gc, col.landuse = "rainbow", col.group = NULL,
+BoxplotSLCClasses(gd, gcl, col.landuse = "rainbow", col.group = NULL,
   lab.legend = NULL, pos.legend = 1, abs.area = F, log = "",
   ylim = NULL, range = 0, mar = c(3, 3, 1, 7) + 0.1, mgp = c(1.5, 0.2,
   0), tcl = 0.1, xaxs = "i", xpd = T)
@@ -12,16 +12,16 @@ BoxplotSLCClasses(gd, gc, col.landuse = "rainbow", col.group = NULL,
 \arguments{
 \item{gd}{Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
 
-\item{gc}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 file imported with \code{\link{ReadGeoClass}}.}
 
 \item{col.landuse}{Specification of colors for box outlines, to represent land use classes. Either a keyword character string, or a vector of 
-colors with one element for each land use class as given in argument \code{gc} in ascending order. Possible keywords are \code{'rainbow'} (default) 
+colors with one element for each land use class as given in argument \code{gcl} in ascending order. Possible keywords are \code{'rainbow'} (default) 
 or \code{'auto'}. \code{'rainbow'} triggers a generation of land use class colors using the \code{\link{rainbow}} palette. \code{'auto'} triggers 
 generation of a pretty color palette with similar colors for land use groups. This option requires specification of land use groups in argument 
 \code{col.group}.}
 
-\item{col.group}{Integer vector of the same length as the number of land use classes given in \code{gc}. Specifies a land use group ID for 
+\item{col.group}{Integer vector of the same length as the number of land use classes given in \code{gcl}. Specifies a land use group ID for 
 each land use class ID, in ascending order. Groups and group IDs to use (in parentheses):
 \itemize{
 \item Water, snow, and ice (1)
@@ -32,7 +32,7 @@ each land use class ID, in ascending order. Groups and group IDs to use (in pare
 }}
 
 \item{lab.legend}{Character string giving optional land use and soil class names to label the legend. Land use classes first, then soil classes. 
-Both following class IDs as given in \code{gc} in ascending order.}
+Both following class IDs as given in \code{gcl} in ascending order.}
 
 \item{pos.legend}{Numeric, legend position in x direction. Given as position on the right hand outside of the plot area in x-axis units.}
 
@@ -71,7 +71,7 @@ in a model set-up. Tested and recommended plot device dimensions are 14 x 7 inch
 \examples{
 \dontrun{
 x11(width = 14, height = 7)
-BoxplotSLCClasses(gd = my.gd, gc = my.gc)
+BoxplotSLCClasses(gd = my.gd, gcl = my.gcl)
 }
 
 }

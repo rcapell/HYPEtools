@@ -268,8 +268,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   # par settings: lend set to square line endings because the legend below works with very thick lines 
   # instead of boxes (a box size limitation work-around); xpd set to allow for plotting a legend on the margins
   if (!add) {
-    plot.new()
     par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
+    #plot.window(xlim = 0:1, ylim = 0:1)
     frame()
   } else {
     par(lend = 1, xpd = T, cex = par.cex)
@@ -408,7 +408,10 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   
   ## plot the map and add legend using the positioning information derived above
   
-  # map
+  # map, plot in current frame if not added because a new frame was already created above for calculating all the coordinates
+  if (!add) {
+    par(new = TRUE)
+  }
   plot(map, col = map$color, border = NA, ylim = pylim, xlim = pxlim, add = add)
   # legend
   if (plot.legend) {
@@ -512,11 +515,11 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
 
 # # DEBUG
 # library(rgdal)
-# x <- ReadMapOutput("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_shype/res_test/mapCOUT.txt")[, 1:2]
-# map <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_shype/gis", layer = "helgean_shype_aro_y")
+# x <- ReadMapOutput("/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean/model_helgean_shype/res_test/mapCOUT.txt")[, 1:2]
+# map <- readOGR(dsn = "/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/gis/helgean/subbasin", layer = "helgean_shype_aro_y")
 # map.subid.column <- 3
 # var.name <- "COUT"
-# plot.scale <- T
+# plot.scale <- F
 # map.adj <- 0
 # plot.legend <- T
 # legend.pos <- "bottomleft"
@@ -527,7 +530,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
 # par.mar <- rep(0, 4) + .1
 # legend.inset <- c(0,0)
 # par.cex <- 1
-# plot.arrow <- T
+# plot.arrow <- F
 # plot.legend <- T
-# add <- T
+# add <- F
 # rm(list = ls(all.names = T))

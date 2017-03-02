@@ -5,7 +5,7 @@
 \title{Plot a summary of model results for a single sub-basin}
 \usage{
 PlotBasinSummary(x, filename = "plot_basin", panels = 1, gd = gd,
-  bd = NULL, gcl = gcl, psd = NULL, subid = NULL, desc = NULL,
+  bd = NULL, gcl = NULL, psd = NULL, subid = NULL, desc = NULL,
   timestep = attr(x, "timestep"), hype.vars = "all", from = 1,
   to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10,
   name = NULL)
