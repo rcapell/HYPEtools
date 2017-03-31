@@ -182,7 +182,7 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
     }
     
     # print legend
-    legend("topright", legend = lgnd, bty = "n", lty = 1, col = col, cex=.9, lwd = llwd)
+    legend("topright", legend = lgnd, bty = "n", lty = llty, col = lcol, cex=.9, lwd = llwd)
   }
     
 }

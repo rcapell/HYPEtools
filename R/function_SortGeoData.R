@@ -26,7 +26,7 @@
 #' \dontrun{SortGeoData(gd = mygeodata, bd = mybranchdata)}
 
 
-SortGeoData <- function(gd = gd, bd = NULL, progbar = TRUE) {
+SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {
   
   # input data checks
   if (!is.null(bd)) {

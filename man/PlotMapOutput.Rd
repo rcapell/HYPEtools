@@ -6,9 +6,9 @@
 \usage{
 PlotMapOutput(x, map, map.subid.column = 1, var.name = "", map.adj = 0,
   plot.legend = T, legend.pos = "right", legend.title = NULL,
-  legend.inset = c(0, 0), col.ramp.fun = "auto", col.breaks = NULL,
-  plot.scale = T, plot.arrow = T, par.cex = 1, par.mar = rep(0, 4) +
-  0.1, add = FALSE, restore.par = FALSE)
+  legend.outer = F, legend.inset = c(0, 0), col.ramp.fun = "auto",
+  col.breaks = NULL, plot.scale = T, plot.arrow = T, par.cex = 1,
+  par.mar = rep(0, 4) + 0.1, add = FALSE, restore.par = FALSE)
 }
 \arguments{
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
@@ -32,6 +32,8 @@ or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means
 
 \item{legend.title}{Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
 is used as legend title string. For select HYPE variables, pretty legend titles are in-built.}
+
+\item{legend.outer}{Logical. If \code{TRUE}, outer break point values will be plotted in legend.}
 
 \item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
 See \code{\link{legend}} and details below.}

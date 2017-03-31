@@ -4,7 +4,7 @@
 \alias{SortGeoData}
 \title{Sort a GeoData dataframe in downstream order}
 \usage{
-SortGeoData(gd = gd, bd = NULL, progbar = TRUE)
+SortGeoData(gd, bd = NULL, progbar = TRUE)
 }
 \arguments{
 \item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.}
