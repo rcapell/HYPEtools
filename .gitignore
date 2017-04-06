@@ -12,6 +12,7 @@ src/obsfile_handling.lib
 src/obsfile_handling.exp
 src/obsfile_handling.dll
 src/HYPEtools.dll
+src/HYPEtools.so
 src-i386
 src-x64
 .gitignore

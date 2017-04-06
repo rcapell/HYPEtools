@@ -17,6 +17,7 @@
 #' \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.
 #' @param legend.title Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
 #' is used as legend title string. For select HYPE variables, pretty legend titles are in-built.
+#' @param legend.outer Logical. If \code{TRUE}, outer break point values will be plotted in legend.
 #' @param legend.inset Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
 #' See \code{\link{legend}} and details below.
 #' @param col Colors to use on the map. One of the following: \itemize{
@@ -74,7 +75,7 @@
 
 
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj = 0, plot.legend = T, 
-                          legend.pos = "right", legend.title = NULL, legend.inset = c(0, 0), col = NULL, 
+                          legend.pos = "right", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), col = NULL, 
                           col.breaks = NULL, plot.scale = T, plot.arrow = T, pt.cex = 1, 
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE) {
   
@@ -217,6 +218,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   
   # formatted annotation text (to be placed between legend boxes which is not possible with legend() directly)
   ann.txt <- signif(cbrks, digits = 2)
+  # conditional: remove outer break points
+  if (!legend.outer) {
+    ann.txt[c(1, length(ann.txt))] <- ""
+  }
   # annotation width (inches)
   ann.in.wd <- max(strwidth(ann.txt, "inches"))
   # legend inset required to accomodate text annotation, and scalebar (always below legend)
