@@ -85,7 +85,7 @@
 #' @export
 
 
-PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd = NULL, gcl = NULL, psd = NULL, 
+PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
                              subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
                              from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = NULL) {
   
@@ -98,6 +98,10 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
   # check if gcl is specified if bar plots are requested
   if (is.null(gcl) && (panels %in% c(1, 3))) {
     stop("Argument 'gcl' required for bar plot panels.")
+  }
+  # check if gd is specified if bar plots are requested
+  if (is.null(gd) && (panels %in% c(1, 3))) {
+    stop("Argument 'gd' required for bar plot panels.")
   }
   
   
@@ -434,13 +438,13 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
       # panel 5: regimeplot for Q
       if (exi.t["rout"] && exi.t["cout"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", log = log.r, add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
       } else if (exi.t["rout"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", log = log.r, add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
       } else if (exi.t["cout"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), type = "mean", log = log.r, add.legend = T, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -1599,13 +1603,20 @@ PlotBasinSummary <- function(x, filename = "plot_basin", panels = 1, gd = gd, bd
   
   # create plot device, conditional on filename
   if (is.null(filename)) {
-    dev.new(width=wdth, height = hght, noRStudioGD = T)
+    #dev.new(width=wdth, height = hght, noRStudioGD = T)
+    if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
+      X11(width=wdth, height = hght)
+    } else if (Sys.info()['sysname'] == "Darwin") {
+      quartz(idth=wdth, height = hght)
+    } else {
+      # try x11, not very likely to occur..
+      X11(width=wdth, height = hght)
+    }
   } else {
-    png(filename = paste0(filename, ".png"), width=wdth * 1.5, height = hght * 1.5, units = "in", res = 300, pointsize = 15)
+    png(filename = paste0(filename, ".png"), width=wdth * 1.5, height = hght * 1.5, units = "in", res = 300, pointsize = 20)
     # close the file device on exit
     on.exit(dev.off())
   }
-  
   # layout definition
   nf <- layout(mat = lay.mat[-1, , drop = FALSE], widths = lay.widths, heights = lay.heights)
   # layout.show(nf)
