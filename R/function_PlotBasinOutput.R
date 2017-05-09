@@ -58,7 +58,7 @@
 #' For a detailed description of the variables, see the 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 #' 
-#' \code{basinoutput variable uprf upsf temp uppe upev cout rout soim sm13 upfp snow uppr ccin rein ccon reon cctn retn ccsp 
+#' \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc ccin rein ccon reon cctn retn ccsp 
 #' resp ccpp repp cctp retp wcom wstr}
 #' 
 #' @return 
@@ -142,7 +142,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   names(xw) <- tolower(names(xw))
   
   # create vector over all target output variable names which are potentially used in the plot panels
-  nm.t <- c("date", "uprf", "upsf", "temp", "uppe", "upev", "cout", "rout", "soim", "sm13", "upfp", "snow", "uppr", 
+  nm.t <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "soim", "sm13", "upsmfp", "snow", "upcprc", 
             "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp", "wcom", "wstr")
   # initialise logical vector to indicate existence of target variables
   exi.t <- logical(length = length(nm.t))
@@ -163,10 +163,10 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   # select from existing variables based on user request, default is to use all available
   if (hype.vars[1] != "all") {
     if (hype.vars[1] == "hydro") {
-      nm.hydro <- c("date", "uprf", "upsf", "temp", "uppe", "upev", "cout", "rout", "snow", "uppr", "wcom", "wstr")
+      nm.hydro <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "snow", "upcprc", "wcom", "wstr")
       exi.t[!(nm.t %in% nm.hydro)] <- FALSE
     } else if (hype.vars[1] == "nutrients") {
-      nm.nutri <- c("date", "uprf", "upsf", "cout", "rout", "uppr", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp")
+      nm.nutri <- c("date", "upcprf", "upcpsf", "cout", "rout", "upcprc", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp")
       exi.t[!(nm.t %in% nm.nutri)] <- FALSE
     } else if (is.character(hype.vars)) {
       nm.manu <- c("date", tolower(hype.vars))
@@ -272,7 +272,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   }
   
   # precipitation and snowfall panel
-  if (exi.t["uppr"] || (exi.t["uprf"] && exi.t["upsf"])) {
+  if (exi.t["upcprc"] || (exi.t["upcprf"] && exi.t["upcpsf"])) {
     
     # fill layout matrix with panel IDs
     lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
@@ -282,10 +282,10 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     cp <- cp + 1
-    if (exi.t["uppr"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, uppr, ylim = c(max(uppr, na.rm = T), -2), col = NA, axes = F, ylab = "")')
+    if (exi.t["upcprc"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upcprc, ylim = c(max(upcprc, na.rm = T), -2), col = NA, axes = F, ylab = "")')
     } else {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, uprf + upsf, ylim = c(max(uppr, na.rm = T), -2), col = NA, axes = F, ylab = "")')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upcprf + upcpsf, ylim = c(max(upcprc, na.rm = T), -2), col = NA, axes = F, ylab = "")')
     }
     
     cp <- cp + 1
@@ -294,12 +294,12 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     list.plotexpr[[cp]] <- parse(text = 'par(new = TRUE)')
     
     # conditional: if rainfall and snow variables available, plot stacked bars based of these, otherwise plot precip bars
-    if (exi.t["uprf"] && exi.t["upsf"]) {
+    if (exi.t["upcprf"] && exi.t["upcpsf"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(uprf, upsf))), border = NA, ylim = c(max(uppr, na.rm = T), -2), xlab = "", col = c("darkblue", "forestgreen"), names.arg = rep("", length(uppr)), legend.text = c("Rain", "Snow"), args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(upcprf, upcpsf))), border = NA, ylim = c(max(upcprc, na.rm = T), -2), xlab = "", col = c("darkblue", "forestgreen"), names.arg = rep("", length(upcprc)), legend.text = c("Rain", "Snow"), args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
     } else {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'barplot(height = uppr, border = NA, ylim = c(max(uppr, na.rm = T), -2), xlab = "", col = "darkblue", names.arg = rep("", length(uppr)), legend.text = "Precipitation", args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = upcprc, border = NA, ylim = c(max(upcprc, na.rm = T), -2), xlab = "", col = "darkblue", names.arg = rep("", length(upcprc)), legend.text = "Precipitation", args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
     }
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
@@ -411,7 +411,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   }
   
   # ET panel
-  if (exi.t["uppe"] || exi.t["upev"]) {
+  if (exi.t["upepot"] || exi.t["upevap"]) {
     
     # fill layout matrix with panel IDs
     lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
@@ -421,12 +421,12 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     cp <- cp + 1
-    if (!exi.t["upev"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, uppe, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(uppe, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
-    } else if (!exi.t["uppe"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, upev, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(upev, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
+    if (!exi.t["upevap"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upepot, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(upepot, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
+    } else if (!exi.t["upepot"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upevap, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(upevap, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
     } else {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, upev, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(c(upev, uppe), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upevap, type = "l", col = NA, xaxt = "n", ylab = "mm", ylim = c(0, max(c(upevap, upepot), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')
     }
     
     cp <- cp + 1
@@ -434,13 +434,13 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     
-    if (exi.t["uppe"]) {
+    if (exi.t["upepot"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, uppe, col = "green3", lty = 3)')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, upepot, col = "green3", lty = 3)')  
     }
-    if (exi.t["upev"]) {
+    if (exi.t["upevap"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, upev, col = "green4")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, upevap, col = "green4")')  
     }
     
     cp <- cp + 1
@@ -543,7 +543,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   }
   
   # upstream average relative soil moisture panel
-  if (exi.t["upfp"]) {
+  if (exi.t["upsmfp"]) {
     
     # fill layout matrix with panel IDs
     lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
@@ -553,13 +553,13 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'plot(date, upfp, type = "l", col = NA, xaxt = "n", ylab = "(-)", xlab = "", cex.axis = 1, cex.lab = 1.2)')
+    list.plotexpr[[cp]] <- parse(text = 'plot(date, upsmfp, type = "l", col = NA, xaxt = "n", ylab = "(-)", xlab = "", cex.axis = 1, cex.lab = 1.2)')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'lines(date, upfp, col = "chocolate3")')
+    list.plotexpr[[cp]] <- parse(text = 'lines(date, upsmfp, col = "chocolate3")')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext(" Rel. soil moisture", side=3, adj= 0, line=-1.1, cex = .8)')
     

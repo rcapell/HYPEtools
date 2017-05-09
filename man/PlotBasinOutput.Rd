@@ -84,7 +84,7 @@ Below a complete list of HYPE variables known to the function in HYPE info.txt f
 For a detailed description of the variables, see the 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 
-\code{basinoutput variable uprf upsf temp uppe upev cout rout soim sm13 upfp snow uppr ccin rein ccon reon cctn retn ccsp 
+\code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc ccin rein ccon reon cctn retn ccsp 
 resp ccpp repp cctp retp wcom wstr}
 }
 \examples{
