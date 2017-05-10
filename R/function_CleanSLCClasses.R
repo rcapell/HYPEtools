@@ -11,7 +11,7 @@
 #' @param gd Data frame containing columns with SUBIDs, SUBID areas in m^2, and SLC fractions, typically a 'GeoData.txt' file 
 #' imported with \code{\link{ReadGeoData}}.
 #' 
-#' @param gc Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+#' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}.
 #' 
 #' @param m1.file Character string, path and file name of the soil or landuse class transfer table, a tab-separated text file. Format see details. 
@@ -68,7 +68,7 @@
 #' Column 1 contains the source land use or soil classes subjected to clean-up, columns 2 and 3 contain threshold values for area fractions and 
 #' absolute areas. The remaining columns contain classes to which areas below threshold will be transferred, in order of precedence. Each class can 
 #' have one or several transfer classes. \code{CleanSLCClasses} will derive SLC classes to clean from the given soil or land use class using the 
-#' GeoClass table given in argument \code{gc}.
+#' GeoClass table given in argument \code{gcl}.
 #' No header is allowed. At least one transfer class must exist, but classes can be omitted and will then be ignored by \code{CleanSLCClasses}. 
 #' The order of transfer classes in the transfer file indicates transfer preference. \code{CleanSLCClasses} constructs a transfer list for each SLC 
 #' class in the model set-up and per default uses the order to choose a preferred SLC to transfer to. However, if several SLCs exist for a given soil 
@@ -93,13 +93,13 @@
 #' @examples
 #' \dontrun{
 #' my.gd <- ReadGeoData("GeoData.txt")
-#' my.gc <- ReadGeoClass("GeoClass.txt")
+#' my.gcl <- ReadGeoClass("GeoClass.txt")
 #' # Clean-up using method 1 only, between soil classes, and based on area fractions only
-#' CleanSLCClasses(gd = my.gd, gc = my.gc, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))
+#' CleanSLCClasses(gd = my.gd, gcl = my.gcl, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))
 #' }
 #' 
 
-CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), 
+CleanSLCClasses <- function (gd, gcl, m1.file = NULL, m1.class = "s", m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), 
                             m2.frac = NULL, m2.abs = NULL, signif.digits = 3, verbose = T, progbar = T) {
   
   
@@ -125,8 +125,8 @@ CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = 
   # number of slc classes in GeoData
   nslc <- ncol(slc)
   
-  # error check: number of SLCs in gc and gd must be identical
-  if (nslc != nrow(gc)) {
+  # error check: number of SLCs in gcl and gd must be identical
+  if (nslc != nrow(gcl)) {
     stop("Number of SLCs in GeoData and Geoclass dataframes do not match.")
   }
   
@@ -172,22 +172,22 @@ CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = 
     # Table with indices over thresholds for cleanable slc classes
     # Conditional: depending on land use or soil transfer classification
     if (m1.class == "s" || m1.class == "soil") {
-      ind.thr <- merge(gc[, c(1:3)], transfer.classes[, 1:3], by.x = 3, by.y = 1, all.x = F, all.y = F, sort = F)
+      ind.thr <- merge(gcl[, c(1:3)], transfer.classes[, 1:3], by.x = 3, by.y = 1, all.x = F, all.y = F, sort = F)
       # sort on SLC column
       ind.thr <- ind.thr[order(ind.thr[,2]), ]
     }
     if (m1.class == "l" || m1.class == "landuse") {
-      ind.thr <- merge(gc[, c(1:3)], transfer.classes[, 1:3], by.x = 2, by.y = 1, all.x = F, all.y = F, sort = F)
+      ind.thr <- merge(gcl[, c(1:3)], transfer.classes[, 1:3], by.x = 2, by.y = 1, all.x = F, all.y = F, sort = F)
       # sort on SLC column
       ind.thr <- ind.thr[order(ind.thr[,2]), ]
     }
     
     # GeoClass columns 1 to 3, sorting conditional on classification
     if (m1.class == "s" || m1.class == "soil") {
-      ind.gc <- gc[, c(3, 1, 2)]
+      ind.gcl <- gcl[, c(3, 1, 2)]
     }
     if (m1.class == "l" || m1.class == "landuse") {
-      ind.gc <- gc[, c(2, 1, 3)]
+      ind.gcl <- gcl[, c(2, 1, 3)]
     }
     
     
@@ -202,10 +202,10 @@ CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = 
       ## but omitting the current SLC class (it would not make sense to reassign the area to itself)
       # get current class and transfer class(es)
       trans.cur <- as.numeric(na.omit(as.numeric(transfer.classes[which(transfer.classes[, 1] == ind.thr[i, 1]), -c(2:3)])))
-      # element in ind.gc which is the current slc class
-      gcslc.cur <- which(ind.gc[, 2] == slc.cur)
+      # element in ind.gcl which is the current slc class
+      gcslc.cur <- which(ind.gcl[, 2] == slc.cur)
       # get current transfer SLCs (soils within same land use class or vice versa, but not the current SLC itself)
-      trslc.cur <- ind.gc[-gcslc.cur, ][which(ind.gc[-gcslc.cur, 3] == ind.gc[gcslc.cur, 3]), 1:2]
+      trslc.cur <- ind.gcl[-gcslc.cur, ][which(ind.gcl[-gcslc.cur, 3] == ind.gcl[gcslc.cur, 3]), 1:2]
       # conditional: if transfer slcs were found, merge them with actual user-defined transfer classes 
       if (nrow(trslc.cur) > 0) {
         
@@ -385,13 +385,13 @@ CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = 
       
       # expand fraction threshold if single value is given, assign to internal variable
       if (length(m2.frac) == 1) {
-        frc <- rep(m2.frac, times = nrow(gc))
+        frc <- rep(m2.frac, times = nrow(gcl))
       } else {
         frc <- m2.frac
       }
       
-      # error check: number of SLCs in gc and number of change fractions must match
-      if (length(frc) != nrow(gc)) {
+      # error check: number of SLCs in gcl and number of change fractions must match
+      if (length(frc) != nrow(gcl)) {
         stop("Number of SLCs in Geoclass and number of thresholds in 'm2.frac' do not match.")
       }
       
@@ -445,13 +445,13 @@ CleanSLCClasses <- function (gd, gc, m1.file = NULL, m1.class = "s", m1.clean = 
       
       # expand area threshold if single value is given, assign to internal variable
       if (length(m2.abs) == 1) {
-        abso <- rep(m2.abs, times = nrow(gc))
+        abso <- rep(m2.abs, times = nrow(gcl))
       } else {
         abso <- m2.abs
       }
       
-      # error check: number of SLCs in gc and number of change fractions must match
-      if (length(abso) != nrow(gc)) {
+      # error check: number of SLCs in gcl and number of change fractions must match
+      if (length(abso) != nrow(gcl)) {
         stop("Number of SLCs in Geoclass and number of thresholds in 'm2.frac' do not match.")
       }
       
