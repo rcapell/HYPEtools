@@ -77,25 +77,23 @@ BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL
     stop("No SLC classes found in 'gd'. Exiting.")
   }
   
-  #get SLCs and replace 0 fractions with NAs, so that they do not bias the area distributions
+  # get SLCs and replace 0 fractions with NAs, so that they do not bias the area distributions
   # conditional: calculate absolute areas in km2
   slc <- gd[, gdcols.slc]
   if (abs.area) {
     slc <- as.data.frame(apply(slc, 2, function(x, y) {x * y}, y = gd[which(toupper(names(gd)) == "AREA")] / 1000000))
-    if (nrow(slc) == 1) {
-      slc[which(slc == 0)] <- NA
-    } else {
-      slc <- as.data.frame(apply(slc, 2, function(x){x[which(x == 0)] <- NA; x}))
-    }
+  }
+  if (nrow(slc) == 1) {
+    slc[which(slc == 0)] <- NA
   } else {
-    if (nrow(slc) == 1) {
-      slc[which(slc == 0)] <- NA
-    } else {
-      slc <- as.data.frame(apply(slc, 2, function(x){x[which(x == 0)] <- NA; x}))
-    }
-    
+    slc <- as.data.frame(apply(slc, 2, function(x){x[which(x == 0)] <- NA; x}))
   }
   
+  # input data check: search negative area fractions and throw error if found
+  if (min(slc, na.rm = T) < 0) {
+    stop("Negative SLC class fraction(s) in 'gd'.")
+  }
+   
   # number of slc classes in GeoData
   nslc <- ncol(slc)
   
@@ -157,17 +155,13 @@ BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL
   
   # conditional: y-axis limits
   if (is.null(ylim)) {
-    if (abs.area) {
-      if (log == "y"){
-        ylimit <- c(10^floor(log10(min(slc, na.rm = T))), 10^ceiling(log10(max(slc, na.rm = T))))
-      } else {
-        # find pretty max limit for non-logscaled y-axis
-        mx <- round(max(slc, na.rm = T))
-        mx <- ceiling(mx * 10^-(nchar(mx) - 2)) * 10^(nchar(mx) - 2)
-        ylimit <- c(0, mx)
-      } 
-    } else { 
-      ylimit <- c(0, 1)
+    if (log == "y"){
+      ylimit <- c(10^floor(log10(min(slc, na.rm = T))), 10^ceiling(log10(max(slc, na.rm = T))))
+    } else {
+      # find pretty max limit for non-logscaled y-axis
+      mx <- round(max(slc, na.rm = T))
+      mx <- ceiling(mx * 10^-(nchar(mx) - 2)) * 10^(nchar(mx) - 2)
+      ylimit <- c(0, mx)
     }
   } else {
     ylimit <- ylim
