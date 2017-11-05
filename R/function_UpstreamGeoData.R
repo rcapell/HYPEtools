@@ -10,7 +10,7 @@
 #' @param olake.slc Integer,SLC class number which represents outlet lake fractions. Mandatory for weighted averaging of outlet lake depths. 
 #' @param bd.weight Logical, if set to \code{TRUE}, flow weights will be applied for areas upstream of stream bifurcations. See 
 #' \code{\link{AllUpstreamSubids}} for further details on flow fraction computation.
-#' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. 
+#' @param signif.digits Integer, number of significant digits to round upstream variables to. See also \code{\link{signif}}. 
 #' Set to \code{NULL} to prevent rounding. 
 #' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful 
 #' when \code{subid} is \code{NULL} or contains many SUBIDs.
@@ -46,7 +46,7 @@
 #' @export
 #' @importFrom pbapply pblapply pbsapply
 
-UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.weight = FALSE, signif.digits = 3, progbar = TRUE) {
+UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.weight = FALSE, signif.digits = 5, progbar = TRUE) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
