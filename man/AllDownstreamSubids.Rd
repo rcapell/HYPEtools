@@ -36,4 +36,3 @@ is provided, the function will also include information on downstream bifurcatio
 \seealso{
 \code{\link{AllUpstreamSubids}}, \code{\link{OutletSubids}}, \code{\link{OutletIds}}
 }
-

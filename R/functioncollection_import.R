@@ -490,7 +490,9 @@ ReadPar <- function (filename = "par.txt") {
 
 #' Read a Map Output File
 #'
-#' This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') into R.
+#' This is a convenience wrapper function to import a 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mapxxxx.txt}{map output file} 
+#' ('map<\emph{HYPE_output_variable}>.txt') into R.
 #' 
 #' @param filename Path to and file name of the map output file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
@@ -498,14 +500,12 @@ ReadPar <- function (filename = "par.txt") {
 #' headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
 #' '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 #' summary values over the model period.
-#' @param hype.var Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
-#' (columns) in \code{x}. See 
+#' @param hype.var Character string, a four-letter keyword to specify HYPE variable ID of file contents. See 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
 #' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
-#' time output file names.
+#' map output file names.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
-#' @param nrows Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.
 #' 
 #' @details
 #' \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
@@ -530,7 +530,7 @@ ReadPar <- function (filename = "par.txt") {
 #' @importFrom data.table fread transpose :=
 #' @export
 
-ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "df", nrows = -1L) {
+ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "df") {
   
   # handling output type user choice
   if (type == "df") {
@@ -542,13 +542,13 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
   }
   
   #x <- read.table(filename, header = T, sep = ",", na.strings = "-9999", skip = 1)      
-  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = ",", header = F, data.table = d.t, 
-             nrows = nrows)
+  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = ",", header = F, data.table = d.t)
   
   
   # read hype.var from filename, if not provided by user
   if (is.null(hype.var)) {
-    hype.var <- substr(strsplit(filename, "map")[[1]][2], start = 1, stop = 4)
+    hype.var <- strsplit(filename, "map")[[1]]
+    hype.var <- substr(hype.var[length(hype.var)], start = 1, stop = 4)
   }
   
   # import comment and dates, prepare date attribute vector
@@ -708,7 +708,8 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   
   # read hype.var from filename, if not provided by user
   if (is.null(hype.var)) {
-    hype.var <- substr(strsplit(filename, "time")[[1]][2], start = 1, stop = 4)
+    hype.var <- strsplit(filename, "time")[[1]]
+    hype.var <- substr(hype.var[length(hype.var)], start = 1, stop = 4)
   }
   
   # create column names

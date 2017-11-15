@@ -7,7 +7,7 @@
 #     - WriteXobs()
 #     - WriteBasinOutput()
 #     - WriteTimeOutput()
-#     - 
+#     - WriteMapOutput()
 #     - WritePmsf()
 #     - WritePTQobs()
 #     - HypeDataImport:
@@ -577,7 +577,7 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-#' and annual values allowed, e.g. '\%Y'.
+#' and annual values allowed, e.g. '\%Y'. Use \code{NULL} for single-column dataframes, i.e. long-term average map files.
 #'  
 #' @details
 #' \code{WriteTimeOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's map output files.
@@ -589,23 +589,23 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
+  # convert date comment to text, if requested
+  if (!is.null(dt.format)) {
+    dt <- format(attr(x, "date"), format = dt.format)
+  } else {
+    dt <- attr(x, "date")
+  }
+  
   # create and open a file connection to write header to
   conn <- file(description = filename, open = "w")
   # write header lines
   writeLines(attr(x, "comment"), con = conn)
-  writeLines(paste(c("SUBID", attr(x, "subid")), collapse = "\t"), con = conn)
+  writeLines(paste(c("SUBID", dt), collapse = ","), con = conn)
   # close the connection
   close(conn)
   
-  # attempt to format the date column if it is POSIX (double number) to the given format string, otherwise return unchanged with a warning
-  if (is.double(x[, 1])) {
-    x[, 1] <- format(x[, 1], format = dt.format)
-  } else {
-    warning("Date column not formatting failed. Exported unchanged.")
-  }
-  
   # export the object, omitting header
-  write.table(x, file = filename, append = T, sep = "\t", row.names = F, col.names = F, na = "-9999", quote = F)
+  write.table(x, file = filename, append = T, sep = ",", row.names = F, col.names = F, na = "-9999", quote = F)
   
 }
 
