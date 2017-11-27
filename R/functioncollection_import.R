@@ -647,6 +647,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
 #' @param select Integer vector, column numbers to import. Note: first column with dates must be imported.
 #' @param nrows Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.
+#' @param skip Integer, number of *data* rows to skip on import. Time output header lines are always skipped.
 #' 
 #' @details
 #' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
@@ -673,7 +674,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' @importFrom data.table fread is.data.table
 #' @export
 
-ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df", select = NULL, nrows = -1L) {
+ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df", select = NULL, nrows = -1L, skip = 0L) {
   
   # argument checks
   if (!is.null(select) && !(1 %in% select)) {
@@ -702,7 +703,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   }
   
   # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
-  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = d.t, 
+  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2 + skip, sep = "\t", header = F, data.table = d.t, 
              select = select, nrows = nrows)
   
   
