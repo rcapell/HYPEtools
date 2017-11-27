@@ -30,4 +30,3 @@ SumSLCClasses(gd = my.gd, plot.box = F)
 }
 
 }
-

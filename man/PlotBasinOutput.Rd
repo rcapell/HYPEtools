@@ -94,4 +94,3 @@ resp ccpp repp cctp retp wcom wstr}
 \seealso{
 \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 }
-

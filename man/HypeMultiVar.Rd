@@ -41,4 +41,3 @@ S3 class constructor function for array objects which can hold (multiple) HYPE b
 \dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", ccon), , subid = 23, tstep = "day"}
 
 }
-

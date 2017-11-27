@@ -36,4 +36,3 @@ catchments, i.e. time and map files, optionally multiple model runs combined, ty
 \seealso{
 \code{\link{cor}}, on which the function is based. \code{\link{ReadWsOutput}} for importing HYPE calibration results.
 }
-

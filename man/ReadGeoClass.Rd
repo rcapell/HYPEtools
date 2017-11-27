@@ -29,4 +29,3 @@ converted during import to  eliminate invalid characters (e.g. '-') and saved to
 \dontrun{ReadGeoClass("Geoclass.txt")}
 
 }
-

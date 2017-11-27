@@ -62,4 +62,3 @@ Column names are not case-sensitive.
 GwRetention(nfrz = sl06, gts3 = sl17, nfs3 = sl18, gd = mygd, par = mypar)}
 
 }
-

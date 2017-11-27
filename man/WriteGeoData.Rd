@@ -30,4 +30,3 @@ function will return with warnings if \code{NA}s or long strings were exported.
 \dontrun{WriteGeoData(x = mygeodata)}
 
 }
-

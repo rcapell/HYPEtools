@@ -118,4 +118,3 @@ PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPE
 \seealso{
 \code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for a similar plot function
 }
-

@@ -6,10 +6,10 @@
 \alias{WriteBranchData}
 \alias{WriteCropData}
 \alias{WriteDamData}
-\alias{WriteForcKey}
 \alias{WriteLakeData}
 \alias{WriteMgmtData}
 \alias{WritePointSourceData}
+\alias{WriteForcKey}
 \title{Write HYPE data files}
 \usage{
 WriteAquiferData(x, filename = "AquiferData.txt", digits = 10,
@@ -83,4 +83,3 @@ hard-coded into the export functions.
 \dontrun{WriteMgmtData(mymgmtdata, "MgmtData.txt")}
 
 }
-

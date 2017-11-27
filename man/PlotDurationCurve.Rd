@@ -61,4 +61,3 @@ function it can be used to visualise and compare time series properties.
 \seealso{
 \code{\link{ExtractFreq}}
 }
-

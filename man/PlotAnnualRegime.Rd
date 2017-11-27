@@ -66,4 +66,3 @@ Grid lines plotted in the background are mid-month lines.
 \seealso{
 \code{\link{AnnualRegime}}, \code{\link{PlotSimObsRegime}}
 }
-

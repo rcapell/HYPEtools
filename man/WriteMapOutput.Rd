@@ -14,7 +14,7 @@ attributes, as an object returned from \code{\link{ReadMapOutput}}.}
 Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-and annual values allowed, e.g. '\%Y'.}
+and annual values allowed, e.g. '\%Y'. Use \code{NULL} for single-column dataframes, i.e. long-term average map files.}
 }
 \description{
 Function to export a map output file from R.
@@ -26,4 +26,3 @@ Function to export a map output file from R.
 \dontrun{WriteMapOutput(x = myCCTN, filename = "mapCCTN.txt")}
 
 }
-

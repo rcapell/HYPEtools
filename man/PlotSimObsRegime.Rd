@@ -76,4 +76,3 @@ For the observed variable, the aggregation is fixed to months, in order to aggre
 \seealso{
 \code{\link{PlotAnnualRegime}} for a more generic annual regime plot, \code{\link{AnnualRegime}} to compute annual regimes only.
 }
-

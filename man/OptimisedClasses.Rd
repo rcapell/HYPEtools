@@ -26,4 +26,3 @@ optpar.txt file to identify those.
 \dontrun{OptimisedClasses(myoptpar)}
 
 }
-

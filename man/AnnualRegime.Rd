@@ -69,4 +69,3 @@ of the year as day 1 of week 1 (see conversion code \code{\%W} in \code{\link{st
 \seealso{
 \code{\link{PlotAnnualRegime}}
 }
-

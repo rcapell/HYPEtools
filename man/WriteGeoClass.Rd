@@ -24,4 +24,3 @@ HYPE accepts comment rows with a leading '!' in the beginning rows of a GeoClass
 \dontrun{WriteGeoClass(x = mygeoclass)}
 
 }
-

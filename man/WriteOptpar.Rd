@@ -26,4 +26,3 @@ Paths are separated by '/', not '\\'.}
 \dontrun{WriteOptpar(myoptpar)}
 
 }
-

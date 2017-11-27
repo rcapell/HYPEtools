@@ -55,4 +55,3 @@ The function builds on \code{\link{GroupSLCClasses}}, which provides grouped sum
 \code{\link{SumUpstreamArea}}
 \code{\link{AllUpstreamSubids}}
 }
-

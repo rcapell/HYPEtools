@@ -39,4 +39,3 @@ GroupSLCClasses(gd = mygeodata, gcl = mygeoclass, type = "s")
 }
 
 }
-

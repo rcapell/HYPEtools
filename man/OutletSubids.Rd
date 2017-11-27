@@ -26,4 +26,3 @@ stream water leaves the model domain.
 \seealso{
 \code{\link{AllDownstreamSubids}}, \code{\link{OutletIds}}
 }
-

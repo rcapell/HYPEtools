@@ -26,4 +26,3 @@ Function to export a time output file from R.
 \dontrun{WriteTimeOutput(x = myCCTN, filename = "timeCCTN.txt")}
 
 }
-

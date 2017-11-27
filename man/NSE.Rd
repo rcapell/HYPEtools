@@ -31,4 +31,3 @@ map files, optionally multiple model run iterations combined.
 \seealso{
 \code{\link[hydroGOF]{NSE}}, the S3 generic function defined in package 'hydroGOF'.
 }
-

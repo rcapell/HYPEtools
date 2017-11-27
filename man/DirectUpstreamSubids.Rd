@@ -52,4 +52,3 @@ Between SUBIDs in the model.
 \seealso{
 \code{\link{AllUpstreamSubids}}, which returns all upstream SUBIDs, i.e. the full upstream network up to the headwaters, for a given SUBID.
 }
-

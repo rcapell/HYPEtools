@@ -27,4 +27,3 @@ upper-case column names.
 \dontrun{ReadGeoData("GeoData.txt")}
 
 }
-

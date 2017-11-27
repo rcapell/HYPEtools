@@ -39,4 +39,3 @@ HYPE point source types ('ps_type') are returned in separate rows. Water abstrac
 \examples{
 \dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypsdata, bd = mybranchdata)}
 }
-

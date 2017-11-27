@@ -5,7 +5,7 @@
 \title{Read a Time Output File}
 \usage{
 ReadTimeOutput(filename, dt.format = "\%Y-\%m-\%d", hype.var = NULL,
-  type = "df", select = NULL, nrows = -1L)
+  type = "df", select = NULL, nrows = -1L, skip = 0L)
 }
 \arguments{
 \item{filename}{Path to and file name of the time output file to import. Windows users: Note that 
@@ -27,6 +27,8 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return 
 \item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported.}
 
 \item{nrows}{Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.}
+
+\item{skip}{Integer, number of *data* rows to skip on import. Time output header lines are always skipped.}
 }
 \value{
 \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
@@ -54,4 +56,3 @@ Results will then contain values of '****************'. \code{ReadTimeOutput} wi
 \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "\%Y-\%m")}
 
 }
-

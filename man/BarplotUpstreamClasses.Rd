@@ -75,4 +75,3 @@ in \code{class.names}.
 \code{\link{UpstreamGroupSLCClasses}}
 \code{\link{barplot}}
 }
-

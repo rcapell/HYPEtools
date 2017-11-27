@@ -713,8 +713,12 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     hype.var <- substr(hype.var[length(hype.var)], start = 1, stop = 4)
   }
   
-  # create column names
-  names(x) <- c("DATE", paste0("X", sbd))
+  # create column names, special treatment if only dates are imported
+  if (length(sbd) == 0) {
+    names(x) <- c("DATE")
+  } else {
+    names(x) <- c("DATE", paste0("X", sbd))
+  }
   
   ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
   ## handles errors which might occur if the date string differs from the specified format. On error, strings are returned.
@@ -806,29 +810,6 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     dim(x) <- c(dim(x), 1)
     x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
   }
-  
-  
-  
-  # OLD, LEFT FOR REFERENCE BUT CAN SOON BE DELETED
-  # # search data rows for occurrences of "****************", which represent values which had too many digits at the requested
-  # # decimal accuracy during HYPE's Fortran export to text file
-  # te <- sapply(x[, -DATE], FUN = is.character)
-  # # conditional: walk through columns and if type is factor, convert to numeric and convert NAs and NaNs (for "*" values)
-  # if (any(te)){
-  #   warning(paste("Column(s)", paste(names(x)[-1][te], collapse =", "), "initially imported as factors. Internally converted to numeric, occurrences of '****************' values converted to 'NaN'."))
-  #   for (i in (2:(length(te)+1))[te]) {
-  #     if(is.factor(x[, i])) {
-  #       x[, i] <- as.character(x[, i])
-  #       if (length(which(x[, i] == "****************")) > 0){
-  #         x[which(x[, i] == "****************"), i] <- "NaN"
-  #       }
-  #       if (length(which(x[, i] == "-9999")) > 0){
-  #         x[which(x[, i] == "-9999"), i] <- "NA"
-  #       }
-  #       x[, i] <- as.numeric(x[, i])
-  #     }
-  #   }
-  # }
   
   return(x)
 }

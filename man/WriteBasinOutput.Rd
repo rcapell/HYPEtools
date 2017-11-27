@@ -25,4 +25,3 @@ Function to export a basin output file from R.
 \dontrun{WriteBasinOutput(x = mybasin, filename = "000001.txt")}
 
 }
-

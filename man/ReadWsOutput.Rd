@@ -75,4 +75,3 @@ memory exceedance problems.
 \dontrun{ReadWsOutput(path = "../my_optim_results/", hype.var = "cout", dt.format = "\%Y-\%m")}
 
 }
-

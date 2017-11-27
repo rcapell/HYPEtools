@@ -41,4 +41,3 @@ This function is now superseeded by \code{\link{UpstreamGeoData}}, which returns
 \seealso{
 \code{\link{SumUpstreamArea}}, \code{\link{UpstreamGeoData}}, \code{\link{UpstreamGroupSLCClasses}}
 }
-

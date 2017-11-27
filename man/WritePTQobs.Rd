@@ -48,4 +48,3 @@ hard-coded into \code{WritePTQobs}.
 \code{\link{ReadPTQobs}}
 \code{\link{WriteXobs}}
 }
-

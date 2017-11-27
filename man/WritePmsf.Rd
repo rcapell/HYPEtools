@@ -26,4 +26,3 @@ pmsf.txt files need to be ordered as downstream sequence.
 \seealso{
 \code{\link{AllUpstreamSubids}}, which extracts upstream SUBIDs from a GeoData dataframe.
 }
-

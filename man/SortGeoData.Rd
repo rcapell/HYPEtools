@@ -30,4 +30,3 @@ irrigation or groundwater flow links.
 \code{\link{AllUpstreamSubids}}
 \code{\link{OutletSubids}}
 }
-

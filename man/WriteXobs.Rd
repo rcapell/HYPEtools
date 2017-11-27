@@ -64,4 +64,3 @@ platform-dependent solutions using e.g. 'tail', 'gawk', or 'wc'.
 \dontrun{WriteXobs(myxobs)}
 
 }
-

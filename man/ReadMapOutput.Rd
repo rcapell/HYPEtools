@@ -4,8 +4,7 @@
 \alias{ReadMapOutput}
 \title{Read a Map Output File}
 \usage{
-ReadMapOutput(filename, dt.format = NULL, hype.var = NULL, type = "df",
-  nrows = -1L)
+ReadMapOutput(filename, dt.format = NULL, hype.var = NULL, type = "df")
 }
 \arguments{
 \item{filename}{Path to and file name of the map output file to import. Windows users: Note that 
@@ -16,16 +15,13 @@ headers to POSIX dates, which are returned as attribute. Incomplete format strin
 '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
 summary values over the model period.}
 
-\item{hype.var}{Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
-(columns) in \code{x}. See 
+\item{hype.var}{Character string, a four-letter keyword to specify HYPE variable ID of file contents. See 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
 If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
-time output file names.}
+map output file names.}
 
 \item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
-
-\item{nrows}{Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.}
 }
 \value{
 \code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
@@ -34,7 +30,9 @@ Data frames and data tables contain additional \code{\link{attributes}}: \code{v
 and \code{comment} with the first line of the imported file as text string.
 }
 \description{
-This is a convenience wrapper function to import a map output file ('map<\emph{HYPE_output_variable}>.txt') into R.
+This is a convenience wrapper function to import a 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mapxxxx.txt}{map output file} 
+('map<\emph{HYPE_output_variable}>.txt') into R.
 }
 \details{
 \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
@@ -51,4 +49,3 @@ Results will then contain values of '****************'. \code{ReadMapOutput} wil
 \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
 
 }
-

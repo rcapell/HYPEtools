@@ -77,4 +77,3 @@ Formatting example for description.txt files:
 \dontrun{ReadDescription("description.txt")}
 
 }
-

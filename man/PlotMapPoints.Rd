@@ -101,4 +101,3 @@ PlotMappoints(x = mysubass, sites = mysites, map.subid.column = 2, bg = mybg)}
 \seealso{
 \code{\link{ReadSubass}} for HYPE result import; \code{\link{ReadMapOutput}} for a similar plot function
 }
-

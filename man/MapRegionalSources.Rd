@@ -38,4 +38,3 @@ irrigation sources in HYPE are transfers from outlet lakes or rivers in a source
 \examples{
 \dontrun{MapRegionalSources(data = myMgmtData, map = mySUBIDCentrePoints)}
 }
-

@@ -109,4 +109,3 @@ For a detailed description of the variables, see the
 \code{\link{BarplotUpstreamClasses}}, \code{\link{PlotSimObsRegime}}, \code{\link{PlotAnnualRegime}}, 
 \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 }
-

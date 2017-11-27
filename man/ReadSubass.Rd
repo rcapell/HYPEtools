@@ -34,4 +34,3 @@ in argument \code{nhour} in the sub-daily case.
 \dontrun{ReadSubass("subass1.txt")}
 
 }
-

@@ -58,4 +58,3 @@ CreateOptpar(x = mypar, pars = c("rrcs1", "rrcs2"), tasks = mytasks)}
 \seealso{
 \code{\link{ReadOptpar}} \code{\link{WriteOptpar}} \code{\link{OptimisedClasses}}
 }
-

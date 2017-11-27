@@ -26,4 +26,3 @@ Import a HYPE parameter file as list into R.
 \dontrun{ReadPar("par.txt")}
 
 }
-

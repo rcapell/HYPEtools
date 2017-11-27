@@ -4,7 +4,7 @@
 \alias{CleanSLCClasses}
 \title{Clean Soil-Landuse classes (SLCs) from small fractions}
 \usage{
-CleanSLCClasses(gd, gc, m1.file = NULL, m1.class = "s",
+CleanSLCClasses(gd, gcl, m1.file = NULL, m1.class = "s",
   m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), m2.frac = NULL,
   m2.abs = NULL, signif.digits = 3, verbose = T, progbar = T)
 }
@@ -12,7 +12,7 @@ CleanSLCClasses(gd, gc, m1.file = NULL, m1.class = "s",
 \item{gd}{Data frame containing columns with SUBIDs, SUBID areas in m^2, and SLC fractions, typically a 'GeoData.txt' file 
 imported with \code{\link{ReadGeoData}}.}
 
-\item{gc}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 file imported with \code{\link{ReadGeoClass}}.}
 
 \item{m1.file}{Character string, path and file name of the soil or landuse class transfer table, a tab-separated text file. Format see details. 
@@ -76,7 +76,7 @@ the classes given in column two and three in the \code{GeoClass} file. The file 
 Column 1 contains the source land use or soil classes subjected to clean-up, columns 2 and 3 contain threshold values for area fractions and 
 absolute areas. The remaining columns contain classes to which areas below threshold will be transferred, in order of precedence. Each class can 
 have one or several transfer classes. \code{CleanSLCClasses} will derive SLC classes to clean from the given soil or land use class using the 
-GeoClass table given in argument \code{gc}.
+GeoClass table given in argument \code{gcl}.
 No header is allowed. At least one transfer class must exist, but classes can be omitted and will then be ignored by \code{CleanSLCClasses}. 
 The order of transfer classes in the transfer file indicates transfer preference. \code{CleanSLCClasses} constructs a transfer list for each SLC 
 class in the model set-up and per default uses the order to choose a preferred SLC to transfer to. However, if several SLCs exist for a given soil 
@@ -95,10 +95,9 @@ SLC areas below the given thresholds will be moved to the largest SLC in the giv
 \examples{
 \dontrun{
 my.gd <- ReadGeoData("GeoData.txt")
-my.gc <- ReadGeoClass("GeoClass.txt")
+my.gcl <- ReadGeoClass("GeoClass.txt")
 # Clean-up using method 1 only, between soil classes, and based on area fractions only
-CleanSLCClasses(gd = my.gd, gc = my.gc, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))
+CleanSLCClasses(gd = my.gd, gcl = my.gcl, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))
 }
 
 }
-

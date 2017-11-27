@@ -5,7 +5,7 @@
 \title{Calculate upstream sums and averages of selected GeoData contents}
 \usage{
 UpstreamGeoData(subid = NULL, gd, bd = NULL, olake.slc = NULL,
-  bd.weight = FALSE, signif.digits = 3, progbar = TRUE)
+  bd.weight = FALSE, signif.digits = 5, progbar = TRUE)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
@@ -20,7 +20,7 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 \item{bd.weight}{Logical, if set to \code{TRUE}, flow weights will be applied for areas upstream of stream bifurcations. See 
 \code{\link{AllUpstreamSubids}} for further details on flow fraction computation.}
 
-\item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. 
+\item{signif.digits}{Integer, number of significant digits to round upstream variables to. See also \code{\link{signif}}. 
 Set to \code{NULL} to prevent rounding.}
 
 \item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful 
@@ -58,4 +58,3 @@ Currently, the following variables are considered:
 \code{\link{SumUpstreamArea}}
 \code{\link{AllUpstreamSubids}}
 }
-

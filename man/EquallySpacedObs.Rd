@@ -35,4 +35,3 @@ EquallySpacedObs(x = my.obs, timestep = "day")
 }
 
 }
-

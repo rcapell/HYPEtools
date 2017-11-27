@@ -47,4 +47,3 @@ Results will then contain values of '****************'. \code{ReadBasinOutput} w
 \dontrun{ReadBasinOutput("0000001.txt")}
 
 }
-

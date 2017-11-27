@@ -41,4 +41,3 @@ apply(data[, -c(1:2)], 2, ConvertDischarge, data$AREA)
 }
 
 }
-

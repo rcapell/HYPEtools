@@ -41,4 +41,3 @@ files contain three header rows, see the
 \examples{
 \dontrun{HypeXobs(mydata, comment = "Water quality data", variable = c("cctn", "cctp", "cctp"), subid = c(23, 45, 56))}
 }
-

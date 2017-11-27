@@ -2,16 +2,16 @@
 % Please edit documentation in R/functioncollection_import.R
 \name{HypeDataImport}
 \alias{HypeDataImport}
-\alias{ReadAllsim}
 \alias{ReadAquiferData}
 \alias{ReadBranchData}
 \alias{ReadCropData}
 \alias{ReadDamData}
-\alias{ReadForcKey}
 \alias{ReadGlacierData}
 \alias{ReadLakeData}
 \alias{ReadMgmtData}
 \alias{ReadPointSourceData}
+\alias{ReadAllsim}
+\alias{ReadForcKey}
 \title{Read HYPE data files}
 \usage{
 ReadAquiferData(filename = "AquiferData.txt", verbose = T, header = T,
@@ -94,4 +94,3 @@ allowed in additional comment columns. Informative warnings will be thrown if \c
 \dontrun{ReadMgmtData("MgmtData.txt")}
 
 }
-

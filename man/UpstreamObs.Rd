@@ -48,4 +48,3 @@ imports the averaged upstream results for the target catchment given in argument
 \examples{
 \dontrun{UpstreamObs(filename = "Pobs.txt", subid = 1000, gd = mygeodata)}
 }
-

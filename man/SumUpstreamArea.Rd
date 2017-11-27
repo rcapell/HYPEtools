@@ -34,4 +34,3 @@ but not including potential irrigation links or groundwater flows.
 \seealso{
 \code{\link{AllUpstreamSubids}}
 }
-

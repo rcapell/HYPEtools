@@ -32,4 +32,3 @@ ExtractFreq(rnorm(1000))
 \seealso{
 \code{\link{PlotDurationCurve}}
 }
-

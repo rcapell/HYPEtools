@@ -31,4 +31,3 @@ map files, optionally multiple model runs combined.
 \seealso{
 \code{\link[hydroGOF]{pbias}}, the S3 generic function defined in package 'hydroGOF'.
 }
-

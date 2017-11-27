@@ -40,4 +40,3 @@ side effects when working with the imported data (and e.g. converting to string 
 \code{\link{WritePTQobs}}
 \code{\link{ReadXobs}}
 }
-
