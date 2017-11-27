@@ -658,7 +658,8 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' @return
 #' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
-#' \code{subid}, a vector of subid integers (corresponding to columns from column 2), and \code{timestep} with a time step attribute.
+#' \code{subid}, a vector of subid integers (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
+#' and \code{comment} with first row comment of imported file as character string.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -773,7 +774,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     xd <- NA
   }
   
-  
+  attr(x, "comment") <- xattr[1]
   
   # conditional on user choice: output formatting
   if (type %in% c("dt", "df")) {

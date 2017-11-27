@@ -524,6 +524,7 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' @examples
 #' \dontrun{WriteTimeOutput(x = myCCTN, filename = "timeCCTN.txt")}
 #' 
+#' @importFrom data.table fwrite
 
 WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
@@ -543,7 +544,9 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   }
   
   # export the object, omitting header
-  write.table(x, file = filename, append = T, sep = "\t", row.names = F, col.names = F, na = "-9999", quote = F)
+  fwrite(x, file = filename, append = T, sep = "\t", quote = FALSE, na = "-9999", row.names = F)
+  # old version, cann be deleted after a while
+  # write.table(x, file = filename, append = T, sep = "\t", row.names = F, col.names = F, na = "-9999", quote = F)
   
 }
 

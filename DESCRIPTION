@@ -10,12 +10,12 @@ Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
     "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut"),
     person("David", "Gustafsson", role = "aut") )
 Depends:
-    R (>= 2.15.1),
+    R (>= 3.0.0),
     hydroGOF
 Imports:
     sp,
     pbapply,
-    data.table
+    data.table (>= 1.9.8)
 License: LGPL-3
 LazyData: true
 Packaged: 2014-11-21 15:25:14 UTC; rene
