@@ -287,6 +287,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
     } else {
       bbx <- bbox(bg)
       # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
+      par(new = T)
       plot(sites, col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
       # create a map side ratio based on the device region in user coordinates and the map bounding box
       p.range.x <- diff(par("usr")[1:2])
@@ -308,6 +309,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
     } else {
       bbx <- bbox(sites)
       # set user coordinates using a dummy plot
+      plot(new = T)
       plot(sites, col = NULL, add = add)
       # create a map side ratio based on the device region in user coordinates and the map bounding box
       p.range.x <- diff(par("usr")[1:2])

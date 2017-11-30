@@ -269,6 +269,9 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   # par settings: lend set to square line endings because the legend below works with very thick lines 
   # instead of boxes (a box size limitation work-around); xpd set to allow for plotting a legend on the margins
   if (!add) {
+    #x11(width = 15, height = 5)
+    #par(mfcol = c(1, 3))
+    #plot(0,type='n',axes=FALSE,ann=FALSE)
     par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
     #plot.window(xlim = 0:1, ylim = 0:1)
     frame()
@@ -370,6 +373,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   } else {
     bbx <- bbox(map)
     # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
+    par(new = T)
     plot(SpatialPoints(coordinates(map), proj4string = CRS(proj4string(map))), col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
     # create a map side ratio based on the device region in user coordinates and the map bounding box
     p.range.x <- diff(par("usr")[1:2])
