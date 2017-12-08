@@ -579,12 +579,13 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' attributes, as an object returned from \code{\link{ReadMapOutput}}.
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
-#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-#' and annual values allowed, e.g. '\%Y'. Use \code{NULL} for single-column dataframes, i.e. long-term average map files.
+#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Date format for export of column headers.
+#' Incomplete format strings for monthly and annual values allowed, e.g. '\%Y', if columns contain annual aggregates. 
+#' Use \code{NULL} for single-column dataframes, i.e. long-term average map files.
 #'  
 #' @details
 #' \code{WriteTimeOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's map output files.
-#  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
+#'  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
 #' 
 #' @examples
 #' \dontrun{WriteMapOutput(x = myCCTN, filename = "mapCCTN.txt")}
@@ -594,7 +595,12 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
   # convert date comment to text, if requested
   if (!is.null(dt.format)) {
-    dt <- format(attr(x, "date"), format = dt.format)
+    if (!(inherits(attr(x, "date"), "POSIXt") | inherits(attr(x, "date"), "Date"))) {
+      warning("Date formatting requested through argument 'dt.format' but date attribute of 'x' contains only strings. Continuing without formatting.")
+      dt <- attr(x, "date")
+    } else {
+      dt <- format(attr(x, "date"), format = dt.format)
+    }
   } else {
     dt <- attr(x, "date")
   }
@@ -608,7 +614,9 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   close(conn)
   
   # export the object, omitting header
-  write.table(x, file = filename, append = T, sep = ",", row.names = F, col.names = F, na = "-9999", quote = F)
+  fwrite(x, file = filename, append = T, sep = ",", quote = FALSE, na = "-9999", row.names = F)
+  # old version, cann be deleted after a while
+  # write.table(x, file = filename, append = T, sep = ",", row.names = F, col.names = F, na = "-9999", quote = F)
   
 }
 

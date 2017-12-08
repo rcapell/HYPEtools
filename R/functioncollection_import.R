@@ -498,7 +498,7 @@ ReadPar <- function (filename = "par.txt") {
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in column 
 #' headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
-#' '\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
+#' '\%Y'. \strong{Defaults to \code{NULL}, which prevents date-time conversion}, applicable e.g. for files containing just one column of 
 #' summary values over the model period.
 #' @param hype.var Character string, a four-letter keyword to specify HYPE variable ID of file contents. See 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
@@ -522,7 +522,10 @@ ReadPar <- function (filename = "par.txt") {
 #' @note
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 #' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
-#' Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries.
+#' Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries. 
+#' 
+#' Current versions of HYPE allow for definitiion of significant instead of fixed number of digits, which should prevent this 
+#' issue from arising.
 #' 
 #' @examples
 #' \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
@@ -576,7 +579,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
       xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     } else {
-      xd <- tryCatch(na.fail(as.POSIXct(strptime(xd, format = dt.format), tz = "GMT")), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(xd, format = dt.format, tz = "GMT"))), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     }
   }

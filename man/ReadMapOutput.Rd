@@ -12,7 +12,7 @@ Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in column 
 headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
-'\%Y'. Defaults to \code{NULL}, which prevents date-time conversion, applicable e.g. for files containing just one column of 
+'\%Y'. \strong{Defaults to \code{NULL}, which prevents date-time conversion}, applicable e.g. for files containing just one column of 
 summary values over the model period.}
 
 \item{hype.var}{Character string, a four-letter keyword to specify HYPE variable ID of file contents. See 
@@ -43,7 +43,10 @@ of the time step period.
 \note{
 HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
-Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries.
+Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries. 
+
+Current versions of HYPE allow for definitiion of significant instead of fixed number of digits, which should prevent this 
+issue from arising.
 }
 \examples{
 \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
