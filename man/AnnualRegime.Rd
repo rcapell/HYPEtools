@@ -14,7 +14,7 @@ Typically an imported basin or time output file from HYPE. See details.}
 \item{stat}{Character string, either \code{"mean"} or \code{"sum"}. Defines the type of aggregation to be computed for output 
 time periods, see Details. Defaults to \code{"mean"}.}
 
-\item{ts.in}{Character string, timestep of \code{x}, searches for an attribute \code{timestep} in \code{x} per default. 
+\item{ts.in}{Character string, timestep of \code{x}, attribute \code{timestep} in \code{x} per default. 
 Otherwise one of \code{"month"}, \code{"week"}, \code{"day"}, or \code{"nhour"} (n = number of hours).}
 
 \item{ts.out}{Character string, timestep for results, defaults to \code{ts.in}. This timestep must be equal to or longer than 
