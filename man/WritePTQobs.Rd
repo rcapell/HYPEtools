@@ -5,10 +5,10 @@
 \title{Write 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files}
 \usage{
 WritePTQobs(x, filename, dt.format = "\%Y-\%m-\%d", digits = 3,
-  nsmall = 1, obsid = NULL)
+  obsid = NULL)
 }
 \arguments{
-\item{x}{The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs in 
+\item{x}{The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs or OBSIDs in 
 remaining columns. If argument \code{obsid} is not provided, \code{x} must have an additional attribute \code{obsid} containing 
 observation IDs/SUBIDs in column order.}
 
@@ -17,9 +17,7 @@ Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
 
-\item{digits}{Integer, number significant digits to export. See \code{\link{format}}.}
-
-\item{nsmall}{Integer, number of significant decimals to export. See \code{\link{format}}.}
+\item{digits}{Integer, number of significant digits to export. See \code{\link{signif}}.}
 
 \item{obsid}{Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
 in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 
@@ -29,16 +27,11 @@ in \code{x} is mandatory. An existing \code{obsid} argument takes precedence ove
 Export forcing data and discharge observation files from R.
 }
 \details{
-\code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE-compliant observation file. 
+\code{WritePTQobs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
 headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
 
 Observation IDs are SUBIDs or IDs connected to SUBIDs with a 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
-
-The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
-scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
-arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
-hard-coded into \code{WritePTQobs}.
 }
 \examples{
 \dontrun{WritePTQobs(mytops, "Tobs.txt")}

@@ -665,7 +665,7 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #'
 #' Export forcing data and discharge observation files from R.
 #' 
-#' @param x The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs in 
+#' @param x The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs or OBSIDs in 
 #' remaining columns. If argument \code{obsid} is not provided, \code{x} must have an additional attribute \code{obsid} containing 
 #' observation IDs/SUBIDs in column order.
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
@@ -674,20 +674,20 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @param obsid Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
 #' in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 
 #' in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.
-#' @param digits Integer, number significant digits to export. See \code{\link{format}}.
-#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+#' @param digits Integer, number of significant digits to export. See \code{\link{signif}}.
+# #' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #'  
 #' @details
-#' \code{WritePTQobs} is a convenience wrapper function of \code{\link{write.table}} to export a HYPE-compliant observation file. 
+#' \code{WritePTQobs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
 #' headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
 #' 
 #' Observation IDs are SUBIDs or IDs connected to SUBIDs with a 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
 #' 
-#' The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
-#' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
-#' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
-#' hard-coded into \code{WritePTQobs}.
+# #' The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
+# #' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
+# #' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
+# #' hard-coded into \code{WritePTQobs}.
 #' 
 #' @seealso 
 #' \code{\link{ReadPTQobs}}
@@ -699,18 +699,19 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @export
 
 
-WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, nsmall = 1, obsid = NULL) {
+WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid = NULL) {
   
   ## check if consistent header information is available, obsid arguments take precedence before attribute
+  ## construct HYPE-conform header for export (violates R header rules)
   if(!is.null(obsid)) {
     if (length(obsid) == ncol(x) - 1) {
-      header <- c("DATE", obsid)
+      names(x) <- c("DATE", obsid)
     } else {
       stop("Length of function argument 'obsid' does not match number of obsid columns in export object.")
     }
   } else if (!is.null(attr(x, which = "obsid"))) {
       if (length(attr(x, which = "obsid")) == ncol(x) - 1) {
-        header <- c("DATE", attr(x, which = "obsid"))
+        names(x) <- c("DATE", attr(x, which = "obsid"))
       } else {
         stop("Length of attribute 'obsid' does not match number of obsid columns in export object.")
       }
@@ -720,17 +721,19 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, nsmall
   
   # date conversion, conditional on that the date column is a posix class
   if (any(class(x[, 1]) == "POSIXt")) {
-    xd <- format(x[, 1], format = dt.format)
+    x[, 1] <- format(x[, 1], format = dt.format)
   } else {
     warning("First column in export data frame is not of class 'POSIXt', will be exported unchanged.")
   }
   
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
+  # round to user-specified number of significant digits
+  x[, -1] <- signif(x[, -1], digits = digits)
   
   # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE, col.names = header)
+ fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  # old version, cann be deleted after a while
+  # write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+  # quote = FALSE, sep = "\t", row.names = FALSE, col.names = header)
   
 }
 

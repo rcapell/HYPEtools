@@ -373,7 +373,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
 #' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
 
 #' @details
-#' \code{ReadGeoData} runs \code{\link[data.table]{fread}} from the \code{\link{data.table}} 
+#' \code{ReadGeoData} runs \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
 #' with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and 
 #' upper-case column names.
 #' 
@@ -902,7 +902,7 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
 #' @param filename Path to and file name of HYPE data file file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param verbose Logical, display message if columns contain \code{NA} values.
-#' @param header \code{\link{read.table}} arguments, with appropriote default for HYPE data file import.
+#' @param header \code{\link{read.table}} argument, with appropriate default for HYPE data file import.
 #' @param na.strings See \code{header}.
 #' @param sep See \code{header}.
 #' @param stringsAsFactors See \code{header}.

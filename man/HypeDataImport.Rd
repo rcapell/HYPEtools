@@ -51,7 +51,7 @@ Paths are separated by '/', not '\\'.}
 
 \item{verbose}{Logical, display message if columns contain \code{NA} values.}
 
-\item{header}{\code{\link{read.table}} arguments, with appropriote default for HYPE data file import.}
+\item{header}{\code{\link{read.table}} argument, with appropriate default for HYPE data file import.}
 
 \item{na.strings}{See \code{header}.}
 

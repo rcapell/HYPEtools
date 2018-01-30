@@ -19,7 +19,7 @@ Paths are separated by '/', not '\\'.}
 This is a convenience wrapper function to import a GeoData file as data frame into R.
 }
 \details{
-\code{ReadGeoData} runs \code{\link[data.table]{fread}} from the \code{\link{data.table}} 
+\code{ReadGeoData} runs \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
 with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and 
 upper-case column names.
 }
