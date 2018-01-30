@@ -4,7 +4,7 @@
 \alias{WriteGeoData}
 \title{Write a 'GeoData.txt' file}
 \usage{
-WriteGeoData(x, filename = "GeoData.txt", digits = 10, nsmall = 1)
+WriteGeoData(x, filename = "GeoData.txt", digits = 3)
 }
 \arguments{
 \item{x}{The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoData}}. 
@@ -13,18 +13,15 @@ No \code{NA}s in parameter values allowed.}
 \item{filename}{A character string naming a file to write to. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
-\item{digits}{Integer, number of significant digits to export. See \code{\link{format}}.}
-
-\item{nsmall}{Integer, number of significant decimals to export. See \code{\link{format}}.}
+\item{digits}{Integer, number of significant digits in \strong{SLC class columns} to export. See \code{\link{signif}}.}
 }
 \description{
 This is a convenience wrapper function to export a 'GeoData.txt' file from R.
 }
 \details{
-\code{WriteGeoData} exports a GeoData dataframe with formatting options adjusted for the output to be read by HYPE.
-HYPE does neither allow empty values in any GeoData column nor any string elements with more than 50 characters, the 
+\code{WriteGeoData} exports a GeoData dataframe using \code{\link[data.table]{fwrite}}.
+HYPE does neither allow empty values in any GeoData column nor any string elements with more than 50 characters. The 
 function will return with warnings if \code{NA}s or long strings were exported.
-(these are exported as "NA" to the text file).
 }
 \examples{
 \dontrun{WriteGeoData(x = mygeodata)}

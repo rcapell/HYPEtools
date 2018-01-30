@@ -69,21 +69,19 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 #' No \code{NA}s in parameter values allowed.
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
-#' @param digits Integer, number of significant digits to export. See \code{\link{format}}.
-#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+#' @param digits Integer, number of significant digits \strong{in SLC class columns} to export. See \code{\link{signif}}.
 #'  
 #' @details
-#' \code{WriteGeoData} exports a GeoData dataframe with formatting options adjusted for the output to be read by HYPE.
-#' HYPE does neither allow empty values in any GeoData column nor any string elements with more than 50 characters, the 
+#' \code{WriteGeoData} exports a GeoData dataframe using \code{\link[data.table]{fwrite}}.
+#' HYPE does neither allow empty values in any GeoData column nor any string elements with more than 50 characters. The 
 #' function will return with warnings if \code{NA}s or long strings were exported.
-#' (these are exported as "NA" to the text file).
 #' 
 #' @examples
 #' \dontrun{WriteGeoData(x = mygeodata)}
 #' 
 
 
-WriteGeoData <- function(x, filename = "GeoData.txt", digits = 10, nsmall = 1) {
+WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
   
   # warn if there are NAs, which should not occur in GeoData files for HYPE
   if (!is.null(na.action(na.omit(x)))) {
@@ -93,17 +91,17 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 10, nsmall = 1) {
   # test length of string columns elements, throws warning if any element longer than 50, since HYPE does not read them
   .CheckCharLengthDf(x, maxChar = 50)
   
-  # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE)
+  # round slc class columns to requested number of significant digits
+  x[, substr(names(x), 1, 4) == "SLC_"] <- signif(x[, substr(names(x), 1, 4) == "SLC_"], digits = digits)
   
+  # export
+  fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+  # old version, delete after while
+  # write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+  #             quote = FALSE, sep = "\t", row.names = FALSE)
 }
 
 
-## DEBUG
-# filename <- "Gd.txt"
-# x <- fgd
-# rm(x, fgd)
 
 
 
