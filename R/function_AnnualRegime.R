@@ -244,12 +244,25 @@ AnnualRegime <- function(x, stat = "mean", ts.in = NULL, ts.out = NULL, start.mo
   res <- data.frame(refdate = te, res)
   
   # combine to result list with data frame elements for each statistical moment
-  res <- list(mean = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 1]})), 
-              median = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 4]})), 
-              minimum = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 2]})), 
-              maximum = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 6]})), 
-              p25 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 3]})), 
-              p75 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 5]})))
+  # one-variable case treated differently because aggregate returns a simple dataframe instead of a "dataframe of dataframes"
+  # as in the multi-variable case
+  if (ncol(x) == 2) {
+    res <- list(mean = data.frame(res[, 1:2], res[, -c(1:2)][, 1]), 
+                median = data.frame(res[, 1:2], res[, -c(1:2)][, 4]), 
+                minimum = data.frame(res[, 1:2], res[, -c(1:2)][, 2]), 
+                maximum = data.frame(res[, 1:2], res[, -c(1:2)][, 6]), 
+                p25 = data.frame(res[, 1:2], res[, -c(1:2)][, 3]), 
+                p75 = data.frame(res[, 1:2], res[, -c(1:2)][, 5]))
+    res <- lapply(res, function(x, z) {names(x)[3] <- z; x}, z = names(x)[2])
+  } else {
+    res <- list(mean = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 1]})), 
+                median = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 4]})), 
+                minimum = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 2]})), 
+                maximum = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 6]})), 
+                p25 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 3]})), 
+                p75 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 5]})))
+    
+  }
   
   # add period and timestep attributes
   attr(res, "timestep") <- ts.out

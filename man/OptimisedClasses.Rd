@@ -2,6 +2,7 @@
 % Please edit documentation in R/function_OptimisedClasses.R
 \name{OptimisedClasses}
 \alias{OptimisedClasses}
+\alias{OptimizedClasses}
 \title{Get optimised classes from an imported optpar.txt file}
 \usage{
 OptimisedClasses(x)

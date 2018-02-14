@@ -18,6 +18,7 @@
 #' @examples 
 #' \dontrun{OptimisedClasses(myoptpar)}
 #' 
+#' @aliases OptimizedClasses
 #' @export
 
 OptimisedClasses <- function(x) {
@@ -31,3 +32,8 @@ OptimisedClasses <- function(x) {
   
   return(calib)
 }
+
+#' @export
+
+OptimizedClasses <- OptimisedClasses
+

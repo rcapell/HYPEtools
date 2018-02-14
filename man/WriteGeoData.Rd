@@ -13,7 +13,7 @@ No \code{NA}s in parameter values allowed.}
 \item{filename}{A character string naming a file to write to. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
-\item{digits}{Integer, number of significant digits in \strong{SLC class columns} to export. See \code{\link{signif}}.}
+\item{digits}{Integer, number of significant digits \strong{in SLC class columns} to export. See \code{\link{signif}}.}
 }
 \description{
 This is a convenience wrapper function to export a 'GeoData.txt' file from R.
