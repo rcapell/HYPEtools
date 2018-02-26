@@ -82,7 +82,7 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
   } else if (is.null(ylim) && line == "median" && band == "none") {
     ylim <- range(unlist(x$median[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
   } else if (is.null(ylim) && band == "minmax") {
-    ylim <- range(unlist(rbind(x$min, x$max)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
+    ylim <- range(unlist(rbind(x$minimum, x$maximum)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
   } else if (is.null(ylim) && band == "quartile") {
     ylim <- range(unlist(rbind(x$p25, x$p75)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
   }
