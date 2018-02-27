@@ -10,6 +10,8 @@
 #' \code{"quartile"} to include bands of variation. See details.
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
 #' @param l.legend Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.
+#' @param l.position Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
+#' \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.
 #' @param log Logical, if \code{TRUE}, y-axis will be log-scaled.
 #' @param ylim  Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Default prints the time period on which the 
@@ -17,6 +19,8 @@
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label, with a default for discharge regimes.
 #' @param col Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
+#' @param alpha Numeric, alpha transparancy value for variation bands. Value between \code{0} (transparent) and \code{255} (opaque), see 
+#' also \code{\link{rgb}}
 #' @param lty Line type specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
 #' @param lwd Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
@@ -42,9 +46,9 @@
 #' @export
 
 
-PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE, l.legend = NULL, log = FALSE, ylim = NULL, 
-                             ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
-                             xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", 
+PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE, l.legend = NULL, l.position = "topright", 
+                             log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
+                             xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", alpha = 30, 
                              lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, restore.par = FALSE) {
   
   # save current state of par() variables which are altered below, for restoring on function exit
@@ -52,16 +56,18 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
   par.xaxs <- par("xaxs")
   par.mgp <- par("mgp")
   par.tcl <- par("tcl")
+  par.lend <- par("lend")
   if (restore.par) {
-    on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl))
+    on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl, lend = par.lend))
   }
   
-  # number of time series in freq
+  # number of time series in x
   nq <- ncol(x$mean) - 2
   
   # input check for type specification arguments
   stopifnot(any(line == "mean", line == "median"))
   stopifnot(any(band == "minmax", band == "quartile", band == "none"))
+  stopifnot(l.position %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
   
   
   # input checks for line property specification arguments
@@ -117,8 +123,8 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
     llwd <- lwd
   }
   
-  # set plot parameters
-  par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0), tcl = .2)
+  # set plot parameters, lend for square background bands in legend
+  par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0), tcl = .2, lend = 1)
   
   # set up the plot region, but do not plot yet. Background grid will be plotted first
   plot(x$mean[, c(1, 3)], axes = F, type = "n", ylab = ylab, xlab = xlab, ylim = ylim, log = lg)
@@ -145,7 +151,7 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
   # plot regimes, incl transparent variation polygons if requested, using internal function
   if (band == "minmax") {
     
-    polcol <- .makeTransparent(lcol, 30)
+    polcol <- .makeTransparent(lcol, alpha = alpha)
     for (i in 3:(nq + 2)) {
       polcoor <- rbind(x$minimum[, c(1, i)], x$maximum[nrow(x$maximum):1, c(1, i)])
       polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)
@@ -154,7 +160,7 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
   }
   if (band == "quartile") {
     
-    polcol <- .makeTransparent(lcol, 30)
+    polcol <- .makeTransparent(lcol, alpha = alpha)
     for (i in 3:(nq + 2)) {
       polcoor <- rbind(x$p25[, c(1, i)], x$p75[nrow(x$p75):1, c(1, i)])
       polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)
@@ -181,23 +187,14 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
       lgnd <- l.legend
     }
     
-    # print legend
-    legend("topright", legend = lgnd, bty = "n", lty = llty, col = lcol, cex=.9, lwd = llwd)
+    # print legend, conditional on presence of bands in plot
+    if (band != "none") {
+      # with band, plot fat transparent lines as bands first, then annotated lines
+      legend(l.position, legend = rep("", length(lgnd)), bty = "n", lty = 1, col = polcol, cex=.9, lwd = 14, inset = c(max(strwidth(lgnd, units = "figure")), 0))
+      legend(l.position, legend = lgnd, bty = "n", lty = llty, col = lcol, cex=.9, lwd = llwd)
+    } else {
+      # only lines
+      legend(l.position, legend = lgnd, bty = "n", lty = llty, col = lcol, cex=.9, lwd = llwd)
+    }
   }
-    
 }
-
-# debug
-# x <- AnnualRegime(cctn, ts.in = "day")
-# mar <- c(3, 3, 1, 1) + .1
-# ylab <- expression(paste("Q (m"^3, " s"^{-1}, ")"))
-# xlab <- paste(format(attr(x, "period"), format = "%Y"), collapse = " to ")
-# col <- 1:5
-# lty <- 1
-# lwd <- 1
-# line <- "mean"
-# band <- "none"
-# add.legend <- FALSE
-# l.legend <- NULL
-# ylim <- NULL
-# log <- F

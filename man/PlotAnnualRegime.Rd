@@ -5,11 +5,11 @@
 \title{Plot annual regimes}
 \usage{
 PlotAnnualRegime(x, line = "mean", band = "none", add.legend = FALSE,
-  l.legend = NULL, log = FALSE, ylim = NULL,
+  l.legend = NULL, l.position = "topright", log = FALSE, ylim = NULL,
   ylab = expression(paste("Q (m"^3, " s"^{     -1 }, ")")),
   xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse = " to "),
-  col = "blue", lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + 0.1,
-  restore.par = FALSE)
+  col = "blue", alpha = 30, lty = 1, lwd = 1, mar = c(3, 3, 1, 1) +
+  0.1, restore.par = FALSE)
 }
 \arguments{
 \item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
@@ -25,6 +25,9 @@ See Details and Value sections there.}
 
 \item{l.legend}{Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.}
 
+\item{l.position}{Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
+\code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.}
+
 \item{log}{Logical, if \code{TRUE}, y-axis will be log-scaled.}
 
 \item{ylim}{Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.}
@@ -36,6 +39,9 @@ regime is based, read from \code{x$period}.}
 
 \item{col}{Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile 
 series in \code{freq}.}
+
+\item{alpha}{Numeric, alpha transparancy value for variation bands. Value between \code{0} (transparent) and \code{255} (opaque), see 
+also \code{\link{rgb}}}
 
 \item{lty}{Line type specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 series in \code{freq}.}
