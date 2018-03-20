@@ -16,7 +16,8 @@ Paths are separated by '/', not '\\'.}
 to import.}
 }
 \value{
-\code{ReadPTQobs} returns a data frame with an additional attribute \code{obsid}.
+\code{ReadPTQobs} returns a data frame with additional attributes \code{obsid} with observation IDs and \code{timestep} with a time 
+step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported).
 }
 \description{
 Import forcing data and discharge observation files as data frame into R.

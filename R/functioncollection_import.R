@@ -219,7 +219,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
     }
   } else {
     # add timestep attribute with placeholder value
-    tstep <- "none"
+    tstep <- "unknown"
   }
   
   # conditional on user choice: output formatting
@@ -607,7 +607,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
       }
     } else {
       # add timestep attribute with placeholder value
-      attr(x, which = "timestep") <- "none"
+      attr(x, which = "timestep") <- "unknown"
     }
     
   } else {
@@ -801,7 +801,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
       }
     } else {
       # add timestep attribute with placeholder value
-      attr(x, which = "timestep") <- "none"
+      attr(x, which = "timestep") <- "unknown"
     }
     
   } else {
@@ -846,7 +846,8 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' attribute \code{obsid} (see \code{\link{attr}} on how to access it). 
 #' 
 #' @return
-#' \code{ReadPTQobs} returns a data frame with an additional attribute \code{obsid}.
+#' \code{ReadPTQobs} returns a data frame with additional attributes \code{obsid} with observation IDs and \code{timestep} with a time 
+#' step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported).
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -863,7 +864,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' @export
 
 
-ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
+ReadPTQobs <- function(filename, dt.format = "%Y-%m-%d", nrows = -1) {
   
   ## import ptqobs file header, extract attribute
   # import
@@ -875,14 +876,29 @@ ReadPTQobs <- function (filename, dt.format = "%Y-%m-%d", nrows = -1) {
   x <- fread(filename,  na.strings = "-9999", sep = "\t", header = T, data.table = F, nrows = nrows)
                 #colClasses = c("NA", rep("numeric", length(sbd))))
   
-  attr(x, which = "obsid") <- sbd
-  
   # date conversion 
   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
   x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
     })
   
+  
+  ## add attributes
+  
+  attr(x, which = "obsid") <- sbd
+  
+  # conditional: timestep attribute identified by difference between first two entries
+  tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+  if (!is.na(tdff)) {
+    if (tdff == 24) {
+      attr(x, which = "timestep") <- "day"
+    } else {
+      attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+    }
+  } else {
+    # add timestep attribute with placeholder value
+    attr(x, which = "timestep") <- "unknown"
+  }
   return(x)
 }
 
