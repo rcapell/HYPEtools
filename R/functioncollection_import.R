@@ -650,7 +650,9 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
 #' @param select Integer vector, column numbers to import. Note: first column with dates must be imported.
 #' @param nrows Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.
-#' @param skip Integer, number of *data* rows to skip on import. Time output header lines are always skipped.
+#' @param skip Integer, number of \strong{data} rows to skip on import. Time output header lines are always skipped. 
+#' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+#' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
 #' 
 #' @details
 #' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
@@ -662,7 +664,8 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 #' \code{subid}, a vector of subid integers (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
-#' and \code{comment} with first row comment of imported file as character string.
+#' and \code{comment} with first row comment of imported file as character string. An additional attribute \code{subid.nan} might be 
+#' returned, see argument \code{warn.nan}.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -678,7 +681,8 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' @importFrom data.table fread is.data.table
 #' @export
 
-ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df", select = NULL, nrows = -1L, skip = 0L) {
+ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df", select = NULL, nrows = -1L, skip = 0L, 
+                           warn.nan = FALSE) {
   
   # argument checks
   if (!is.null(select) && !(1 %in% select)) {
@@ -779,6 +783,15 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   
   attr(x, "comment") <- xattr[1]
   
+  # check for existence of NaN values
+  if (warn.nan) {
+    te <- apply(as.data.frame(x[, -1]), 2, function(x) any(is.nan(x)))
+    if (any(te)) {
+      warning("'NaN' values found in one or more SUBIDs. SUBIDs saved in attribute 'subid.nan'.")
+      attr(x, "subid.nan") <- sbd[te]
+    }
+  }
+  
   # conditional on user choice: output formatting
   if (type %in% c("dt", "df")) {
     
@@ -803,6 +816,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
       # add timestep attribute with placeholder value
       attr(x, which = "timestep") <- "unknown"
     }
+    return(x)
     
   } else {
     ## HypeSingleVar formatting
@@ -815,6 +829,10 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
   }
   
+  # conditional on user choice, check for existence of NaN values
+  if (warn.nan) {
+    
+  }
   return(x)
 }
 

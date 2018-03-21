@@ -5,7 +5,8 @@
 \title{Read a Time Output File}
 \usage{
 ReadTimeOutput(filename, dt.format = "\%Y-\%m-\%d", hype.var = NULL,
-  type = "df", select = NULL, nrows = -1L, skip = 0L)
+  type = "df", select = NULL, nrows = -1L, skip = 0L,
+  warn.nan = FALSE)
 }
 \arguments{
 \item{filename}{Path to and file name of the time output file to import. Windows users: Note that 
@@ -28,13 +29,17 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return 
 
 \item{nrows}{Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.}
 
-\item{skip}{Integer, number of *data* rows to skip on import. Time output header lines are always skipped.}
+\item{skip}{Integer, number of \strong{data} rows to skip on import. Time output header lines are always skipped.}
+
+\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.}
 }
 \value{
 \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 \code{subid}, a vector of subid integers (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
-and \code{comment} with first row comment of imported file as character string.
+and \code{comment} with first row comment of imported file as character string. An additional attribute \code{subid.nan} might be 
+returned, see argument \code{warn.nan}.
 }
 \description{
 This is a convenience wrapper function to import a time output file ('time<\emph{HYPE_output_variable}>.txt') into R.
