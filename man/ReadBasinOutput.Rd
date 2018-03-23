@@ -5,7 +5,7 @@
 \title{Read a Basin Output File}
 \usage{
 ReadBasinOutput(filename, dt.format = "\%Y-\%m-\%d", type = "df",
-  subid = NULL)
+  subid = NULL, warn.nan = FALSE)
 }
 \arguments{
 \item{filename}{Path to and file name of the basin output file to import. Windows users: Note that 
@@ -21,11 +21,15 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hmv"} to return 
 \item{subid}{Integer, SUBID of the imported sub-basin results. If \code{NULL} (default), the function attempts to read this 
 from the imported file's name, which only works for standard HYPE basin output file names or any where the first 7 digits 
 give the SUBID with leading zeros.}
+
+\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.}
 }
 \value{
 \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
 Data frames and data tables contain additional \code{\link{attributes}}: \code{unit}, a vector of HYPE variable units, 
-\code{subid}, the HYPE SUBID, to which the time series belong, and \code{timestep} with a time step keyword attribute.
+\code{subid}, the HYPE SUBID, to which the time series belong, and \code{timestep} with a time step keyword attribute. 
+An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
 }
 \description{
 This is a convenience wrapper function to import a basin output file as data frame or matrix into R.
@@ -42,6 +46,9 @@ side effects when working with the imported data (and possibly converting to str
 HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 Results will then contain values of '****************'. \code{ReadBasinOutput} will convert those cases to 'NA' entries.
+
+Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
+issue from arising.
 }
 \examples{
 \dontrun{ReadBasinOutput("0000001.txt")}

@@ -4,7 +4,8 @@
 \alias{ReadMapOutput}
 \title{Read a Map Output File}
 \usage{
-ReadMapOutput(filename, dt.format = NULL, hype.var = NULL, type = "df")
+ReadMapOutput(filename, dt.format = NULL, hype.var = NULL, type = "df",
+  warn.nan = FALSE)
 }
 \arguments{
 \item{filename}{Path to and file name of the map output file to import. Windows users: Note that 
@@ -22,12 +23,16 @@ map output file names.}
 
 \item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
+
+\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.}
 }
 \value{
 \code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 \code{date}, a vector of date-times (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
-and \code{comment} with the first line of the imported file as text string.
+and \code{comment} with the first line of the imported file as text string. An additional attribute \code{subid.nan} might be 
+returned, see argument \code{warn.nan}.
 }
 \description{
 This is a convenience wrapper function to import a 
@@ -45,7 +50,7 @@ HYPE results are printed to files using a user-specified accuracy. This accuracy
 decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries. 
 
-Current versions of HYPE allow for definitiion of significant instead of fixed number of digits, which should prevent this 
+Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
 issue from arising.
 }
 \examples{

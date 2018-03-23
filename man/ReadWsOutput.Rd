@@ -6,7 +6,7 @@
 \usage{
 ReadWsOutput(path, type = c("time", "map", "basin"), hype.var = NULL,
   subid = NULL, dt.format = NULL, select = NULL, from = NULL,
-  to = NULL, progbar = T)
+  to = NULL, progbar = TRUE, warn.nan = FALSE)
 }
 \arguments{
 \item{path}{Character string, path to the directory holding simulation output files to import. Windows users: Note that 
@@ -36,12 +36,18 @@ imported.}
 
 \item{progbar}{Logical, display a progress bar while importing HYPE output files. Adds overhead to calculation time but useful 
 when many files are imported.}
+
+\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+a warning is thrown and affected SUBIDs and iterations are saved in an attribute \code{subid.nan}. Adds noticeable overhead to 
+import time for large simulation file sets.}
 }
 \value{
 \code{ReadWsOutput} returns a 3-dimensional array with additional attributes. The array content depends on the HYPE output file type 
 specified in argument \code{type}. Time and map output file imports return an array of class \code{\link{HypeSingleVar}} with 
 \code{[time, subid, iteration]} dimensions, basin output file imports return an array of class \code{\link{HypeMultiVar}} with 
-\code{[time, variable, iteration]} dimensions.
+\code{[time, variable, iteration]} dimensions. An additional attribute \code{subid.nan} might be 
+returned, see argument \code{warn.nan}, containing a list with SUBID vector elements. Vectors contain iterations where \code{NaN} 
+values occur for hte given subid.
 
 Returned arrays contain additional \code{\link{attributes}}:
 \describe{
@@ -49,6 +55,8 @@ Returned arrays contain additional \code{\link{attributes}}:
 dimension.}
 \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files.}
 \item{\strong{variable}}{A vector of HYPE output variables. Corresponds to 2nd array dimension for basin output files.}
+\item{\strong{nan (optional)}}{A named list with SUBID or HYPE variable vector elements. Vectors contain iterations where \code{NaN} 
+values occur for the given SUBID/HYPE variable.}
 }
 }
 \description{

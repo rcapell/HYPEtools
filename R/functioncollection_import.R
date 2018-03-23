@@ -96,6 +96,8 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow) {
 #' @param subid Integer, SUBID of the imported sub-basin results. If \code{NULL} (default), the function attempts to read this 
 #' from the imported file's name, which only works for standard HYPE basin output file names or any where the first 7 digits 
 #' give the SUBID with leading zeros.
+#' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+#' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
 #' 
 #' @details
 #' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
@@ -105,7 +107,9 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow) {
 #' @return
 #' \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{unit}, a vector of HYPE variable units, 
-#' \code{subid}, the HYPE SUBID, to which the time series belong, and \code{timestep} with a time step keyword attribute.
+#' \code{subid}, the HYPE SUBID, to which the time series belong, and \code{timestep} with a time step keyword attribute. 
+#' An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
+
 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -115,6 +119,9 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow) {
 #' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 #' Results will then contain values of '****************'. \code{ReadBasinOutput} will convert those cases to 'NA' entries.
 #' 
+#' Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
+#' issue from arising.
+#' 
 #' @examples
 #' \dontrun{ReadBasinOutput("0000001.txt")}
 #' 
@@ -122,7 +129,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow) {
 #' @export
 
 
-ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid = NULL) {
+ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid = NULL, warn.nan = FALSE) {
   
   # handling output type user choice
   if (type == "df") {
@@ -220,6 +227,15 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
   } else {
     # add timestep attribute with placeholder value
     tstep <- "unknown"
+  }
+  
+  # check for existence of NaN values
+  if (warn.nan) {
+    te <- apply(as.data.frame(x[, -1]), 2, function(x) any(is.nan(x)))
+    if (any(te)) {
+      warning("'NaN' values found in one or more SUBIDs. SUBIDs saved in attribute 'subid.nan'.")
+      attr(x, "subid.nan") <- sbd[te]
+    }
   }
   
   # conditional on user choice: output formatting
@@ -506,6 +522,8 @@ ReadPar <- function (filename = "par.txt") {
 #' map output file names.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
+#' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+#' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
 #' 
 #' @details
 #' \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
@@ -517,14 +535,15 @@ ReadPar <- function (filename = "par.txt") {
 #' \code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 #' \code{date}, a vector of date-times (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
-#' and \code{comment} with the first line of the imported file as text string.
+#' and \code{comment} with the first line of the imported file as text string. An additional attribute \code{subid.nan} might be 
+#' returned, see argument \code{warn.nan}.
 #' 
 #' @note
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 #' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 #' Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries. 
 #' 
-#' Current versions of HYPE allow for definitiion of significant instead of fixed number of digits, which should prevent this 
+#' Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
 #' issue from arising.
 #' 
 #' @examples
@@ -533,7 +552,7 @@ ReadPar <- function (filename = "par.txt") {
 #' @importFrom data.table fread transpose :=
 #' @export
 
-ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "df") {
+ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "df", warn.nan = FALSE) {
   
   # handling output type user choice
   if (type == "df") {
@@ -581,6 +600,15 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
     } else {
       xd <- tryCatch(na.fail(as.POSIXct(strptime(xd, format = dt.format, tz = "GMT"))), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
+    }
+  }
+  
+  # check for existence of NaN values
+  if (warn.nan) {
+    te <- apply(as.data.frame(x[, -1]), 2, function(x) any(is.nan(x)))
+    if (any(te)) {
+      warning("'NaN' values found in one or more SUBIDs. SUBIDs saved in attribute 'subid.nan'.")
+      attr(x, "subid.nan") <- sbd[te]
     }
   }
   
@@ -674,6 +702,9 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 #' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 #' Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
+#' 
+#' Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
+#' issue from arising.
 #' 
 #' @examples 
 #' \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "%Y-%m")}
@@ -781,7 +812,6 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     xd <- NA
   }
   
-  attr(x, "comment") <- xattr[1]
   
   # check for existence of NaN values
   if (warn.nan) {
@@ -797,6 +827,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     
     attr(x, which = "subid") <- sbd
     attr(x, "variable") <- toupper(hype.var)
+    attr(x, "comment") <- xattr[1]
     
     # conditional: timestep attribute identified by difference between first two entries
     tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
@@ -829,10 +860,6 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
   }
   
-  # conditional on user choice, check for existence of NaN values
-  if (warn.nan) {
-    
-  }
   return(x)
 }
 

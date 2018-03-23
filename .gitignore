@@ -4,6 +4,7 @@
 .Rproj.user
 .Rhistory
 .RData
+.Rprofile
 HYPEtools.Rproj
 .Rbuildignore
 src/obsfile_handling.o

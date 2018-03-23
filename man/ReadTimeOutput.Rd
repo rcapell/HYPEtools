@@ -57,6 +57,9 @@ side effects when working with the imported data (and possibly converting to str
 HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
+
+Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
+issue from arising.
 }
 \examples{
 \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "\%Y-\%m")}
