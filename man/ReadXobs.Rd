@@ -28,7 +28,7 @@ i.e. \code{[variable]_[subid]}. If datetime conversion failed on import, the ret
 This is a convenience wrapper function to import an Xobs file into R.
 }
 \details{
-\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 \code{\link{data.table}}, 
 with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as 
 attributes (see \code{\link{attr}} on how to access these).

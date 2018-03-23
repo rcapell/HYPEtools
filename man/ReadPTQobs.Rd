@@ -23,7 +23,7 @@ step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time 
 Import forcing data and discharge observation files as data frame into R.
 }
 \details{
-\code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+\code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 \code{\link{data.table}}, 
 with conversion of date-time strings to POSIX time representations. Observation IDs (SUBIDs or IDs connected to SUBIDs with a 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 

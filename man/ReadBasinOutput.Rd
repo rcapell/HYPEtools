@@ -35,7 +35,7 @@ An additional attribute \code{subid.nan} might be returned, see argument \code{w
 This is a convenience wrapper function to import a basin output file as data frame or matrix into R.
 }
 \details{
-\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package 
 \code{\link{data.table}}, with conversion of date-time strings to
 POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
 }

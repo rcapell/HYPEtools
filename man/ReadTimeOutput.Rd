@@ -45,7 +45,7 @@ returned, see argument \code{warn.nan}.
 This is a convenience wrapper function to import a time output file ('time<\emph{HYPE_output_variable}>.txt') into R.
 }
 \details{
-\code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+\code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 \code{\link{data.table}}, 
 with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 of the time step period.

@@ -100,7 +100,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", headrow) {
 #' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
 #' 
 #' @details
-#' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package 
 #' \code{\link{data.table}}, with conversion of date-time strings to
 #' POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
 #' 
@@ -283,7 +283,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
 #' the number of rows to import.
 #'  
 #' @details
-#' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 #' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as 
 #' attributes (see \code{\link{attr}} on how to access these).
@@ -389,7 +389,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
 #' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
 
 #' @details
-#' \code{ReadGeoData} runs \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
+#' \code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
 #' with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and 
 #' upper-case column names.
 #' 
@@ -526,7 +526,7 @@ ReadPar <- function (filename = "par.txt") {
 #' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
 #' 
 #' @details
-#' \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 #' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 #' of the time step period.
@@ -683,7 +683,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
 #' 
 #' @details
-#' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 #' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 #' of the time step period.
@@ -884,7 +884,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' to import.
 #'  
 #' @details
-#' \code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from the 
+#' \code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 #' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Observation IDs (SUBIDs or IDs connected to SUBIDs with a 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 
