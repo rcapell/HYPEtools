@@ -676,7 +676,8 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' time output file names.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
-#' @param select Integer vector, column numbers to import. Note: first column with dates must be imported.
+#' @param select Integer vector, column numbers to import. Note: first column with dates must be imported and will be added if missing.
+#' @param subid Integer vector, HYPE SUBIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.
 #' @param nrows Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.
 #' @param skip Integer, number of \strong{data} rows to skip on import. Time output header lines are always skipped. 
 #' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
@@ -712,12 +713,12 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' @importFrom data.table fread is.data.table
 #' @export
 
-ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df", select = NULL, nrows = -1L, skip = 0L, 
-                           warn.nan = FALSE) {
+ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df", select = NULL, subid = NULL, 
+                           nrows = -1L, skip = 0L, warn.nan = FALSE) {
   
   # argument checks
   if (!is.null(select) && !(1 %in% select)) {
-    stop("Argument 'select' must include column 1.")
+    select <- c(1, select)
   }
   
   # handling output type user choice
@@ -732,12 +733,28 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   # import subids, prepare subid attribute vector
   xattr <- readLines(filename, n = 2)
   sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
-  if (!is.null(select)) {
+  
+  # create select vector from 'subid' argument, overrides 'select' argument
+  if (!is.null(subid)) {
+    if (!is.null(select)) {
+      warning("Arguments 'select' and 'subid' provided. 'subid' takes precedence.")
+    }
+    te <- match(subid, sbd)
+    # stop if unknown subids provided by user
+    if (any(is.na(te))) {
+      stop(paste0("Argument 'subid': SUBIDs ", paste(subid[is.na(te)], collapse = ", "), " not found in imported file."))
+    }
+    select <- c(1, te + 1)
+    sbd <- subid
+  } else if (!is.null(select)) {
+    # update subid attribute to selected subids
     sbd <- sbd[select[-1] - 1]
   }
   
-  # create select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
-  if (is.null(select)) {
+  
+  
+  # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
+  if (is.null(select) && is.null(subid)) {
     select <- 1:(length(sbd) + 1)
   }
   
@@ -882,6 +899,10 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
 #' @param nrows Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
 #' to import.
+#' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame or \code{"dt"} to 
+#' return a \code{\link[data.table]{data.table}} object.
+#' @param select Integer vector, column numbers to import. Note: first column with dates must be imported and will be added if missing.
+#' @param obsid Integer vector, HYPE OBSIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.
 #'  
 #' @details
 #' \code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
@@ -909,18 +930,54 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' @export
 
 
-ReadPTQobs <- function(filename, dt.format = "%Y-%m-%d", nrows = -1) {
+ReadPTQobs <- function(filename, dt.format = "%Y-%m-%d", nrows = -1, type = "df", select = NULL, obsid = NULL) {
   
-  ## import ptqobs file header, extract attribute
+  ## import ptqobs file header, extract obsid attribute
   # import
   xattr <- readLines(filename,n = 1)
   # extract obsids
   sbd <- as.integer(strsplit(xattr, split = "\t")[[1]][-1])
   
-  # read the data
-  x <- fread(filename,  na.strings = "-9999", sep = "\t", header = T, data.table = F, nrows = nrows)
-                #colClasses = c("NA", rep("numeric", length(sbd))))
+  # argument checks
+  if (!is.null(select) && !(1 %in% select)) {
+    select <- c(1, select)
+  }
   
+  # handling output type user choice
+  if (type == "df") {
+    d.t <- F
+  } else if (type == "dt") {
+    d.t <- T
+  } else {
+    stop(paste("Unknown type", type, "."))
+  }
+  
+  # create select vector from 'subid' argument, overrides 'select' argument
+  if (!is.null(obsid)) {
+    if (!is.null(select)) {
+      warning("Arguments 'select' and 'obsid' provided. 'obsid' takes precedence.")
+    }
+    te <- match(obsid, sbd)
+    # stop if unknown subids provided by user
+    if (any(is.na(te))) {
+      stop(paste0("Argument 'obsid': OBSIDs ", paste(obsid[is.na(te)], collapse = ", "), " not found in imported file."))
+    }
+    select <- c(1, te + 1)
+    sbd <- obsid
+  } else if (!is.null(select)) {
+    # update subid attribute to selected subids
+    sbd <- sbd[select[-1] - 1]
+  }
+  
+  
+  # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
+  if (is.null(select) && is.null(subid)) {
+    select <- 1:(length(sbd) + 1)
+  }
+  
+  # read the data
+  x <- fread(filename,  na.strings = "-9999", sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select)
+
   # date conversion 
   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
   x[, 1] <- tryCatch(na.fail(xd), error = function(e) {

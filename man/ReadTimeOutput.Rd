@@ -5,7 +5,7 @@
 \title{Read a Time Output File}
 \usage{
 ReadTimeOutput(filename, dt.format = "\%Y-\%m-\%d", hype.var = NULL,
-  type = "df", select = NULL, nrows = -1L, skip = 0L,
+  type = "df", select = NULL, subid = NULL, nrows = -1L, skip = 0L,
   warn.nan = FALSE)
 }
 \arguments{
@@ -25,7 +25,9 @@ time output file names.}
 \item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
 
-\item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported.}
+\item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported and will be added if missing.}
+
+\item{subid}{Integer vector, HYPE SUBIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.}
 
 \item{nrows}{Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.}
 

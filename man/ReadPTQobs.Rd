@@ -4,7 +4,8 @@
 \alias{ReadPTQobs}
 \title{Read 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files}
 \usage{
-ReadPTQobs(filename, dt.format = "\%Y-\%m-\%d", nrows = -1)
+ReadPTQobs(filename, dt.format = "\%Y-\%m-\%d", nrows = -1, type = "df",
+  select = NULL, obsid = NULL)
 }
 \arguments{
 \item{filename}{Path to and file name of the file to import. Windows users: Note that 
@@ -14,6 +15,13 @@ Paths are separated by '/', not '\\'.}
 
 \item{nrows}{Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
 to import.}
+
+\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame or \code{"dt"} to 
+return a \code{\link[data.table]{data.table}} object.}
+
+\item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported and will be added if missing.}
+
+\item{obsid}{Integer vector, HYPE OBSIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.}
 }
 \value{
 \code{ReadPTQobs} returns a data frame with additional attributes \code{obsid} with observation IDs and \code{timestep} with a time 
