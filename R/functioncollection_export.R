@@ -169,46 +169,44 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt") {
 #' 
 #' @param x A data frame, e.g. an object originally imported with \code{\link{ReadXobs}}. Date-time information in the first 
 #' column and measured values in the remaining columns. Column names are ignored on export, but if attributes \code{comment}, 
-#' \code{variable} , and \code{subid} are available, these can be exported as Xobs headers (see also arguments of the same names 
+#' \code{variable}, and \code{subid} are available, these can be exported as Xobs headers (see also arguments of the same names 
 #' below).
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param append Logical. If \code{TRUE}, \code{x} will be appended to file \code{filename}. File must exist and 
 #' have an identical column structure as \code{x}. If \code{FALSE}, existing file in \code{filename} will be overwritten!
-#' @param comment A character string to be exported as first row comment in the Xobs file. Will take precedence over a \code{comment}
-#' attribute of \code{x}. Comments are only exported if \code{append} is \code{FALSE}.
+#' @param comment A character string to be exported as first row comment in the Xobs file. If provided, it takes precedence over 
+#' a \code{comment} attribute of \code{x}. Comments are only exported if \code{append} is \code{FALSE}.
 #' @param variable A character vector to be exported as second row in the Xobs file. Must contain the same number of 
-#' variables as \code{x}. If omitted or \code{NA}, an attribute \code{variable} in \code{x} is mandatory.
+#' variables as \code{x}. If omitted or \code{NULL}, an attribute \code{variable} in \code{x} is mandatory.
 #' Will take precedence over a \code{variable} attribute of \code{x}. If \code{append} is \code{TRUE} the values are 
 #' used to test for consistency between export object and the existing file.
 #' @param subid Third row in Xobs, containing SUBIDs (integer). Behaviour otherwise as argument \code{variable}.
-#' @param lastDate Date-time of last observation in \code{\link{POSIXct}} format. See details.
-#' @param timestep Character string, either "daily" or "hourly", giving the time step between observations. Can be 
+#' @param last.date Optional date-time of last observation in existing Xobs file as text string. Only relevant with \code{append = TRUE}. 
+#' Formatting depending on time step, e.g. \code{'2000-01-01'} (day) or \code{'2000-01-01 00:00'} (hour). Will be automatically read 
+#' from file per default, but can be provided to reduce execution time when appending to large files.
+#' @param timestep Character string, either "day" or "hour", giving the time step between observations. Can be 
 #' abbreviated.
 #' 
 #' @details
 #' \code{WriteXobs} writes a 'Xobs.txt' file, typically originating from an imported and modified 'Xobs.txt'.
 #' HYPE Xobs files contain a three-row header, with a comment line first, next a line of variables, and then a line of subids. 
 #' Objects imported with \code{\link{ReadXobs}} include attributes holding this information, and \code{WriteXobs} will use this
-#' information. Otherwise, these attributes can be added to objects prior to calling code{WriteXobs}, or passed as function 
+#' information. Otherwise, these attributes can be added to objects prior to calling \code{WriteXobs}, or passed as function 
 #' arguments.
 #'
-#' The function currenctly requires daily or hourly time steps as input, when the \code{append} argument is \code{TRUE}. 
+#' If argument \code{append} is \code{TRUE}, the function requires daily or hourly time steps as input. 
 #' The date-time column must be of class \code{POSIXct}, see \code{\link{as.POSIXct}}. Objects returned from 
-#' \code{\link{ReadXobs}} per default have the correct class for the date-time column. Argument \code{lastDate} gives the 
-#' last observation date-time in the existing 'Xobs' file and must be of the same type. Create with e.g. 
-#' 'as.POSIXct(strptime("1999-01-01", format = "%Y-%m-%d", tz = "GMT"))'. Missing time steps between existing and new 
-#' observations will be added, with '-9999' values in all columns. If time periods overlap, the export will stop with an
-#' error message.
+#' \code{\link{ReadXobs}} per default have the correct class for the date-time column. When appending to existing file, the 
+#' function adds new rows with '-9999' values in all data columns to fill any time gaps between existing and new data. If time 
+#' periods overlap, the export will stop with an error message. Argument \code{last.date} can be provided to speed up appending exports, 
+#' but per dafault, \code{WriteXobs} extracts the last observation in the existing file automatically. 
 #' 
 #' 
 #' @note
 #' Both \code{variable} and \code{subid} do not include elements for the first column in the Xobs file/object, in accordance 
 #' with \code{\link{ReadXobs}}. These elements will be added by the function.
 #' 
-#' There is no automatic checking of last observation dates in existing 'Xobs' files when appending because R internal
-#' functions available are time-consuming for large files. Google results for 'R read last line in text file' point to 
-#' platform-dependent solutions using e.g. 'tail', 'gawk', or 'wc'.
 #' 
 #' @examples
 #' \dontrun{WriteXobs(myxobs)}
@@ -216,8 +214,8 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt") {
 
 
 
-WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variable = NA, subid = NA, 
-                      lastDate = NA, timestep = "d") {
+WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, variable = NULL, subid = NULL, 
+                      last.date = NULL, timestep = "d") {
   
   if (!append) {
     # no appending, just write to a new file
@@ -233,7 +231,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
     fcon <- file(description = filename, open ="at")
     
     ## export comment line
-    if (is.na(comment)){
+    if (is.null(comment)) {
       # comment argument is empty
       if(!is.null(attr(x, which = "comment"))) {
         # comment attribute exists, export
@@ -248,7 +246,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
     }
     
     ## export variable line
-    if (length(variable) == 1 & is.na(variable[1])) {
+    if (is.null(variable)) {
       # variable argument is empty
       if(!is.null(attr(x, which = "variable"))) {
         # attribute variable exists
@@ -259,8 +257,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
         } else {
           # mismatch in length, stop with error
           close(fcon)
-          stop("Length of attribute 'variable' does not match number of variables in export object.\n 
-               Check consistency, e.g. with attr(x, 'variable') and names(x)[-1].")
+          stop("Length of attribute 'variable' does not match number of variables in export object.\nCheck consistency, e.g. with attr(x, 'variable') and names(x)[-1].")
         }
       } else {
         # attribute variable does not exist, stop with error
@@ -280,7 +277,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
     }
     
     ## export subid line
-    if (length(subid == 1) & is.na(subid[1])) {
+    if (is.null(subid)) {
       # subid argument is empty
       if(!is.null(attr(x, which = "subid"))) {
         # attribute subid exists
@@ -333,7 +330,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
     
     ## second consistency check: variables and SUBIDs identical and in the same order?
     # select export data to compare with, either from function argument or from attribute of x
-    if (!is.na(variable[1])) {
+    if (!is.null(variable)) {
       exportVar <- variable
     } else {
       if (!is.null(attr(x, "variable"))) {
@@ -343,7 +340,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
       }
     }
     
-    if (!is.na(subid[1])) {
+    if (!is.null(subid[1])) {
       exportSbd <- subid
     } else {
       if (!is.null(attr(x, "subid"))) {
@@ -360,73 +357,76 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NA, variab
     
     ## third consistency check: is last date in existing Xobs earlier than the first export row?
     ## split into hour and day cases
-    if (timestep == "h" | timestep == "hourly") {
-      tdiff <- difftime(x[1,1], lastDate, units = "hours")
+    if (timestep == "h" | timestep == "hour") {
+      # extract last date from existing file
+      if (is.null(last.date)) {
+        te <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, 
+                    colClasses = "NA", select = 1)
+        last.date <- as.POSIXct(strptime(te[nrow(te), ], format = "%Y-%m-%d %H:%M", tz = "GMT"))
+      } else {
+        last.date <- as.POSIXct(strptime(last.date, format = "%Y-%m-%d %H:%M", tz = "GMT"))
+        stop(paste0("Conversion of user-provided argument 'last.date' to POSIXct failed. Check formatting requirements."))
+      }
+      # calculate gap between existing and new file
+      tdiff <- difftime(x[1,1], last.date, units = "hours")
       if (tdiff < 1) {
         stop("Time series in existing and new Xobs overlap or difference is smaller than one hour.")
       }
       ## export '-9999' lines if gap is larger than one hour
       # create date vector
-      dpad <- seq(from = lastDate, to = x[1,1], length = tdiff + 1)
+      dpad <- seq(from = last.date, to = x[1,1], length = tdiff + 1)
       # cut off end and start dates
       dpad <- dpad[-c(1, length(dpad))]
       # create data frame from a matrix (it is more straightforward to span up an empty matrix and then convert to df)
       pad <- cbind(format(dpad, format = "%Y-%m-%d %H:%M"), as.data.frame(matrix(data = -9999, nrow = length(dpad), 
                                                                                  ncol = ncol(x) - 1)))
-      write.table(pad, file = filename, col.names = F, sep = "\t", append = T, na = "-9999", row.names = F, quote = F)
+      # export
+      fwrite(pad, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = FALSE, append = TRUE, na = "-9999")
     }
     
-    if (timestep == "d" | timestep == "daily") {
-      tdiff <- difftime(x[1,1], lastDate, units = "days")
+    if (timestep == "d" | timestep == "day") {
+      # extract last date from existing file
+      if (is.null(last.date)) {
+        te <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, 
+                    colClasses = "NA", select = 1)
+        last.date <- as.POSIXct(strptime(te[nrow(te), ], format = "%Y-%m-%d", tz = "GMT"))
+      } else {
+        last.date <- as.POSIXct(strptime(last.date, format = "%Y-%m-%d %H:%M", tz = "GMT"))
+        stop(paste0("Conversion of user-provided argument 'last.date' to POSIXct failed. Check formatting requirements."))
+      }
+      # calculate gap between existing and new file
+      tdiff <- difftime(x[1,1], last.date, units = "days")
       if (tdiff < 1) {
         stop("Time series in existing and new Xobs overlap or difference is smaller than one day.")
       }
       ## export '-9999' lines if gap is larger than one day
       # create date vector
-      dpad <- seq(from = lastDate, to = x[1,1], length = tdiff + 1)
+      dpad <- seq(from = last.date, to = x[1,1], length = tdiff + 1)
       # cut off end and start dates
       dpad <- dpad[-c(1, length(dpad))]
       # create data frame from a matrix (it is more straightforward to span up an empty matrix and then convert to df)
       pad <- cbind(format(dpad, format = "%Y-%m-%d"), as.data.frame(matrix(data = -9999, nrow = length(dpad), 
                                                                            ncol = ncol(x) - 1)))
-      write.table(pad, file = filename, col.names = F, sep = "\t", append = T, na = "-9999", row.names = F, quote = F)
+      # export
+      fwrite(pad, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = FALSE, append = TRUE, na = "-9999")
     }
   }
   
-  # Export of the dataframe, format date-times to HYPE requirements first
-  if (timestep == "d" | timestep == "daily") {
+  # Export of new xobs, format date-times to HYPE requirements first
+  if (timestep == "d" | timestep == "day") {
     x[,1] <- format(x[,1], format = "%Y-%m-%d")
   }
-  if (timestep == "h" | timestep == "hourly") {
+  if (timestep == "h" | timestep == "hour") {
     x[,1] <- format(x[,1], format = "%Y-%m-%d %H:%M")
   }
-  write.table(x, file = filename, col.names = F, sep = "\t", append = T, na = "-9999", row.names = F, quote = F)
-  
-  
-    }
+  # export
+  fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = FALSE, append = TRUE, na = "-9999")
+  # old version, delete after while
+  #write.table(x, file = filename, col.names = F, sep = "\t", append = T, na = "-9999", row.names = F, quote = F)
+
+}
 
 
-
-
-# ## DEBUG
-# library(RHYPE)
-# filename <- xobsloc
-# filename <- "xobs.txt"
-# x <- ReadXobs(filename = xobsloc)
-# variable <- NA
-# comment <- NA
-# subid <- NA
-# attributes(x)
-# attr(x, "variable") <- attr(x, "variable")[-1]
-# names(x)
-#WriteXobs(x, filename = filename, append = F, subid = c(2689,1432,1022,668,122,40706,40682,40672,4128,40555,2473,40350,1740))
-#subid <- c(2689,1432,1022,668,122,40706,40682,40672,4128,40555,2473,40350,1740)
-# WriteXobs(x = x, filename = filename, append = T, lastDate = as.POSIXct(strptime("1959-12-11", format = "%Y-%m-%d", tz = "GMT")))
-# WriteXobs(x = x, filename = filename, append = T, lastDate = as.POSIXct(strptime("1960-12-11", format = "%Y-%m-%d", tz = "GMT")))
-# 
-# lastDate <- as.POSIXct(strptime("1959-12-01", format = "%Y-%m-%d", tz = "GMT"))
-# 
-# 
 
 
 
