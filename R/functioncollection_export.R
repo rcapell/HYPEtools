@@ -10,7 +10,7 @@
 #     - WriteMapOutput()
 #     - WritePmsf()
 #     - WritePTQobs()
-#     - HypeDataImport:
+#     - HypeDataExport:
 #         WriteAquiferData(), WriteBranchData(), WriteCropData(), WriteDamData(), WriteLakeData(), WriteMgmtData(), 
 #         WritePointSourceData()
 #     - WriteOptpar()
@@ -58,11 +58,8 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteGeoData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write a 'GeoData.txt' file
 #'
-#' @description
 #' This is a convenience wrapper function to export a 'GeoData.txt' file from R.
 #' 
 #' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoData}}. 
@@ -79,6 +76,8 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 #' @examples
 #' \dontrun{WriteGeoData(x = mygeodata)}
 #' 
+#' @importFrom data.table fwrite
+#' @export
 
 
 WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
@@ -108,11 +107,8 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteGeoClass~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write a 'GeoClass.txt' file
 #'
-#' @description
 #' This is a convenience wrapper function to export a 'GeoClass.txt' file from R.
 #' 
 #' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoClass}}.
@@ -127,12 +123,14 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
 #' @examples
 #' \dontrun{WriteGeoClass(x = mygeoclass)}
 #' 
+#' @importFrom data.table fwrite
+#' @export
 
 
 WriteGeoClass <- function(x, filename = "GeoClass.txt") {
 
-  # set decimal print options to force decimal output (not scientific 'e'-notation). Prob not necessary, just to be safe
-  options(digits = 10, scipen = 5)
+  # # set decimal print options to force decimal output (not scientific 'e'-notation). Prob not necessary, just to be safe
+  # options(digits = 10, scipen = 5)
   
   # export comment (if it exists) and header attributes
   if (!is.null(attr(x, which = "comment"))) {
@@ -145,8 +143,8 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt") {
   # export data frame, append to existing file if comment attributes were exported
   write.table(x, file = filename, quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE, append = TRUE, na = "")
   
-  # reset options to defaults
-  options(digits = 7, scipen = 0)
+  # # reset options to defaults
+  # options(digits = 7, scipen = 0)
 }
 
 ## DEBUG
@@ -160,11 +158,8 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteXobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write an 'Xobs.txt' File
 #'
-#' @description
 #' \code{WriteXobs} writes or appends an observation data set to an Xobs file.
 #' 
 #' @param x A data frame, e.g. an object originally imported with \code{\link{ReadXobs}}. Date-time information in the first 
@@ -211,7 +206,8 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt") {
 #' @examples
 #' \dontrun{WriteXobs(myxobs)}
 #' 
-
+#' @importFrom data.table fwrite
+#' @export
 
 
 WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, variable = NULL, subid = NULL, 
@@ -436,11 +432,8 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteBasinOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write a basin output '[SUBID].txt' file
 #'
-#' @description
 #' Function to export a basin output file from R.
 #' 
 #' @param x The object to be written, a dataframe with \code{unit} attribute, as an object returned from \code{\link{ReadBasinOutput}}.
@@ -456,7 +449,8 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
 #' @examples
 #' \dontrun{WriteBasinOutput(x = mybasin, filename = "000001.txt")}
 #' 
-
+#' @importFrom data.table fwrite
+#' @export
 
 
 WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
@@ -476,8 +470,10 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
     warning("Date column not formatting failed. Exported unchanged.")
   }
   
-  # export the object, omitting header
-  write.table(x, file = filename, append = T, sep = "\t", row.names = F, col.names = F, na = "-9999", quote = F)
+  # export object, omitting header
+  fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = FALSE, append = TRUE, na = "-9999")
+  # old version, delete after while
+  #write.table(x, file = filename, append = T, sep = "\t", row.names = F, col.names = F, na = "-9999", quote = F)
   
 }
 
@@ -501,11 +497,8 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteTimeOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write a 'timeXXXX.txt' file
 #'
-#' @description
 #' Function to export a time output file from R.
 #' 
 #' @param x The object to be written, a dataframe with \code{comment} and \code{subid} attributes, as an object returned from 
@@ -523,6 +516,8 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' \dontrun{WriteTimeOutput(x = myCCTN, filename = "timeCCTN.txt")}
 #' 
 #' @importFrom data.table fwrite
+#' @export
+
 
 WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
@@ -566,11 +561,8 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteMapOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write a 'mapXXXX.txt' file
 #'
-#' @description
 #' Function to export a map output file from R.
 #' 
 #' @param x The object to be written, a dataframe with \code{comment}, \code{date}, and \code{timestep} 
@@ -588,6 +580,8 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' @examples
 #' \dontrun{WriteMapOutput(x = myCCTN, filename = "mapCCTN.txt")}
 #' 
+#' @importFrom data.table fwrite
+#' @export
 
 WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
@@ -626,11 +620,8 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePmsf~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
 #' Write a 'pmsf.txt' file
 #'
-#' @description
 #' This is a small convenience function to export a 'partial model setup file' from R.
 #' 
 #' @param x The object to be written, an \code{integer} vector containing SUBIDs.
@@ -647,6 +638,7 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' @examples
 #' \dontrun{WritePmsf(x = mypmsf)}
 #' 
+#' @export
 
 WritePmsf <- function(x, filename = "../pmsf.txt") {
   # concatenate number of subids and vector of subids and export
@@ -694,6 +686,7 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @examples
 #' \dontrun{WritePTQobs(mytops, "Tobs.txt")}
 #' 
+#' @importFrom data.table fwrite
 #' @export
 
 
@@ -750,8 +743,8 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid 
 #' @param x The object to be written, a dataframe as returned from the \code{\link{HypeDataImport}} functions. 
 #' @param filename A character string naming a path and file name to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
-#' @param digits Integer, number of significant digits to export. See \code{\link{format}}.
-#' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+# #' @param digits Integer, number of significant digits to export. See \code{\link{format}}.
+# #' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #' @param verbose Logical, display informative warning messages if columns contain \code{NA} values or if character strings are
 #' too long. See Details.
 #'  
@@ -776,10 +769,10 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid 
 #' found during export. Character string lengths in comment columns of HYPE data files are restricted to 100 characters, 
 #' the functions will return with a warning if longer strings were exported.
 #' 
-#' Exported dataframes are formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
-#' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
-#' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
-#' hard-coded into the export functions.
+# #' Exported dataframes are formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
+# #' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
+# #' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
+# #' hard-coded into the export functions.
 
 #' 
 #' @examples
@@ -792,8 +785,9 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid 
 NULL
 
 #' @rdname HypeDataExport
+#' @importFrom data.table fwrite
 #' @export
-WriteAquiferData <- function(x, filename = "AquiferData.txt", digits = 10, nsmall = 0L, verbose = T) {
+WriteAquiferData <- function(x, filename = "AquiferData.txt", verbose = T) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -803,16 +797,19 @@ WriteAquiferData <- function(x, filename = "AquiferData.txt", digits = 10, nsmal
   if (any(te) && verbose) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
     }
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
   # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  # old version
+  # # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  # x[is.na(x)] <- -9999
+  # write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+  #             quote = FALSE, sep = "\t", row.names = FALSE, na = "")
 }
 
 #' @rdname HypeDataExport
+#' @importFrom data.table fwrite
 #' @export
-WriteBranchData <- function(x, filename = "BranchData.txt", digits = 10, nsmall = 0L, verbose = T) {
+WriteBranchData <- function(x, filename = "BranchData.txt", verbose = T) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -823,16 +820,14 @@ WriteBranchData <- function(x, filename = "BranchData.txt", digits = 10, nsmall 
   if (any(te) && verbose) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   }
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
   # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
 }
 
 #' @rdname HypeDataExport
+#' @importFrom data.table fwrite
 #' @export
-WriteCropData <- function(x, filename = "CropData.txt", digits = 10, nsmall = 0L, verbose = T) {
+WriteCropData <- function(x, filename = "CropData.txt", verbose = T) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -842,16 +837,14 @@ WriteCropData <- function(x, filename = "CropData.txt", digits = 10, nsmall = 0L
   if (any(te) && verbose) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   }
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
   # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
 }
 
 #' @rdname HypeDataExport
+#' @importFrom data.table fwrite
 #' @export
-WriteDamData <- function(x, filename = "DamData.txt", digits = 10, nsmall = 0L, verbose = T) {
+WriteDamData <- function(x, filename = "DamData.txt", verbose = T) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -861,30 +854,26 @@ WriteDamData <- function(x, filename = "DamData.txt", digits = 10, nsmall = 0L, 
   if (any(te) && verbose) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   }
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
   # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
 }
 
 #' @rdname HypeDataExport
+#' @importFrom data.table fwrite
 #' @export
-WriteLakeData <- function(x, filename = "LakeData.txt", digits = 10, nsmall = 0L, verbose = T) {
+WriteLakeData <- function(x, filename = "LakeData.txt", verbose = T) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
     }
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
   # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
 }
 
 #' @rdname HypeDataExport
+#' @importFrom data.table fwrite
 #' @export
-WriteMgmtData <- function(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L, verbose = T) {
+WriteMgmtData <- function(x, filename = "MgmtData.txt", verbose = T) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -892,16 +881,14 @@ WriteMgmtData <- function(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L
   # warn if NAs in data, since HYPE does not allow empty values in 
   te <- apply(x, 2, function(x) {any(is.na(x))})
   if (any(te) && verbose) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
   # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
 }
 
 #' @rdname HypeDataExport
+#' @importFrom data.table fwrite
 #' @export
-WritePointSourceData <- function(x, filename = "PointSourceData.txt", digits = 10, nsmall = 0L, verbose = T) {
+WritePointSourceData <- function(x, filename = "PointSourceData.txt", verbose = T) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -909,17 +896,15 @@ WritePointSourceData <- function(x, filename = "PointSourceData.txt", digits = 1
   # warn if NAs in data, since HYPE does not allow empty values in 
   te <- apply(x, 2, function(x) {any(is.na(x))})
   if (any(te) && verbose) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
-  # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
-  x[is.na(x)] <- -9999
   # export
-  write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-              quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
 }
 
 #' @rdname HypeDataExport
+#' @importFrom data.table fwrite
 #' @export
 WriteForcKey <- function(x, filename = "ForcKey.txt") {
-  write.table(x, filename, col.names = T, sep = "\t", quote = F, row.names = F)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 }
 
 
