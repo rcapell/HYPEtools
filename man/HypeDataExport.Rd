@@ -12,26 +12,19 @@
 \alias{WriteForcKey}
 \title{Write HYPE data files}
 \usage{
-WriteAquiferData(x, filename = "AquiferData.txt", digits = 10,
-  nsmall = 0L, verbose = T)
+WriteAquiferData(x, filename = "AquiferData.txt", verbose = T)
 
-WriteBranchData(x, filename = "BranchData.txt", digits = 10, nsmall = 0L,
-  verbose = T)
+WriteBranchData(x, filename = "BranchData.txt", verbose = T)
 
-WriteCropData(x, filename = "CropData.txt", digits = 10, nsmall = 0L,
-  verbose = T)
+WriteCropData(x, filename = "CropData.txt", verbose = T)
 
-WriteDamData(x, filename = "DamData.txt", digits = 10, nsmall = 0L,
-  verbose = T)
+WriteDamData(x, filename = "DamData.txt", verbose = T)
 
-WriteLakeData(x, filename = "LakeData.txt", digits = 10, nsmall = 0L,
-  verbose = T)
+WriteLakeData(x, filename = "LakeData.txt", verbose = T)
 
-WriteMgmtData(x, filename = "MgmtData.txt", digits = 10, nsmall = 0L,
-  verbose = T)
+WriteMgmtData(x, filename = "MgmtData.txt", verbose = T)
 
-WritePointSourceData(x, filename = "PointSourceData.txt", digits = 10,
-  nsmall = 0L, verbose = T)
+WritePointSourceData(x, filename = "PointSourceData.txt", verbose = T)
 
 WriteForcKey(x, filename = "ForcKey.txt")
 }
@@ -40,10 +33,6 @@ WriteForcKey(x, filename = "ForcKey.txt")
 
 \item{filename}{A character string naming a path and file name to write to. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
-
-\item{digits}{Integer, number of significant digits to export. See \code{\link{format}}.}
-
-\item{nsmall}{Integer, number of significant decimals to export. See \code{\link{format}}.}
 
 \item{verbose}{Logical, display informative warning messages if columns contain \code{NA} values or if character strings are
 too long. See Details.}
@@ -71,11 +60,6 @@ In most files, HYPE requires \code{NA}-free input in required columns, but empty
 allowed in additional comment columns which are not read by HYPE. Informative warnings will be thrown if \code{NA}s are 
 found during export. Character string lengths in comment columns of HYPE data files are restricted to 100 characters, 
 the functions will return with a warning if longer strings were exported.
-
-Exported dataframes are formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
-scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
-arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = F, drop0trailing = T, trim = T} are 
-hard-coded into the export functions.
 }
 \examples{
 \dontrun{WriteLakeData(mylakedata, "LakeData.txt")}
