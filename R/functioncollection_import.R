@@ -32,13 +32,10 @@
 #' 
 #' @param filename Path to and file name of the GeoClass file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
-#' @param headrow Row number with header information. HYPE allows an unlimited number of comment rows above the actual file content, 
-#' and the last comment row usually contains some header information. See Details.
 #' 
 #' @details
-#' \code{ReadGeoClass} is a convenience wrapper function of \code{\link{read.table}}, with treatment of leading 
-#' comment rows and a column header. Comment rows are imported as strings in \code{attribute} 'comment'. HYPE column headers are 
-#' converted during import to  eliminate invalid characters (e.g. '-') and saved to \code{attribute} 'header'.
+#' \code{ReadGeoClass} is a convenience wrapper function of \code{\link[data.table]{fread}}, with treatment of leading 
+#' comment rows. Column names are created on import, optional comment rows are imported as strings in \code{attribute} 'comment'. 
 #' 
 #' @return
 #' \code{ReadGeoClass} returns a data frame with added attribute 'comment'.
@@ -48,21 +45,38 @@
 #' 
 #' @export
 
-ReadGeoClass <- function(filename = "GeoClass.txt", headrow) { 
-    
+ReadGeoClass <- function(filename = "GeoClass.txt") { 
+  
+  # identify comment rows
+  gf <- file(description = filename, open = "r")
+  cm <- TRUE
+  skip <- 0
+  while (cm) {
+    te <- substr(readLines(gf, n = 1), 1, 1)
+    if (te == "!") {
+      skip <- skip + 1
+    } else {
+      cm <- FALSE
+    }
+  }
+  close(gf)
+  
   # read in the data in the file, skipping the comments and header
-  x <- read.table(filename, header = T, skip = headrow - 1, quote = "", fill = T, comment.char = "")
-  # clean header from remnant of comment character in txt file
-  names(x)[1] <- gsub("X.", "", names(x)[1])
+  x <- fread(filename, header = FALSE, skip = skip, quote = "", fill = T, data.table = FALSE)
+  # add column names
+  names(x)[1:14] <- c("slc", "landuse", "soil", "cropid1", "cropid2", "rotation", "vegtype", "special", "tiledepth", 
+                      "streamdepth", "nsoils", "depth1", "depth2", "depth3")
+  te <- length(names(x))
+  if (te > 14) {
+    names(x)[15:te] <- paste0("comment", (15:te) - 14)
+  }
   
   # update with new attributes to hold comment rows
-  xattr <- readLines(filename, n = headrow)
-  attr(x, which = "comment") <- xattr[1:headrow - 1]
-  attr(x, which = "header") <- xattr[headrow]
+  attr(x, which = "comment") <- readLines(filename, n = skip)
   
-  # check if all columns are numeric, with a useful error message
-  if (!all(apply(x, 2, is.numeric))) {
-    stop("Non-numeric contents in imported file. Is argument 'headrow' specified correctly?")
+  # check if all data columns are numeric, with a useful warning
+  if (!all(apply(x[, 1:14], 2, is.numeric))) {
+    warning("Non-numeric contents in data columns of imported file.")
   }
   
   return(x)
