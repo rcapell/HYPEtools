@@ -293,6 +293,9 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
 #' @param filename Path to and file name of the Xobs file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
+#' @param variable Character vector, HYPE variable ID(s) to select for import. Not case-sensitive. If \code{NULL} (default), all 
+#' variables are imported. See \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt documentation} 
+#' for a list of variable IDs.
 #' @param nrows Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives 
 #' the number of rows to import.
 #'  
@@ -324,7 +327,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
 #' @export
 
 
-ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) {
+ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NULL, nrows = -1L) {
   
   ## import xobs file header, extract attributes
   # import (3-row header)
@@ -339,10 +342,40 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", nrows = -1L) 
   # 3rd row, SUBIDs
   sbd <- as.integer(strsplit(xattr[3], split = "\t")[[1]][-1])
   
+  # save number of data columns in file for colClasses formatting below
+  ncl <- length(sbd)
+  
+  # conditional on user choice: identify columns with variables to import
+  if (!is.null(variable)) {
+    # variables selected
+    
+    # formatting
+    variable <- toupper(variable)
+    
+    # check if selected variables exist, warn if not
+    te <- !(variable %in% hype.var)
+    if (any(te)) {
+      warning(paste0("User-requested variable(s) ", paste(variable[te], collapse = ", "), " not found in imported file."))
+    }
+    
+    # subset attributes to selection
+    selbool <- hype.var %in% variable
+    hype.var <- hype.var[selbool]
+    sbd <- sbd[selbool]
+    
+    # create selection vector for import
+    sel <- c(1, which(selbool))
+    
+  } else {
+    # no variables selected
+    
+    # create selection vector for import (safe version which works with buggy data.table versions where explicit NULL selections don't work)
+    sel <- 1:(length(sbd) + 1)
+  }
   
   # read the data, skip header and comment rows, force numeric data (automatic column classes can be integer)
   xobs <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, nrows = nrows, 
-                colClasses = c("NA", rep("numeric", length(sbd))))
+                colClasses = c("NA", rep("numeric", ncl)), select = sel)
   
   # update header, composite of variable and subid
   names(xobs) <- c("DATE", paste(hype.var, sbd, sep = "_"))

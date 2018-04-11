@@ -4,13 +4,18 @@
 \alias{ReadXobs}
 \title{Read an 'Xobs.txt' file}
 \usage{
-ReadXobs(filename = "Xobs.txt", dt.format = "\%Y-\%m-\%d", nrows = -1L)
+ReadXobs(filename = "Xobs.txt", dt.format = "\%Y-\%m-\%d",
+  variable = NULL, nrows = -1L)
 }
 \arguments{
 \item{filename}{Path to and file name of the Xobs file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
+
+\item{variable}{Character vector, HYPE variable ID(s) to select for import. Not case-sensitive. If \code{NULL} (default), all 
+variables are imported. See \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt documentation} 
+for a list of variable IDs.}
 
 \item{nrows}{Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives 
 the number of rows to import.}
