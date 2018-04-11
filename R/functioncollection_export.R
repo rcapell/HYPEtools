@@ -114,11 +114,15 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
 #' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoClass}}.
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
+#' @param use.comment Logical, set to \code{TRUE} to export comment lines saved in \code{\link{attribute}} \code{comment}. Per
+#' default, column names are exported as header. See details.
 #'  
 #' @details
-#' \code{WriteGeoClass} exports a GeoClass dataframe with formatting options adjusted for the output to be read by HYPE.
-#' HYPE accepts comment rows with a leading '!' in the beginning rows of a GeoClass file. The export function looks for those in 
-#' \code{attribute} 'comment', where \code{\link{ReadGeoClass}} stores such comments.
+#' \code{WriteGeoClass} exports a GeoClass dataframe. HYPE accepts comment rows with a leading '!' in the beginning rows of a 
+#' GeoClass file. Comment rows typically contain some class descriptions in a non-structured way. With argument 
+#' \code{use.comment = TRUE}, the export function looks for those in \code{attribute} 'comment', 
+#' where \code{\link{ReadGeoClass}} stores such comments. Description files (see \code{\link{ReadDescription}}) offer a more structured 
+#' way of storing that information.
 #' 
 #' @examples
 #' \dontrun{WriteGeoClass(x = mygeoclass)}
@@ -127,30 +131,29 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
 #' @export
 
 
-WriteGeoClass <- function(x, filename = "GeoClass.txt") {
+WriteGeoClass <- function(x, filename = "GeoClass.txt", use.comment = FALSE) {
 
-  # # set decimal print options to force decimal output (not scientific 'e'-notation). Prob not necessary, just to be safe
-  # options(digits = 10, scipen = 5)
-  
-  # export comment (if it exists) and header attributes
-  if (!is.null(attr(x, which = "comment"))) {
-    writeLines(c(attr(x, which = "comment"), attr(x, which = "header")), con = filename)
-    #writeLines(, con = filename)
+  # conditional: export with comment attribute or with column names
+  if (use.comment) {
+    
+    if (!is.null(attr(x, "comment"))) {
+      
+      writeLines(attr(x, which = "comment"), con = filename)
+      fwrite(file = filename, x = x, append = TRUE, quote = FALSE, sep = "\t", row.names = FALSE, col.names = FALSE)
+      
+    } else {
+      
+      warning("Attribute 'comment' not found in 'x'. Column names exported instead.")
+      fwrite(file = filename, x = x, append = FALSE, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+      
+    }
+    
   } else {
-    writeLines(attr(x, which = "header"), con = filename)
+    
+    fwrite(file = filename, x = x, append = FALSE, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+    
   }
-  
-  # export data frame, append to existing file if comment attributes were exported
-  write.table(x, file = filename, quote = FALSE, sep = "\t", col.names = FALSE, row.names = FALSE, append = TRUE, na = "")
-  
-  # # reset options to defaults
-  # options(digits = 7, scipen = 0)
 }
-
-## DEBUG
-# x <- gec
-# filename <- "GeoClass.txt"
-# rm(x, filename)
 
 
 
@@ -606,8 +609,8 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   close(conn)
   
   # export the object, omitting header
-  fwrite(x, file = filename, append = T, sep = ",", quote = FALSE, na = "-9999", row.names = F)
-  # old version, cann be deleted after a while
+  fwrite(x, file = filename, append = T, sep = ",", quote = FALSE, na = "-9999", row.names = F, col.names = FALSE)
+  # old version, can be deleted after a while
   # write.table(x, file = filename, append = T, sep = ",", row.names = F, col.names = F, na = "-9999", quote = F)
   
 }
@@ -638,11 +641,14 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' @examples
 #' \dontrun{WritePmsf(x = mypmsf)}
 #' 
+#' @importFrom data.table fwrite
 #' @export
 
 WritePmsf <- function(x, filename = "../pmsf.txt") {
   # concatenate number of subids and vector of subids and export
-  write.table(c(length(x), x), filename, col.names = FALSE, row.names = FALSE)
+  fwrite(c(length(x), x), file = filename, append = FALSE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+  # old version, can be deleted after a while
+  # write.table(c(length(x), x), filename, col.names = FALSE, row.names = FALSE)
 }
 
 
@@ -749,7 +755,7 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid 
 #' too long. See Details.
 #'  
 #' @details
-#' Hype data file exports, simple \code{\link{write.table}} wrappers with formatting options adjusted to match HYPE file 
+#' Hype data file exports, simple \code{\link[data.table]{fwrite}} wrappers with formatting options adjusted to match HYPE file 
 #' specifications:
 #' 
 #' \itemize{

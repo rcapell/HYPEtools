@@ -41,7 +41,7 @@ too long. See Details.}
 These are simple convenience wrapper functions to export various HYPE data files from R.
 }
 \details{
-Hype data file exports, simple \code{\link{write.table}} wrappers with formatting options adjusted to match HYPE file 
+Hype data file exports, simple \code{\link[data.table]{fwrite}} wrappers with formatting options adjusted to match HYPE file 
 specifications:
 
 \itemize{
