@@ -999,26 +999,26 @@ ReadPTQobs <- function(filename, dt.format = "%Y-%m-%d", nrows = -1, type = "df"
     stop(paste("Unknown type", type, "."))
   }
   
-  # create select vector from 'subid' argument, overrides 'select' argument
+  # create select vector from 'obsid' argument, overrides 'select' argument
   if (!is.null(obsid)) {
     if (!is.null(select)) {
       warning("Arguments 'select' and 'obsid' provided. 'obsid' takes precedence.")
     }
     te <- match(obsid, sbd)
-    # stop if unknown subids provided by user
+    # stop if unknown obsids provided by user
     if (any(is.na(te))) {
       stop(paste0("Argument 'obsid': OBSIDs ", paste(obsid[is.na(te)], collapse = ", "), " not found in imported file."))
     }
     select <- c(1, te + 1)
     sbd <- obsid
   } else if (!is.null(select)) {
-    # update subid attribute to selected subids
+    # update obsid attribute to selected obsids
     sbd <- sbd[select[-1] - 1]
   }
   
   
   # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
-  if (is.null(select) && is.null(subid)) {
+  if (is.null(select) && is.null(obsid)) {
     select <- 1:(length(sbd) + 1)
   }
   
