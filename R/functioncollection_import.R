@@ -364,7 +364,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
     sbd <- sbd[selbool]
     
     # create selection vector for import
-    sel <- c(1, which(selbool))
+    sel <- c(1, which(selbool) + 1)
     
   } else {
     # no variables selected
