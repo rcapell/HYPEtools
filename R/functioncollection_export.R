@@ -646,7 +646,7 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 WritePmsf <- function(x, filename = "../pmsf.txt") {
   # concatenate number of subids and vector of subids and export
-  fwrite(c(length(x), x), file = filename, append = FALSE, quote = FALSE, row.names = FALSE, col.names = FALSE)
+  fwrite(data.frame(c(length(x), x)), file = filename, append = FALSE, quote = FALSE, row.names = FALSE, col.names = FALSE)
   # old version, can be deleted after a while
   # write.table(c(length(x), x), filename, col.names = FALSE, row.names = FALSE)
 }
