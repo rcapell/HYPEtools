@@ -655,7 +655,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
     te <- apply(as.data.frame(x[, -1]), 2, function(x) any(is.nan(x)))
     if (any(te)) {
       warning("'NaN' values found in one or more SUBIDs. SUBIDs saved in attribute 'subid.nan'.")
-      attr(x, "subid.nan") <- sbd[te]
+      attr(x, "subid.nan") <- x[te, 1]
     }
   }
   
