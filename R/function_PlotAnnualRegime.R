@@ -190,7 +190,8 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
     # print legend, conditional on presence of bands in plot
     if (band != "none") {
       # with band, plot fat transparent lines as bands first, then annotated lines
-      legend(l.position, legend = rep("", length(lgnd)), bty = "n", lty = 1, col = polcol, cex=.9, lwd = 14, inset = c(max(strwidth(lgnd, units = "figure")), 0))
+      #legend(l.position, legend = rep("", length(lgnd)), bty = "n", lty = 1, col = polcol, cex=.9, lwd = 14, inset = c(max(strwidth(lgnd, units = "figure")), 0))
+      legend(l.position, legend = lgnd, bty = "n", lty = 1, col = polcol, cex=.9, lwd = 14, text.col = .makeTransparent(1, 0))
       legend(l.position, legend = lgnd, bty = "n", lty = llty, col = lcol, cex=.9, lwd = llwd)
     } else {
       # only lines
