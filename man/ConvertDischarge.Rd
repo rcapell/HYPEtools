@@ -2,7 +2,7 @@
 % Please edit documentation in R/function_ConvertDischarge.R
 \name{ConvertDischarge}
 \alias{ConvertDischarge}
-\title{Calculate Specific Discharge}
+\title{Calculate Specific runoff from volumetric discharge and vice versa}
 \usage{
 ConvertDischarge(q, area, from = "m3s", to = "mmd")
 }

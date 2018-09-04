@@ -1,7 +1,7 @@
 
 #' @export
 #' @title
-#' Calculate Specific Discharge
+#' Calculate Specific runoff from volumetric discharge and vice versa
 #'
 #' @description
 #' \code{ConvertDischarge} converts volumetric discharge to specific discharge (unit area discharge) and vice versa.

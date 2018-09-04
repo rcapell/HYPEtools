@@ -14,9 +14,6 @@ PlotMapOutput(x, map, map.subid.column = 1, var.name = "", map.adj = 0,
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 second column containing model results to plot. See details.}
 
-\item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
-requires additional packages, e.g. \code{rgdal}.}
-
 \item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
 \item{var.name}{Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined

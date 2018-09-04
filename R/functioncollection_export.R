@@ -114,7 +114,7 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
 #' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoClass}}.
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
-#' @param use.comment Logical, set to \code{TRUE} to export comment lines saved in \code{\link{attribute}} \code{comment}. Per
+#' @param use.comment Logical, set to \code{TRUE} to export comment lines saved in \code{attribute} 'comment'. Per
 #' default, column names are exported as header. See details.
 #'  
 #' @details

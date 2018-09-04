@@ -6,7 +6,7 @@
 #' @param x HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 #' second column containing model results to plot. See details.
 #' @param map A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
-#' requires additional packages, e.g. \code{rgdal}.
+#' requires additional packages, e.g. \pkg{{rgdal}.
 #' @param map.subid.column Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 #' HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.
@@ -117,6 +117,9 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   if (length(legend.inset) == 1) {
     legend.inset[2] <- 0
   }
+  
+  # sort col.breaks to make sure breaks are in increasing order
+  col.breaks <- sort(col.breaks, decreasing = FALSE)
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar0 <- par("mar")

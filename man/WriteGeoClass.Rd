@@ -12,7 +12,7 @@ WriteGeoClass(x, filename = "GeoClass.txt", use.comment = FALSE)
 \item{filename}{A character string naming a file to write to. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
-\item{use.comment}{Logical, set to \code{TRUE} to export comment lines saved in \code{\link{attribute}} \code{comment}. Per
+\item{use.comment}{Logical, set to \code{TRUE} to export comment lines saved in \code{attribute} 'comment'. Per
 default, column names are exported as header. See details.}
 }
 \description{
