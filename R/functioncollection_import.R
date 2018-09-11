@@ -32,10 +32,12 @@
 #' 
 #' @param filename Path to and file name of the GeoClass file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
+#' @param verbose Print information on number of data columns in imported file.
 #' 
 #' @details
 #' \code{ReadGeoClass} is a convenience wrapper function of \code{\link[data.table]{fread}}, with treatment of leading 
 #' comment rows. Column names are created on import, optional comment rows are imported as strings in \code{attribute} 'comment'. 
+#' Inline comments in additional columns are imported as well, and 
 #' 
 #' @return
 #' \code{ReadGeoClass} returns a data frame with added attribute 'comment'.
@@ -45,9 +47,9 @@
 #' 
 #' @export
 
-ReadGeoClass <- function(filename = "GeoClass.txt") { 
+ReadGeoClass <- function(filename = "GeoClass.txt", verbose = TRUE) { 
   
-  # identify comment rows
+  # identify comment rows, lines starting with '!' at the top of the file
   gf <- file(description = filename, open = "r")
   cm <- TRUE
   skip <- 0
@@ -63,20 +65,65 @@ ReadGeoClass <- function(filename = "GeoClass.txt") {
   
   # read in the data in the file, skipping the comments and header
   x <- fread(filename, header = FALSE, skip = skip, quote = "", fill = T, data.table = FALSE)
-  # add column names
-  names(x)[1:14] <- c("slc", "landuse", "soil", "cropid1", "cropid2", "rotation", "vegtype", "special", "tiledepth", 
-                      "streamdepth", "nsoils", "depth1", "depth2", "depth3")
-  te <- length(names(x))
-  if (te > 14) {
-    names(x)[15:te] <- paste0("comment", (15:te) - 14)
+  
+  
+  ## identify number of soil layers in the file
+  
+  # number of columns, data and comments
+  ncl <- ncol(x)
+  
+  # conditional on number of columns: check if 13 and 14 (depth2 and depth3) are numeric
+  if (ncl <= 12) {
+    
+    # only depth1, all columns should contain data
+    ndcl <- ncl
+    
+    # something is amiss..
+    if (ncl < 12) {
+      warning(paste(ncl, "columns in imported file. GeoClass files need at least 12 columns."))
+    }
+    
+  } else {
+    # at least 13 columns in file
+    if (!is.numeric(x[, 13])) {
+      
+      # column 13 is a comment column, further columns are also comments
+      ndcl <- 12
+      
+    } else if (ncl >= 14) {
+      if (!is.numeric(x[, 14])) {
+        
+        # column 14 is a comment column, further columns are also comments
+        ndcl <- 13
+      } else {
+        
+        # cols 13 and 14 are data columns
+        ndcl <- 14
+      }
+    } else {
+      # remaining case, exactly 13 columns, 13th is depth2
+      ndcl <- 13
+    }
+  }
+  
+  # add data column names
+  names(x)[1:ndcl] <- c("slc", "landuse", "soil", "cropid1", "cropid2", "rotation", "vegtype", "special", "tiledepth", 
+                      "streamdepth", "nsoils", "depth1", "depth2", "depth3")[1:ndcl]
+  # add comment column names, if any
+  if (ncl > ndcl) {
+    names(x)[(ndcl + 1):ncl] <- paste0("comment", 1:(ncl-ndcl))
   }
   
   # update with new attributes to hold comment rows
   attr(x, which = "comment") <- readLines(filename, n = skip)
   
   # check if all data columns are numeric, with a useful warning
-  if (!all(apply(x[, 1:14], 2, is.numeric))) {
+  if (!all(apply(x[, 1:ndcl], 2, is.numeric))) {
     warning("Non-numeric contents in data columns of imported file.")
+  }
+  
+  if (verbose) {
+    message(paste(ndcl, "data columns in imported file."))
   }
   
   return(x)

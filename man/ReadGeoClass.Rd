@@ -4,11 +4,13 @@
 \alias{ReadGeoClass}
 \title{Read a 'GeoClass.txt' File}
 \usage{
-ReadGeoClass(filename = "GeoClass.txt")
+ReadGeoClass(filename = "GeoClass.txt", verbose = TRUE)
 }
 \arguments{
 \item{filename}{Path to and file name of the GeoClass file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
+
+\item{verbose}{Print information on number of data columns in imported file.}
 }
 \value{
 \code{ReadGeoClass} returns a data frame with added attribute 'comment'.
@@ -19,7 +21,8 @@ of SLC (\bold{S}oil and \bold{L}and use \bold{C}lass) classes.
 }
 \details{
 \code{ReadGeoClass} is a convenience wrapper function of \code{\link[data.table]{fread}}, with treatment of leading 
-comment rows. Column names are created on import, optional comment rows are imported as strings in \code{attribute} 'comment'.
+comment rows. Column names are created on import, optional comment rows are imported as strings in \code{attribute} 'comment'. 
+Inline comments in additional columns are imported as well, and
 }
 \examples{
 \dontrun{ReadGeoClass("Geoclass.txt")}
