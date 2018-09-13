@@ -78,6 +78,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   
   ## Preliminaries
   
+  
   # conditional: argument area given or able to calculate with arguments gd, bd, subid?,  incl. error handling
   if (is.null(area) && is.null(gd)) {
     stop("Provide either argument 'area' or argument 'gd'.")
