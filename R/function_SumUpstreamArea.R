@@ -1,19 +1,12 @@
-#' @export
-#' @importFrom pbapply pbsapply
 #' 
-#' @title
 #' Calculate upstream area sums
 #'
-#' @description
 #' Function to calculate upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table.
 #'
 #' @param subid Integer vector of SUBIDs to calculate upstream areas for (must exist in \code{gd}). If \code{NULL}, upstream areas for all 
 #' SUBIDs will be calculated.
-#' 
-#' @param gd A data frame containing a column with SUBIDs and a column with areas, an imported 'GeoData.txt' file.
-#' 
-#' @param bd A data frame, an imported 'BranchData.txt' file. Optional argument.
-#' 
+#' @param gd A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file.
+#' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param progbar Logical, display a progress bar while calculating upstream areas. Adds overhead to calculation time but useful when \code{subid} 
 #' is \code{NULL} or contains many SUBIDs.
 #' 
@@ -30,6 +23,9 @@
 #' 
 #' @examples
 #' \dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
+#' 
+#' @importFrom pbapply pbsapply
+#' @export
 
 SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, progbar = F) {
   

@@ -168,7 +168,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", verbose = TRUE) {
 #' @return
 #' \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{unit}, a vector of HYPE variable units, 
-#' \code{subid}, the HYPE SUBID, to which the time series belong, and \code{timestep} with a time step keyword attribute. 
+#' \code{subid}, the HYPE SUBID to which the time series belong, and \code{timestep} with a time step keyword attribute. 
 #' An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
 
 

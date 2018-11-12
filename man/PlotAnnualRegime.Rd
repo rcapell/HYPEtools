@@ -5,11 +5,11 @@
 \title{Plot annual regimes}
 \usage{
 PlotAnnualRegime(x, line = "mean", band = "none", add.legend = FALSE,
-  l.legend = NULL, l.position = "topright", log = FALSE, ylim = NULL,
-  ylab = expression(paste("Q (m"^3, " s"^{     -1 }, ")")),
-  xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse = " to "),
-  col = "blue", alpha = 30, lty = 1, lwd = 1, mar = c(3, 3, 1, 1) +
-  0.1, restore.par = FALSE)
+  l.legend = NULL, l.position = "topright", log = FALSE,
+  ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{     -1 },
+  ")")), xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse
+  = " to "), col = "blue", alpha = 30, lty = 1, lwd = 1,
+  mar = c(3, 3, 1, 1) + 0.1, restore.par = FALSE)
 }
 \arguments{
 \item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 

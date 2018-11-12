@@ -4,15 +4,19 @@
 \alias{PlotMapOutput}
 \title{Plot function for HYPE map results.}
 \usage{
-PlotMapOutput(x, map, map.subid.column = 1, var.name = "", map.adj = 0,
-  plot.legend = T, legend.pos = "right", legend.title = NULL,
-  legend.outer = F, legend.inset = c(0, 0), col.ramp.fun = "auto",
-  col.breaks = NULL, plot.scale = T, plot.arrow = T, par.cex = 1,
-  par.mar = rep(0, 4) + 0.1, add = FALSE, restore.par = FALSE)
+PlotMapOutput(x, map, map.subid.column = 1, var.name = "",
+  map.adj = 0, plot.legend = T, legend.pos = "right",
+  legend.title = NULL, legend.outer = F, legend.inset = c(0, 0),
+  col = "auto", col.ramp.fun, col.breaks = NULL, plot.scale = T,
+  plot.arrow = T, par.cex = 1, par.mar = rep(0, 4) + 0.1,
+  add = FALSE, restore.par = FALSE)
 }
 \arguments{
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 second column containing model results to plot. See details.}
+
+\item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
+requires additional packages, e.g. \pkg{rgdal}.}
 
 \item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
@@ -35,14 +39,16 @@ is used as legend title string. For select HYPE variables, pretty legend titles 
 \item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
 See \code{\link{legend}} and details below.}
 
-\item{col.ramp.fun}{Color ramp palette to use for the map. One of the following: \itemize{
-\item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name}, 
+\item{col}{Colors to use on the map. One of the following: \itemize{
+\item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name},
 see details
-\item One of the pre-defined palette functions for HYPE output variables or user-calculated differences between model results: 
-\code{"ColNitr"} for nitrogen, \code{"ColPhos"} for phosphorus, \code{"ColPrec"} for precipitation, \code{"ColTemp"} for 
+\item One of the pre-defined palette functions for HYPE output variables or user-calculated differences between model results:
+\code{"ColNitr"} for nitrogen, \code{"ColPhos"} for phosphorus, \code{"ColPrec"} for precipitation, \code{"ColTemp"} for
 temperatures, \code{"ColQ"} for runoff, \code{"ColDiffTemp"} for temperature differences,  \code{"ColDiffGeneric"} for generic
 differences, see details
 \item A color ramp palette function, e.g. as returned from a call to \code{\link{colorRampPalette}}
+\item A vector of colors. This can be a character vector of R's built-in color names or hexadecimal strings as returned by 
+\code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 }}
 
 \item{col.breaks}{A numeric vector, specifying break points for discretisation of model result values into classes. Class boundaries will be

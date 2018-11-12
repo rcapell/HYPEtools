@@ -4,8 +4,8 @@
 \alias{PlotBasinSummary}
 \title{Plot a summary of model results for a single sub-basin}
 \usage{
-PlotBasinSummary(x, filename = NULL, panels = 1, gd = NULL, bd = NULL,
-  gcl = NULL, psd = NULL, subid = NULL, desc = NULL,
+PlotBasinSummary(x, filename = NULL, panels = 1, gd = NULL,
+  bd = NULL, gcl = NULL, psd = NULL, subid = NULL, desc = NULL,
   timestep = attr(x, "timestep"), hype.vars = "all", from = 1,
   to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10,
   name = NULL)
@@ -20,11 +20,11 @@ screen device. \emph{Device dimensions are currently hard-coded.}}
 
 \item{panels}{Integer, either \code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.}
 
-\item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with 
-\code{\link{ReadGeoData}}. Only needed with bar chart panels, see Details.}
+\item{gd}{A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file. 
+Only needed with bar chart panels, see Details.}
 
-\item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument. Only needed with 
-bar chart panels, see Details.}
+\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. 
+Optional argument. Only needed with bar chart panels, see Details.}
 
 \item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 file imported with \code{\link{ReadGeoClass}}. Only needed with bar chart panels, see Details.}

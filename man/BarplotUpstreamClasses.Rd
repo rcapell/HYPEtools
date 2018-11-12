@@ -7,9 +7,9 @@
 BarplotUpstreamClasses(x, type = NULL, desc = NULL, xlab = NULL,
   ylab = "Area fraction (\%)", ylim = c(0, max(x[, -1] * 150)),
   class.names = NULL, names.arg = rep("", ncol(x) - 1), cex.axis = 1,
-  cex.names = 0.9, col = NULL, legend.text = NULL, legend.pos = "left",
-  pars = list(mar = c(1.5, 3, 0.5, 0.5) + 0.1, mgp = c(1.5, 0.3, 0), tcl = NA,
-  xaxs = "i"))
+  cex.names = 0.9, col = NULL, legend.text = NULL,
+  legend.pos = "left", pars = list(mar = c(1.5, 3, 0.5, 0.5) + 0.1, mgp
+  = c(1.5, 0.3, 0), tcl = NA, xaxs = "i"))
 }
 \arguments{
 \item{x}{Data frame, containing column-wise class group fractions with SUBIDs in first column. Typically a result 

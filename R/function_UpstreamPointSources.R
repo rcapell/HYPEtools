@@ -1,10 +1,6 @@
-#' @export
-#' @importFrom pbapply pblapply
 #' 
-#' @title
 #' Summarize point source emissions of all upstream areas
 #'
-#' @description
 #' Function to calculate point source emissions over all upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table. 
 #' Only total nitrogen and total phosphorus emissions are summarised.
 #'
@@ -13,7 +9,7 @@
 #' @param gd A data frame containing columns 'SUBID' with SUBIDs and 'MAINDOWN' with downstream SUBIDs, 
 #' e.g. an imported 'GeoData.txt' file.
 #' @param psd A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{ReadPointSourceData}}.
-#' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
+#' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
 #' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
 #' is \code{NULL} or contains many SUBIDs.
@@ -29,6 +25,9 @@
 #' 
 #' @examples
 #' \dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypsdata, bd = mybranchdata)}
+#' 
+#' @export
+#' @importFrom pbapply pblapply
 
 
 UpstreamPointSources <- function(subid = NULL, gd, psd, bd = NULL, signif.digits = 4, progbar = T) {

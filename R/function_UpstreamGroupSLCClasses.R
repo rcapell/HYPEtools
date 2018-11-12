@@ -6,7 +6,7 @@
 #' @param subid Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
 #' If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.
 #' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
-#' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
+#' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.
 #' @param type Keyword character string for use with \code{gcl}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 

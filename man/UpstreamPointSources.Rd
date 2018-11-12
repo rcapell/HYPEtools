@@ -4,8 +4,8 @@
 \alias{UpstreamPointSources}
 \title{Summarize point source emissions of all upstream areas}
 \usage{
-UpstreamPointSources(subid = NULL, gd, psd, bd = NULL, signif.digits = 4,
-  progbar = T)
+UpstreamPointSources(subid = NULL, gd, psd, bd = NULL,
+  signif.digits = 4, progbar = T)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs to calculate upstream point sources for (must exist in \code{gd}). 
@@ -16,7 +16,7 @@ e.g. an imported 'GeoData.txt' file.}
 
 \item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{ReadPointSourceData}}.}
 
-\item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
+\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
 \item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding.}
 
@@ -38,4 +38,5 @@ HYPE point source types ('ps_type') are returned in separate rows. Water abstrac
 }
 \examples{
 \dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypsdata, bd = mybranchdata)}
+
 }

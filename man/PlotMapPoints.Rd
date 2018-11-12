@@ -4,11 +4,11 @@
 \alias{PlotMapPoints}
 \title{Plot function for mapped point information}
 \usage{
-PlotMapPoints(x, sites, sites.subid.column = 1, bg = NULL, map.adj = 0,
-  plot.legend = T, legend.pos = "right", legend.title = NULL,
-  legend.outer = F, legend.inset = c(0, 0), col = NULL,
-  col.breaks = NULL, plot.scale = T, plot.arrow = T, pt.cex = 1,
-  par.cex = 1, par.mar = rep(0, 4) + 0.1, add = FALSE,
+PlotMapPoints(x, sites, sites.subid.column = 1, bg = NULL,
+  map.adj = 0, plot.legend = T, legend.pos = "right",
+  legend.title = NULL, legend.outer = F, legend.inset = c(0, 0),
+  col = NULL, col.breaks = NULL, plot.scale = T, plot.arrow = T,
+  pt.cex = 1, par.cex = 1, par.mar = rep(0, 4) + 0.1, add = FALSE,
   restore.par = FALSE)
 }
 \arguments{

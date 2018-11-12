@@ -5,8 +5,8 @@
 \title{Read a Time Output File}
 \usage{
 ReadTimeOutput(filename, dt.format = "\%Y-\%m-\%d", hype.var = NULL,
-  type = "df", select = NULL, subid = NULL, nrows = -1L, skip = 0L,
-  warn.nan = FALSE)
+  type = "df", select = NULL, subid = NULL, nrows = -1L,
+  skip = 0L, warn.nan = FALSE)
 }
 \arguments{
 \item{filename}{Path to and file name of the time output file to import. Windows users: Note that 

@@ -4,8 +4,8 @@
 \alias{ReadPTQobs}
 \title{Read 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files}
 \usage{
-ReadPTQobs(filename, dt.format = "\%Y-\%m-\%d", nrows = -1, type = "df",
-  select = NULL, obsid = NULL)
+ReadPTQobs(filename, dt.format = "\%Y-\%m-\%d", nrows = -1,
+  type = "df", select = NULL, obsid = NULL)
 }
 \arguments{
 \item{filename}{Path to and file name of the file to import. Windows users: Note that 

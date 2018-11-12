@@ -5,9 +5,9 @@
 \title{Plot a suite of time series plots from a HYPE basin output file}
 \usage{
 PlotBasinOutput(x, filename = NULL, timestep = attr(x, "timestep"),
-  hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1,
-  to = nrow(x), name = "", area = NULL, subid = attr(x, "subid"),
-  gd = NULL, bd = NULL)
+  hype.vars = "all", vol.err = T, log.q = F, start.mon = 1,
+  from = 1, to = nrow(x), name = "", area = NULL, subid = attr(x,
+  "subid"), gd = NULL, bd = NULL)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 

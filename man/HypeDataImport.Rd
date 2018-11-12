@@ -14,8 +14,9 @@
 \alias{ReadForcKey}
 \title{Read HYPE data files}
 \usage{
-ReadAquiferData(filename = "AquiferData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
+ReadAquiferData(filename = "AquiferData.txt", verbose = T,
+  header = T, na.strings = "-9999", sep = "\\t",
+  stringsAsFactors = F, ...)
 
 ReadBranchData(filename = "BranchData.txt", verbose = T, header = T,
   na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
@@ -24,22 +25,23 @@ ReadCropData(filename = "CropData.txt", verbose = T, header = T,
   na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
 
 ReadDamData(filename = "DamData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", quote = "", stringsAsFactors = F,
-  ...)
+  na.strings = "-9999", sep = "\\t", quote = "",
+  stringsAsFactors = F, ...)
 
-ReadGlacierData(filename = "GlacierData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
+ReadGlacierData(filename = "GlacierData.txt", verbose = T,
+  header = T, na.strings = "-9999", sep = "\\t",
+  stringsAsFactors = F, ...)
 
 ReadLakeData(filename = "LakeData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", quote = "", stringsAsFactors = F,
-  ...)
+  na.strings = "-9999", sep = "\\t", quote = "",
+  stringsAsFactors = F, ...)
 
 ReadMgmtData(filename = "MgmtData.txt", verbose = T, header = T,
   na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
 
 ReadPointSourceData(filename = "PointSourceData.txt", verbose = T,
-  header = T, na.strings = "-9999", sep = "\\t", stringsAsFactors = F,
-  ...)
+  header = T, na.strings = "-9999", sep = "\\t",
+  stringsAsFactors = F, ...)
 
 ReadAllsim(filename = "allsim.txt")
 

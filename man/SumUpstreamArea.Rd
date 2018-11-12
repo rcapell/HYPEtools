@@ -10,9 +10,9 @@ SumUpstreamArea(subid = NULL, gd, bd = NULL, progbar = F)
 \item{subid}{Integer vector of SUBIDs to calculate upstream areas for (must exist in \code{gd}). If \code{NULL}, upstream areas for all 
 SUBIDs will be calculated.}
 
-\item{gd}{A data frame containing a column with SUBIDs and a column with areas, an imported 'GeoData.txt' file.}
+\item{gd}{A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file.}
 
-\item{bd}{A data frame, an imported 'BranchData.txt' file. Optional argument.}
+\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
 \item{progbar}{Logical, display a progress bar while calculating upstream areas. Adds overhead to calculation time but useful when \code{subid} 
 is \code{NULL} or contains many SUBIDs.}
@@ -30,6 +30,7 @@ but not including potential irrigation links or groundwater flows.
 }
 \examples{
 \dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
+
 }
 \seealso{
 \code{\link{AllUpstreamSubids}}
