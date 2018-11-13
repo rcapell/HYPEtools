@@ -380,10 +380,11 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
   # import (3-row header)
   xattr <- readLines(filename,n=3)
   # 1st row, comment
-  # split string elements along tabs, returns list of character vectors
-  cmt <- strsplit(xattr[1], split = "\t", useBytes = T)
+  # split string elements along tabs, returns list of character vectors, enc2utf to catch problems with unknown encoding 
+  cmt <- strsplit(enc2utf8(xattr[1]), split = "\t")[[1]]
   # remove empty strings (excel export artefacts)
-  cmt <- sapply(cmt, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
+  cmt <- cmt[!(nchar(cmt) == 0)]
+  # cmt <- sapply(cmt, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
   # 2nd row, HYPE variable IDs
   hype.var <- toupper(strsplit(xattr[2], split = "\t")[[1]][-1])
   # 3rd row, SUBIDs
@@ -1521,7 +1522,7 @@ ReadDescription <- function(filename, gcl = NULL) {
   # read description file into a character vector (one string per row in file)
   x <- scan(file = filename, what = "", sep = "\n", quiet = T)
   # split string elements along semicolons, returns list of character vectors
-  x <- strsplit(x, split = ";", useBytes = T)
+  x <- strsplit(enc2utf8(x), split = ";", useBytes = F)
   # remove empty strings (excel export artefacts)
   x <- sapply(x, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
   # create result list, assign names
