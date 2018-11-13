@@ -950,15 +950,15 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   if (is.null(filename)) {
     #dev.new(width=wdth, height = hght, noRStudioGD = T)
     if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
-      X11(width=wdth, height = hght)
+      X11(width = wdth, height = hght)
     } else if (Sys.info()['sysname'] == "Darwin") {
-      quartz(idth=wdth, height = hght)
+      quartz(width = wdth, height = hght)
     } else {
       # try x11, not very likely to occur..
-      X11(width=wdth, height = hght)
+      X11(width = wdth, height = hght)
     }
   } else {
-    png(filename = paste0(filename, ".png"), width=wdth, height = hght, units = "in", res = 300, pointsize = 20)
+    png(filename = filename, width = wdth, height = hght, units = "in", res = 300, pointsize = 20)
     # close the file device on exit
     on.exit(dev.off())
   }

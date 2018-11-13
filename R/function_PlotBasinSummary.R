@@ -9,10 +9,10 @@
 #' @param filename String, file name for plotting to \code{\link{png}} device. \code{NULL} triggers a plot on a new
 #' screen device. \emph{Device dimensions are currently hard-coded.}
 #' @param panels Integer, either \code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.
-#' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with 
-#' \code{\link{ReadGeoData}}. Only needed with bar chart panels, see Details. 
-#' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument. Only needed with 
-#' bar chart panels, see Details. 
+#' @param gd A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file. 
+#' Only needed with bar chart panels, see Details. 
+#' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. 
+#' Optional argument. Only needed with bar chart panels, see Details. 
 #' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}. Only needed with bar chart panels, see Details. 
 #' @param psd A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{ReadPointSourceData}}. 
@@ -1653,13 +1653,13 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
     if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
       X11(width=wdth, height = hght)
     } else if (Sys.info()['sysname'] == "Darwin") {
-      quartz(idth=wdth, height = hght)
+      quartz(width = wdth, height = hght)
     } else {
       # try x11, not very likely to occur..
-      X11(width=wdth, height = hght)
+      X11(width = wdth, height = hght)
     }
   } else {
-    png(filename = paste0(filename, ".png"), width=wdth * 1.5, height = hght * 1.5, units = "in", res = 300, pointsize = 20)
+    png(filename = filename, width=wdth * 1.5, height = hght * 1.5, units = "in", res = 300, pointsize = 20)
     # close the file device on exit
     on.exit(dev.off())
   }
