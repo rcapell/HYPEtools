@@ -317,7 +317,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
     x <- as.array(as.matrix(x))
     # adding 'iteration' dimension
     dim(x) <- c(dim(x), 1)
-    x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, subid = sbd, tstep = tstep)
+    x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, subid = sbd)
   }
   
   return(x)
@@ -381,7 +381,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
   xattr <- readLines(filename,n=3)
   # 1st row, comment
   # split string elements along tabs, returns list of character vectors
-  cmt <- strsplit(xattr[1], split = "\t")
+  cmt <- strsplit(xattr[1], split = "\t", useBytes = T)
   # remove empty strings (excel export artefacts)
   cmt <- sapply(cmt, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
   # 2nd row, HYPE variable IDs
@@ -1521,7 +1521,7 @@ ReadDescription <- function(filename, gcl = NULL) {
   # read description file into a character vector (one string per row in file)
   x <- scan(file = filename, what = "", sep = "\n", quiet = T)
   # split string elements along semicolons, returns list of character vectors
-  x <- strsplit(x, split = ";")
+  x <- strsplit(x, split = ";", useBytes = T)
   # remove empty strings (excel export artefacts)
   x <- sapply(x, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
   # create result list, assign names
