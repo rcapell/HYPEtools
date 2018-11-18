@@ -17,12 +17,13 @@ Paths are separated by '/', not '\\'.}
 }
 \description{
 This is a convenience wrapper function to import a GeoClass file as data frame into R. GeoClass files contain definitions
-of SLC (\bold{S}oil and \bold{L}and use \bold{C}lass) classes.
+of SLC (\bold{S}oil and \bold{L}and use \bold{C}rop) classes in twelve to 14 predefined columns, see 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geoclass.txt}{GeoClass.txt documentation}.
 }
 \details{
 \code{ReadGeoClass} is a convenience wrapper function of \code{\link[data.table]{fread}}, with treatment of leading 
 comment rows. Column names are created on import, optional comment rows are imported as strings in \code{attribute} 'comment'. 
-Inline comments in additional columns are imported as well, and
+Optional inline comments (additional non-numeric columns) are automatically identified and imported along with data columns.
 }
 \examples{
 \dontrun{ReadGeoClass("Geoclass.txt")}
