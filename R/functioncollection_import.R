@@ -202,8 +202,9 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
     stop(paste0("Unknown type ", type, "."))
   }
   nm <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
-  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = "\t", header = F, data.table = d.t, 
-             colClasses = c("NA", rep("numeric", length(nm) - 1)))      
+  x <- fread(filename, 
+             na.strings = c("-9999", "****************", "-1.0E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
+             skip = 2, sep = "\t", header = F, data.table = d.t, colClasses = c("NA", rep("numeric", length(nm) - 1)))      
   names(x) <- c("DATE", nm[-1])
   
   
@@ -660,7 +661,9 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
   }
   
   #x <- read.table(filename, header = T, sep = ",", na.strings = "-9999", skip = 1)      
-  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2, sep = ",", header = F, data.table = d.t)
+  x <- fread(filename, 
+             na.strings = c("-9999", "****************", "-1.0E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
+             skip = 2, sep = ",", header = F, data.table = d.t)
   
   
   # read hype.var from filename, if not provided by user
@@ -855,8 +858,9 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   }
   
   # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
-  x <- fread(filename,  na.strings = c("-9999", "****************"), skip = 2 + skip, sep = "\t", header = F, data.table = d.t, 
-             select = select, nrows = nrows)
+  x <- fread(filename, 
+             na.strings = c("-9999", "****************", "-1.0E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
+             skip = 2 + skip, sep = "\t", header = F, data.table = d.t, select = select, nrows = nrows)
   
   
   # read hype.var from filename, if not provided by user
@@ -1072,7 +1076,9 @@ ReadPTQobs <- function(filename, dt.format = "%Y-%m-%d", nrows = -1, type = "df"
   }
   
   # read the data
-  x <- fread(filename,  na.strings = "-9999", sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select)
+  x <- fread(filename, 
+             na.strings = c("-9999", "****************", "-1.0E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
+             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select)
 
   # date conversion 
   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
