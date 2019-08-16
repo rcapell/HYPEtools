@@ -39,7 +39,8 @@
 #' \item{\strong{comment}}{A character string.}
 #' \item{\strong{variable}}{A character vector of HYPE variable IDs.}
 #' \item{\strong{subid}}{A vector of SUBIDs.}
-#' \item{\strong{timestep}}{Time step keyword, \code{"day"}, or \code{"n hour"} (n = number of hours).}
+#' \item{\strong{timestep}}{Time step keyword, \code{"day"}, or \code{"n hour"} (n = number of hours). \code{NULL}, if \code{x} 
+#' contains just one row.}
 #' }
 #' 
 #' @examples
@@ -56,17 +57,23 @@ HypeXobs <- function(x, comment, variable, subid) {
     }
     # check if first column contains NAs
     if (any(is.na(x[, 1]))) {
-      stop("Empty values in column 1.")
+      stop("Empty values in column 1 (time steps).")
     }
-    # check if time steps are equidistant
-    tstep <- diff(x[, 1])
-    if (min(tstep) != max(tstep)) {
-      stop("Non-equidistant time steps in 'x'.")
-    }
-    # check if time steps are at least daily
-    tunits <- attr(tstep, "units")
-    if (tunits == "days" && tstep[1] > 1) {
-      stop("Longer-than-daily time steps not allowed in HypeXobs objects.")
+    # time step checks, skip and throw warning if just one row in dataframe
+    if (nrow(x) > 1) {
+      # check if time steps are equidistant
+      tstep <- diff(x[, 1])
+      if (min(tstep) != max(tstep)) {
+        stop("Non-equidistant time steps in 'x'.")
+      }
+      # check if time steps are at least daily
+      tunits <- attr(tstep, "units")
+      if (tunits == "days" && tstep[1] > 1) {
+        stop("Longer-than-daily time steps not allowed in HypeXobs objects.")
+      }
+    } else {
+      tunits <- NULL
+      warning("Less than 2 rows in 'x'. Attribute 'timestep set to 'NULL'.")
     }
     
     # check attribute length conformities
@@ -84,10 +91,14 @@ HypeXobs <- function(x, comment, variable, subid) {
     attr(x, "comment") <- comment
     attr(x, "variable") <- toupper(variable)
     attr(x, "subid") <- subid
-    if (tunits == "days") {
-      attr(x, "timestep") <- "day"
+    if (!is.null(tunits)) {
+      if (tunits == "days") {
+        attr(x, "timestep") <- "day"
+      } else {
+        attr(x, "timestep") <- paste(tstep[1], tunits)
+      }
     } else {
-      attr(x, "timestep") <- paste(tstep[1], tunits)
+      attr(x, "timestep") <- NULL
     }
     
     # update header, composite of variable and subid

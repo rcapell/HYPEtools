@@ -25,7 +25,8 @@ Returns a data frame of class \code{HypeXobs} with additional \code{\link{attrib
 \item{\strong{comment}}{A character string.}
 \item{\strong{variable}}{A character vector of HYPE variable IDs.}
 \item{\strong{subid}}{A vector of SUBIDs.}
-\item{\strong{timestep}}{Time step keyword, \code{"day"}, or \code{"n hour"} (n = number of hours).}
+\item{\strong{timestep}}{Time step keyword, \code{"day"}, or \code{"n hour"} (n = number of hours). \code{NULL}, if \code{x} 
+contains just one row.}
 }
 }
 \description{

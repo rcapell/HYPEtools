@@ -444,8 +444,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
     cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object.\n"); return(xobs[, 1])})
   
   
-  # if date conversion worked and time steps are HYPE-conform (need at least 2 time steps), make returned object class HypeXobs
-  if(!is.character(xobs[, 1]) && duplifree && nrow(xobs) > 1) {
+  # if date conversion worked and time steps are HYPE-conform, make returned object class HypeXobs
+  if(!is.character(xobs[, 1]) && duplifree) {
     
     # create HypeXobs object, can fail if multi-day time steps in imported table
     xobs <- tryCatch(HypeXobs(x = xobs, comment = cmt, variable = hype.var, subid = sbd), 
