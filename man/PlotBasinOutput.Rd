@@ -4,18 +4,21 @@
 \alias{PlotBasinOutput}
 \title{Plot a suite of time series plots from a HYPE basin output file}
 \usage{
-PlotBasinOutput(x, filename = NULL, timestep = attr(x, "timestep"),
-  hype.vars = "all", vol.err = T, log.q = F, start.mon = 1,
-  from = 1, to = nrow(x), name = "", area = NULL, subid = attr(x,
-  "subid"), gd = NULL, bd = NULL)
+PlotBasinOutput(x, filename = "PlotBasinOutput", driver = c("pdf",
+  "png", "screen"), timestep = attr(x, "timestep"), hype.vars = "all",
+  vol.err = T, log.q = F, start.mon = 1, from = 1, to = nrow(x),
+  name = "", area = NULL, subid = attr(x, "subid"), gd = NULL,
+  bd = NULL)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
 \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 See details for HYPE output variables required for plotting.}
 
-\item{filename}{String, file name for plotting to \code{\link{png}} device. \code{NULL}, the default, triggers a plot on a new
-screen device. \emph{Device dimensions are currently hard-coded.}}
+\item{filename}{String, file name for plotting to file device, see argument \code{driver}. Ignored with plotting to screen device. 
+\emph{Device dimensions are currently hard-coded, see Details.}}
+
+\item{driver}{String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.}
 
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
@@ -71,6 +74,7 @@ HYPE outputs which are known to \code{PlotBasinOutput} include:
 
 \itemize{
 \item{precipitation}
+\item{air temperature}
 \item{discharge}
 \item{lake water level}
 \item{evapotranspiration}
@@ -78,6 +82,7 @@ HYPE outputs which are known to \code{PlotBasinOutput} include:
 \item{sub-surface storage components}
 \item{nitrogen concentrations}
 \item{phosphorus concentrations}
+\item{suspended sediment concentrations}
 }
 
 Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file. 
@@ -85,12 +90,18 @@ For a detailed description of the variables, see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 
 \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc ccin rein ccon reon cctn retn ccsp 
-resp ccpp repp cctp retp wcom wstr}
+resp ccpp repp cctp retp wcom wstr ccss ress ccts rets}
+
+\emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting 
+to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 
+\code{PlotBasinOutput} throws a warning if the plot height exceeds 10 inches, which can lead to overlapping plot elements. On screens with 
+less than 10 inch vertical screen space, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects 
+is to plot to pdf or png file devices instead.
 }
 \examples{
 \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
 
 }
 \seealso{
-\code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
+\code{\link{PlotBasinSummary}}, \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 }

@@ -6,8 +6,9 @@
 #' @param x Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
 #' \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 #' See details for HYPE output variables required for plotting.
-#' @param filename String, file name for plotting to \code{\link{png}} device. \code{NULL}, the default, triggers a plot on a new
-#' screen device. \emph{Device dimensions are currently hard-coded.}
+#' @param filename String, file name for plotting to file device, see argument \code{driver}. Ignored with plotting to screen device. 
+#' \emph{Device dimensions are currently hard-coded, see Details.}
+#' @param driver String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.
 #' @param timestep  Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
 #' @param hype.vars Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables 
@@ -45,6 +46,7 @@
 #' 
 #' \itemize{
 #' \item{precipitation}
+#' \item{air temperature}
 #' \item{discharge}
 #' \item{lake water level}
 #' \item{evapotranspiration}
@@ -52,6 +54,8 @@
 #' \item{sub-surface storage components}
 #' \item{nitrogen concentrations}
 #' \item{phosphorus concentrations}
+#' \item{suspended sediment concentrations}
+#' \item{total sediment concentrations}
 #' }
 #' 
 #' Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file. 
@@ -59,13 +63,19 @@
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 #' 
 #' \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc ccin rein ccon reon cctn retn ccsp 
-#' resp ccpp repp cctp retp wcom wstr}
+#' resp ccpp repp cctp retp wcom wstr ccss ress ccts rets}
+#' 
+#' \emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting 
+#' to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 
+#' \code{PlotBasinOutput} throws a warning if the plot height exceeds 10 inches, which can lead to overlapping plot elements. On screens with 
+#' less than 10 inch vertical screen space, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects 
+#' is to plot to pdf or png file devices instead.
 #' 
 #' @return 
 #' Returns a multi-panel plot in a new graphics device.
 #' 
 #' @seealso
-#' \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
+#' \code{\link{PlotBasinSummary}}, \code{\link{PlotAnnualRegime}}, \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 #' 
 #' @examples
 #' \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
@@ -73,10 +83,20 @@
 #' @importFrom hydroGOF gof gof.default
 #' @export
 
-PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, 
-                            to = nrow(x), name = "", area = NULL, subid = attr(x, "subid"), gd = NULL, bd = NULL) {
+PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "png", "screen"), timestep = attr(x, "timestep"), 
+                            hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, 
+                            subid = attr(x, "subid"), gd = NULL, bd = NULL) {
+  
   
   ## Preliminaries
+  
+  # check and choose device driver
+  driver <- match.arg(driver)
+  if (driver %in% c("pdf", "png")) {
+    filename <- paste(filename, driver, sep = ".")
+  } else {
+    filename <- NULL
+  }
   
   # conditional: argument area given or able to calculate with arguments gd, bd, subid?,  incl. error handling
   if (is.null(area) && is.null(gd)) {
@@ -144,7 +164,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   # create vector over all target output variable names which are potentially used in the plot panels
   nm.t <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "soim", "sm13", "upsmfp", "snow", "upcprc", 
             "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp", "wcom", "wstr", 
-            "coss", "ccss", "ress", "ccts")
+            "ccss", "ress", "ccts", "rets")
   # initialise logical vector to indicate existence of target variables
   exi.t <- logical(length = length(nm.t))
   names(exi.t) <- nm.t
@@ -168,7 +188,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
       exi.t[!(nm.t %in% nm.hydro)] <- FALSE
     } else if (hype.vars[1] == "nutrients") {
       nm.nutri <- c("date", "upcprf", "upcpsf", "cout", "rout", "upcprc", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", 
-                    "resp", "ccpp", "repp", "cctp", "retp", "coss", "ccss", "ress", "ccts")
+                    "resp", "ccpp", "repp", "cctp", "retp", "ccss", "ress", "ccts", "rets")
       exi.t[!(nm.t %in% nm.nutri)] <- FALSE
     } else if (is.character(hype.vars)) {
       nm.manu <- c("date", tolower(hype.vars))
@@ -243,7 +263,7 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     # plot name
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'title(main = name, line = -length(strsplit(x = as.character(name), split = "\n")[[1]])*1.1)')
-    # compute and plot GoFs for discharge, TN, and TP, if variables are available
+    # compute and plot GoFs for discharge, TN, TP, and suspended solids if variables are available
     if (exi.t["rout"] && exi.t["cout"]){
       gof.q <- tryCatch(gof(sim = get("cout"), obs = get("rout"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                         error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
@@ -256,16 +276,24 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
       gof.tn <- tryCatch(gof(sim = get("cctn"), obs = get("retn"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 1/3, y = 0.9, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 1/4, y = 0.95, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",
                                    paste0("(", length(na.omit(retn)), " obs.)")), bty = "n", title = "TN, goodness of fit", cex = .8)')
     }
     if (exi.t["retp"] && exi.t["cctp"]){
       gof.tp <- tryCatch(gof(sim = get("cctp"), obs = get("retp"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/3, y = 0.9, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/4, y = 0.95, 
                                    legend = c(paste(names(gof.tp), gof.tp, sep = ": "),"",
                                    paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness of fit", cex = .8)')
+    }
+    if (exi.t["ress"] && exi.t["ccss"]){
+      gof.ss <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+                         error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 3/4, y = 0.95, 
+                                   legend = c(paste(names(gof.ss), gof.ss, sep = ": "),"",
+                                   paste0("(", length(na.omit(ress)), " obs.)")), bty = "n", title = "SS, goodness of fit", cex = .8)')
     }
     
     # conditional: prepare regime plot call depending on data availability
@@ -791,57 +819,6 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     
   }
   
-  
-  
-  # SSsim, SSobs panel
-  if (exi.t["ccss"] || exi.t["ress"]) {
-    
-    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
-    # add layout height for this row
-    lay.heights <- c(lay.heights, 1.5)
-    
-    cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
-    
-    cp <- cp + 1
-    if (!exi.t["ccss"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, ress, type = "l", col = NA, xaxt = "n", 
-                                  ylab = expression(paste("mg l"^"-1")), 
-                                   ylim = c(0, max(ress, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
-    } else if (!exi.t["ress"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccss, type = "l", col = NA, xaxt = "n", 
-                                   ylab = expression(paste("mg l"^"-1")), 
-                                   ylim = c(0, max(ccss, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
-    } else {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccss, type = "l", col = NA, xaxt = "n", 
-                                   ylab = expression(paste("mg l"^"-1")), 
-                                   ylim = c(0, max(c(ccss, ress), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
-    }
-    
-    cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
-    
-    cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
-    
-    if (exi.t["ress"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'points(date, ress, pch = 16, cex = .7)')
-    }
-    
-    if (exi.t["ccss"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccss, col = "red")')  
-    }
-    
-    cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("SSobs", "SSsim"), lty = c(NA, 1), pch = c(16, NA), 
-                                 pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
-    
-    }
-  
-  
-  
   # PPsim, PPobs panel
   if (exi.t["ccpp"] || exi.t["repp"]) {
     
@@ -930,6 +907,100 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
     
   }
   
+  # SSsim, SSobs panel
+  if (exi.t["ccss"] || exi.t["ress"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccss"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ress, type = "l", col = NA, xaxt = "n", 
+                                  ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(ress, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else if (!exi.t["ress"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccss, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(ccss, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccss, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(c(ccss, ress), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["ress"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, ress, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccss"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccss, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("SSobs", "SSsim"), lty = c(NA, 1), pch = c(16, NA), 
+                                 pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
+  # TSsim, TSobs panel
+  if (exi.t["ccts"] || exi.t["rets"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccts"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, rets, type = "l", col = NA, xaxt = "n", 
+                                  ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(rets, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else if (!exi.t["rets"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccts, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(ccts, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccts, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(c(ccts, rets), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["rets"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, rets, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccts"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccts, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("TSobs", "TSsim"), lty = c(NA, 1), pch = c(16, NA), 
+                                 pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
   
   # add empty row at the figure bottom in layout, as space for x-axis annotation
   lay.mat <- rbind(lay.mat, rep(0, 3))
@@ -948,17 +1019,31 @@ PlotBasinOutput <- function(x, filename = NULL, timestep = attr(x, "timestep"), 
   
   # create plot device, conditional on filename
   if (is.null(filename)) {
+    
+    # automatic device resizing to prevent slow re-draw on screen device
+    if (hght > 10) {
+      hght <- 10
+      warning("Computed plot device height overridden to fit screen height which might result in rendering overlaps. 
+              Change argument 'driver' to plot to file use argument 'hype.vars' to reduce number of variables to plot.")
+    }
+    
     #dev.new(width=wdth, height = hght, noRStudioGD = T)
     if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
       X11(width = wdth, height = hght)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
     } else if (Sys.info()['sysname'] == "Darwin") {
       quartz(width = wdth, height = hght)
     } else {
       # try x11, not very likely to occur..
       X11(width = wdth, height = hght)
     }
-  } else {
+  } else if (driver == "png") {
     png(filename = filename, width = wdth, height = hght, units = "in", res = 300, pointsize = 20)
+    # close the file device on exit
+    on.exit(dev.off())
+  } else {
+    pdf(file = filename, width = wdth, height = hght, pointsize = 20, title = as.character(name))
     # close the file device on exit
     on.exit(dev.off())
   }
