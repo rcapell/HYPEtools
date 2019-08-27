@@ -8,14 +8,14 @@ PlotBasinOutput(x, filename = "PlotBasinOutput", driver = c("pdf",
   "png", "screen"), timestep = attr(x, "timestep"), hype.vars = "all",
   vol.err = T, log.q = F, start.mon = 1, from = 1, to = nrow(x),
   name = "", area = NULL, subid = attr(x, "subid"), gd = NULL,
-  bd = NULL)
+  bd = NULL, ylab.t1 = "Conc.")
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
 \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 See details for HYPE output variables required for plotting.}
 
-\item{filename}{String, file name for plotting to file device, see argument \code{driver}. Ignored with plotting to screen device. 
+\item{filename}{String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting to screen device. 
 \emph{Device dimensions are currently hard-coded, see Details.}}
 
 \item{driver}{String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.}
@@ -56,6 +56,9 @@ especially in basins with many upstream sub-basins.}
 
 \item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional with argument 
 \code{subid}, details see there.}
+
+\item{ylab.t1}{String or \code{\link{plotmath}} expression, y axis label for T1 tracer time series panel (tracer concentration units 
+are not prescribed in HYPE).}
 }
 \value{
 Returns a multi-panel plot in a new graphics device.
@@ -77,20 +80,23 @@ HYPE outputs which are known to \code{PlotBasinOutput} include:
 \item{air temperature}
 \item{discharge}
 \item{lake water level}
+\item{water temperature}
 \item{evapotranspiration}
 \item{snow water equivalent}
 \item{sub-surface storage components}
 \item{nitrogen concentrations}
 \item{phosphorus concentrations}
 \item{suspended sediment concentrations}
+\item{total sediment concentrations}
+\item{tracer concentration}
 }
 
 Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file. 
 For a detailed description of the variables, see the 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 
-\code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc ccin rein ccon reon cctn retn ccsp 
-resp ccpp repp cctp retp wcom wstr ccss ress ccts rets}
+\code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc cct2 ret2 ccin rein ccon reon cctn retn 
+ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1}
 
 \emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting 
 to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 

@@ -6,7 +6,7 @@
 #' @param x Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
 #' \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 #' See details for HYPE output variables required for plotting.
-#' @param filename String, file name for plotting to file device, see argument \code{driver}. Ignored with plotting to screen device. 
+#' @param filename String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting to screen device. 
 #' \emph{Device dimensions are currently hard-coded, see Details.}
 #' @param driver String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.
 #' @param timestep  Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
@@ -35,6 +35,8 @@
 #' \code{subid}, details see there. 
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional with argument 
 #' \code{subid}, details see there. 
+#' @param ylab.t1 String or \code{\link{plotmath}} expression, y axis label for T1 tracer time series panel (tracer concentration units 
+#' are not prescribed in HYPE).
 #' 
 #' @details
 #' \code{PlotBasinOutput} plots a suite of time series along with a flow duration curve, a flow regime plot, and a selection of 
@@ -49,6 +51,7 @@
 #' \item{air temperature}
 #' \item{discharge}
 #' \item{lake water level}
+#' \item{water temperature}
 #' \item{evapotranspiration}
 #' \item{snow water equivalent}
 #' \item{sub-surface storage components}
@@ -56,14 +59,15 @@
 #' \item{phosphorus concentrations}
 #' \item{suspended sediment concentrations}
 #' \item{total sediment concentrations}
+#' \item{tracer concentration}
 #' }
 #' 
 #' Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file. 
 #' For a detailed description of the variables, see the 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 #' 
-#' \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc ccin rein ccon reon cctn retn ccsp 
-#' resp ccpp repp cctp retp wcom wstr ccss ress ccts rets}
+#' \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc cct2 ret2 ccin rein ccon reon cctn retn 
+#' ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1}
 #' 
 #' \emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting 
 #' to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 
@@ -85,7 +89,7 @@
 
 PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "png", "screen"), timestep = attr(x, "timestep"), 
                             hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, 
-                            subid = attr(x, "subid"), gd = NULL, bd = NULL) {
+                            subid = attr(x, "subid"), gd = NULL, bd = NULL, ylab.t1 = "Conc.") {
   
   
   ## Preliminaries
@@ -163,8 +167,8 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
   
   # create vector over all target output variable names which are potentially used in the plot panels
   nm.t <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "soim", "sm13", "upsmfp", "snow", "upcprc", 
-            "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp", "wcom", "wstr", 
-            "ccss", "ress", "ccts", "rets")
+            "cct2", "ret2", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp", "wcom", 
+            "wstr", "ccss", "ress", "ccts", "rets", "cct1", "ret1")
   # initialise logical vector to indicate existence of target variables
   exi.t <- logical(length = length(nm.t))
   names(exi.t) <- nm.t
@@ -184,11 +188,11 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
   # select from existing variables based on user request, default is to use all available
   if (hype.vars[1] != "all") {
     if (hype.vars[1] == "hydro") {
-      nm.hydro <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "snow", "upcprc", "wcom", "wstr")
+      nm.hydro <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "snow", "upcprc", "wcom", "wstr", "cct2", "ret2")
       exi.t[!(nm.t %in% nm.hydro)] <- FALSE
     } else if (hype.vars[1] == "nutrients") {
       nm.nutri <- c("date", "upcprf", "upcpsf", "cout", "rout", "upcprc", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", 
-                    "resp", "ccpp", "repp", "cctp", "retp", "ccss", "ress", "ccts", "rets")
+                    "resp", "ccpp", "repp", "cctp", "retp", "ccss", "ress", "ccts", "rets", "cct1", "ret1")
       exi.t[!(nm.t %in% nm.nutri)] <- FALSE
     } else if (is.character(hype.vars)) {
       nm.manu <- c("date", tolower(hype.vars))
@@ -363,7 +367,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     list.plotexpr[[cp]] <- parse(text = 'box()')
   }
   
-  # temperature panel
+  # air temperature panel
   if (exi.t["temp"]) {
     
     # fill layout matrix with panel IDs
@@ -477,6 +481,52 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
                                  lty = 1, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
+  
+  # water temperature panel
+  if (exi.t["cct2"] || exi.t["ret2"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    cp <- cp + 1
+    if (!exi.t["cct2"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ret2, type = "l", col = NA, xaxt = "n", ylab = expression(paste(""*degree, "C")), 
+                                   ylim = c(min(ret2, na.rm=T), max(ret2, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else if (!exi.t["ret2"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cct2, type = "l", col = NA, xaxt = "n", ylab = expression(paste(""*degree, "C")), 
+                                   ylim = c(min(cct2, na.rm=T), max(cct2, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cct2, type = "l", col = NA, xaxt = "n", ylab = expression(paste(""*degree, "C")), 
+                                   ylim = c(min(c(cct2, ret2), na.rm=T), max(c(cct2, ret2), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["ret2"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, ret2, col = "steelblue4")')
+    }
+    
+    if (exi.t["cct2"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, cct2, col = "violetred")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("Obs. water temp.", "Sim. water temp."), lty = c(1, 1), 
+                                 col = c("steelblue4", "violetred"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
+  
   
   # ET panel
   if (exi.t["upepot"] || exi.t["upevap"]) {
@@ -997,6 +1047,54 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("TSobs", "TSsim"), lty = c(NA, 1), pch = c(16, NA), 
+                                 pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
+  
+  # sim tracer, obs tracer panel
+  if (exi.t["cct1"] || exi.t["ret1"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    cp <- cp + 1
+    if (!exi.t["cct1"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ret1, type = "l", col = NA, xaxt = "n", 
+                                  ylab = ylab.t1, 
+                                   ylim = c(0, max(ret1, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else if (!exi.t["ret1"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cct1, type = "l", col = NA, xaxt = "n", 
+                                   ylab = ylab.t1, 
+                                   ylim = c(0, max(cct1, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cct1, type = "l", col = NA, xaxt = "n", 
+                                   ylab = ylab.t1, 
+                                   ylim = c(0, max(c(cct1, ret1), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["ret1"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, ret1, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["cct1"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date, cct1, col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("T1obs", "T1sim"), lty = c(NA, 1), pch = c(16, NA), 
                                  pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
