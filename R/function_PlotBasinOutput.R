@@ -6,8 +6,8 @@
 #' @param x Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 
 #' \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 #' See details for HYPE output variables required for plotting.
-#' @param filename String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting to screen device. 
-#' \emph{Device dimensions are currently hard-coded, see Details.}
+#' @param filename String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting 
+#' to screen device. \emph{Device dimensions are currently hard-coded, see Details.}
 #' @param driver String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.
 #' @param timestep  Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
@@ -206,6 +206,8 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     }
   }
   
+  
+  
   ## parse plot commands based on existing or requested HYPE variables to a list
   ## create layout() arguments based on existinng HYPE variables
   
@@ -349,14 +351,14 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     # conditional: if rainfall and snow variables available, plot stacked bars based of these, otherwise plot precip bars
     if (exi.t["upcprf"] && exi.t["upcpsf"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(upcprf, upcpsf))), border = NA, 
-                                   ylim = c(max(upcprc, na.rm = T), -2), xlab = "", col = c("darkblue", "forestgreen"), 
-                                   names.arg = rep("", length(upcprc)), legend.text = c("Rain", "Snow"), 
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(upcprf, upcpsf))), border = c("darkblue", "forestgreen"), 
+                                   ylim = c(max(c(upcprf, upcpsf), na.rm = T), -2), xlab = "", col = c("darkblue", "forestgreen"), 
+                                   names.arg = rep("", length(upcprf)), legend.text = c("Rain", "Snow"), 
                                    args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), 
                                    ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
     } else {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'barplot(height = upcprc, border = NA, ylim = c(max(upcprc, na.rm = T), -2), xlab = "", 
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = upcprc, border = "darkblue", ylim = c(max(upcprc, na.rm = T), -2), xlab = "", 
                                    col = "darkblue", names.arg = rep("", length(upcprc)), legend.text = "Precipitation", 
                                    args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), 
                                    ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
@@ -1104,9 +1106,11 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
   lay.mat <- rbind(lay.mat, rep(0, 3))
   # add layout height for this row
   lay.heights <- c(lay.heights, .3)
-  # add axis annotation to plot list
+  
+  # add axis annotation to plot list, conditional on daily or sub-daily time steps
   cp <- cp + 1
   list.plotexpr[[cp]] <- parse(text = 'axis.POSIXct(side = 1, x = date, cex.axis = 1)')
+
   
   ## set up plot device with layout and call all plot commands 
   

@@ -15,8 +15,8 @@ PlotBasinOutput(x, filename = "PlotBasinOutput", driver = c("pdf",
 \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 See details for HYPE output variables required for plotting.}
 
-\item{filename}{String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting to screen device. 
-\emph{Device dimensions are currently hard-coded, see Details.}}
+\item{filename}{String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting 
+to screen device. \emph{Device dimensions are currently hard-coded, see Details.}}
 
 \item{driver}{String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.}
 
