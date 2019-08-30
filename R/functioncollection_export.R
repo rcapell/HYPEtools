@@ -470,7 +470,7 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   if (is.double(x[, 1])) {
     x[,1] <- format(x[,1], format = dt.format)
   } else {
-    warning("Date column not formatting failed. Exported unchanged.")
+    warning("Date column formatting failed. Exported unchanged.")
   }
   
   # export object, omitting header

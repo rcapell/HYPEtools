@@ -21,7 +21,8 @@ LazyData: true
 Packaged: 2014-11-21 15:25:14 UTC; rene
 Author: Rene Capell [aut, cre],
     Jafet Andersson [aut],
-    David Gustafsson [aut]
+    David Gustafsson [aut],
+    Jude M Lubega [aut]
 Maintainer: Rene Capell <rene.capell@smhi.se>
 RoxygenNote: 6.1.1
 Encoding: UTF-8

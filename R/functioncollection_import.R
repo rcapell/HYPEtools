@@ -191,7 +191,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", verbose = TRUE) {
 #' @export
 
 
-    ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid = NULL, warn.nan = FALSE) {
+ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid = NULL, warn.nan = FALSE) {
   
   # handling output type user choice
   if (type == "df") {
