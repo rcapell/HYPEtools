@@ -25,7 +25,7 @@ to screen device. \emph{Device dimensions are currently hard-coded, see Details.
 
 \item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables 
 to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details 
-for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of 
+for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"wq"} (water quality), for which a pre-selected range of 
 (available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown 
 to the function will be ignored with a warning.}
 
@@ -101,7 +101,7 @@ ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1}
 \emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting 
 to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 
 \code{PlotBasinOutput} throws a warning if the plot height exceeds 10 inches, which can lead to overlapping plot elements. On screens with 
-less than 10 inch vertical screen space, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects 
+less than 10 inch screen, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects 
 is to plot to pdf or png file devices instead.
 }
 \examples{

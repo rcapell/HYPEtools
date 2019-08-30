@@ -13,7 +13,7 @@
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
 #' @param hype.vars Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables 
 #' to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details 
-#' for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of 
+#' for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"wq"} (water quality), for which a pre-selected range of 
 #' (available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown 
 #' to the function will be ignored with a warning.
 #' @param vol.err Logical, if \code{TRUE} and both observed and simulated discharge are available in \code{x}, the accumulated volume error 
@@ -72,7 +72,7 @@
 #' \emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting 
 #' to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 
 #' \code{PlotBasinOutput} throws a warning if the plot height exceeds 10 inches, which can lead to overlapping plot elements. On screens with 
-#' less than 10 inch vertical screen space, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects 
+#' less than 10 inch screen, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects 
 #' is to plot to pdf or png file devices instead.
 #' 
 #' @return 
@@ -190,10 +190,10 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     if (hype.vars[1] == "hydro") {
       nm.hydro <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "snow", "upcprc", "wcom", "wstr", "cct2", "ret2")
       exi.t[!(nm.t %in% nm.hydro)] <- FALSE
-    } else if (hype.vars[1] == "nutrients") {
-      nm.nutri <- c("date", "upcprf", "upcpsf", "cout", "rout", "upcprc", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", 
+    } else if (hype.vars[1] == "wq") {
+      nm.wq <- c("date", "upcprf", "upcpsf", "cout", "rout", "upcprc", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", 
                     "resp", "ccpp", "repp", "cctp", "retp", "ccss", "ress", "ccts", "rets", "cct1", "ret1")
-      exi.t[!(nm.t %in% nm.nutri)] <- FALSE
+      exi.t[!(nm.t %in% nm.wq)] <- FALSE
     } else if (is.character(hype.vars)) {
       nm.manu <- c("date", tolower(hype.vars))
       exi.t[!(nm.t %in% nm.manu)] <- FALSE
@@ -1126,7 +1126,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     if (hght > 10) {
       hght <- 10
       warning("Computed plot device height overridden to fit screen height which might result in rendering overlaps. 
-              Change argument 'driver' to plot to file use argument 'hype.vars' to reduce number of variables to plot.")
+              Change argument 'driver' to plot to file or use argument 'hype.vars' to reduce number of variables to plot.")
     }
     
     #dev.new(width=wdth, height = hght, noRStudioGD = T)
@@ -1136,16 +1136,20 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
       dev.control("inhibit")
     } else if (Sys.info()['sysname'] == "Darwin") {
       quartz(width = wdth, height = hght)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
     } else {
       # try x11, not very likely to occur..
       X11(width = wdth, height = hght)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
     }
   } else if (driver == "png") {
-    png(filename = filename, width = wdth, height = hght, units = "in", res = 300, pointsize = 20)
+    png(filename = filename, width = wdth, height = hght, units = "in", res = 450, pointsize = 12)
     # close the file device on exit
     on.exit(dev.off())
   } else {
-    pdf(file = filename, width = wdth, height = hght, pointsize = 20, title = as.character(name))
+    cairo_pdf(file = filename, width = wdth, height = hght, pointsize = 12)
     # close the file device on exit
     on.exit(dev.off())
   }

@@ -1,13 +1,14 @@
 #' Plot a summary of model results for a single sub-basin
 #' 
 #' Plot a standard suite of plots summarising properties of a sub-basin including upstream area and model performance 
-#' for discharge and nutrients.
+#' for discharge and concentrations of nutrients, sediment, and tracers.
 #' 
 #' @param x Data frame, with column-wise daily time series of HYPE variables. Date-times in 
 #' \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
 #' See details for HYPE output variables required for plotting.
-#' @param filename String, file name for plotting to \code{\link{png}} device. \code{NULL} triggers a plot on a new
-#' screen device. \emph{Device dimensions are currently hard-coded.}
+#' @param filename String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting 
+#' to screen device. \emph{Device dimensions are currently hard-coded, see Details.}
+#' @param driver String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.
 #' @param panels Integer, either \code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.
 #' @param gd A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file. 
 #' Only needed with bar chart panels, see Details. 
@@ -15,8 +16,8 @@
 #' Optional argument. Only needed with bar chart panels, see Details. 
 #' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}. Only needed with bar chart panels, see Details. 
-#' @param psd A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{ReadPointSourceData}}. 
-#' Only needed with bar chart panels, see Details. 
+#' @param psd A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with 
+#' \code{\link{ReadPointSourceData}}. Only needed with bar chart panels, see Details. 
 #' @param subid Integer, SUBID of sub-basin for which results are plotted. If \code{NULL} (default), a \code{subid} attribute is 
 #' required in \code{x}. Only needed with bar chart panels, see Details. 
 #' @param desc List for use with \code{type}. Class description labels imported from a 'description.txt' file, for bar labeling.
@@ -25,7 +26,7 @@
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
 #' @param hype.vars Either a keyword string or a character vector of HYPE output variables. User-specified selection of HYPE variables 
 #' to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details 
-#' for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"nutrients"}, for which a pre-selected range of 
+#' for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"wq"} (water quality), for which a pre-selected range of 
 #' (available) result variables is plotted. Alternatively, a character vector holding HYPE output variable IDs to be plotted. Variables unknown 
 #' to the function will be ignored with a warning.
 #' @param from,to Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
@@ -36,24 +37,27 @@
 #' @param start.mon Integer between 1 and 12, starting month of the hydrological year. For regime plots, see also 
 #' \code{\link{AnnualRegime}}. 
 #' @param name Character or expression string. Site name to plot besides bar chart panels. Only relevant with \code{panels} \code{1} or \code{3}.
+#' @param ylab.t1 String or \code{\link{plotmath}} expression, y axis label for T1 tracer time series panel (tracer concentration units 
+#' are not prescribed in HYPE).
 #' 
 #' @details
 #' \code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a 
-#' chosen sub-basin. Performance plots include discharge and HYPE-modelled nutrient species for nitrogen (total, inorganic, organic) 
-#' and phosphorus (total, particulate, soluble).
+#' chosen sub-basin. Performance plots include discharge, HYPE-modelled nutrient species for nitrogen (total, inorganic, organic) 
+#' and phosphorus (total, particulate, soluble), and HYPE modelled suspended and total sediment concentrations.
 #' 
 #' Plotted panels show: 
 #' \itemize{
-#' \item{\emph{Summarised catchment characteristics as bar charts}: Upstream-averaged land use, soil, and crop group fractions; modelled nutrient loads 
-#' in sub-basin outlet, and summed upstream gross loads from point sources and rural households (if necessary variables available, omitted otherwise).}
-#' \item{\emph{Goodness-of-fit measures for discharge and nutrients}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS (Percentage 
-#' Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency). See package 
-#' \code{\link{hydroGOF}} for details.}
-#' \item{\emph{Simulation-observation relationships for discharge and nutrients}: Simulated and observed concentration-discharge relationships, 
-#' relationship between observed and simulated nutrient concentrations.}
-#' \item{\emph{Duration curves for flow and nutrient concentrations}: Pairwise simulated and observed curves.}
-#' \item{\emph{Annual regimes for flow and nutrient concentrations}: Pairwise simulated and observed regime plots at monthly aggregation, with 
-#' number of observations for nutrient concentration regimes.}
+#' \item{\emph{Summarised catchment characteristics as bar charts}: Upstream-averaged land use, soil, and crop group fractions; modelled nutrient 
+#' loads in sub-basin outlet, and summed upstream gross loads from point sources and rural households (if necessary variables available, omitted 
+#' otherwise).}
+#' \item{\emph{Goodness-of-fit measures for discharge and concentrations}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS 
+#' (Percentage Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency). 
+#' See package \code{\link{hydroGOF}} for details.}
+#' \item{\emph{Simulation-observation relationships for discharge and concentrations}: Simulated and observed concentration-discharge relationships, 
+#' relationship between observed and simulated nutrient, sediment, and tracer concentrations.}
+#' \item{\emph{Duration curves for flow and concentrations}: Pairwise simulated and observed curves.}
+#' \item{\emph{Annual regimes for flow and concentrations}: Pairwise simulated and observed regime plots at monthly aggregation, with 
+#' number of observations for concentration regimes.}
 #' \item{\emph{Corresponding plots for IN/TN and SP/TP ratios}.}
 #' }
 #' 
@@ -69,13 +73,19 @@
 #' For a detailed description of the variables, see the 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 #' 
-#' \code{basinoutput variable cout rout ccin rein ccon reon cctn retn ccsp resp ccpp repp cctp retp totn totp}
+#' \code{basinoutput variable cout rout ccin rein ccon reon cctn retn ccsp resp ccpp repp cctp retp ctnl ctpl ccss ress ccts rets cct1 ret1}
+#' 
+#' #' \emph{Device dimensions} are hard-coded to a width of 13 inches and height depending on the number of plotted time series. When plotting 
+#' to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 
+#' \code{PlotBasinOutput} throws a warning if the plot height exceeds 10 inches, which can lead to overlapping plot elements. On screens with 
+#' less than 10 inch screen height, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects 
+#' is to plot to pdf or png file devices instead.
 #' 
 #' @return 
 #' Returns a multi-panel plot in a new graphics device.
 #' 
 #' @seealso
-#' \code{\link{BarplotUpstreamClasses}}, \code{\link{PlotSimObsRegime}}, \code{\link{PlotAnnualRegime}}, 
+#' \code{\link{PlotBasinOutput}}, \code{\link{BarplotUpstreamClasses}}, \code{\link{PlotSimObsRegime}}, \code{\link{PlotAnnualRegime}}, 
 #' \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 #' 
 #' @examples
@@ -84,25 +94,20 @@
 #' @importFrom hydroGOF gof gof.default
 #' @export
 
-# .makeTransparent<-function(someColor, alpha=100){
-#   "Given a colour name (e.g. 'red'), make it transparent. 
-#   someColor:
-#         Vector of colour names to make transparent e.g. c('red', 'blue')
-#   alpha:
-#         Alpha transparency. 100 fully opaque, 0 fully transparent.
-#   Credit: http://stackoverflow.com/questions/8047668/transparent-equivalent-of-given-color
-#   "
-#   newColor<-col2rgb(someColor)
-#   apply(newColor, 2, function(curcoldata){rgb(red=curcoldata[1], green=curcoldata[2],
-#                                               blue=curcoldata[3],alpha=alpha, maxColorValue=255)})
-# }
 
-
-PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
+PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "screen"), panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
                              subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
-                             from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = NULL) {
+                             from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = "", ylab.t1 = "Conc.") {
   
   ## Preliminaries
+  
+  # check and choose device driver
+  driver <- match.arg(driver)
+  if (driver %in% c("pdf", "png")) {
+    filename <- paste(filename, driver, sep = ".")
+  } else {
+    filename <- NULL
+  }
   
   # check if panels argument is ok
   if (length(panels) != 1 && !(panels %in% 1:3)) {
@@ -188,7 +193,7 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
   
   # create vector over all target output variable names which are potentially used in the plot panels
   nm.t <- c("date", "cout", "rout", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", 
-            "repp", "cctp", "retp", "totn", "totp", "coss", "ccss", "ress", "ccts")
+            "repp", "cctp", "retp", "ctnl", "ctpl", "ccss", "ress", "ccts", "rets", "cct1", "ret1")
   # initialise logical vector to indicate existence of target variables
   exi.t <- logical(length = length(nm.t))
   names(exi.t) <- nm.t
@@ -210,10 +215,10 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
     if (hype.vars[1] == "hydro") {
       nm.hydro <- c("date", "cout", "rout")
       exi.t[!(nm.t %in% nm.hydro)] <- FALSE
-    } else if (hype.vars[1] == "nutrients") {
-      nm.nutri <- c("date", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", 
-                    "cctp", "retp", "totn", "totp", "cout", "coss", "ccss", "ress", "ccts")
-      exi.t[!(nm.t %in% nm.nutri)] <- FALSE
+    } else if (hype.vars[1] == "wq") {
+      nm.wq <- c("date", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", 
+                    "cctp", "retp", "ctnl", "ctpl", "cout", "ccss", "ress", "ccts", "rets", "cct1", "ret1")
+      exi.t[!(nm.t %in% nm.wq)] <- FALSE
     } else if (is.character(hype.vars)) {
       nm.manu <- c("date", tolower(hype.vars))
       exi.t[!(nm.t %in% nm.manu)] <- FALSE
@@ -278,14 +283,14 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
     }
     
     ## calculate mean annual N and P loads at outlet in ton/year if they exist in x
-    if (exi.t["totn"]) {
+    if (exi.t["ctnl"]) {
       # mean(load kg/d) * 365.25 d/y * 10^-3 ton/kg
-      load.outn <- mean(totn) * 0.36525
+      load.outn <- mean(ctnl) * 0.36525
     } else {
       load.outn <- NA
     }
-    if (exi.t["totp"]) {
-      load.outp <- mean(totp) * 0.36525
+    if (exi.t["ctpl"]) {
+      load.outp <- mean(ctpl) * 0.36525
     } else {
       load.outp <- NA
     }
@@ -915,9 +920,14 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
       }
       
       
-      ## panel 1: unused atm
+      ## panel 1: row title
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(1, 4))')
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'frame()')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'mtext(text = "IN/TN ratio", line = -1, adj = 0, cex = .7)')
+      
       
       
       ## panel 2: Conc-Q plots, depending on variable availability, for IN/TN ratio
@@ -1320,6 +1330,151 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
     }
     
     
+    
+    
+    #### PP row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for PP, conditional on if PP is requested/available
+    
+    if (exi.t["repp"] || exi.t["ccpp"]) {
+      
+      # fill layout matrix with panel IDs
+      lay.mat <- rbind(lay.mat, c(seq(max(lay.mat) + 1, by = 1, length.out = 5), max(lay.mat) + 5)) 
+      # add layout height for this row
+      lay.heights <- c(lay.heights, 2)
+      
+      
+      ## panel 1: compute and plot GoFs for PP, if variables are available
+      # empty frame first, then GoFs as legend
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(0, 4))')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'frame()')
+      
+      if (exi.t["repp"] && exi.t["ccpp"]){
+        gof.pp <- tryCatch(gof(sim = get("ccpp"), obs = get("repp"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+                           error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.pp), gof.pp, sep = ": "),"",paste0("(", length(na.omit(repp)), " obs.)")), bty = "n", title = "PP, goodness\nof fit", cex = 1)')
+      }
+      
+      
+      ## panel 2: Conc-Q plots, depending on variable availability
+      if (exi.t["cout"] && (exi.t["repp"] || exi.t["ccpp"])) {
+        if (exi.t["repp"] && exi.t["ccpp"]) {
+          
+          # calculate y axis limits
+          lim.pp <- range(c(repp, ccpp), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.pp[1] <= 0) {
+            lim.pp[1] <- min(c(repp, ccpp)[c(repp, ccpp) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.pp))) {
+              lim.pp <- rep(0, 2)
+            }
+          }
+          
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccpp, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.pp, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'points(cout, repp, col = "#00000080", pch = 16)')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        }  else if (exi.t["repp"]) {
+          
+          # calculate y axis limits
+          lim.pp <- range(repp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.pp[1] <= 0) {
+            lim.pp[1] <- min(repp[repp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.pp))) {
+              lim.pp <- rep(0, 2)
+            }
+          }
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, repp, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.pp, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        } else if (exi.t["ccpp"]) {
+          
+          # calculate y axis limits
+          lim.pp <- range(ccpp, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.pp[1] <= 0) {
+            lim.pp[1] <- min(ccpp[ccpp > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.pp))) {
+              lim.pp <- rep(0, 2)
+            }
+          }
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccpp, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.pp, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        }
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      ## panel 3: sim-obs comparison dotty plot for PP
+      if (exi.t["ccpp"] && exi.t["repp"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'plot(repp, ccpp, col = "#7FAD8EE6", pch = 16, log = log.cq, xlab = expression(paste("observed PP (",mu,"g l"^"-1", ")")), ylab = expression(paste("simulated PP (",mu,"g l"^"-1", ")")))')
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'abline(a = 0, b = 1, col = "#00000080")')
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      
+      ## panel 4: CDC for PP
+      if (exi.t["repp"] && exi.t["ccpp"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(repp, ccpp)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. PP", "sim. PP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+      } else if (exi.t["repp"]) {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = repp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. PP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+      } else if (exi.t["ccpp"]) {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccpp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. PP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      ## panel 5: sim-obs regime plot for PP
+      if (exi.t["repp"] && exi.t["ccpp"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccpp", obs = "repp", start.mon = start.mon, log = log.r, l.legend = c("sim. PP", "obs. PP"), mar = c(3.1, 3.1, .5, .5))')
+      } else if (exi.t["repp"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "repp", start.mon = start.mon, log = log.r, l.legend = c("obs. PP"), mar = c(3.1, 3.1, .5, .5))')
+      } else if (exi.t["ccpp"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccpp", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. PP"), mar = c(3.1, 3.1, .5, .5))')
+      }
+    }
+    
+    
+    
     #### SP/TP row: 5 panels (first unused) with Conc-Q relationships, sim-obs, FDC, and regime for SP/TP ratio
     
     if ((exi.t["resp"] && exi.t["retp"]) || (exi.t["ccsp"] && exi.t["cctp"])) {
@@ -1342,9 +1497,13 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
       }
       
       
-      ## panel 1: unused atm
+      ## panel 1: row title
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(1, 4))')
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'frame()')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'mtext(text = "SP/TP ratio", line = -1, adj = 0, cex = .7)')
       
       
       ## panel 2: Conc-Q plots, depending on variable availability, for SP/TP ratio
@@ -1464,10 +1623,8 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
     
     
     
-    ############################### SEDIMENT VARIABLES Modification: J. Musuuza, July 2018 #####################
-    
-    #### SS row: 5 panels (first unused) with Conc-Q relationships, sim-obs, FDC, and regime for SS ratio
-    
+
+    #### SS row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for SS, conditional on if SS is requested/available
     
     if (exi.t["ress"] || exi.t["ccss"]) {
       
@@ -1477,7 +1634,7 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
       lay.heights <- c(lay.heights, 2)
       
       
-      ## panel 1: compute and plot GoFs for PP, if variables are available
+      ## panel 1: compute and plot GoFs for SS, if variables are available
       # empty frame first, then GoFs as legend
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(0, 4))')
@@ -1485,11 +1642,11 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["ress"] && exi.t["ccss"]){
-        gof.pp <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.ss <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, 
-                                     legend = c(paste(names(gof.pp), gof.pp, sep = ": "),"",
+                                     legend = c(paste(names(gof.ss), gof.ss, sep = ": "),"",
                                      paste0("(", length(na.omit(ress)), " obs.)")), bty = "n", 
                                      title = "SS, goodness\nof fit", cex = 1)')
       }
@@ -1500,13 +1657,13 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
         if (exi.t["ress"] && exi.t["ccss"]) {
           
           # calculate y axis limits
-          lim.pp <- range(c(ress, ccss), na.rm = T)
+          lim.ss <- range(c(ress, ccss), na.rm = T)
           # change lower limit to >0 if log-scale
-          if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- min(c(ress, ccss)[c(ress, ccss) > 0], na.rm = T)
+          if (log && lim.ss[1] <= 0) {
+            lim.ss[1] <- min(c(ress, ccss)[c(ress, ccss) > 0], na.rm = T)
             # treat case where there are no non-0 values, and Inf values are created
-            if (any(is.infinite(lim.pp))) {
-              lim.pp <- rep(0, 2)
+            if (any(is.infinite(lim.ss))) {
+              lim.ss <- rep(0, 2)
             }
           }
           
@@ -1514,7 +1671,7 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
           cp <- cp + 1
-          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccss, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.pp, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccss, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.ss, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'points(cout, ress, col = "#00000080", pch = 16)')
           cp <- cp + 1
@@ -1523,33 +1680,33 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
         }  else if (exi.t["ress"]) {
           
           # calculate y axis limits
-          lim.pp <- range(ress, na.rm = T)
+          lim.ss <- range(ress, na.rm = T)
           # change lower limit to >0 if log-scale
-          if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- min(ress[ress > 0], na.rm = T)
+          if (log && lim.ss[1] <= 0) {
+            lim.ss[1] <- min(ress[ress > 0], na.rm = T)
             # treat case where there are no non-0 values, and Inf values are created
-            if (any(is.infinite(lim.pp))) {
-              lim.pp <- rep(0, 2)
+            if (any(is.infinite(lim.ss))) {
+              lim.ss <- rep(0, 2)
             }
           }
           
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
           cp <- cp + 1
-          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ress, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.pp, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ress, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.ss, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
           
         } else if (exi.t["ccss"]) {
           
           # calculate y axis limits
-          lim.pp <- range(ccss, na.rm = T)
+          lim.ss <- range(ccss, na.rm = T)
           # change lower limit to >0 if log-scale
-          if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- min(ccss[ccss > 0], na.rm = T)
+          if (log && lim.ss[1] <= 0) {
+            lim.ss[1] <- min(ccss[ccss > 0], na.rm = T)
             # treat case where there are no non-0 values, and Inf values are created
-            if (any(is.infinite(lim.pp))) {
-              lim.pp <- rep(0, 2)
+            if (any(is.infinite(lim.ss))) {
+              lim.ss <- rep(0, 2)
             }
           }
           
@@ -1557,7 +1714,7 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccss, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, 
-                                       xlim = lim.q, ylim = lim.pp, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), 
+                                       xlim = lim.q, ylim = lim.ss, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), 
                                        ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, 
@@ -1570,7 +1727,7 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
       }
       
       
-      ## panel 3: sim-obs comparison dotty plot for PP
+      ## panel 3: sim-obs comparison dotty plot for SS
       if (exi.t["ccss"] && exi.t["ress"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
@@ -1587,7 +1744,7 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
       
       
       
-      ## panel 4: CDC for PP
+      ## panel 4: CDC for SS
       if (exi.t["ress"] && exi.t["ccss"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(ress, ccss)), 
@@ -1613,7 +1770,7 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
       }
       
       
-      ## panel 5: sim-obs regime plot for PP
+      ## panel 5: sim-obs regime plot for SS
       if (exi.t["ress"] && exi.t["ccss"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccss", obs = "ress", start.mon = start.mon, 
@@ -1631,13 +1788,335 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
     
     
     
-
     
-
+    #### TS row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for TS, conditional on if TS is requested/available
+    
+    if (exi.t["rets"] || exi.t["ccts"]) {
+      
+      # fill layout matrix with panel IDs
+      lay.mat <- rbind(lay.mat, c(seq(max(lay.mat) + 1, by = 1, length.out = 5), max(lay.mat) + 5)) 
+      # add layout height for this row
+      lay.heights <- c(lay.heights, 2)
+      
+      
+      ## panel 1: compute and plot GoFs for TS, if variables are available
+      # empty frame first, then GoFs as legend
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(0, 4))')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'frame()')
+      
+      if (exi.t["rets"] && exi.t["ccts"]){
+        gof.ts <- tryCatch(gof(sim = get("ccts"), obs = get("rets"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+                           error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, 
+                                     legend = c(paste(names(gof.ts), gof.ts, sep = ": "),"",
+                                     paste0("(", length(na.omit(rets)), " obs.)")), bty = "n", 
+                                     title = "TS, goodness\nof fit", cex = 1)')
+      }
+      
+      
+      ## panel 2: Conc-Q plots, depending on variable availability
+      if (exi.t["cout"] && (exi.t["rets"] || exi.t["ccts"])) {
+        if (exi.t["rets"] && exi.t["ccts"]) {
+          
+          # calculate y axis limits
+          lim.ts <- range(c(rets, ccts), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.ts[1] <= 0) {
+            lim.ts[1] <- min(c(rets, ccts)[c(rets, ccts) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.ts))) {
+              lim.ts <- rep(0, 2)
+            }
+          }
+          
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccts, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'points(cout, rets, col = "#00000080", pch = 16)')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        }  else if (exi.t["rets"]) {
+          
+          # calculate y axis limits
+          lim.ts <- range(rets, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.ts[1] <= 0) {
+            lim.ts[1] <- min(rets[rets > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.ts))) {
+              lim.ts <- rep(0, 2)
+            }
+          }
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, rets, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        } else if (exi.t["ccts"]) {
+          
+          # calculate y axis limits
+          lim.ts <- range(ccts, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.ts[1] <= 0) {
+            lim.ts[1] <- min(ccts[ccts > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.ts))) {
+              lim.ts <- rep(0, 2)
+            }
+          }
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccts, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, 
+                                       xlim = lim.q, ylim = lim.ts, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), 
+                                       ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, 
+                                       col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        }
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      ## panel 3: sim-obs comparison dotty plot for TS
+      if (exi.t["ccts"] && exi.t["rets"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'plot(rets, ccts, col = "#7FAD8EE6", pch = 16, log = log.cq, 
+                                     xlab = expression(paste("observed TS (mg l"^"-1", ")")), 
+                                     ylab = expression(paste("simulated TS (mg l"^"-1", ")")))')
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'abline(a = 0, b = 1, col = "#00000080")')
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      
+      ## panel 4: CDC for TS
+      if (exi.t["rets"] && exi.t["ccts"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rets, ccts)), 
+                                     xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. TS", "sim. TS"), 
+                                     col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), 
+                                     xlab = "Concentration exceedance percentile", 
+                                     ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+      } else if (exi.t["rets"]) {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rets), xscale = xscale, yscale = yscale, 
+                                     add.legend = T, l.legend = "obs. TS", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
+                                     xlab = "Concentration exceedance percentile", 
+                                     ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+      } else if (exi.t["ccts"]) {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccts), xscale = xscale, yscale = yscale, 
+                                     add.legend = T, l.legend = "sim. TS", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
+                                     xlab = "Concentration exceedance percentile", 
+                                     ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      ## panel 5: sim-obs regime plot for TS
+      if (exi.t["rets"] && exi.t["ccts"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccts", obs = "rets", start.mon = start.mon, 
+                                     log = log.r, l.legend = c("sim. TS", "obs. TS"), mar = c(3.1, 3.1, .5, .5))')
+      } else if (exi.t["rets"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "rets", start.mon = start.mon, 
+                                     log = log.r, l.legend = c("obs. TS"), mar = c(3.1, 3.1, .5, .5))')
+      } else if (exi.t["ccts"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccts", obs = NULL, start.mon = start.mon, 
+                                     log = log.r, l.legend = c("sim. TS"), mar = c(3.1, 3.1, .5, .5))')
+      }
+    }
     
     
     
+    
+    #### T1 row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for tracer T1, conditional on if T1 is requested/available
+    
+    if (exi.t["ret1"] || exi.t["cct1"]) {
+      
+      # fill layout matrix with panel IDs
+      lay.mat <- rbind(lay.mat, c(seq(max(lay.mat) + 1, by = 1, length.out = 5), max(lay.mat) + 5)) 
+      # add layout height for this row
+      lay.heights <- c(lay.heights, 2)
+      
+      
+      ## panel 1: compute and plot GoFs for T1, if variables are available
+      # empty frame first, then GoFs as legend
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'par(mar = rep(0, 4))')
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'frame()')
+      
+      if (exi.t["ret1"] && exi.t["cct1"]){
+        gof.t1 <- tryCatch(gof(sim = get("cct1"), obs = get("ret1"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+                           error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, 
+                                     legend = c(paste(names(gof.t1), gof.t1, sep = ": "),"",
+                                     paste0("(", length(na.omit(ret1)), " obs.)")), bty = "n", 
+                                     title = "T1, goodness\nof fit", cex = 1)')
+      }
+      
+      
+      ## panel 2: Conc-Q plots, depending on variable availability
+      if (exi.t["cout"] && (exi.t["ret1"] || exi.t["cct1"])) {
+        if (exi.t["ret1"] && exi.t["cct1"]) {
+          
+          # calculate y axis limits
+          lim.t1 <- range(c(ret1, cct1), na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.t1[1] <= 0) {
+            lim.t1[1] <- min(c(ret1, cct1)[c(ret1, cct1) > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.t1))) {
+              lim.t1 <- rep(0, 2)
+            }
+          }
+          
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, cct1, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.t1, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = ylab.t1)')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'points(cout, ret1, col = "#00000080", pch = 16)')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        }  else if (exi.t["ret1"]) {
+          
+          # calculate y axis limits
+          lim.t1 <- range(ret1, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.t1[1] <= 0) {
+            lim.t1[1] <- min(ret1[ret1 > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.t1))) {
+              lim.t1 <- rep(0, 2)
+            }
+          }
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ret1, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.t1, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = ylab.t1)')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        } else if (exi.t["cct1"]) {
+          
+          # calculate y axis limits
+          lim.t1 <- range(cct1, na.rm = T)
+          # change lower limit to >0 if log-scale
+          if (log && lim.t1[1] <= 0) {
+            lim.t1[1] <- min(cct1[cct1 > 0], na.rm = T)
+            # treat case where there are no non-0 values, and Inf values are created
+            if (any(is.infinite(lim.t1))) {
+              lim.t1 <- rep(0, 2)
+            }
+          }
+          
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, cct1, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, 
+                                       xlim = lim.q, ylim = lim.t1, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), 
+                                       ylab = ylab.t1)')
+          cp <- cp + 1
+          list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, 
+                                       col = c("#FF000080", "#00000080"), bty = "n")')
+          
+        }
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      ## panel 3: sim-obs comparison dotty plot for T1
+      if (exi.t["cct1"] && exi.t["ret1"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'plot(ret1, cct1, col = "#7FAD8EE6", pch = 16, log = log.cq, 
+                                     xlab = "observed T1", 
+                                     ylab = "simulated T1")')
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'abline(a = 0, b = 1, col = "#00000080")')
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      
+      ## panel 4: CDC for T1
+      if (exi.t["ret1"] && exi.t["cct1"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(ret1, cct1)), 
+                                     xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. T1", "sim. T1"), 
+                                     col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), 
+                                     xlab = "Concentration exceedance percentile", 
+                                     ylab = ylab.t1)')
+      } else if (exi.t["ret1"]) {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ret1), xscale = xscale, yscale = yscale, 
+                                     add.legend = T, l.legend = "obs. T1", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
+                                     xlab = "Concentration exceedance percentile", 
+                                     ylab = ylab.t1)')
+      } else if (exi.t["cct1"]) {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cct1), xscale = xscale, yscale = yscale, 
+                                     add.legend = T, l.legend = "sim. T1", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
+                                     xlab = "Concentration exceedance percentile", 
+                                     ylab = ylab.t1)')
+      } else {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'frame()')
+      }
+      
+      
+      ## panel 5: sim-obs regime plot for T1
+      if (exi.t["ret1"] && exi.t["cct1"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "cct1", obs = "ret1", start.mon = start.mon, 
+                                     log = log.r, l.legend = c("sim. T1", "obs. T1"), mar = c(3.1, 3.1, .5, .5))')
+      } else if (exi.t["ret1"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "ret1", start.mon = start.mon, 
+                                     log = log.r, l.legend = c("obs. T1"), mar = c(3.1, 3.1, .5, .5))')
+      } else if (exi.t["cct1"]){
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "cct1", obs = NULL, start.mon = start.mon, 
+                                     log = log.r, l.legend = c("sim. T1"), mar = c(3.1, 3.1, .5, .5))')
+      }
+    }
   }
+  
   
   
   ## set up plot device with layout and call all plot commands 
@@ -1649,20 +2128,39 @@ PlotBasinSummary <- function(x, filename = NULL, panels = 1, gd = NULL, bd = NUL
   
   # create plot device, conditional on filename
   if (is.null(filename)) {
+    
+    # automatic device resizing to prevent slow re-draw on screen device
+    if (hght > 10) {
+      hght <- 10
+      warning("Computed plot device height overridden to fit screen height which might result in rendering overlaps. 
+              Change argument 'driver' to plot to file or use argument 'hype.vars' to reduce number of variables to plot.")
+    }
+    
     #dev.new(width=wdth, height = hght, noRStudioGD = T)
     if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
       X11(width=wdth, height = hght)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
     } else if (Sys.info()['sysname'] == "Darwin") {
       quartz(width = wdth, height = hght)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
     } else {
       # try x11, not very likely to occur..
       X11(width = wdth, height = hght)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
     }
+  } else if (driver == "png") {
+    png(filename = filename, width=wdth, height = hght, units = "in", res = 450, pointsize = 12)
+    # close the file device on exit
+    on.exit(dev.off())
   } else {
-    png(filename = filename, width=wdth * 1.5, height = hght * 1.5, units = "in", res = 300, pointsize = 20)
+    cairo_pdf(file = filename, width = wdth, height = hght, pointsize = 12)
     # close the file device on exit
     on.exit(dev.off())
   }
+  
   # layout definition
   nf <- layout(mat = lay.mat[-1, , drop = FALSE], widths = lay.widths, heights = lay.heights)
   # layout.show(nf)
