@@ -16,12 +16,12 @@ PlotMapOutput(x, map, map.subid.column = 1, var.name = "",
 second column containing model results to plot. See details.}
 
 \item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
-requires additional packages, e.g. \pkg{rgdal}.}
+requires additional packages, e.g. \code{\link{rgdal}}.}
 
 \item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
 \item{var.name}{Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
-HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.}
+HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.}
 
 \item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
 or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.}
@@ -40,13 +40,10 @@ is used as legend title string. For select HYPE variables, pretty legend titles 
 See \code{\link{legend}} and details below.}
 
 \item{col}{Colors to use on the map. One of the following: \itemize{
-\item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name},
+\item \code{"auto"} to allow for automatic selection from tailored color ramp palettes and break points based on argument \code{var.name},
 see details
-\item One of the pre-defined palette functions for HYPE output variables or user-calculated differences between model results:
-\code{"ColNitr"} for nitrogen, \code{"ColPhos"} for phosphorus, \code{"ColPrec"} for precipitation, \code{"ColTemp"} for
-temperatures, \code{"ColQ"} for runoff, \code{"ColDiffTemp"} for temperature differences,  \code{"ColDiffGeneric"} for generic
-differences, see details
-\item A color ramp palette function, e.g. as returned from a call to \code{\link{colorRampPalette}}
+\item A color ramp palette function, e.g. as returned from a call to \code{\link{colorRampPalette}}. A number of tailored functions are 
+available in \code{HYPEtools}, see \code{\link{CustomColors}}
 \item A vector of colors. This can be a character vector of R's built-in color names or hexadecimal strings as returned by 
 \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 }}
@@ -84,25 +81,21 @@ Draw HYPE map results, with pretty scale discretisations and color ramp defaults
 \code{x} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with 
 several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}. 
 
-Mapped variables are visualised using color-coded data intervals. \code{PlotMapOutput} can use one of several internal color ramp functions 
-suitable for some common HYPE result variables as listed under argument \code{col.ramp.fun}. These are called by keyword. Alternatively,
-any color ramp function can be provided. The internal color ramps are mostly single color ramps with less saturated colors for smaller values
-and more saturated values for higher values, suitable for e.g. concentration or volume ranges. \code{ColTemp} is an exception to this rule, 
-with blue-to-turquoise colors and yellow-to-red 
-colors to represent temperature ranges below and above zero. Two further ramps provided are suitable to represent calculated differences, 
-e.g. between two model runs, a generic ramp with reds on the low end and blues on the high end, and a temperature-specific one in reversed
-order. 
+Mapped variables are visualised using color-coded data intervals. \code{HYPEtools} provides a number of color ramps functions for HYPE variables, 
+see \code{\link{CustomColors}}. These are either single-color ramps with less saturated colors for smaller values
+and more saturated values for higher values, suitable for e.g. concentration or volume ranges, or multi-color ramps suitable for calculated 
+differences, e.g. between two model runs.
 
 Break points between color classes of in-built or user-provided color ramp palettes can optionally be provided in argument 
 \code{col.breaks}. This is particularly useful when specific pretty class boundaries are needed, e.g. for publication figures. Per default, 
 break points for internal single color ramps and user-provided ramps are calculated based on 10\% percentiles of HYPE results given in 
-\code{x}. Default break points for internal color ramp \code{"ColDiffGeneric"} are based on an equal distance classification of log-scaled 
-\code{x} ranges, centered around zero. For internal color ramp \code{"ColDiffTemp"}, they are breaks in an interval from -7.5 to 7.5 K.
+\code{x}. Default break points for internal color ramp \code{ColDiffGeneric} are based on an equal distance classification of log-scaled 
+\code{x} ranges, centered around zero. For internal color ramp \code{ColDiffTemp}, they are breaks in an interval from -7.5 to 7.5 K.
 
 For select common HYPE variables, given in argument \code{var.name}, an automatic color ramp selection including pretty breaks and legend titles 
-is built into 
-\code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword \code{"auto"}
-in \code{col.ramp.fun}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points.
+is built into \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword 
+\code{"auto"} in \code{col}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points with 
+\code{"auto"} color selection.
 
 \code{PlotMapOutput} per default works with a margin-less figure and positions map and legend items close to the plot boundaries. 
 In order to move map and legend closer to each other, change the plot device width.
@@ -119,5 +112,5 @@ PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPE
 
 }
 \seealso{
-\code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for a similar plot function
+\code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for plotting HYPE results at points, e.g. sub-basin outlets.
 }

@@ -6,10 +6,10 @@
 #' @param x HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 #' second column containing model results to plot. See details.
 #' @param map A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
-#' requires additional packages, e.g. \pkg{{rgdal}.
+#' requires additional packages, e.g. \code{\link{rgdal}}.
 #' @param map.subid.column Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
-#' HYPE variables (\code{col.ramp.fun = "auto"}). Not case-sensitive. See details.
+#' HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.
 #' @param map.adj Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
 #' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.
 #' @param plot.legend Logical, plot a legend along with the map. Uses function \code{\link{legend}}.
@@ -20,14 +20,17 @@
 #' @param legend.outer Logical. If \code{TRUE}, outer break point values will be plotted in legend.
 #' @param legend.inset Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
 #' See \code{\link{legend}} and details below.
-#' @param col.ramp.fun Color ramp palette to use for the map. One of the following: \itemize{
-#' \item \code{"auto"} to allow for automatic selection from pre-defined color ramp palettes and break points based on argument \code{var.name}, 
+#' @param col Colors to use on the map. One of the following: \itemize{
+#' \item \code{"auto"} to allow for automatic selection from tailored color ramp palettes and break points based on argument \code{var.name},
 #' see details
-#' \item One of the pre-defined palette functions for HYPE output variables or user-calculated differences between model results: 
-#' \code{"ColNitr"} for nitrogen, \code{"ColPhos"} for phosphorus, \code{"ColPrec"} for precipitation, \code{"ColTemp"} for 
-#' temperatures, \code{"ColQ"} for runoff, \code{"ColDiffTemp"} for temperature differences,  \code{"ColDiffGeneric"} for generic
-#' differences, see details
-#' \item A color ramp palette function, e.g. as returned from a call to \code{\link{colorRampPalette}}
+# \item One of the pre-defined palette functions for HYPE output variables or user-calculated differences between model results:
+# \code{"ColNitr"} for nitrogen, \code{"ColPhos"} for phosphorus, \code{"ColPrec"} for precipitation, \code{"ColTemp"} for
+# temperatures, \code{"ColQ"} for runoff, \code{"ColDiffTemp"} for temperature differences,  \code{"ColDiffGeneric"} for generic
+# differences, see details
+#' \item A color ramp palette function, e.g. as returned from a call to \code{\link{colorRampPalette}}. A number of tailored functions are 
+#' available in \code{HYPEtools}, see \code{\link{CustomColors}}
+#' \item A vector of colors. This can be a character vector of R's built-in color names or hexadecimal strings as returned by 
+#' \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 #' }
 #' @param col.breaks A numeric vector, specifying break points for discretisation of model result values into classes. Class boundaries will be
 #' interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
@@ -49,25 +52,21 @@
 #' \code{x} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with 
 #' several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}. 
 #' 
-#' Mapped variables are visualised using color-coded data intervals. \code{PlotMapOutput} can use one of several internal color ramp functions 
-#' suitable for some common HYPE result variables as listed under argument \code{col.ramp.fun}. These are called by keyword. Alternatively,
-#' any color ramp function can be provided. The internal color ramps are mostly single color ramps with less saturated colors for smaller values
-#' and more saturated values for higher values, suitable for e.g. concentration or volume ranges. \code{ColTemp} is an exception to this rule, 
-#' with blue-to-turquoise colors and yellow-to-red 
-#' colors to represent temperature ranges below and above zero. Two further ramps provided are suitable to represent calculated differences, 
-#' e.g. between two model runs, a generic ramp with reds on the low end and blues on the high end, and a temperature-specific one in reversed
-#' order. 
+#' Mapped variables are visualised using color-coded data intervals. \code{HYPEtools} provides a number of color ramps functions for HYPE variables, 
+#' see \code{\link{CustomColors}}. These are either single-color ramps with less saturated colors for smaller values
+#' and more saturated values for higher values, suitable for e.g. concentration or volume ranges, or multi-color ramps suitable for calculated 
+#' differences, e.g. between two model runs.
 #' 
 #' Break points between color classes of in-built or user-provided color ramp palettes can optionally be provided in argument 
 #' \code{col.breaks}. This is particularly useful when specific pretty class boundaries are needed, e.g. for publication figures. Per default, 
 #' break points for internal single color ramps and user-provided ramps are calculated based on 10\% percentiles of HYPE results given in 
-#' \code{x}. Default break points for internal color ramp \code{"ColDiffGeneric"} are based on an equal distance classification of log-scaled 
-#' \code{x} ranges, centered around zero. For internal color ramp \code{"ColDiffTemp"}, they are breaks in an interval from -7.5 to 7.5 K.
+#' \code{x}. Default break points for internal color ramp \code{ColDiffGeneric} are based on an equal distance classification of log-scaled 
+#' \code{x} ranges, centered around zero. For internal color ramp \code{ColDiffTemp}, they are breaks in an interval from -7.5 to 7.5 K.
 #' 
 #' For select common HYPE variables, given in argument \code{var.name}, an automatic color ramp selection including pretty breaks and legend titles 
-#' is built into 
-#' \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword \code{"auto"}
-#' in \code{col.ramp.fun}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points.
+#' is built into \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword 
+#' \code{"auto"} in \code{col}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points with 
+#' \code{"auto"} color selection.
 #' 
 #' \code{PlotMapOutput} per default works with a margin-less figure and positions map and legend items close to the plot boundaries. 
 #' In order to move map and legend closer to each other, change the plot device width.
@@ -82,7 +81,7 @@
 #' as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot.
 #' 
 #' @seealso 
-#' \code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for a similar plot function
+#' \code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for plotting HYPE results at points, e.g. sub-basin outlets.
 #' 
 #' @examples
 #' \dontrun{require(rgdal)
@@ -96,7 +95,7 @@
 
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj = 0, plot.legend = T, 
                           legend.pos = "right", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), 
-                          col.ramp.fun = "auto", col.breaks = NULL, plot.scale = T, plot.arrow = T, 
+                          col = "auto", col.ramp.fun, col.breaks = NULL, plot.scale = T, plot.arrow = T, 
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE) {
   
   # input argument checks
@@ -113,13 +112,20 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
             Areas outside range will be excluded from plot.")
   }
   
+  # check if deprecated argument col.ramp.fun was used
+  if (!missing(col.ramp.fun)) {
+    warning("Deprecated argument 'col.ramp.fun' used. Please use 'col' instead.")
+  }
+  
   # add y to legend inset if not provided by user
   if (length(legend.inset) == 1) {
     legend.inset[2] <- 0
   }
   
   # sort col.breaks to make sure breaks are in increasing order
-  col.breaks <- sort(col.breaks, decreasing = FALSE)
+  if (!is.null(col.breaks)) {
+    col.breaks <- sort(col.breaks, decreasing = FALSE)
+    }
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar0 <- par("mar")
@@ -135,127 +141,99 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   # data preparation and conditional assignment of color ramp functions and break point vectors 
   # to internal variables crfun and cbrks
   
-  if (is.function(col.ramp.fun)) {
+  if (is.function(col)) {
     # Case 1: a color ramp palette function is supplied
-    crfun <- col.ramp.fun
+    crfun <- col
     if (!is.null(col.breaks)) {
       cbrks <- col.breaks
     } else {
-      cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
-    }
-  } else if (is.character(col.ramp.fun)) {
-    # Case 2: no color ramp palette function is supplied and one of the predefined is requested
-    # First treat the specific palette function strings, then "auto" requests, and last error handling for all other strings.
-    # Specific palettes get a generic class break points if not provided with another by the user
-    # THIS CODE IS REPETITIVE, COULD BE STREAMLINED BY BREAKING OUT cbrks ASSIGNMENT
-    if (col.ramp.fun == "ColNitr") {
-      crfun <- ColNitr
-      if (!is.null(col.breaks)) {
-        cbrks <- col.breaks
-      } else {
-        cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
-      }
-    } else if (col.ramp.fun == "ColPhos") {
-      crfun <- ColPhos
-      if (!is.null(col.breaks)) {
-        cbrks <- col.breaks
-      } else {
-        cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
-      }
-    } else if (col.ramp.fun == "ColTemp") {
-      crfun <- ColTemp
-      if (!is.null(col.breaks)) {
-        cbrks <- col.breaks
-      } else {
-        cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
-      }
-    } else if (col.ramp.fun == "ColPrec") {
-      crfun <- ColPrec
-      if (!is.null(col.breaks)) {
-        cbrks <- col.breaks
-      } else {
-        cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
-      }
-    } else if (col.ramp.fun == "ColQ") {
-      crfun <- ColQ
-      if (!is.null(col.breaks)) {
-        cbrks <- col.breaks
-      } else {
-        cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
-      }
-    } else if (col.ramp.fun == "ColDiffTemp") {
-      crfun <- ColDiffTemp
-      if (!is.null(col.breaks)) {
-        cbrks <- col.breaks
-      } else {
+      # color breaks: special defaults for some of the inbuilt color ramp functions
+      if (identical(col, ColDiffTemp)) {
+        # temperature differences
         cbrks <- c(ifelse(min(x[,2]) < 7.5, min(x[,2]) - 1, 30), -7.5, -5, -2.5, 1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2]) > 7.5, max(x[,2]) + 1, 30))
-        #cbrks <- quantile(x[, 2], probs = seq(0, 1, .1))
-      }
-      
-    } else if (col.ramp.fun == "ColDiffGeneric") {
-      crfun <- ColDiffGeneric
-      if (!is.null(col.breaks)) {
-        cbrks <- col.breaks
-      } else {
+      } else if (identical(col, ColDiffGeneric)) {
         # create a break point sequence which is centered around zero, with class withs based on equal intervals of the log-scaled
         # variable distribution
         cbrks <- c(rev(exp(seq(0, log(max(abs(range(x[,2]))) + 1), length.out = 5)) * -1), exp(seq(0, log(max(abs(range(x[,2]))) + 1), length.out = 5)))
-        #cbrks <- quantile(x[, 2], probs = seq(0, 1, .1))
-      }
-      
-    } else if (col.ramp.fun == "auto") {
-      # Here follows a limited set of pre-defined color ramps and break point vectors for select HYPE variables, and
-      # at the end a generic "catch the rest" treatment for undefined variables
-      if (toupper(var.name) == "CCTN") {
-        crfun <- ColNitr
-        cbrks <- c(0, 10, 50, 100, 250, 500, 1000, 2500, 5000, ifelse(max(x[,2]) > 5000, max(x[,2]) + 1, 10000))
-        if (is.null(legend.title)) {
-          legend.title <- expression(paste("Total N (", mu, "g l"^"-1", ")"))
-        }
-      } else if (toupper(var.name) == "CCTP") {
-        crfun <- ColPhos
-        cbrks <- c(0, 5, 10, 25, 50, 100, 150, 200, 250, ifelse(max(x[,2]) > 250, max(x[,2]) + 1, 1000))
-        if (is.null(legend.title)) {
-          legend.title <- expression(paste("Total P (", mu, "g l"^"-1", ")"))
-        }
-      } else if (toupper(var.name) == "COUT") {
-        crfun <- ColQ
-        cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(x[,2]) > 500, max(x[,2]) + 1, 2000))
-        if (is.null(legend.title)) {
-          legend.title <- expression(paste("Q (m"^3, "s"^"-1", ")"))
-        }
-      } else if (toupper(var.name) == "TEMP") {
-        crfun <- ColTemp
-        cbrks <- c(ifelse(min(x[,2]) < -7.5, min(x[,2]) - 1, -30), -7.5, -5, -2.5, 1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2]) > 7.5, max(x[,2]) + 1, 30))
-        if (is.null(legend.title)) {
-          legend.title <- expression(paste("Air Temp. ("*degree, "C)"))
-        }
       } else {
-        crfun <- ColDiffGeneric
+        # generic, quantile-based breaks for all other functions
         cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
       }
-    } else {
-      # Error treatment for all other strings
-      stop("Invalid 'col.ramp.fun' argument. Neither a function nor a recognised character string.")
     }
+  } else if (col[1] == "auto") {
+    # Case 2: limited set of pre-defined color ramps and break point vectors for select HYPE variables, with a generic "catch the rest" treatment 
+    # for undefined variables
+    if (toupper(var.name) == "CCTN") {
+      crfun <- ColNitr
+      cbrks <- c(0, 10, 50, 100, 250, 500, 1000, 2500, 5000, ifelse(max(x[,2]) > 5000, max(x[,2]) + 1, 10000))
+      if (is.null(legend.title)) {
+        legend.title <- expression(paste("Total N (", mu, "g l"^"-1", ")"))
+      }
+    } else if (toupper(var.name) == "CCTP") {
+      crfun <- ColPhos
+      cbrks <- c(0, 5, 10, 25, 50, 100, 150, 200, 250, ifelse(max(x[,2]) > 250, max(x[,2]) + 1, 1000))
+      if (is.null(legend.title)) {
+        legend.title <- expression(paste("Total P (", mu, "g l"^"-1", ")"))
+      }
+    } else if (toupper(var.name) == "COUT") {
+      crfun <- ColQ
+      cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(x[,2]) > 500, max(x[,2]) + 1, 2000))
+      if (is.null(legend.title)) {
+        legend.title <- expression(paste("Q (m"^3, "s"^"-1", ")"))
+      }
+    } else if (toupper(var.name) == "TEMP") {
+      crfun <- ColTemp
+      cbrks <- c(ifelse(min(x[,2]) < -7.5, min(x[,2]) - 1, -30), -7.5, -5, -2.5, 1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2]) > 7.5, max(x[,2]) + 1, 30))
+      if (is.null(legend.title)) {
+        legend.title <- expression(paste("Air Temp. ("*degree, "C)"))
+      }
+    } else {
+      crfun <- ColDiffGeneric
+      cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
+    }
+  } else if (is.vector(col)) {
+    # Case 3: a vector of colors
+    crfun <- NULL
+    if (!is.null(col.breaks)) {
+      cbrks <- col.breaks
+      if (length(col) != (length(cbrks) - 1)) {
+        stop("If colors are specified as vector in 'col', the number of colors in 'col' must be one less than the number of breakpoints in 'col.breaks'.")
+      }
+    } else {
+      cbrks <- quantile(x[, 2], probs = seq(0, 1, length.out = length(col) + 1), na.rm = T)
+    } 
   } else {
-    # Error treatment for all other types of user input
-    stop("Invalid 'col.ramp.fun' argument. Neither a function nor a character string.")
+    # Error treatment for all other user input
+    stop("Invalid 'col' argument.")
   }
-  
+
   
   # in variables with large numbers of "0" values, the lower 10%-percentiles can be repeatedly "0", which leads to an error with cut,
   # so cbrks is shortened to unique values (this affects only the automatic quantile-based breaks)
   # if just one value remains (or was requested by user), replace crbks by minmax-based range (this also resolves unexpected behaviour
   # with single-value cbrks in 'cut' below).
+  if (is.null(crfun) && length(unique(cbrks)) < length(cbrks)) {
+    # warn, if user defined colors are discarded because of removal of quantile-based classes
+    warning("User-defined colors in 'col' truncated because of non-unique values in quantile-based color breaks. Provide breaks in 
+            'col.breaks' to use all colors.")
+  }
   cbrks <- unique(cbrks)
   if (length(cbrks) == 1) {
     cbrks <- range(cbrks) + c(-1, 1)
   }
+  if (is.null(crfun)) {
+    # truncate user-defined colors
+    col <- col[1:(length(cbrks) - 1)]
+  }
   # discretise the modeled values in x into classed groups, add to x as new column (of type factor)
   x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = T)
-  # replace the factor levels with color codes using the color ramp function assigned above
-  levels(x[, 3]) <- crfun(length(cbrks) - 1)
+  # replace the factor levels with color codes using the color ramp function assigned above or user-defined colors
+  if (is.null(crfun)) {
+    levels(x[, 3]) <- col
+  } else {
+    levels(x[, 3]) <- crfun(length(cbrks) - 1)
+  }
+  
   # convert to character to make it conform to plotting requirements below
   x[, 3] <- as.character(x[, 3])
   # give it a name
@@ -268,7 +246,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   if (is.null(legend.title)) {
     legend.title <- toupper(var.name)
   }
-  #x11(width = 4.5, height = 9)
+  
   # par settings: lend set to square line endings because the legend below works with very thick lines 
   # instead of boxes (a box size limitation work-around); xpd set to allow for plotting a legend on the margins
   if (!add) {
@@ -290,14 +268,20 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   p.in.wd <- par("pin")[1]
   
   # legend position (fraction if 'add' is FALSE, otherwise already in map coordinates) 
+  # legend colors
+  if (is.null(crfun)) {
+    lcol <- col
+  } else {
+    lcol <- crfun(length(cbrks) - 1)
+  }
   leg.fr.pos <- legend(legend.pos, legend = rep(NA, length(cbrks) - 1),
-               col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title, plot = F)
+               col = lcol, lty = 1, lwd = 14,  bty = "n", title = legend.title, plot = F)
   # legend width (fraction if 'add' is FALSE, otherwise already in map coordinates) 
   leg.fr.wd <- leg.fr.pos$rect$w
   # legend box element height (fraction), with workaround for single-class maps
   if (length(leg.fr.pos$text$y) == 1) {
     te <- legend(legend.pos, legend = rep(NA, length(cbrks)),
-                 col = crfun(length(cbrks)), lty = 1, lwd = 14,  bty = "n", title = legend.title, plot = F)
+                 col = ColQ(length(cbrks)), lty = 1, lwd = 14,  bty = "n", title = legend.title, plot = F)
     legbx.fr.ht <- diff(c(te$text$y[length(cbrks)], te$text$y[length(cbrks) - 1]))
   } else {
     legbx.fr.ht <- diff(c(leg.fr.pos$text$y[length(cbrks) - 1], leg.fr.pos$text$y[length(cbrks) - 2]))
@@ -428,7 +412,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
   # legend
   if (plot.legend) {
     legend(legend.pos, legend = rep(NA, length(cbrks) - 1), inset = legend.inset, 
-           col = crfun(length(cbrks) - 1), lty = 1, lwd = 14,  bty = "n", title = legend.title)
+           col = lcol, lty = 1, lwd = 14,  bty = "n", title = legend.title)
     # convert annotation positioning to map coordinates, only if 'add' is FALSE
     # then plot annotation text
     if (!add) {
@@ -536,8 +520,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
 # plot.legend <- T
 # legend.pos <- "bottomleft"
 # legend.title <- "rhrhshfhfhs"
-# #col.ramp.fun <- "ColQ"
-# col.ramp.fun <- colorRampPalette(c("yellow", "green"))
+# #col <- ColQ
+# col <- colorRampPalette(c("yellow", "green"))
 # col.breaks <- NULL
 # par.mar <- rep(0, 4) + .1
 # legend.inset <- c(0,0)

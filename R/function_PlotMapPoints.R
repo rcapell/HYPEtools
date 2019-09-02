@@ -93,6 +93,11 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
             Areas outside range will be excluded from plot.")
   }
   
+  # sort col.breaks to make sure breaks are in increasing order
+  if (!is.null(col.breaks)) {
+    col.breaks <- sort(col.breaks, decreasing = FALSE)
+  }
+  
   # add y to legend inset if not provided by user
   if (length(legend.inset) == 1) {
     legend.inset[2] <- 0
@@ -158,7 +163,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
     }
   } else {
     # Error treatment for all other types of user input
-    stop("Invalid 'col.ramp.fun' argument.")
+    stop("Invalid 'col' argument.")
   }
   
   # discretise the modeled values in x into classed groups, add to x as new column (of type factor)
