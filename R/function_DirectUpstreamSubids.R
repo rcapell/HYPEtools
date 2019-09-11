@@ -89,7 +89,7 @@ DirectUpstreamSubids <- function(subid = NULL, gd, bd = NULL) {
   # sort as in gd, necessary to do separately because non-sorting in merge will still put all matches first (bifurcations) and then append all non-matches (no bif.)
   df <- df[match(x = gd[, geocol.sub], table = df[, 1]), ]
   
-  # if no target subid is given as argument, apply internal function to find upstream subids on all subids in gd
+  # if no target subid is given as argument, apply internal function to find upstream subids of all subids in gd
   if (is.null(subid)){
     res <- lapply(df[, 1], .FindUpstrSbd, dtf = df)
     # name entries in the list with 'X' + subid

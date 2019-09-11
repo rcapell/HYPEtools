@@ -137,10 +137,10 @@ HypeXobs <- function(x, comment, variable, subid) {
       # HypeXobs objects require POSIX dates in first column, check that this requirement is met after indexing
       # Conditions: a 1 required as first value in a positive indexing vector OR no -1 allowed in a negative indexing vector
       if ((!(j.check[1] == 1) && any(j.check > 0))) {
-        warning("Date column removed or moved from first column, class 'HypeXobs' lost, other attributes preserved.")
+        warning("Date column removed or moved from first column, class 'HypeXobs' dropped, other attributes preserved.")
         class(y) <- class(y)[-1]
       } else if (any(j.check[1] == -1)) {
-        warning("Date column removed or moved from first column, class 'HypeXobs' lost, other attributes preserved.")
+        warning("Date column removed or moved from first column, class 'HypeXobs' dropped, other attributes preserved.")
         class(y) <- class(y)[-1]
       } else {
         if (all(j >= 0)) {
@@ -160,12 +160,12 @@ HypeXobs <- function(x, comment, variable, subid) {
     attr(y, "variable") <- attr(x, "variable")[(j)[-1]]
     attr(y, "subid") <- attr(x, "subid")[(j)[-1]]
     if (!j[1]) {
-      warning("Date column removed, class 'HypeXobs' lost, other attributes preserved.")
+      warning("Date column removed, class 'HypeXobs' dropped, other attributes preserved.")
       class(y) <- class(y)[-1]
     }
   } else {
     warning("Indexing of attributes 'subid' and 'variable' only defined for integer and logical element indices. 
-            Attributes and class 'HypeXobs' lost.")
+            Attributes and class 'HypeXobs' dropped.")
     class(y) <- class(y)[-1]
   }
   return(y)
