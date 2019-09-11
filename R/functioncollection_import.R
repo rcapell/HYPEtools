@@ -513,6 +513,10 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
   if (length(te) == 1) {
     res$RIVLEN <- as.numeric(res$RIVLEN)
   }
+  
+  res <- tryCatch(HypeGeoData(res), error = function(e) {
+    print("Import as class 'HypeGeoData' failed. Importing as 'data.frame'.\nRun HypeGeoData() on imported data frame for details."); return(res)})
+  
   return(res)
 }
 
