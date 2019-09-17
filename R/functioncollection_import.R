@@ -479,7 +479,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 
 #' Read a 'GeoData.txt' file
 #'
-#' This is a convenience wrapper function to import a GeoData file as data frame into R.
+#' Import a GeoData file into R.
 #' 
 #' @param filename Path to and file name of the GeoData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
@@ -491,7 +491,9 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' upper-case column names.
 #' 
 #' @return
-#' \code{ReadGeoData} returns a data frame.
+#' If the imported file is a HYPE-conform GeoData file, \code{ReadGeoData} returns an object of S3 class \code{\link{HypeGeoData}} 
+#' (see the class description there), providing its own \code{summary} method. If mandatory GeoData columns are missing, 
+#' a standard dataframe is returned along with informative warning messages.
 #' 
 #' @examples
 #' \dontrun{ReadGeoData("GeoData.txt")}
@@ -501,6 +503,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 
 
 ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
+  
   #res <- read.table(file = filename, header = T, sep = sep)
   res <- fread(filename, header = T, sep = sep, integer64 = "numeric", data.table = F)
   names(res) <- toupper(names(res))
@@ -514,8 +517,60 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
     res$RIVLEN <- as.numeric(res$RIVLEN)
   }
   
-  res <- tryCatch(HypeGeoData(res), error = function(e) {
-    print("Import as class 'HypeGeoData' failed. Importing as 'data.frame'.\nRun HypeGeoData() on imported data frame for details."); return(res)})
+  ## assign HypeGeoData class, check if requirements are met and strip class if not
+  
+  class(res) <- c("HypeGeoData", "data.frame")
+  
+  # mandatory columns except SLCs and their positions
+  m <- c("AREA", "SUBID", "MAINDOWN", "RIVLEN")
+  pos.m <- match(m, names(res))
+  
+  ## check if SLCs are consecutively numbered and throw warning if not
+  # SLC positions and their SLC numbers
+  pos.s <- which(substr(names(res), 1, 4) == "SLC_")
+  # extract numbers
+  if (length(pos.s) > 0) {
+    suppressWarnings(n.s <- as.numeric(substr(names(res)[pos.s], 5, 99)))
+    # remove comment columns which happen to look like SLC columns, e.g. "SLC_98old"
+    pos.s <- pos.s[!is.na(n.s)]
+    n.s <- n.s[!is.na(n.s)]
+    # sort so that consecutiveness can be tested below
+    n.s <- sort(n.s)
+    # SLC number increase, tested below, 0 padded to check SLC_1 existence
+    dn.s <- diff(c(0, n.s))
+  } else {
+    n.s <- integer(0)
+    dn.s <- integer(0)
+  }
+  
+  if (any(is.na(pos.m))) {
+    # warn if mandatory columns are missing
+    warning(paste0("Mandatory 'HypeGeoData' column(s) '", paste(m[is.na(pos.m)], collapse = "', '"), "' missing. Imported as 'data.frame'."))
+    class(res) <- class(res)[-1]
+  }
+  
+  if (length(pos.s) == 0) {
+    # warn if there are no SLC columns
+    warning("Mandatory 'HypeGeoData' column(s) 'SLC_n' missing. Imported as 'data.frame'.")
+    if (class(res)[1] == "HypeGeoData") {
+      class(res) <- class(res)[-1]
+    }
+  }
+  
+  if (any(dn.s > 1) || any(dn.s == 0)) {
+    # warn if there are SLC classes missing or duplicated
+    if (any(dn.s > 1)) {
+      te1 <- n.s[dn.s > 1]
+      te2 <- sapply(dn.s[dn.s > 1] - 1, function(x) 1:x)
+      slc.miss <- sort(unlist(sapply(1:length(te1), function(x, y, z) y[x] - z[[x]], y = te1, z = te2)))
+      warning(paste0("SLC class column(s) missing in imported file: ", paste0("SLC_", slc.miss, collapse = ", ")))
+    }
+    if (any(dn.s == 0)) {
+      # warn if there are SLC class duplicates
+      warning(paste0("SLC class column duplicate(s) in imported file: ", 
+                     paste0("SLC_", n.s[dn.s == 0], " (", dn.s[dn.s == 0], ")", collapse = ", ")))
+    }
+  }
   
   return(res)
 }

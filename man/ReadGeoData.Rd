@@ -13,10 +13,12 @@ Paths are separated by '/', not '\\'.}
 \item{sep}{character string. Field separator character as described in \code{\link{read.table}}.}
 }
 \value{
-\code{ReadGeoData} returns a data frame.
+If the imported file is a HYPE-conform GeoData file, \code{ReadGeoData} returns an object of S3 class \code{\link{HypeGeoData}} 
+(see the class description there), providing its own \code{summary} method. If mandatory GeoData columns are missing, 
+a standard dataframe is returned along with informative warning messages.
 }
 \description{
-This is a convenience wrapper function to import a GeoData file as data frame into R.
+Import a GeoData file into R.
 }
 \details{
 \code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
