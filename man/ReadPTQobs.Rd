@@ -4,12 +4,17 @@
 \alias{ReadPTQobs}
 \title{Read 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files}
 \usage{
-ReadPTQobs(filename, dt.format = "\%Y-\%m-\%d", nrows = -1,
-  type = "df", select = NULL, obsid = NULL)
+ReadPTQobs(filename, variable = c("", "prec", "temp", "rout"),
+  dt.format = "\%Y-\%m-\%d", nrows = -1, type = "df",
+  select = NULL, obsid = NULL)
 }
 \arguments{
 \item{filename}{Path to and file name of the file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
+
+\item{variable}{Character string, HYPE variable ID of file contents. If \code{""} (default), the ID is extracted 
+from \code{filename}, which only works with file names as required by HYPE or file names beginning with those names 
+('e.g. Pobs_old.txt').}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
 
@@ -24,8 +29,9 @@ return a \code{\link[data.table]{data.table}} object.}
 \item{obsid}{Integer vector, HYPE OBSIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.}
 }
 \value{
-\code{ReadPTQobs} returns a data frame with additional attributes \code{obsid} with observation IDs and \code{timestep} with a time 
-step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported).
+\code{ReadPTQobs} returns a data frame with additional attributes: \code{obsid} with observation IDs, \code{timestep} with a time 
+step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported), and \code{variable} wih a HYPE 
+variable ID string.
 }
 \description{
 Import forcing data and discharge observation files as data frame into R.

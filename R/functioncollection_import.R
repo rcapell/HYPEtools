@@ -1056,6 +1056,9 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
+#' @param variable Character string, HYPE variable ID of file contents. If \code{""} (default), the ID is extracted 
+#' from \code{filename}, which only works with file names as required by HYPE or file names beginning with those names 
+#' ('e.g. Pobs_old.txt').
 #' @param nrows Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
 #' to import.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame or \code{"dt"} to 
@@ -1071,8 +1074,9 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' attribute \code{obsid} (see \code{\link{attr}} on how to access it). 
 #' 
 #' @return
-#' \code{ReadPTQobs} returns a data frame with additional attributes \code{obsid} with observation IDs and \code{timestep} with a time 
-#' step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported).
+#' \code{ReadPTQobs} returns a data frame with additional attributes: \code{obsid} with observation IDs, \code{timestep} with a time 
+#' step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported), and \code{variable} wih a HYPE 
+#' variable ID string.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -1089,7 +1093,24 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 #' @export
 
 
-ReadPTQobs <- function(filename, dt.format = "%Y-%m-%d", nrows = -1, type = "df", select = NULL, obsid = NULL) {
+ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.format = "%Y-%m-%d", nrows = -1, 
+                       type = "df", select = NULL, obsid = NULL) {
+  
+  # extract hype variable
+  variable <- match.arg(variable)
+  if (variable == "") {
+    te <- strsplit(filename, split = c("/"))[[1]]
+    te <- tolower(substr(te[length(te)], 1, 4))
+    if (te == "qobs") {
+      variable <- "rout"
+    } else if (te == "pobs") {
+      variable <- "prec"
+    } else if (te == "tobs") {
+      variable <- "temp"
+    } else {
+      stop("Unable to extract HYPE variable name from file name, please provide argument 'variable'.")
+    }
+  }
   
   ## import ptqobs file header, extract obsid attribute
   # import
@@ -1162,6 +1183,8 @@ ReadPTQobs <- function(filename, dt.format = "%Y-%m-%d", nrows = -1, type = "df"
     # add timestep attribute with placeholder value
     attr(x, which = "timestep") <- "unknown"
   }
+  attr(x, "variable") <- variable
+  
   return(x)
 }
 
