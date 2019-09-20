@@ -7,7 +7,7 @@
 OutletIds(gd)
 }
 \arguments{
-\item{gd}{A data frame, with two columns \code{subid} and \code{maindown} (not case-sensitive). 
+\item{gd}{Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive). 
 Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
 }
 \value{
@@ -26,6 +26,7 @@ with the 'SelectAro' tool.
 }
 \examples{
 \dontrun{OutletIds(gd = mygeodata)}
+
 }
 \seealso{
 \code{\link{AllDownstreamSubids}}, \code{\link{OutletSubids}}

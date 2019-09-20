@@ -1,6 +1,4 @@
-#' @export
 
-#' @title
 #' Find Outlet IDs
 #'
 #' @description
@@ -8,7 +6,7 @@
 #' This is typically just one number, but can be one or several SUBIDs if the GeoData file originates from a HYPE sub-model 
 #' set-up, e.g. created with the 'SelectAro' program.
 #'
-#' @param gd A data frame, with two columns \code{subid} and \code{maindown} (not case-sensitive). 
+#' @param gd Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive). 
 #' Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}. 
 #' 
 #' @details
@@ -25,6 +23,8 @@
 #' 
 #' @examples
 #' \dontrun{OutletIds(gd = mygeodata)}
+#' 
+#' @export
 
 
 OutletIds <- function(gd) {
