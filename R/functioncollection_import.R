@@ -504,19 +504,25 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 
 ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
   
-  #res <- read.table(file = filename, header = T, sep = sep)
-  res <- fread(filename, header = T, sep = sep, integer64 = "numeric", data.table = F)
-  names(res) <- toupper(names(res))
-  # force type numeric for selected columns if they exist. Otherwise there can be problem with integer calculation in other functions..
-  te <- which(names(res) == "AREA")
-  if (length(te) == 1) {
-    res$AREA <- as.numeric(res$AREA)
-  }
-  te <- which(names(res) == "RIVLEN")
-  if (length(te) == 1) {
-    res$RIVLEN <- as.numeric(res$RIVLEN)
-  }
+  # find AREA and RIVLEN columns, to force type numeric (will be autodetected as integer/integer64 otherwise, which leads to 
+  # problems with integer calculation in other functions)
+  cnames <- strsplit(readLines(con = filename, n = 1), split = sep)[[1]]
+  cnumeric <- which(toupper(cnames) %in% c("AREA", "RIVLEN"))
   
+  res <- fread(filename, header = T, sep = sep, colClasses = list("numeric" = cnumeric), data.table = F)
+  names(res) <- toupper(names(res))
+  
+  # # NOT USED ATM, REPLACED BY colClasses ARGUMENT IN fread. LEFT FOR REFERENCE
+  # # force type numeric for selected columns if they exist. Otherwise there can be problem with integer calculation in other functions..
+  # te <- which(names(res) == "AREA")
+  # if (length(te) == 1) {
+  #   res$AREA <- as.numeric(res$AREA)
+  # }
+  # te <- which(names(res) == "RIVLEN")
+  # if (length(te) == 1) {
+  #   res$RIVLEN <- as.numeric(res$RIVLEN)
+  # }
+   
   ## assign HypeGeoData class, check if requirements are met and strip class if not
   
   class(res) <- c("HypeGeoData", "data.frame")
