@@ -7,8 +7,9 @@ Description: This package contains functions to handle and analyse input and
     output files from the conceptual rainfall-runoff model HYPE (HYdrological
     Predictions for the Environment).
 Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
-    "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "aut"),
-    person("David", "Gustafsson", role = "aut") )
+    "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "ctb"),
+    person("David", "Gustafsson", role = "ctb"), 
+    person("Jude", "Musuuza", "Lubega", role = "ctb"))
 Depends:
     R (>= 3.0.0),
     hydroGOF
