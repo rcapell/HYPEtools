@@ -200,20 +200,24 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
 
   # apply area-weighted mean function to all SUBIDs in variable 'subid', for all relevant variables
   # conditional: use the progress bar version of sapply if set by function argument
-  if (progbar) {
-    cat("\nCalculating upstream area-weighted means.\n")
-    te <- pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
+  if (length(pos.wmean > 0)) {
+    if (progbar) {
+      cat("\nCalculating upstream area-weighted means.\n")
+      te <- pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
+    } else {
+      te <- sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
+    }
+    # create result dataframe, conditional on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
+    if(length(pos.wmean) > 1) {
+      up.wmean <- data.frame(SUBID = subid, t(te))
+    } else {
+      up.wmean <- data.frame(SUBID = subid, te)
+      names(up.wmean)[2] <- names(gd)[pos.wmean]
+    }
+    rm(te)
   } else {
-    te <- sapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
+    up.wmean <- NULL
   }
-  # create result dataframe, conditional on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
-  if(length(pos.wmean) > 1) {
-    up.wmean <- data.frame(SUBID = subid, t(te))
-  } else {
-    up.wmean <- data.frame(SUBID = subid, te)
-    names(up.wmean)[2] <- names(gd)[pos.wmean]
-  }
-  rm(te)
   
   # olake-area weighted mean for lake depths
   if (length(pos.wmean.ldepth) == 1 && length(pos.wmean.slc.olake) == 1) {
@@ -261,6 +265,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   } else {
     up.wsd.elev <- NULL
   }
+  
   if (length(pos.wsd.slope) == 2) {
     if (progbar) {
       cat("\nCalculating upstream area-weighted slope standard deviations.\n")
@@ -273,18 +278,22 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   }
   
   # apply sum function to all SUBIDs in variable 'subid', for all relevant variables
-  if (progbar) {
-    cat("\nCalculating upstream sums.\n")
-    te <- pbsapply(up.sbd, Sum, g = gd, p.sum = pos.sum, p.sbd = pos.sbd)
+  if (length(pos.sum) > 0) {
+    if (progbar) {
+      cat("\nCalculating upstream sums.\n")
+      te <- pbsapply(up.sbd, Sum, g = gd, p.sum = pos.sum, p.sbd = pos.sbd)
+    } else {
+      te <- sapply(up.sbd, Sum, g = gd, p.sum = pos.sum, p.sbd = pos.sbd)
+    }
+    # create result dataframe, conditional on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
+    if(length(pos.sum) > 1) {
+      up.sum <- data.frame(SUBID = subid, t(te))
+    } else {
+      up.sum <- data.frame(SUBID = subid, te)
+      names(up.sum)[2] <- names(gd)[pos.sum]
+    }
   } else {
-    te <- sapply(up.sbd, Sum, g = gd, p.sum = pos.sum, p.sbd = pos.sbd)
-  }
-  # create result dataframe, conditiononal on if the was just one variable to be summed, because the apply result is a vector then, not a dataframe..
-  if(length(pos.sum) > 1) {
-    up.sum <- data.frame(SUBID = subid, t(te))
-  } else {
-    up.sum <- data.frame(SUBID = subid, te)
-    names(up.sum)[2] <- names(gd)[pos.sum]
+    up.sum <- NULL
   }
   
   
@@ -299,12 +308,14 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   # the data frame dummy column adding and removing is a workaround for single-column cases (names get messed up because 
   # apply returns a names vector then..)
   if (!is.null(signif.digits)) {
-    te <- apply(data.frame(1, up.wmean[, -1]), 2, signif, digits = signif.digits)
-    # te is a vector for single-subid cases
-    if (length(subid) == 1) {
-      up.wmean[, -1] <- te[-1]
-    } else {
-      up.wmean[, -1] <- te[, -1]
+    if (!is.null(up.wmean)) {
+      te <- apply(data.frame(1, up.wmean[, -1]), 2, signif, digits = signif.digits)
+      # te is a vector for single-subid cases
+      if (length(subid) == 1) {
+        up.wmean[, -1] <- te[-1]
+      } else {
+        up.wmean[, -1] <- te[, -1]
+      }
     }
     if (!is.null(up.wmean.ldepth)) {
       up.wmean.ldepth[, -1] <- signif(up.wmean.ldepth[, -1], digits = signif.digits)
@@ -324,11 +335,13 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
     if (!is.null(up.wsd.slope)) {
       up.wsd.slope[, -1] <- signif(up.wsd.slope[, -1], digits = signif.digits)
     }
-    te <- apply(data.frame(1, up.sum[, -1]), 2, signif, digits = signif.digits)
-    if (length(subid) == 1) {
-      up.sum[, -1] <- te[-1]
-    } else {
-      up.sum[, -1] <- te[, -1]
+    if (!is.null(up.sum)) {
+      te <- apply(data.frame(1, up.sum[, -1]), 2, signif, digits = signif.digits)
+      if (length(subid) == 1) {
+        up.sum[, -1] <- te[-1]
+      } else {
+        up.sum[, -1] <- te[, -1]
+      }
     }
   }
   
@@ -341,25 +354,17 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   }
   # update result dataframe with upstream variables
   res[, pos.wmean] <- up.wmean[, -1]
-  if (!is.null(up.wmean.ldepth)) {
-    res[, pos.wmean.ldepth] <- up.wmean.ldepth[2]
-  }
-  if (!is.null(up.wmean.lconc)) {
-    res[, pos.wmean.lconc] <- up.wmean.lconc[, -1]
-  }
-  if (!is.null(up.wsd.elev)) {
-    res[, pos.wsd.elev[2]] <- up.wsd.elev[, -1]
-  }
-  if (!is.null(up.wsd.slope)) {
-    res[, pos.wsd.slope[2]] <- up.wsd.slope[, -1]
-  }
+  res[, pos.wmean.ldepth] <- up.wmean.ldepth[2]
+  res[, pos.wmean.lconc] <- up.wmean.lconc[, -1]
+  res[, which(tolower(names(gd)) == "elev_std")] <- up.wsd.elev[, -1]
+  res[, which(tolower(names(gd)) == "slope_std")] <- up.wsd.slope[, -1]
   res[, pos.sum] <- up.sum[, -1]
   
   
   # rename upstream variables to clarify they are upstream values
-  pos.up <- c(pos.wmean, pos.sum, if (length(pos.wmean.ldepth) == 1 && length(pos.wmean.slc.olake) == 1) pos.wmean.ldepth else NULL, 
-              if (length(pos.wmean.lconc) >= 1 && length(pos.wmean.lvol) == 1) pos.wmean.lconc else NULL, 
-              if (length(pos.wsd.elev) == 2) pos.wsd.elev[2] else NULL, if (length(pos.wsd.slope) == 2) pos.wsd.slope[2] else NULL)
+  pos.up <- c(pos.wmean, pos.sum, pos.wmean.ldepth, pos.wmean.lconc, 
+              if (length(pos.wsd.elev) == 2) which(tolower(names(gd)) == "elev_std") else NULL, 
+              if (length(pos.wsd.slope) == 2) which(tolower(names(gd)) == "slope_std") else NULL)
   names(res)[pos.up] <- paste0("UP_", names(res)[pos.up])
   
   # return result
