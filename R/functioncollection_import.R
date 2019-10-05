@@ -617,7 +617,7 @@ ReadPar <- function (filename = "par.txt") {
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read par file into a character vector (one string per row in file)
   x <- scan(filename, what = "", sep = "\n")
-  # insert blank after comment character, to make sure they get split apart for comment identification below
+  # insert blank after comment character, to make sure they get split for comment identification below
   x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
   # split string elements along whitespaces, returns list of character vectors
   x <- strsplit(x, split = "[[:space:]]+")
@@ -629,14 +629,15 @@ ReadPar <- function (filename = "par.txt") {
   # remove first vector elements (parameter names)
   x <- lapply(x, `[`, -1)
   
-  ## identify inline comments and move to separate list elements (preceding elemend)
+  ## identify inline comments and move to separate list elements (preceding element)
   # list of vector indices in x with comment characters
   te <- sapply(x, function(x){grep(pattern = "!!", x)})
   # initialise result list and result list element counter
   res <- list()
   j <- 1
   for (i in 1:length(te)) {
-    if (length(te[[i]] > 0)) {
+    # comment characters identification, but omit comment rows
+    if (length(te[[i]] > 0) && names(te)[i] != "!!") {
       # copy comment to new result row
       res[[j]] <- x[[i]][(te[[i]][1] + 1):length(x[[i]])]
       names(res)[j] <- "!!"
@@ -653,8 +654,9 @@ ReadPar <- function (filename = "par.txt") {
     }
   }
   # convert list elements to numeric, if possible, catch conversion errors and collapse non-numeric vectors to single strings
-  lapply(res, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) return(x)))
-  lapply(res, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) paste(x, collapse = " ")))
+  res <- lapply(res, function(x) tryCatch(na.fail(as.numeric(x, options("warn" = -1))), error = function(e) paste(x, collapse = " ")))
+  
+  return(res)
 }
 
 
