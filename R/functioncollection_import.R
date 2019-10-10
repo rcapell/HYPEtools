@@ -616,8 +616,8 @@ ReadPar <- function (filename = "par.txt") {
   
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read par file into a character vector (one string per row in file)
-  x <- scan(filename, what = "", sep = "\n")
-  # insert blank after comment character, to make sure they get split for comment identification below
+  x <- scan(filename, what = "", sep = "\n", quiet = T)
+    # insert blank after comment character, to make sure they get split for comment identification below
   x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
   # split string elements along whitespaces, returns list of character vectors
   x <- strsplit(x, split = "[[:space:]]+")
