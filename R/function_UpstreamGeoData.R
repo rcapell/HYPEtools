@@ -354,10 +354,18 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
   }
   # update result dataframe with upstream variables
   res[, pos.wmean] <- up.wmean[, -1]
-  res[, pos.wmean.ldepth] <- up.wmean.ldepth[2]
-  res[, pos.wmean.lconc] <- up.wmean.lconc[, -1]
-  res[, which(tolower(names(gd)) == "elev_std")] <- up.wsd.elev[, -1]
-  res[, which(tolower(names(gd)) == "slope_std")] <- up.wsd.slope[, -1]
+  if (!is.null(up.wmean.ldepth)) {
+    res[, pos.wmean.ldepth] <- up.wmean.ldepth[2]
+    }
+  if (!is.null(up.wmean.lconc)) {
+    res[, pos.wmean.lconc] <- up.wmean.lconc[, -1]
+    }
+  if (!is.null(up.wsd.elev)) {
+    res[, which(tolower(names(gd)) == "elev_std")] <- up.wsd.elev[, -1]
+    }
+  if (!is.null(up.wsd.slope)) {
+    res[, which(tolower(names(gd)) == "slope_std")] <- up.wsd.slope[, -1]
+    }
   res[, pos.sum] <- up.sum[, -1]
   
   
