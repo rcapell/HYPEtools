@@ -4,7 +4,7 @@
 \alias{HypeXobs}
 \title{HypeXobs data frames}
 \usage{
-HypeXobs(x, comment, variable, subid)
+HypeXobs(x, comment, variable, subid, verbose = TRUE)
 }
 \arguments{
 \item{x}{\code{\link{data.frame}} with \code{\link{POSIXct}} formatted time steps in the first, and \code{\link{numeric}} 
@@ -15,7 +15,9 @@ variables in the remaining columns.}
 \item{variable}{Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second to 
 last column in \code{x}.}
 
-\item{subid}{Integer vector with HYPE sub-basin IDs, corresponding to second to last column in \code{x}.
+\item{subid}{Integer vector with HYPE sub-basin IDs, corresponding to second to last column in \code{x}.}
+
+\item{verbose}{Logical, throw warning if attribute \code{timestep} cannot be computed.
  
 Not case-sensitive.}
 }

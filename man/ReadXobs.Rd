@@ -5,7 +5,8 @@
 \title{Read an 'Xobs.txt' file}
 \usage{
 ReadXobs(filename = "Xobs.txt", dt.format = "\%Y-\%m-\%d",
-  variable = NULL, nrows = -1L)
+  variable = NULL, nrows = -1L, verbose = if (nrows \%in\% 0:2) FALSE
+  else TRUE)
 }
 \arguments{
 \item{filename}{Path to and file name of the Xobs file to import. Windows users: Note that 
@@ -19,6 +20,8 @@ for a list of variable IDs.}
 
 \item{nrows}{Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives 
 the number of rows to import.}
+
+\item{verbose}{Logical, throw warning if class \code{HypeXobs}'s attribute \code{timestep} cannot be computed.}
 }
 \value{
 If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HypeXobs}} object, a data frame with four 

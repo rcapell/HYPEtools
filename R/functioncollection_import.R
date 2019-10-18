@@ -347,6 +347,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
 #' for a list of variable IDs.
 #' @param nrows Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives 
 #' the number of rows to import.
+#' @param verbose Logical, throw warning if class \code{HypeXobs}'s attribute \code{timestep} cannot be computed.
 #'  
 #' @details
 #' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
@@ -376,7 +377,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
 #' @export
 
 
-ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NULL, nrows = -1L) {
+ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NULL, nrows = -1L, verbose = if (nrows %in% 0:2) FALSE else TRUE) {
   
   ## import xobs file header, extract attributes
   # import (3-row header)
@@ -448,7 +449,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
   if(!is.character(xobs[, 1]) && duplifree) {
     
     # create HypeXobs object, can fail if multi-day time steps in imported table
-    xobs <- tryCatch(HypeXobs(x = xobs, comment = cmt, variable = hype.var, subid = sbd), 
+    xobs <- tryCatch(HypeXobs(x = xobs, comment = cmt, variable = hype.var, subid = sbd, verbose = verbose), 
                      error = function(e) {cat("Longer-than-daily time steps not allowed in HypeXobs objects.\n"); return(xobs)})
     
     # update with additional attributes if HypeXobs class assignment failed

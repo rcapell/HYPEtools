@@ -24,6 +24,7 @@
 #' @param variable Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second to 
 #' last column in \code{x}.
 #' @param subid Integer vector with HYPE sub-basin IDs, corresponding to second to last column in \code{x}.
+#' @param verbose Logical, throw warning if attribute \code{timestep} cannot be computed.
 #'  
 #' Not case-sensitive.
 #' 
@@ -46,7 +47,7 @@
 #' @examples
 #' \dontrun{HypeXobs(mydata, comment = "Water quality data", variable = c("cctn", "cctp", "cctp"), subid = c(23, 45, 56))}
 
-HypeXobs <- function(x, comment, variable, subid) {
+HypeXobs <- function(x, comment, variable, subid, verbose = TRUE) {
   
   # check if data is conform to requirements
   if (is.data.frame(x)) {
@@ -73,7 +74,9 @@ HypeXobs <- function(x, comment, variable, subid) {
       }
     } else {
       tunits <- NULL
-      warning("Less than 2 rows in 'x'. Attribute 'timestep set to 'NULL'.")
+      if (verbose) {
+        warning("Less than 2 rows in 'x'. Attribute 'timestep set to 'NULL'.")
+        }
     }
     
     # check attribute length conformities
