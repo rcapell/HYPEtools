@@ -2,43 +2,67 @@
 % Please edit documentation in R/function_OutletNearObs.R
 \name{OutletNearObs}
 \alias{OutletNearObs}
-\title{Find outlet-near observations in HYPE observation data files}
+\title{Find outlet-near observations in HYPE observation data files.}
 \usage{
-OutletNearObs(qobs = NULL, xobs = NULL, gd, variable = NULL,
-  frac.drain = 0.8)
+OutletNearObs(gd, qobs = NULL, xobs = NULL, variable = NULL,
+  outlets = NULL, frac.drain = 0.8, nearest.only = TRUE)
 }
 \arguments{
+\item{gd}{Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive). 
+Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
+
 \item{qobs, xobs}{Character string, file location of HYPE observation data file. \emph{Only one of these needs to be 
 supplied}, with \code{qobs} taking precedence if both are provided. Either an
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt} or a 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:qobs.txt}{Qobs.txt} file.}
 
-\item{gd}{Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive). 
-Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
-
 \item{variable}{Character string, HYPE variable to use. Needed only with argument \code{xobs}. If \code{NULL} (default), 
 a vector of available variables in \code{xobs} is returned.}
 
-\item{frac.drain}{Numeric, minimum fraction of drainage area at sea outlet to be covered by observation site.}
+\item{outlets}{Integer vector, HYPE SUBIDs of subbasins to be considered outlets. If \code{NULL} (default), all outlet 
+subbasins in \code{gd} are used.}
+
+\item{frac.drain}{Numeric, minimum fraction of drainage area at corresponding outlet to be covered by observation site.}
+
+\item{nearest.only}{Logical, if \code{TRUE} (default), only the nearest observation site SUBID is returned. If \code{FALSE}, 
+all observation site SUBIDs available within \code{frac.drain} are returned.}
 }
 \value{
+\code{OutletNearObs} returns a data frame with 4 columns, containing row-wise all observation sites which match the search 
+criteria:
+\describe{
+  \item{subid.outlet}{SUBID of outlet subbasin}
+  \item{subid.obs}{SUBID of observation site}
+  \item{area.fraction}{Relative drainage area fraction of observation site, compared to corresponding outlet subbasin}
+  \item{area.outlet}{Drainage area of outlet subbasin, in km^2}
+  \item{area.obs}{Drainage area of observation site, in km^2}
+}
 
+If \code{xobs} is provided without \code{variable}, the function prints available HYPE observation variables in \code{xobs} and silently 
+returns the same information as character vector.
 }
 \description{
-Find outlet-near observations in HYPE observation data files
+Find outlet-near observations in HYPE observation data files.
 }
 \details{
-\code{OutletNearObs} identifies observation sites located near to their river's sea outlet. Outlet proximity is defined 
-by drainage area size compared to the respective sea outlet, with sites matching or exceeding fraction \code{frac.drain}
+\code{OutletNearObs} finds observation sites for observation variables in 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:qobs.txt}{HYPE 'Qobs.txt'} and 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{HYPE 'Xobs.txt'} files 
+located upstream an outlet sub-basin. For \code{xobs} files, which can hold several observation variables, a single variable has 
+to be selected (the function conveniently prints available variables in \code{xobs}, if no \code{variable} is provided). 
+Any number of SUBIDs present in \code{gd} can be defined as outlet subbasins with argument \code{outlets}. The function handles nested
+outlets, i.e. cases where user-provided subbasins in \code{outlets} are upstream basins of one another. Outlet proximity is 
+defined by drainage area size compared to the respective outlet. The function returns either the nearest or all sites matching 
+or exceeding fraction \code{frac.drain}, depending on argument \code{nearest.only}.
 }
 \examples{
 \dontrun{OutletNearObs(qobs = "Qobs.txt", gd = mygd)
 
 # get vector of variables in an Xobs file
-OutletNearObs(xobs = "Xobs.txt", gd = mygd)
+OutletNearObs(xobs = "./Xobs.txt", gd = mygd)
 
 # get observation site SUBIDs for total nitrogen concentrations
-OutletNearObs(xobs = "Xobs.txt", gd = gd, variable = "retn")
+OutletNearObs(xobs = "./Xobs.txt", gd = gd, variable = "retn")
 }
 
 }
