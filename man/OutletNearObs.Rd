@@ -4,18 +4,22 @@
 \alias{OutletNearObs}
 \title{Find outlet-near observations in HYPE observation data files}
 \usage{
-OutletNearObs(qobs = NULL, xobs = NULL, gd, variable = NULL)
+OutletNearObs(qobs = NULL, xobs = NULL, gd, variable = NULL,
+  frac.drain = 0.8)
 }
 \arguments{
-\item{qobs, xobs}{Character string, file location of HYPE observation data file, either an
+\item{qobs, xobs}{Character string, file location of HYPE observation data file. \emph{Only one of these needs to be 
+supplied}, with \code{qobs} taking precedence if both are provided. Either an
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt} or a 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:qobs.txt}{Qobs.txt} file.}
 
 \item{gd}{Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive). 
 Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
 
-\item{variable}{Character string, HYPE variable to use. If \code{NULL} (default), a vector of available variables 
-in \code{obsfile} is returned}
+\item{variable}{Character string, HYPE variable to use. Needed only with argument \code{xobs}. If \code{NULL} (default), 
+a vector of available variables in \code{xobs} is returned.}
+
+\item{frac.drain}{Numeric, minimum fraction of drainage area at sea outlet to be covered by observation site.}
 }
 \value{
 
@@ -24,9 +28,17 @@ in \code{obsfile} is returned}
 Find outlet-near observations in HYPE observation data files
 }
 \details{
-
+\code{OutletNearObs} identifies observation sites located near to their river's sea outlet. Outlet proximity is defined 
+by drainage area size compared to the respective sea outlet, with sites matching or exceeding fraction \code{frac.drain}
 }
 \examples{
-\dontrun{}
+\dontrun{OutletNearObs(qobs = "Qobs.txt", gd = mygd)
+
+# get vector of variables in an Xobs file
+OutletNearObs(xobs = "Xobs.txt", gd = mygd)
+
+# get observation site SUBIDs for total nitrogen concentrations
+OutletNearObs(xobs = "Xobs.txt", gd = gd, variable = "retn")
+}
 
 }
