@@ -180,7 +180,7 @@ summary.HypeGeoData <- function(x, ...) {
   # number of subbasins
   res$n.subid <- nrow(x)
   
-  ## number of SLC and SCR classes
+  ## number of SLC, SCR, and DHSLC classes
   # SLC positions and their SLC numbers
   pos.s <- which(substr(names(x), 1, 4) == "SLC_")
   # extract numbers
@@ -199,6 +199,15 @@ summary.HypeGeoData <- function(x, ...) {
   n.r <- n.r[!is.na(n.r)]
   # number
   res$n.scr <- length(n.r)
+  # DHSLC positions and their DHSLC numbers
+  pos.d <- which(substr(names(x), 1, 6) == "DHSLC_")
+  # extract numbers
+  suppressWarnings(n.d <- as.numeric(substr(names(x)[pos.d], 7, 99)))
+  # remove comment columns which happen to look like SCR columns, e.g. "SCR_98old"
+  pos.d <- pos.d[!is.na(n.d)]
+  n.d <- n.d[!is.na(n.d)]
+  # number
+  res$n.dhslc <- length(n.d)
   
   # subbasin area range in km2
   res$subbasin.area <- signif(c(mean(x$AREA), median(x$AREA), min(x$AREA), max(x$AREA)) * 10^-6, digits = 3)
@@ -208,16 +217,21 @@ summary.HypeGeoData <- function(x, ...) {
   res$unit.river.length <- suppressWarnings(tryCatch(signif(c(mean(rlu), median(rlu), min(rlu), max(rlu)), digits = 3), error = function (e) return(NULL)))
   
   # internal lake catchment fraction
-  res$icatch <- suppressWarnings(tryCatch(signif(c(mean(x$ICATCH), median(x$ICATCH), min(x$ICATCH), max(x$ICATCH)), digits = 3), error = function (e) return(NULL)))
+  if (exists("x$ICATCH")) {
+    res$icatch <- suppressWarnings(tryCatch(signif(c(mean(x$ICATCH), median(x$ICATCH), min(x$ICATCH), max(x$ICATCH)), digits = 3), error = function (e) return(rep("-", 4))))
+  } else {
+    res$icatch <- rep("-", 4)
+  }
+  
   
   # outlet id(s)
   res$outlet.ids <- OutletIds(x)
   
   # column names and classes except SLC and SCR classes
-  # get classes of all columns except SLC and SCR
-  col.cls <- sapply(x[, -c(pos.s, pos.r)], class)
+  # get classes of all columns except SLC, SCR, and DHSLC
+  col.cls <- sapply(x[, -c(pos.s, pos.r, pos.d)], class)
   # create dataframe with column numbers, names and classes
-  res$columns <- data.frame(column = as.character((1:ncol(x))[-c(pos.s, pos.r)]), name = names(col.cls), class = as.character(col.cls))
+  res$columns <- data.frame(column = as.character((1:ncol(x))[-c(pos.s, pos.r, pos.d)]), name = names(col.cls), class = as.character(col.cls))
   
   class(res) <- "summaryHypeGeoData"
   print(res)
@@ -267,5 +281,8 @@ print.summaryHypeGeoData <- function(x, ...) {
   
   # number of SCR classes
   cat(paste("            Number of SCR classes:", x$n.scr, "\n"))
+  
+  # number of DHSLC classes
+  cat(paste("          Number of DHSLC classes:", x$n.dhslc, "\n"))
   
 }
