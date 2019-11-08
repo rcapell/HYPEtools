@@ -247,7 +247,7 @@ summary.HypeGeoData <- function(x, ...) {
 print.summaryHypeGeoData <- function(x, ...) {
   
   ## columns in table
-  cat("\nColumns, except 'SLC_n' and 'SCR_n':\n\n")
+  cat("\nColumns, except 'SLC_n', 'SCR_n', and 'DHSLC_n':\n\n")
   # format columns dataframe so that it plots nicely on-screen (in three columns)
   te <- ceiling(nrow(x$columns)/3)
   tep <- te - (nrow(x$columns) - 2 * te)
