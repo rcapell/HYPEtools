@@ -4,7 +4,7 @@
 \alias{AnnualRegime}
 \title{Calculate annual regimes}
 \usage{
-AnnualRegime(x, stat = "mean", ts.in = NULL, ts.out = NULL,
+AnnualRegime(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL,
   start.mon = 1, incl.leap = FALSE, na.rm = TRUE)
 }
 \arguments{
@@ -29,7 +29,8 @@ to daily and shorter time steps only.}
 }
 \value{
 \code{AnnualRegime} returns a list with 8 elements and two additional \code{\link{attributes}}. Each list element contains a 
-named data frame with aggregated annual regime data: arithmetic means, medians, minima, maxima, and 25\% and 75\% percentiles.
+named data frame with aggregated annual regime data: arithmetic means, medians, minima, maxima, and 5\%, 25\%, 75\%, and 95\% 
+percentiles.
 
 Each data frames contains, in column-wise order: reference dates in \code{POSIXct} format, date information as string, and aggregated 
 variables found in \code{x}.
@@ -47,8 +48,8 @@ Calculate annual regimes based on long-term time series, typically imported HYPE
 }
 \details{
 \code{AnnualRegime} uses \code{\link{aggregate}} to calculate long-term average regimes for all data columns provided in \code{x}, 
-including long-term arithmetic means, medians, minima and maxima, and 25\% and 75\% percentiles. In HYPE context, \code{AnnualRegime} 
-is particularly applicable to model basin and time results imported using \code{\link{ReadBasinOutput}} and 
+including long-term arithmetic means, medians, minima and maxima, and 5\%, 25\%, 75\%, and 95\% percentiles. With HYPE result files, 
+\code{AnnualRegime} is particularly applicable to basin and time output files imported using \code{\link{ReadBasinOutput}} and 
 \code{\link{ReadTimeOutput}}. The function does not check if equally spaced time steps are provided in \code{x} or if the 
 overall time period in \code{x} covers full years so that the calculated averages are based on the same number of values.
 
