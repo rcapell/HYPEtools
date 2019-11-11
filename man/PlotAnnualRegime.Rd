@@ -4,12 +4,14 @@
 \alias{PlotAnnualRegime}
 \title{Plot annual regimes}
 \usage{
-PlotAnnualRegime(x, line = "mean", band = "none", add.legend = FALSE,
-  l.legend = NULL, l.position = "topright", log = FALSE,
-  ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{     -1 },
-  ")")), xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse
-  = " to "), col = "blue", alpha = 30, lty = 1, lwd = 1,
-  mar = c(3, 3, 1, 1) + 0.1, restore.par = FALSE)
+PlotAnnualRegime(x, line = c("mean", "median"), band = c("none",
+  "p05p95", "p25p75", "minmax"), add.legend = FALSE, l.legend = NULL,
+  l.position = c("topright", "bottomright", "right", "topleft", "left",
+  "bottomleft"), log = FALSE, ylim = NULL,
+  ylab = expression(paste("Q (m"^3, " s"^{     -1 }, ")")),
+  xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse =
+  " to "), col = "blue", alpha = 30, lty = 1, lwd = 1, mar = c(3,
+  3, 1, 1) + 0.1, restore.par = FALSE, verbose = TRUE)
 }
 \arguments{
 \item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
@@ -18,8 +20,9 @@ See Details and Value sections there.}
 
 \item{line}{Character string, keyword for type of average line to plot. Either \code{"mean"} or \code{"median"}.}
 
-\item{band}{Character string, keyword for variation bands. Either \code{"none"} to plot long-term averages only, or \code{"minmax"} or 
-\code{"quartile"} to include bands of variation. See details.}
+\item{band}{Character vector, keyword for variation bands. If \code{"none"} (default), plot average line(s) only. \code{"minmax"}, 
+\code{"p25p75"}, or \code{p5p95} to include bands of variation. Combinations of bands are allowed, but providing \code{"none"} 
+will always prevent plotting of any band. See details.}
 
 \item{add.legend}{Logical. If \code{TRUE}, a legend will be added to the plot.}
 
@@ -52,6 +55,8 @@ series in \code{freq}.}
 \item{mar}{Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.}
 
 \item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
+
+\item{verbose}{Logical, print warnings if \code{NA} values are found in \code{x}. Defaults to \code{TRUE}.}
 }
 \value{
 \code{PlotAnnualRegime} returns a plot to the currently active plot device.
@@ -60,8 +65,13 @@ series in \code{freq}.}
 Convenience wrapper function for a combined line \code{\link{plot}} with \code{\link{polygon}} variation ranges.
 }
 \details{
-If \code{"minmax"} or \code{"quartile"} are chosen for argument \code{band}, transparent bands of inter-annual variation are plotted along the 
-long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
+\code{PlotAnnualRegime} plots contents from lists as returned by \code{\link{AnnualRegime}} (for format details, see there). If 
+\code{NA} values are present in the plot data, the function will throw a warning if \code{verbose = TRUE} and proceed with plotting 
+all available data. 
+
+Argument \code{band} allows to plot variation bands to be plotted in addition to average lines. These can be (combinations of) ranges 
+between minima and maxima, 5th and 95th percentiles, and 25th and 75th percentiles, i.e. all moments available in \code{AnnualRegime} 
+results. 
 
 Grid lines plotted in the background are mid-month lines.
 }

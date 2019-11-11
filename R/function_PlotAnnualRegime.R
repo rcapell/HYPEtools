@@ -6,8 +6,9 @@
 #' regime data and two attributes \code{period} and \code{timestep}.
 #' See Details and Value sections there.
 #' @param line Character string, keyword for type of average line to plot. Either \code{"mean"} or \code{"median"}.
-#' @param band Character string, keyword for variation bands. Either \code{"none"} to plot long-term averages only, or \code{"minmax"} or 
-#' \code{"quartile"} to include bands of variation. See details.
+#' @param band Character vector, keyword for variation bands. If \code{"none"} (default), plot average line(s) only. \code{"minmax"}, 
+#' \code{"p25p75"}, or \code{p5p95} to include bands of variation. Combinations of bands are allowed, but providing \code{"none"} 
+#' will always prevent plotting of any band. See details.
 #' @param add.legend Logical. If \code{TRUE}, a legend will be added to the plot.
 #' @param l.legend Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.
 #' @param l.position Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
@@ -26,11 +27,17 @@
 #' @param lwd Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
-#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
+#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. 
+#' @param verbose Logical, print warnings if \code{NA} values are found in \code{x}. Defaults to \code{TRUE}.
 #' 
 #' @details
-#' If \code{"minmax"} or \code{"quartile"} are chosen for argument \code{band}, transparent bands of inter-annual variation are plotted along the 
-#' long-term average line plots, either based on minimum and maximum values or on 25\% and 75\% percentiles.
+#' \code{PlotAnnualRegime} plots contents from lists as returned by \code{\link{AnnualRegime}} (for format details, see there). If 
+#' \code{NA} values are present in the plot data, the function will throw a warning if \code{verbose = TRUE} and proceed with plotting 
+#' all available data. 
+#' 
+#' Argument \code{band} allows to plot variation bands to be plotted in addition to average lines. These can be (combinations of) ranges 
+#' between minima and maxima, 5th and 95th percentiles, and 25th and 75th percentiles, i.e. all moments available in \code{AnnualRegime} 
+#' results. 
 #' 
 #' Grid lines plotted in the background are mid-month lines.
 #' 
@@ -46,10 +53,11 @@
 #' @export
 
 
-PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE, l.legend = NULL, l.position = "topright", 
+PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p05p95", "p25p75", "minmax"), add.legend = FALSE, 
+                             l.legend = NULL, l.position = c("topright", "bottomright", "right", "topleft", "left", "bottomleft"), 
                              log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
                              xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", alpha = 30, 
-                             lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, restore.par = FALSE) {
+                             lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, restore.par = FALSE, verbose = TRUE) {
   
   # save current state of par() variables which are altered below, for restoring on function exit
   par.mar <- par("mar")
@@ -65,10 +73,14 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
   nq <- ncol(x$mean) - 2
   
   # input check for type specification arguments
-  stopifnot(any(line == "mean", line == "median"))
-  stopifnot(any(band == "minmax", band == "quartile", band == "none"))
-  stopifnot(l.position %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
-  
+  line <- match.arg(line)
+  band <- match.arg(band, several.ok = T)
+  # default is "none"
+  if (any(band == "none")) {
+    band <- "none"
+  }
+  l.position <- match.arg(l.position)
+  stopifnot(is.logical(verbose))
   
   # input checks for line property specification arguments
   if (!any(length(col) == 1, length(col) == nq)) {
@@ -83,13 +95,15 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
   
     
   # conditional: extract automatic y-axis limits by finding global maxima in all provided data series
-  if (is.null(ylim) && line == "mean" && band == "none") {
+  if (is.null(ylim) && line == "mean" && any(band == "none")) {
     ylim <- range(unlist(x$mean[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
-  } else if (is.null(ylim) && line == "median" && band == "none") {
+  } else if (is.null(ylim) && line == "median" && any(band == "none")) {
     ylim <- range(unlist(x$median[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
-  } else if (is.null(ylim) && band == "minmax") {
+  } else if (is.null(ylim) && any(band == "minmax")) {
     ylim <- range(unlist(rbind(x$minimum, x$maximum)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
-  } else if (is.null(ylim) && band == "quartile") {
+  } else if (is.null(ylim) && any(band == "p05p95")) {
+    ylim <- range(unlist(rbind(x$p05, x$p95)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
+  } else if (is.null(ylim) && any(band == "p25p75")) {
     ylim <- range(unlist(rbind(x$p25, x$p75)[, -c(1:2)], use.names = FALSE), na.rm = TRUE)
   }
   
@@ -148,33 +162,79 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
   box()
   
   
-  # plot regimes, incl transparent variation polygons if requested, using internal function
-  if (band == "minmax") {
+  
+  ## plot regimes, incl transparent variation polygons if requested, using internal function
+  
+  # initialise vector to hold variable names with NA values
+  na.warn <- NULL
+  
+  # plot requested bands and lines, iterate through variables
+  if (any(band == "minmax")) {
     
     polcol <- .makeTransparent(lcol, alpha = alpha)
     for (i in 3:(nq + 2)) {
       polcoor <- rbind(x$minimum[, c(1, i)], x$maximum[nrow(x$maximum):1, c(1, i)])
+      # remove NAs and throw warning if any were found
+      polcoor <- na.omit(polcoor)
+      if (!is.null(attr(polcoor, "na.action")) && verbose) {
+        na.warn <- c(na.warn, names(x$mean)[i])
+      }
       polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)
     }
     
   }
-  if (band == "quartile") {
+  if (any(band == "p05p95")) {
+    
+    polcol <- .makeTransparent(lcol, alpha = alpha)
+    for (i in 3:(nq + 2)) {
+      polcoor <- rbind(x$p05[, c(1, i)], x$p95[nrow(x$p95):1, c(1, i)])
+      # remove NAs and throw warning if any were found
+      polcoor <- na.omit(polcoor)
+      if (!is.null(attr(polcoor, "na.action")) && verbose) {
+        na.warn <- c(na.warn, names(x$mean)[i])
+      }
+      polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)
+    }
+  }
+  if (any(band == "p25p75")) {
     
     polcol <- .makeTransparent(lcol, alpha = alpha)
     for (i in 3:(nq + 2)) {
       polcoor <- rbind(x$p25[, c(1, i)], x$p75[nrow(x$p75):1, c(1, i)])
+      # remove NAs and throw warning if any were found
+      polcoor <- na.omit(polcoor)
+      if (!is.null(attr(polcoor, "na.action")) && verbose) {
+        na.warn <- c(na.warn, names(x$mean)[i])
+      }
       polygon(polcoor[, 1], polcoor[, 2], col = polcol[i - 2], border = NA)
     }
   }
   if (line == "mean") {
     for (i in 3:(nq + 2)) {
-      lines(x$mean[, 1], x$mean[, i], type = "l", pch = 16, cex = 0.4, col = lcol[i - 2], lty = llty[i - 2], lwd = llwd[i - 2])
+      mn <- x$mean[, c(1, i)]
+      # remove NAs and throw warning if any were found
+      mn <- na.omit(mn)
+      if (!is.null(attr(mn, "na.action")) && verbose) {
+        na.warn <- c(na.warn, names(x$mean)[i])
+      }
+      lines(mn, type = "l", pch = 16, cex = 0.4, col = lcol[i - 2], lty = llty[i - 2], lwd = llwd[i - 2])
     }
   }
   if (line == "median") {
     for (i in 3:(nq + 2)) {
-      lines(x$median[, 1], x$median[, i], type = "l", pch = 16, cex = 0.4, col = lcol[i - 2], lty = llty[i - 2], lwd = llwd[i - 2])
+      md <- x$median[, c(1, i)]
+      # remove NAs and throw warning if any were found
+      md <- na.omit(md)
+      if (!is.null(attr(md, "na.action")) && verbose) {
+        na.warn <- c(na.warn, names(x$mean)[i])
+      }
+      lines(md, type = "l", pch = 16, cex = 0.4, col = lcol[i - 2], lty = llty[i - 2], lwd = llwd[i - 2])
     }
+  }
+  
+  # throw warning with variable names if NAs were found
+  if (length(na.warn) > 0 && verbose) {
+    warning(paste0("NA values found in variable(s) '", paste(unique(na.warn), collapse = "', '"), "'."))
   }
   
   # add legend if requested
@@ -188,10 +248,13 @@ PlotAnnualRegime <- function(x, line = "mean", band = "none", add.legend = FALSE
     }
     
     # print legend, conditional on presence of bands in plot
-    if (band != "none") {
+    if (any(band != "none")) {
       # with band, plot fat transparent lines as bands first, then annotated lines
       #legend(l.position, legend = rep("", length(lgnd)), bty = "n", lty = 1, col = polcol, cex=.9, lwd = 14, inset = c(max(strwidth(lgnd, units = "figure")), 0))
       legend(l.position, legend = lgnd, bty = "n", lty = 1, col = polcol, cex=.9, lwd = 14, text.col = .makeTransparent(1, 0))
+      for (i in seq_along(band)) {
+        legend(l.position, legend = lgnd, bty = "n", lty = 1, col = polcol, cex=.9, lwd = 14 * i / length(band), text.col = .makeTransparent(1, 0))
+      }
       legend(l.position, legend = lgnd, bty = "n", lty = llty, col = lcol, cex=.9, lwd = llwd)
     } else {
       # only lines
