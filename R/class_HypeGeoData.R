@@ -35,7 +35,7 @@
 #' Returns a data frame with added \code{\link{class}} attribute \code{HypeGeoData}.
 #' 
 #' @seealso 
-#' \code{\link{ReadGeoData}}, \code{\link{summary.HypeGeoData}}
+#' \code{\link{ReadGeoData}}
 #' 
 #' @examples
 #' \dontrun{HypeGeoData(x = )}
@@ -285,4 +285,16 @@ print.summaryHypeGeoData <- function(x, ...) {
   # number of DHSLC classes
   cat(paste("          Number of DHSLC classes:", x$n.dhslc, "\n"))
   
+}
+
+
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+# merge method
+#' @export
+merge.HypeGeoData <- function(x, ...) {
+  y <- NextMethod("merge")
+  y <- HypeGeoData(y)
+  return(y)
 }

@@ -29,5 +29,5 @@ Usually, this class will be assigned to GeoData tables on import with \code{\lin
 \dontrun{HypeGeoData(x = )}
 }
 \seealso{
-\code{\link{ReadGeoData}}, \code{\link{summary.HypeGeoData}}
+\code{\link{ReadGeoData}}
 }
