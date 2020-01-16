@@ -4,10 +4,15 @@
 \alias{ReadOptpar}
 \title{Read an 'optpar.txt' file}
 \usage{
-ReadOptpar(filename = "optpar.txt")
+ReadOptpar(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
+  "latin1"))
 }
 \arguments{
 \item{filename}{Path to and file name of the 'optpar.txt' file to import.}
+
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+also argument description in \code{\link{scan}}.}
 }
 \value{
 \code{ReadOptpar} returns a \code{\link{list}} object with three elements: \itemize{ 
@@ -23,7 +28,7 @@ Parameter names as list element names.
 This function imports an 'optpar.txt' into a list.
 }
 \details{
-\code{ReadOptpar} imports a HYPE 'optpar.txt' file. Optpar files contain instructions for parameter calibration/optimisation 
+\code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimisation 
 and parameter value ranges, for details on the file format, see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
 }

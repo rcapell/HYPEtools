@@ -4,11 +4,16 @@
 \alias{ReadGeoClass}
 \title{Read a 'GeoClass.txt' File}
 \usage{
-ReadGeoClass(filename = "GeoClass.txt", verbose = TRUE)
+ReadGeoClass(filename = "GeoClass.txt", encoding = c("unknown",
+  "UTF-8", "Latin-1"), verbose = TRUE)
 }
 \arguments{
 \item{filename}{Path to and file name of the GeoClass file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
+
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+also argument description in \code{\link[data.table]{fread}}.}
 
 \item{verbose}{Print information on number of data columns in imported file.}
 }

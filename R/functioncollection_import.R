@@ -1,4 +1,5 @@
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#--------------------------------------------------------------------------------------------------------------------------------------
 #   Collection of HYPE file import functions, herein:
 #
 #     - ReadGeoClass()
@@ -18,12 +19,15 @@
 #     - ReadSubass()
 #     - ReadDescription()
 #     - 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadGeoClass~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadGeoClass
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Read a 'GeoClass.txt' File
 #'
@@ -33,6 +37,9 @@
 #' 
 #' @param filename Path to and file name of the GeoClass file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
+#' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+#' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+#' also argument description in \code{\link[data.table]{fread}}.
 #' @param verbose Print information on number of data columns in imported file.
 #' 
 #' @details
@@ -48,7 +55,11 @@
 #' 
 #' @export
 
-ReadGeoClass <- function(filename = "GeoClass.txt", verbose = TRUE) { 
+ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF-8", "Latin-1"), verbose = TRUE) { 
+  
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   
   # identify comment rows, lines starting with '!' at the top of the file
   gf <- file(description = filename, open = "r")
@@ -65,8 +76,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", verbose = TRUE) {
   close(gf)
   
   # read in the data in the file, skipping the comments and header
-  x <- fread(filename, header = FALSE, skip = skip, quote = "", fill = T, data.table = FALSE)
-  
+  x <- fread(filename, header = FALSE, skip = skip, fill = T, data.table = FALSE, encoding = encoding)
   
   ## identify number of soil layers in the file
   
@@ -116,7 +126,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", verbose = TRUE) {
   }
   
   # update with new attributes to hold comment rows
-  attr(x, which = "comment") <- readLines(filename, n = skip)
+  attr(x, which = "comment") <- readLines(filename, n = skip, encoding = ifelse(encoding == "Latin-1", "latin1", encoding))
   
   # check if all data columns are numeric, with a useful warning
   if (!all(apply(x[, 1:ndcl], 2, is.numeric))) {
@@ -130,19 +140,16 @@ ReadGeoClass <- function(filename = "GeoClass.txt", verbose = TRUE) {
   return(x)
 }
 
-## DEBUG
-# te <- "//winfs/data/arkiv/proj/FoUhArkiv/Sweden/S-HYPE/S-HYPE2012B/Leverans,2013-09-30/GeoClass.txt"
-# te2 <- ReadGeoClass(filename = te)
-# str(te2)
-# rm(te, te2, ReadGeoClass)
 
 
 
 
 
 
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadBasinOutput
+#--------------------------------------------------------------------------------------------------------------------------------------
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadBasinOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 #' Read a Basin Output File
 #'
@@ -333,7 +340,10 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadXobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadXobs
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 #' Read an 'Xobs.txt' file
 #'
@@ -476,7 +486,11 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadGeoData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadGeoData
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 #' Read a 'GeoData.txt' file
 #'
@@ -485,6 +499,9 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' @param filename Path to and file name of the GeoData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param sep  character string. Field separator character as described in \code{\link{read.table}}.
+#' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+#' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+#' also argument description in \code{\link[data.table]{fread}}.
 
 #' @details
 #' \code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
@@ -503,14 +520,17 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' @export
 
 
-ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
+ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unknown", "UTF-8", "Latin-1")) {
+  
+  # argument checks
+  encoding <- match.arg(encoding)
   
   # find AREA and RIVLEN columns, to force type numeric (will be autodetected as integer/integer64 otherwise, which leads to 
   # problems with integer calculation in other functions)
   cnames <- strsplit(readLines(con = filename, n = 1), split = sep)[[1]]
   cnumeric <- which(toupper(cnames) %in% c("AREA", "RIVLEN"))
   
-  res <- fread(filename, header = T, sep = sep, colClasses = list("numeric" = cnumeric), data.table = F)
+  res <- fread(filename, header = T, sep = sep, colClasses = list("numeric" = cnumeric), data.table = F, encoding = encoding)
   names(res) <- toupper(names(res))
   
   # # NOT USED ATM, REPLACED BY colClasses ARGUMENT IN fread. LEFT FOR REFERENCE
@@ -589,8 +609,10 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
 
 
 
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadPar
+#--------------------------------------------------------------------------------------------------------------------------------------
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 #' Read a 'par.txt' file
 #'
@@ -598,6 +620,9 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
 #' 
 #' @param filename Path to and file name of the parameter file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
+#' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+#' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+#' also argument description in \code{\link{scan}}.
 #'  
 #' @details
 #' \code{ReadPar} checks for inline comments in 'par.txt' files, these are moved to separate "lines" (list elements).
@@ -613,11 +638,14 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t") {
 #' 
 #' @export
 
-ReadPar <- function (filename = "par.txt") {
+ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "latin1")) {
+  
+  # argument checks
+  encoding <- match.arg(encoding)
   
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read par file into a character vector (one string per row in file)
-  x <- scan(filename, what = "", sep = "\n", quiet = T)
+  x <- scan(filename, what = "", sep = "\n", quiet = T, encoding = encoding)
     # insert blank after comment character, to make sure they get split for comment identification below
   x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
   # split string elements along whitespaces, returns list of character vectors
@@ -667,7 +695,11 @@ ReadPar <- function (filename = "par.txt") {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadMapOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadMapOutput
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 #' Read a Map Output File
 #'
@@ -825,7 +857,12 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadTimeOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadTimeOutput
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 #' Read a Time Output File
 #'
@@ -1056,7 +1093,12 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPTQobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadPTQobs
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 #' Read 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files
 #'
@@ -1204,7 +1246,11 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HypeDataImport~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# HypeDataImport
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 #' Read HYPE data files
 #'
@@ -1218,7 +1264,9 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
 #' @param sep See \code{header}.
 #' @param stringsAsFactors See \code{header}.
 #' @param quote See \code{header}.
-#' @param ... Other parameters passed to \code{\link{read.table}}.
+#' @param ... Other parameters passed to \code{\link{read.table}}, in particular \code{encoding} when 
+#' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") 
+#' and vice versa.
 #'  
 #' @details
 #' Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
@@ -1373,10 +1421,13 @@ ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t") {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadPmsf~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-#' @export
-#' @title
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadPmsf
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+
 #' Read a 'pmsf.txt' file
 #'
 #' @description
@@ -1386,6 +1437,9 @@ ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t") {
 #' Paths are separated by '/', not '\\'. 
 #'  
 #' @details
+#' \code{ReadPmsf} imports 'pmsf.txt' files, which contain SUBIDs and are used to run only parts of a HYPE setup's domain 
+#' without having to extract a separate model setup. For details on the file format, see the
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pmsf.txt}{pmsf.txt online documentation}.
 #' Pmsf.txt files imported with \code{ReadPmsf} are stripped from the first value containing the total number of subcatchments 
 #' in the file. No additional attribute is added to hold this number since it can be easily obtained using \code{\link{length}}.
 #' 
@@ -1395,6 +1449,7 @@ ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t") {
 #' @examples
 #' \dontrun{ReadPmsf("pmsf.txt")}
 #' 
+#' @export
 
 ReadPmsf <- function(filename = "pmsf.txt") {
   x <- read.table(filename, header = T)
@@ -1408,19 +1463,22 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 
 
 
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadOptpar
+#--------------------------------------------------------------------------------------------------------------------------------------
 
-
-
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadOptpar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 #' Read an 'optpar.txt' file
 #' 
 #' This function imports an 'optpar.txt' into a list.
 #' 
 #' @param filename Path to and file name of the 'optpar.txt' file to import. 
+#' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+#' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+#' also argument description in \code{\link{scan}}.
 #' 
 #' @details 
-#' \code{ReadOptpar} imports a HYPE 'optpar.txt' file. Optpar files contain instructions for parameter calibration/optimisation 
+#' \code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimisation 
 #' and parameter value ranges, for details on the file format, see the
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' 
@@ -1441,10 +1499,13 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 #' 
 #' @export
 
-ReadOptpar <- function(filename = "optpar.txt") {
+ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8", "latin1")) {
+  
+  # argument checks
+  encoding <- match.arg(encoding)
   
   # read tasks and settings into a character vector (one string per row in file)
-  tasks <- scan(filename, what = "", sep = "\n", nlines = 21, quiet = TRUE)
+  tasks <- scan(filename, what = "", sep = "\n", nlines = 21, quiet = TRUE, encoding = encoding)
   # split string elements along whitespaces, returns list of character vectors
   tasks <- strsplit(tasks, split = "[[:space:]]+")
   # re-merge and separate first-row comment string
@@ -1482,7 +1543,12 @@ ReadOptpar <- function(filename = "optpar.txt") {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadSubass~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadSubass
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 #' Read a 'subassX.txt' file
 #'
@@ -1541,7 +1607,10 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ReadDescription~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadDescription
+#--------------------------------------------------------------------------------------------------------------------------------------
+
 
 #' Read a 'description.txt' file
 #'
@@ -1551,13 +1620,16 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #' @param filename Path to and file name of the 'description.txt' file to import. 
 #' @param gcl dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare class IDs with. 
 #' A warning will be thrown if not all class IDs in \code{gcl} exist in the description file.
+#' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+#' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+#' also argument description in \code{\link{scan}}.
 #'  
 #' @details
 #' \code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
 #' e.g. plotting legend labels or examining imported GeoClass files. E.g., \code{\link{PlotBasinSummary}} requires a list 
 #' as returned from \code{ReadDescription} for labeling. 
 #' 
-#' A description.txt file consists of 22 lines, alternating names and semicolon-separated content. Lines 
+#' A 'description.txt' file consists of 22 lines, alternating names and semicolon-separated content. Lines 
 #' with names are not read by the import function, they just make it easier to compose and read the actual text file.
 #' 
 #' File contents read by \code{ReadDescription}: 
@@ -1614,11 +1686,14 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
 #'
 #' @export 
 
-ReadDescription <- function(filename, gcl = NULL) {
+ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8", "latin1")) {
+  
+  # argument checks
+  encoding <- match.arg(encoding)
   
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read description file into a character vector (one string per row in file)
-  x <- scan(file = filename, what = "", sep = "\n", quiet = T)
+  x <- scan(file = filename, what = "", sep = "\n", quiet = T, encoding = encoding)
   # split string elements along semicolons, returns list of character vectors
   x <- strsplit(enc2utf8(x), split = ";", useBytes = F)
   # remove empty strings (excel export artefacts)
@@ -1661,7 +1736,6 @@ ReadDescription <- function(filename, gcl = NULL) {
   }
   return(res)
 }
-
 
 
 

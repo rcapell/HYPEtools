@@ -4,13 +4,18 @@
 \alias{ReadGeoData}
 \title{Read a 'GeoData.txt' file}
 \usage{
-ReadGeoData(filename = "GeoData.txt", sep = "\\t")
+ReadGeoData(filename = "GeoData.txt", sep = "\\t",
+  encoding = c("unknown", "UTF-8", "Latin-1"))
 }
 \arguments{
 \item{filename}{Path to and file name of the GeoData file to import. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
 
 \item{sep}{character string. Field separator character as described in \code{\link{read.table}}.}
+
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+also argument description in \code{\link[data.table]{fread}}.}
 }
 \value{
 If the imported file is a HYPE-conform GeoData file, \code{ReadGeoData} returns an object of S3 class \code{\link{HypeGeoData}} 

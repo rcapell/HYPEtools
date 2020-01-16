@@ -61,7 +61,9 @@ Paths are separated by '/', not '\\'.}
 
 \item{stringsAsFactors}{See \code{header}.}
 
-\item{...}{Other parameters passed to \code{\link{read.table}}.}
+\item{...}{Other parameters passed to \code{\link{read.table}}, in particular \code{encoding} when 
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") 
+and vice versa.}
 
 \item{quote}{See \code{header}.}
 }

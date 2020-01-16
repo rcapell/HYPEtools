@@ -4,13 +4,18 @@
 \alias{ReadDescription}
 \title{Read a 'description.txt' file}
 \usage{
-ReadDescription(filename, gcl = NULL)
+ReadDescription(filename, gcl = NULL, encoding = c("unknown", "UTF-8",
+  "latin1"))
 }
 \arguments{
 \item{filename}{Path to and file name of the 'description.txt' file to import.}
 
 \item{gcl}{dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare class IDs with. 
 A warning will be thrown if not all class IDs in \code{gcl} exist in the description file.}
+
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+also argument description in \code{\link{scan}}.}
 }
 \value{
 \code{ReadDescription} returns a named list with 11 named character elements, corresponding to the 
@@ -28,7 +33,7 @@ class names of a HYPE set-up, as well as model set-up name and version.
 e.g. plotting legend labels or examining imported GeoClass files. E.g., \code{\link{PlotBasinSummary}} requires a list 
 as returned from \code{ReadDescription} for labeling. 
 
-A description.txt file consists of 22 lines, alternating names and semicolon-separated content. Lines 
+A 'description.txt' file consists of 22 lines, alternating names and semicolon-separated content. Lines 
 with names are not read by the import function, they just make it easier to compose and read the actual text file.
 
 File contents read by \code{ReadDescription}: 
