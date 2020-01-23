@@ -43,7 +43,11 @@
 #' @importFrom pbapply pblapply pbsapply
 
 
-UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, type = "landuse", group = NULL, signif.digits = 3, progbar = T) {
+UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, type = c("landuse", "soil", "crop"), 
+                                    group = NULL, signif.digits = 3, progbar = T) {
+  
+  # input argument checks
+  type <- match.arg(type)
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")

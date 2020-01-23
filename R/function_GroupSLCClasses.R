@@ -33,30 +33,30 @@
 #' @export
 
 
-GroupSLCClasses <- function(gd, gcl = NULL, type = "landuse", group = NULL, abs.area = FALSE, verbose = T) {
+GroupSLCClasses <- function(gd, gcl = NULL, type = c("landuse", "soil", "crop"), group = NULL, abs.area = FALSE, verbose = T) {
   
-  # input checks
+  # input argument checks
+  type <- match.arg(type)
+  
   if (is.null(gcl) && is.null(group)) {
     stop("Neither GeoClass table nor user-defined grouping index provided.")
   }
   if (!is.null(gcl) && !is.null(group)) {
     stop("Both GeoClass table and user-defined grouping index provided. Please provide just one of them.")
   }
-  if (!any(type == "landuse", type == "l", type == "soil", type == "s", type == "crop", type == "c")) {
-    stop("'type' keyword unknown.")
-  }
+  
   
   # local grouping index object, depending on input arguments
   if (!is.null(gcl)) {
-    if (type == "landuse" || type == "l") {
+    if (type == "landuse") {
       lgroup <- gcl[, 2]
       grname <- "landuse"
     }
-    if (type == "soil" || type == "s") {
+    if (type == "soil") {
       lgroup <- gcl[, 3]
       grname <- "soil"
     }
-    if (type == "crop" || type == "c") {
+    if (type == "crop") {
       lgroup <- gcl[, 4]
       grname <- "crop"
     }

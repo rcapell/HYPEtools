@@ -58,7 +58,6 @@ BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "cr
                                     pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")) {
   
   # input argument checks
-  
   type <- match.arg(type)
   
   if (!is.null(class.names) && ncol(x) -1 != length(class.names)) {

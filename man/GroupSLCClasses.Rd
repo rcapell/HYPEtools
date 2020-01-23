@@ -4,8 +4,8 @@
 \alias{GroupSLCClasses}
 \title{Calculate grouped sums for SLC classes in a GeoData file}
 \usage{
-GroupSLCClasses(gd, gcl = NULL, type = "landuse", group = NULL,
-  abs.area = FALSE, verbose = T)
+GroupSLCClasses(gd, gcl = NULL, type = c("landuse", "soil", "crop"),
+  group = NULL, abs.area = FALSE, verbose = T)
 }
 \arguments{
 \item{gd}{Data frame containing columns with SUBIDs, SLC fractions, and SUBID areas if \code{abs.area = TRUE}. Typically a 'GeoData.txt' file 
