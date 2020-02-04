@@ -4,8 +4,11 @@
 \alias{ReadDescription}
 \title{Read a 'description.txt' file}
 \usage{
-ReadDescription(filename, gcl = NULL, encoding = c("unknown", "UTF-8",
-  "latin1"))
+ReadDescription(
+  filename,
+  gcl = NULL,
+  encoding = c("unknown", "UTF-8", "latin1")
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the 'description.txt' file to import.}

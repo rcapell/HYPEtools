@@ -4,8 +4,14 @@
 \alias{UpstreamPointSources}
 \title{Summarize point source emissions of all upstream areas}
 \usage{
-UpstreamPointSources(subid = NULL, gd, psd, bd = NULL,
-  signif.digits = 4, progbar = T)
+UpstreamPointSources(
+  subid = NULL,
+  gd,
+  psd,
+  bd = NULL,
+  signif.digits = 4,
+  progbar = T
+)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs to calculate upstream point sources for (must exist in \code{gd}). 

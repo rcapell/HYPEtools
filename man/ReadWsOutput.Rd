@@ -4,9 +4,18 @@
 \alias{ReadWsOutput}
 \title{Read optimisation simulation results}
 \usage{
-ReadWsOutput(path, type = c("time", "map", "basin"), hype.var = NULL,
-  subid = NULL, dt.format = NULL, select = NULL, from = NULL,
-  to = NULL, progbar = TRUE, warn.nan = FALSE)
+ReadWsOutput(
+  path,
+  type = c("time", "map", "basin"),
+  hype.var = NULL,
+  subid = NULL,
+  dt.format = NULL,
+  select = NULL,
+  from = NULL,
+  to = NULL,
+  progbar = TRUE,
+  warn.nan = FALSE
+)
 }
 \arguments{
 \item{path}{Character string, path to the directory holding simulation output files to import. Windows users: Note that 

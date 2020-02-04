@@ -4,8 +4,7 @@
 \alias{WritePTQobs}
 \title{Write 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files}
 \usage{
-WritePTQobs(x, filename, dt.format = "\%Y-\%m-\%d", digits = 3,
-  obsid = NULL)
+WritePTQobs(x, filename, dt.format = "\%Y-\%m-\%d", digits = 3, obsid = NULL)
 }
 \arguments{
 \item{x}{The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs or OBSIDs in 

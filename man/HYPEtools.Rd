@@ -3,7 +3,6 @@
 \docType{package}
 \name{HYPEtools}
 \alias{HYPEtools}
-\alias{HYPEtools-package}
 \title{HYPEtools}
 \description{
 This package contains functions to handle and analyse input and

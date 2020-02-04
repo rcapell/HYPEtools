@@ -4,8 +4,7 @@
 \alias{ReadOptpar}
 \title{Read an 'optpar.txt' file}
 \usage{
-ReadOptpar(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
-  "latin1"))
+ReadOptpar(filename = "optpar.txt", encoding = c("unknown", "UTF-8", "latin1"))
 }
 \arguments{
 \item{filename}{Path to and file name of the 'optpar.txt' file to import.}

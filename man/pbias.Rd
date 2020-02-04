@@ -5,8 +5,7 @@
 \alias{pbias.HypeSingleVar}
 \title{Percent bias}
 \usage{
-\method{pbias}{HypeSingleVar}(sim, obs, na.rm = TRUE, progbar = TRUE,
-  ...)
+\method{pbias}{HypeSingleVar}(sim, obs, na.rm = TRUE, progbar = TRUE, ...)
 }
 \arguments{
 \item{sim}{\code{\link{HypeSingleVar}} array with simulated variable (one or several iterations).}

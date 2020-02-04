@@ -4,12 +4,27 @@
 \alias{PlotMapOutput}
 \title{Plot function for HYPE map results.}
 \usage{
-PlotMapOutput(x, map, map.subid.column = 1, var.name = "",
-  map.adj = 0, plot.legend = T, legend.pos = "right",
-  legend.title = NULL, legend.outer = F, legend.inset = c(0, 0),
-  col = "auto", col.ramp.fun, col.breaks = NULL, plot.scale = T,
-  plot.arrow = T, par.cex = 1, par.mar = rep(0, 4) + 0.1,
-  add = FALSE, restore.par = FALSE)
+PlotMapOutput(
+  x,
+  map,
+  map.subid.column = 1,
+  var.name = "",
+  map.adj = 0,
+  plot.legend = T,
+  legend.pos = "right",
+  legend.title = NULL,
+  legend.outer = F,
+  legend.inset = c(0, 0),
+  col = "auto",
+  col.ramp.fun,
+  col.breaks = NULL,
+  plot.scale = T,
+  plot.arrow = T,
+  par.cex = 1,
+  par.mar = rep(0, 4) + 0.1,
+  add = FALSE,
+  restore.par = FALSE
+)
 }
 \arguments{
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 

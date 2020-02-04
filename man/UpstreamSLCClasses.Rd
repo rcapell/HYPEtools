@@ -4,8 +4,7 @@
 \alias{UpstreamSLCClasses}
 \title{Calculate SLC class fractions of all upstream areas}
 \usage{
-UpstreamSLCClasses(subid = NULL, gd, bd = NULL, signif.digits = 3,
-  progbar = T)
+UpstreamSLCClasses(subid = NULL, gd, bd = NULL, signif.digits = 3, progbar = T)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs to calculate upstream SUBID fractions for (must exist in \code{gd}). 

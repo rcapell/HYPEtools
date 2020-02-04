@@ -4,8 +4,13 @@
 \alias{CreateOptpar}
 \title{Create an optpar list}
 \usage{
-CreateOptpar(x, pars, tasks = data.frame(character(), character()),
-  comment = "", fun.ival = NULL)
+CreateOptpar(
+  x,
+  pars,
+  tasks = data.frame(character(), character()),
+  comment = "",
+  fun.ival = NULL
+)
 }
 \arguments{
 \item{x}{a list with named vector elements, as an object returned from \code{\link{ReadPar}}.}

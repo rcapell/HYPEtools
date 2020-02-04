@@ -4,8 +4,11 @@
 \alias{ExtractFreq}
 \title{Extract quantiles for use in a frequency distribution plot, e.g. a flow duration curve}
 \usage{
-ExtractFreq(data, probs = c(0, 1e-05, 1e-04, 0.001, seq(0.01, 0.99, by =
-  0.01), 0.999, 0.9999, 0.99999, 1))
+ExtractFreq(
+  data,
+  probs = c(0, 1e-05, 1e-04, 0.001, seq(0.01, 0.99, by = 0.01), 0.999, 0.9999, 0.99999,
+    1)
+)
 }
 \arguments{
 \item{data}{either a numeric vector or an all-numeric dataframe (\code{NA}s allowed) which holds the variables for which

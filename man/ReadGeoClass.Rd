@@ -4,8 +4,11 @@
 \alias{ReadGeoClass}
 \title{Read a 'GeoClass.txt' File}
 \usage{
-ReadGeoClass(filename = "GeoClass.txt", encoding = c("unknown",
-  "UTF-8", "Latin-1"), verbose = TRUE)
+ReadGeoClass(
+  filename = "GeoClass.txt",
+  encoding = c("unknown", "UTF-8", "Latin-1"),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the GeoClass file to import. Windows users: Note that 

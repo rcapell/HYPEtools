@@ -4,8 +4,7 @@
 \alias{ReadPar}
 \title{Read a 'par.txt' file}
 \usage{
-ReadPar(filename = "par.txt", encoding = c("unknown", "UTF-8",
-  "latin1"))
+ReadPar(filename = "par.txt", encoding = c("unknown", "UTF-8", "latin1"))
 }
 \arguments{
 \item{filename}{Path to and file name of the parameter file to import. Windows users: Note that 

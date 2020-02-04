@@ -4,8 +4,14 @@
 \alias{AllUpstreamSubids}
 \title{Find All Upstream SUBIDs}
 \usage{
-AllUpstreamSubids(subid, gd, bd = NULL, sort = FALSE,
-  get.weights = FALSE, write.arcgis = FALSE)
+AllUpstreamSubids(
+  subid,
+  gd,
+  bd = NULL,
+  sort = FALSE,
+  get.weights = FALSE,
+  write.arcgis = FALSE
+)
 }
 \arguments{
 \item{subid}{SUBID of a target sub-catchment (must exist in \code{gd}).}

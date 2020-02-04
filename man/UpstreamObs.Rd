@@ -4,8 +4,15 @@
 \alias{UpstreamObs}
 \title{Upstream forcing data averages}
 \usage{
-UpstreamObs(filename, subid, gd, bd = NULL, nr.obs = NULL,
-  dry.run = FALSE, verbose = FALSE)
+UpstreamObs(
+  filename,
+  subid,
+  gd,
+  bd = NULL,
+  nr.obs = NULL,
+  dry.run = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the forcing data text file to extract from. Windows users: Note that 

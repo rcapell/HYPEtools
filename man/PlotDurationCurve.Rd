@@ -4,10 +4,21 @@
 \alias{PlotDurationCurve}
 \title{Plot duration curves}
 \usage{
-PlotDurationCurve(freq, xscale = "lin", yscale = "log",
-  add.legend = FALSE, l.legend = NULL, ylim = NULL,
-  xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue",
-  lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + 0.1, restore.par = FALSE)
+PlotDurationCurve(
+  freq,
+  xscale = "lin",
+  yscale = "log",
+  add.legend = FALSE,
+  l.legend = NULL,
+  ylim = NULL,
+  xlab = "Flow exceedance percentile",
+  ylab = "m3s",
+  col = "blue",
+  lty = 1,
+  lwd = 1,
+  mar = c(3, 3, 1, 1) + 0.1,
+  restore.par = FALSE
+)
 }
 \arguments{
 \item{freq}{Data frame with at least two columns, containing probabilities in the first and series of data quantiles in the remaining columns. Typically 

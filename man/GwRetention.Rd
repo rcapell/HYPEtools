@@ -4,8 +4,7 @@
 \alias{GwRetention}
 \title{Calculate groundwater retention of nutrients}
 \usage{
-GwRetention(nfrz, nfs3, gts3, gd, par, unit.area = TRUE,
-  nutrient = "tn")
+GwRetention(nfrz, nfs3, gts3, gd, par, unit.area = TRUE, nutrient = "tn")
 }
 \arguments{
 \item{nfrz}{Data frame with two-columns. Sub-basin IDs in first column, net loads from root zone in kg/year in second column. Typically an 

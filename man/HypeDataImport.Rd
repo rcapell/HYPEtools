@@ -14,38 +14,103 @@
 \alias{ReadForcKey}
 \title{Read HYPE data files}
 \usage{
-ReadAquiferData(filename = "AquiferData.txt", verbose = T,
-  header = T, na.strings = "-9999", sep = "\\t",
-  stringsAsFactors = F, ...)
+ReadAquiferData(
+  filename = "AquiferData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
 
-ReadBranchData(filename = "BranchData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
+ReadBranchData(
+  filename = "BranchData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
 
-ReadCropData(filename = "CropData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
+ReadCropData(
+  filename = "CropData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
 
-ReadDamData(filename = "DamData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", quote = "",
-  stringsAsFactors = F, ...)
+ReadDamData(
+  filename = "DamData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  quote = "",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
 
-ReadGlacierData(filename = "GlacierData.txt", verbose = T,
-  header = T, na.strings = "-9999", sep = "\\t",
-  stringsAsFactors = F, ...)
+ReadGlacierData(
+  filename = "GlacierData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
 
-ReadLakeData(filename = "LakeData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", quote = "",
-  stringsAsFactors = F, ...)
+ReadLakeData(
+  filename = "LakeData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  quote = "",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
 
-ReadMgmtData(filename = "MgmtData.txt", verbose = T, header = T,
-  na.strings = "-9999", sep = "\\t", stringsAsFactors = F, ...)
+ReadMgmtData(
+  filename = "MgmtData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
 
-ReadPointSourceData(filename = "PointSourceData.txt", verbose = T,
-  header = T, na.strings = "-9999", sep = "\\t",
-  stringsAsFactors = F, ...)
+ReadPointSourceData(
+  filename = "PointSourceData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
 
 ReadAllsim(filename = "allsim.txt")
 
-ReadForcKey(filename = "ForcKey.txt", sep = "\\t")
+ReadForcKey(
+  filename = "ForcKey.txt",
+  sep = "\\t",
+  encoding = c("unknown", "latin1", "UTF-8")
+)
 }
 \arguments{
 \item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that 
@@ -61,9 +126,11 @@ Paths are separated by '/', not '\\'.}
 
 \item{stringsAsFactors}{See \code{header}.}
 
-\item{...}{Other parameters passed to \code{\link{read.table}}, in particular \code{encoding} when 
-importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") 
+\item{encoding}{\code{\link{read.table}} argument. Specify character encoding when 
+importing files created under Windows (default encoding "latin1") in Linux (default encoding "UTF-8") 
 and vice versa.}
+
+\item{...}{Other parameters passed to \code{\link{read.table}}.}
 
 \item{quote}{See \code{header}.}
 }

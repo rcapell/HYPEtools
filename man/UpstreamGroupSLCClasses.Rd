@@ -4,9 +4,16 @@
 \alias{UpstreamGroupSLCClasses}
 \title{Calculate area-weighted upstream averages of grouped SLC class fractions.}
 \usage{
-UpstreamGroupSLCClasses(subid = NULL, gd, bd = NULL, gcl = NULL,
-  type = c("landuse", "soil", "crop"), group = NULL,
-  signif.digits = 3, progbar = T)
+UpstreamGroupSLCClasses(
+  subid = NULL,
+  gd,
+  bd = NULL,
+  gcl = NULL,
+  type = c("landuse", "soil", "crop"),
+  group = NULL,
+  signif.digits = 3,
+  progbar = T
+)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 

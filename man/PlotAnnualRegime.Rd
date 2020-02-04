@@ -4,14 +4,25 @@
 \alias{PlotAnnualRegime}
 \title{Plot annual regimes}
 \usage{
-PlotAnnualRegime(x, line = c("mean", "median"), band = c("none",
-  "p05p95", "p25p75", "minmax"), add.legend = FALSE, l.legend = NULL,
-  l.position = c("topright", "bottomright", "right", "topleft", "left",
-  "bottomleft"), log = FALSE, ylim = NULL,
+PlotAnnualRegime(
+  x,
+  line = c("mean", "median"),
+  band = c("none", "p05p95", "p25p75", "minmax"),
+  add.legend = FALSE,
+  l.legend = NULL,
+  l.position = c("topright", "bottomright", "right", "topleft", "left", "bottomleft"),
+  log = FALSE,
+  ylim = NULL,
   ylab = expression(paste("Q (m"^3, " s"^{     -1 }, ")")),
-  xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse =
-  " to "), col = "blue", alpha = 30, lty = 1, lwd = 1, mar = c(3,
-  3, 1, 1) + 0.1, restore.par = FALSE, verbose = TRUE)
+  xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse = " to "),
+  col = "blue",
+  alpha = 30,
+  lty = 1,
+  lwd = 1,
+  mar = c(3, 3, 1, 1) + 0.1,
+  restore.par = FALSE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 

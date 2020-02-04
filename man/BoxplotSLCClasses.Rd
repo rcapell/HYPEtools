@@ -4,10 +4,23 @@
 \alias{BoxplotSLCClasses}
 \title{Box plots of SLC distributions}
 \usage{
-BoxplotSLCClasses(gd, gcl, col.landuse = "rainbow", col.group = NULL,
-  lab.legend = NULL, pos.legend = 1, abs.area = F, log = "",
-  ylim = NULL, range = 0, mar = c(3, 3, 1, 7) + 0.1, mgp = c(1.5,
-  0.2, 0), tcl = 0.1, xaxs = "i", xpd = T)
+BoxplotSLCClasses(
+  gd,
+  gcl,
+  col.landuse = "rainbow",
+  col.group = NULL,
+  lab.legend = NULL,
+  pos.legend = 1,
+  abs.area = F,
+  log = "",
+  ylim = NULL,
+  range = 0,
+  mar = c(3, 3, 1, 7) + 0.1,
+  mgp = c(1.5, 0.2, 0),
+  tcl = 0.1,
+  xaxs = "i",
+  xpd = T
+)
 }
 \arguments{
 \item{gd}{Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}

@@ -4,9 +4,16 @@
 \alias{OutletNearObs}
 \title{Find outlet-near observations in HYPE observation data files.}
 \usage{
-OutletNearObs(gd, file.qobs = NULL, file.xobs = NULL,
-  variable = NULL, outlets = NULL, frac.drain = 0.8,
-  nearest.only = TRUE, verbose = TRUE)
+OutletNearObs(
+  gd,
+  file.qobs = NULL,
+  file.xobs = NULL,
+  variable = NULL,
+  outlets = NULL,
+  frac.drain = 0.8,
+  nearest.only = TRUE,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{gd}{Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive). 

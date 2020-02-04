@@ -4,8 +4,15 @@
 \alias{AnnualRegime}
 \title{Calculate annual regimes}
 \usage{
-AnnualRegime(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL,
-  start.mon = 1, incl.leap = FALSE, na.rm = TRUE)
+AnnualRegime(
+  x,
+  stat = c("mean", "sum"),
+  ts.in = NULL,
+  ts.out = NULL,
+  start.mon = 1,
+  incl.leap = FALSE,
+  na.rm = TRUE
+)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series. Date-times in \code{\link{POSIXct}} format in first column.

@@ -4,10 +4,19 @@
 \alias{CleanSLCClasses}
 \title{Clean Soil-Landuse classes (SLCs) from small fractions}
 \usage{
-CleanSLCClasses(gd, gcl, m1.file = NULL, m1.class = "s",
-  m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2),
-  m2.frac = NULL, m2.abs = NULL, signif.digits = 3, verbose = T,
-  progbar = T)
+CleanSLCClasses(
+  gd,
+  gcl,
+  m1.file = NULL,
+  m1.class = "s",
+  m1.clean = rep(TRUE, 2),
+  m1.precedence = rep(TRUE, 2),
+  m2.frac = NULL,
+  m2.abs = NULL,
+  signif.digits = 3,
+  verbose = T,
+  progbar = T
+)
 }
 \arguments{
 \item{gd}{Data frame containing columns with SUBIDs, SUBID areas in m^2, and SLC fractions, typically a 'GeoData.txt' file 

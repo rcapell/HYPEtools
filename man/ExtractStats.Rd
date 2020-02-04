@@ -4,9 +4,15 @@
 \alias{ExtractStats}
 \title{Extract statistics from time series}
 \usage{
-ExtractStats(x, start.mon = 1, aggperiod = c("year", "season1",
-  "season2", "month"), timestep = attr(x, "timestep"), subid = attr(x,
-  "subid"), FUN, ...)
+ExtractStats(
+  x,
+  start.mon = 1,
+  aggperiod = c("year", "season1", "season2", "month"),
+  timestep = attr(x, "timestep"),
+  subid = attr(x, "subid"),
+  FUN,
+  ...
+)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series. Date-times in \code{\link{POSIXct}} format in first column.

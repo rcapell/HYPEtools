@@ -4,9 +4,13 @@
 \alias{ReadXobs}
 \title{Read an 'Xobs.txt' file}
 \usage{
-ReadXobs(filename = "Xobs.txt", dt.format = "\%Y-\%m-\%d",
-  variable = NULL, nrows = -1L, verbose = if (nrows \%in\% 0:2) FALSE
-  else TRUE)
+ReadXobs(
+  filename = "Xobs.txt",
+  dt.format = "\%Y-\%m-\%d",
+  variable = NULL,
+  nrows = -1L,
+  verbose = if (nrows \%in\% 0:2) FALSE else TRUE
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the Xobs file to import. Windows users: Note that 

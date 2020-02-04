@@ -4,11 +4,24 @@
 \alias{PlotSimObsRegime}
 \title{Plot annual regimes of simulated and observed variables}
 \usage{
-PlotSimObsRegime(x, sim, obs, ts.in = NULL, ts.out = "month",
-  start.mon = 1, add.legend = TRUE, pos.legend = "topright",
-  inset = 0, l.legend = NULL, log = FALSE, ylim = NULL,
-  xlab = NULL, ylab = NULL, mar = c(3, 3, 1, 1) + 0.1,
-  restore.par = FALSE)
+PlotSimObsRegime(
+  x,
+  sim,
+  obs,
+  ts.in = NULL,
+  ts.out = "month",
+  start.mon = 1,
+  add.legend = TRUE,
+  pos.legend = "topright",
+  inset = 0,
+  l.legend = NULL,
+  log = FALSE,
+  ylim = NULL,
+  xlab = NULL,
+  ylab = NULL,
+  mar = c(3, 3, 1, 1) + 0.1,
+  restore.par = FALSE
+)
 }
 \arguments{
 \item{x}{Data frame, with column-wise equally-spaced time series of HYPE variables. Date-times in 

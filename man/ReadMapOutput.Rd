@@ -4,8 +4,13 @@
 \alias{ReadMapOutput}
 \title{Read a Map Output File}
 \usage{
-ReadMapOutput(filename, dt.format = NULL, hype.var = NULL,
-  type = "df", warn.nan = FALSE)
+ReadMapOutput(
+  filename,
+  dt.format = NULL,
+  hype.var = NULL,
+  type = "df",
+  warn.nan = FALSE
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the map output file to import. Windows users: Note that 

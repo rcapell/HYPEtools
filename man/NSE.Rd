@@ -5,8 +5,7 @@
 \alias{NSE.HypeSingleVar}
 \title{Nash-Sutcliffe Efficiency}
 \usage{
-\method{NSE}{HypeSingleVar}(sim, obs, na.rm = TRUE, progbar = TRUE,
-  ...)
+\method{NSE}{HypeSingleVar}(sim, obs, na.rm = TRUE, progbar = TRUE, ...)
 }
 \arguments{
 \item{sim}{\code{\link{HypeSingleVar}} array with simulated variable (one or several iterations).}

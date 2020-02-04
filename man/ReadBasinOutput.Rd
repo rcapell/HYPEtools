@@ -4,8 +4,13 @@
 \alias{ReadBasinOutput}
 \title{Read a Basin Output File}
 \usage{
-ReadBasinOutput(filename, dt.format = "\%Y-\%m-\%d", type = "df",
-  subid = NULL, warn.nan = FALSE)
+ReadBasinOutput(
+  filename,
+  dt.format = "\%Y-\%m-\%d",
+  type = "df",
+  subid = NULL,
+  warn.nan = FALSE
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the basin output file to import. Windows users: Note that 

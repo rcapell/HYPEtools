@@ -4,12 +4,27 @@
 \alias{PlotBasinSummary}
 \title{Plot a summary of model results for a single sub-basin}
 \usage{
-PlotBasinSummary(x, filename = NULL, driver = c("pdf", "png",
-  "screen"), panels = 1, gd = NULL, bd = NULL, gcl = NULL,
-  psd = NULL, subid = NULL, desc = NULL, timestep = attr(x,
-  "timestep"), hype.vars = "all", from = 1, to = nrow(x),
-  log = FALSE, xscale = "gauss", start.mon = 10, name = "",
-  ylab.t1 = "Conc.")
+PlotBasinSummary(
+  x,
+  filename = NULL,
+  driver = c("pdf", "png", "screen"),
+  panels = 1,
+  gd = NULL,
+  bd = NULL,
+  gcl = NULL,
+  psd = NULL,
+  subid = NULL,
+  desc = NULL,
+  timestep = attr(x, "timestep"),
+  hype.vars = "all",
+  from = 1,
+  to = nrow(x),
+  log = FALSE,
+  xscale = "gauss",
+  start.mon = 10,
+  name = "",
+  ylab.t1 = "Conc."
+)
 }
 \arguments{
 \item{x}{Data frame, with column-wise daily time series of HYPE variables. Date-times in 

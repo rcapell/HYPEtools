@@ -4,8 +4,11 @@
 \alias{ReadGeoData}
 \title{Read a 'GeoData.txt' file}
 \usage{
-ReadGeoData(filename = "GeoData.txt", sep = "\\t",
-  encoding = c("unknown", "UTF-8", "Latin-1"))
+ReadGeoData(
+  filename = "GeoData.txt",
+  sep = "\\t",
+  encoding = c("unknown", "UTF-8", "Latin-1")
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the GeoData file to import. Windows users: Note that 

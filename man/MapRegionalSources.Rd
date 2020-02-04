@@ -4,8 +4,7 @@
 \alias{MapRegionalSources}
 \title{Map regional irrigation source connection as spatial lines}
 \usage{
-MapRegionalSources(data, map, map.subid.column = 1, digits = 3,
-  progbar = T)
+MapRegionalSources(data, map, map.subid.column = 1, digits = 3, progbar = T)
 }
 \arguments{
 \item{data}{Dataframe, containing a column \code{SUBID} and a column \code{REGSRCID} (not case-sensitive), which identify 

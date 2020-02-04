@@ -4,8 +4,16 @@
 \alias{WriteXobs}
 \title{Write an 'Xobs.txt' File}
 \usage{
-WriteXobs(x, filename = "Xobs.txt", append = F, comment = NULL,
-  variable = NULL, subid = NULL, last.date = NULL, timestep = "d")
+WriteXobs(
+  x,
+  filename = "Xobs.txt",
+  append = F,
+  comment = NULL,
+  variable = NULL,
+  subid = NULL,
+  last.date = NULL,
+  timestep = "d"
+)
 }
 \arguments{
 \item{x}{A data frame, e.g. an object originally imported with \code{\link{ReadXobs}}. Date-time information in the first 
