@@ -1264,9 +1264,10 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
 #' @param sep See \code{header}.
 #' @param stringsAsFactors See \code{header}.
 #' @param quote See \code{header}.
-#' @param ... Other parameters passed to \code{\link{read.table}}, in particular \code{encoding} when 
-#' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") 
+#' @param encoding \code{\link{read.table}} argument. Specify character encoding when 
+#' importing files created under Windows (default encoding "latin1") in Linux (default encoding "UTF-8") 
 #' and vice versa.
+#' @param ... Other parameters passed to \code{\link{read.table}}. 
 #'  
 #' @details
 #' Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
@@ -1302,10 +1303,13 @@ NULL
 #' @rdname HypeDataImport
 #' @export
 ReadAquiferData <- function(filename = "AquiferData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                            stringsAsFactors = F, ...) {
+                            stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   # import
   res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
-                    stringsAsFactors = stringsAsFactors, ...)
+                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -1316,9 +1320,12 @@ ReadAquiferData <- function(filename = "AquiferData.txt", verbose = T, header = 
 #' @rdname HypeDataImport
 #' @export
 ReadBranchData <- function(filename = "BranchData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                           stringsAsFactors = F, ...) {
+                           stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
-                    stringsAsFactors = stringsAsFactors, ...)
+                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -1329,9 +1336,12 @@ ReadBranchData <- function(filename = "BranchData.txt", verbose = T, header = T,
 #' @rdname HypeDataImport
 #' @export
 ReadCropData <- function(filename = "CropData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                         stringsAsFactors = F, ...) {
+                         stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
-                    stringsAsFactors = stringsAsFactors, ...)
+                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -1342,9 +1352,12 @@ ReadCropData <- function(filename = "CropData.txt", verbose = T, header = T, na.
 #' @rdname HypeDataImport
 #' @export
 ReadDamData <- function(filename = "DamData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                        quote = "", stringsAsFactors = F, ...) {
+                        quote = "", stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
-                    stringsAsFactors = stringsAsFactors, quote = quote, ...)
+                    stringsAsFactors = stringsAsFactors, quote = quote, encoding = encoding, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -1355,9 +1368,12 @@ ReadDamData <- function(filename = "DamData.txt", verbose = T, header = T, na.st
 #' @rdname HypeDataImport
 #' @export
 ReadGlacierData <- function(filename = "GlacierData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                            stringsAsFactors = F, ...) {
+                            stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
-                    stringsAsFactors = stringsAsFactors, ...)
+                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -1368,9 +1384,12 @@ ReadGlacierData <- function(filename = "GlacierData.txt", verbose = T, header = 
 #' @rdname HypeDataImport
 #' @export
 ReadLakeData <- function(filename = "LakeData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                         quote = "", stringsAsFactors = F, ...) {
+                         quote = "", stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, quote = quote, 
-                    stringsAsFactors = stringsAsFactors, ...)
+                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -1381,10 +1400,13 @@ ReadLakeData <- function(filename = "LakeData.txt", verbose = T, header = T, na.
 #' @rdname HypeDataImport
 #' @export
 ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                         stringsAsFactors = F, ...) {
+                         stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   # import
   res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
-                    stringsAsFactors = stringsAsFactors, ...)
+                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -1395,9 +1417,12 @@ ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, header = T, na.
 #' @rdname HypeDataImport
 #' @export
 ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                                stringsAsFactors = F, ...) {
+                                stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
   res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
-                    stringsAsFactors = stringsAsFactors, ...)
+                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
@@ -1413,8 +1438,12 @@ ReadAllsim <- function(filename = "allsim.txt") {
 
 #' @rdname HypeDataImport
 #' @export
-ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t") {
-  read.table(file = filename, header = T, sep = sep)
+ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t", encoding = c("unknown", "latin1", "UTF-8")) {
+  
+  # argument checks
+  encoding <- match.arg(encoding)
+  
+  read.table(file = filename, header = T, sep = sep, encoding = encoding)
 }
 
 
