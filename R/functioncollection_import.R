@@ -211,7 +211,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
   nm <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             skip = 2, sep = "\t", header = F, data.table = d.t, colClasses = c("NA", rep("numeric", length(nm) - 1)))      
+             skip = 2, sep = "\t", header = F, data.table = d.t, colClasses = c("character", rep("numeric", length(nm) - 1)))      
   names(x) <- c("DATE", nm[-1])
   
   
@@ -436,7 +436,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
   
   # read the data, skip header and comment rows, force numeric data (automatic column classes can be integer)
   xobs <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, nrows = nrows, 
-                colClasses = c("NA", rep("numeric", ncl)), select = sel)
+                colClasses = c("character", rep("numeric", ncl)), select = sel)
   
   # update header, composite of variable and subid
   names(xobs) <- c("DATE", paste(hype.var, sbd, sep = "_"))
