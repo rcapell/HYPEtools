@@ -23,6 +23,7 @@
 #' @param cex.axis Numeric, character expansion factor for axis annotation and labels.
 #' @param cex.names Numeric, character expansion factor for class group labels.
 #' @param col Colors for bars. Defaults to \code{type}-specific pre-defined color. 
+#' @param border Colors for bar borders. Defaults to no borders.
 #' @param legend.text Character, if provided, a legend will be plotted. Defaults to none if one sub-basin is plotted, and SUBIDs 
 #' if several sub-basins are plotted. Set to \code{NA} to prevent legend plotting in any case.
 #' @param legend.pos Character keyword for legend positioning, most likely \code{"left"} or \code{"right"}. For details, see 
@@ -54,7 +55,7 @@
 
 BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "crop"), desc = NULL, class.names = NULL, xlab = NULL, 
                                     ylab = "Area fraction (%)", ylim = c(-.05,  max(x[, -1] * 150)), names.arg = rep("", ncol(x) - 1), 
-                                    cex.axis = 1, cex.names = .9, col = NULL, legend.text = NULL, legend.pos = "left", 
+                                    cex.axis = 1, cex.names = .9, col = NULL, border = NA, legend.text = NULL, legend.pos = "left", 
                                     pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")) {
   
   # input argument checks
@@ -182,14 +183,14 @@ BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "cr
   
   # plot bars and labels
   res <- barplot(height = as.matrix(x[, -1]) * 100, names.arg = names.arg, beside = T, xlab = xlab, ylab = ylab, 
-                 ylim = ylim, border = NA, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = NULL)
+                 ylim = ylim, border = border, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = NULL)
   mtext(text = lgroup, side = 3, at = colMeans(res), line = -.2, padj = .3, cex = cex.names, las = 3, adj = 1)
   mtext(xlab, side = 1, line = .5, cex = cex.names)
   abline(v = diff(colMeans(res))/2 + colMeans(res)[-ncol(res)] - .05, col = "grey90")
   if (!is.null(leg.t)) {
     legend(x = legend.pos, legend = leg.t, border = NA, cex = cex.names, fill = col, bg = "#FFFFFFB3", box.lty = 0)
   }
-  box()
+  box(lwd = 1)
   
   # return barplot value invisibly
   invisible(res)

@@ -16,6 +16,7 @@ BarplotUpstreamClasses(
   cex.axis = 1,
   cex.names = 0.9,
   col = NULL,
+  border = NA,
   legend.text = NULL,
   legend.pos = "left",
   pars = list(mar = c(1.5, 3, 0.5, 0.5) + 0.1, mgp = c(1.5, 0.3, 0), tcl = NA, xaxs =
@@ -52,6 +53,8 @@ arguments above).}
 \item{cex.names}{Numeric, character expansion factor for class group labels.}
 
 \item{col}{Colors for bars. Defaults to \code{type}-specific pre-defined color.}
+
+\item{border}{Colors for bar borders. Defaults to no borders.}
 
 \item{legend.text}{Character, if provided, a legend will be plotted. Defaults to none if one sub-basin is plotted, and SUBIDs 
 if several sub-basins are plotted. Set to \code{NA} to prevent legend plotting in any case.}
