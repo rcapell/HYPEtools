@@ -186,7 +186,7 @@ BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "cr
                  ylim = ylim, border = border, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = NULL)
   mtext(text = lgroup, side = 3, at = colMeans(res), line = -.2, padj = .3, cex = cex.names, las = 3, adj = 1)
   mtext(xlab, side = 1, line = .5, cex = cex.names)
-  abline(v = diff(colMeans(res))/2 + colMeans(res)[-ncol(res)] - .05, col = "grey90")
+  abline(v = diff(colMeans(res))/2 + colMeans(res)[-ncol(res)] - .05, col = "grey90", lwd = 1)
   if (!is.null(leg.t)) {
     legend(x = legend.pos, legend = leg.t, border = NA, cex = cex.names, fill = col, bg = "#FFFFFFB3", box.lty = 0)
   }
