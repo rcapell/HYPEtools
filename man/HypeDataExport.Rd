@@ -3,6 +3,7 @@
 \name{HypeDataExport}
 \alias{HypeDataExport}
 \alias{WriteAquiferData}
+\alias{WriteOutregions}
 \alias{WriteBranchData}
 \alias{WriteCropData}
 \alias{WriteDamData}
@@ -13,6 +14,8 @@
 \title{Write HYPE data files}
 \usage{
 WriteAquiferData(x, filename = "AquiferData.txt", verbose = T)
+
+WriteOutregions(x, filename = "Outregions.txt", verbose = T)
 
 WriteBranchData(x, filename = "BranchData.txt", verbose = T)
 
@@ -53,7 +56,8 @@ specifications:
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{BranchData.txt}
+  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
+  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
 }
 
 In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 

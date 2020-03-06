@@ -1,4 +1,5 @@
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+#--------------------------------------------------------------------------------------------------------------------------------------
 #   Collection of export functions, herein:
 #
 #     - WritePar()
@@ -15,12 +16,14 @@
 #         WritePointSourceData()
 #     - WriteOptpar()
 #     - 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WritePar
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write a 'par.txt' File
 #'
@@ -56,7 +59,9 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteGeoData~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WriteGeoData
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write a 'GeoData.txt' file
 #'
@@ -105,7 +110,9 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteGeoClass~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WriteGeoClass
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write a 'GeoClass.txt' file
 #'
@@ -159,7 +166,9 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt", use.comment = FALSE) {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteXobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WriteXobs
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write an 'Xobs.txt' File
 #'
@@ -433,7 +442,9 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteBasinOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WriteBasinOutput
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write a basin output '[SUBID].txt' file
 #'
@@ -498,7 +509,9 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteTimeOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WriteTimeOutput
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write a 'timeXXXX.txt' file
 #'
@@ -562,7 +575,9 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteMapOutput~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WriteMapOutput
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write a 'mapXXXX.txt' file
 #'
@@ -621,7 +636,9 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePmsf~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WritePmsf
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write a 'pmsf.txt' file
 #'
@@ -655,7 +672,9 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WritePTQobs~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WritePTQobs
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files
 #'
@@ -740,7 +759,9 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid 
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HypeDataExport~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# HypeDataExport
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write HYPE data files
 #'
@@ -767,7 +788,8 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid 
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{BranchData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
 #' }
 #' 
 #' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
@@ -802,7 +824,29 @@ WriteAquiferData <- function(x, filename = "AquiferData.txt", verbose = T) {
   te <- apply(x, 2, function(x) {any(is.na(x))})
   if (any(te) && verbose) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
-    }
+  }
+  # export
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  # old version
+  # # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
+  # x[is.na(x)] <- -9999
+  # write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
+  #             quote = FALSE, sep = "\t", row.names = FALSE, na = "")
+}
+
+#' @rdname HypeDataExport
+#' @importFrom data.table fwrite
+#' @export
+WriteOutregions <- function(x, filename = "Outregions.txt", verbose = T) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
+  # warn if NAs in data, since HYPE does not allow empty values in 
+  te <- apply(x, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) {
+    warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
+  }
   # export
   fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
   # old version
@@ -919,7 +963,9 @@ WriteForcKey <- function(x, filename = "ForcKey.txt") {
 
 
 
-#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WriteOptpar~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WriteOptpar
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write an 'optpar.txt' File
 #'

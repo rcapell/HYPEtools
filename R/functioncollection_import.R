@@ -150,7 +150,6 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 # ReadBasinOutput
 #--------------------------------------------------------------------------------------------------------------------------------------
 
-
 #' Read a Basin Output File
 #'
 #' This is a convenience wrapper function to import a basin output file as data frame or matrix into R.
@@ -1311,6 +1310,7 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
 #' }
 #' 
@@ -1343,6 +1343,20 @@ ReadAquiferData <- function(filename = "AquiferData.txt", verbose = T, header = 
   # check for NAs
   te <- apply(res, 2, function(x) {any(is.na(x))})
   if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+
+#' @rdname HypeDataImport
+#' @export
+ReadOutregions <- function(filename = "Outregions.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
+                            stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
+  # import
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
+  names(res) <- toupper(names(res))
   return(res)
 }
 

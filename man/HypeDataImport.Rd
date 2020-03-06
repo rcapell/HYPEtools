@@ -3,6 +3,7 @@
 \name{HypeDataImport}
 \alias{HypeDataImport}
 \alias{ReadAquiferData}
+\alias{ReadOutregions}
 \alias{ReadBranchData}
 \alias{ReadCropData}
 \alias{ReadDamData}
@@ -16,6 +17,17 @@
 \usage{
 ReadAquiferData(
   filename = "AquiferData.txt",
+  verbose = T,
+  header = T,
+  na.strings = "-9999",
+  sep = "\\t",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
+
+ReadOutregions(
+  filename = "Outregions.txt",
   verbose = T,
   header = T,
   na.strings = "-9999",
@@ -153,6 +165,7 @@ specifications:
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
 }
 
