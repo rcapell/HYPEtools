@@ -8,7 +8,7 @@ ReadWsOutput(
   path,
   type = c("time", "map", "basin"),
   hype.var = NULL,
-  subid = NULL,
+  id = NULL,
   dt.format = NULL,
   select = NULL,
   from = NULL,
@@ -28,7 +28,7 @@ Paths are separated by '/', not '\\'.}
 \item{hype.var}{Character string, keyword to specify HYPE output variable to import. Not case-sensitive. Required in combination 
 with \code{type} \code{"time"} or \code{"map"}.}
 
-\item{subid}{Integer, giving a single SUBID for which to import basin output files. Required in combination with \code{type} 
+\item{id}{Integer, giving a single SUBID or OUTREGID for which to import basin output files. Required in combination with \code{type} 
 \code{"basin"}.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in imported 
@@ -56,13 +56,14 @@ specified in argument \code{type}. Time and map output file imports return an ar
 \code{[time, subid, iteration]} dimensions, basin output file imports return an array of class \code{\link{HypeMultiVar}} with 
 \code{[time, variable, iteration]} dimensions. An additional attribute \code{subid.nan} might be 
 returned, see argument \code{warn.nan}, containing a list with SUBID vector elements. Vectors contain iterations where \code{NaN} 
-values occur for hte given subid.
+values occur for the given subid.
 
 Returned arrays contain additional \code{\link{attributes}}:
 \describe{
 \item{\strong{date}}{A vector of date-times, \code{POSIX} if argument \code{dt.format} is non-\code{NULL}. Corresponds to 1st array 
 dimension.}
-\item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files.}
+\item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files. \code{NA} if not applicable.}
+\item{\strong{outregid}}{A vector of OUTREGIDs. Corresponds to 2nd array dimension for time and map output files. \code{NA} if not applicable.}
 \item{\strong{variable}}{A vector of HYPE output variables. Corresponds to 2nd array dimension for basin output files.}
 \item{\strong{nan (optional)}}{A named list with SUBID or HYPE variable vector elements. Vectors contain iterations where \code{NaN} 
 values occur for the given SUBID/HYPE variable.}

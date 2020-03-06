@@ -4,7 +4,7 @@
 \alias{HypeMultiVar}
 \title{HypeMultiVar arrays}
 \usage{
-HypeMultiVar(x, date, hype.var, subid)
+HypeMultiVar(x, date, hype.var, subid = NULL, outregid = NULL)
 }
 \arguments{
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one sub-basin as (in order)
@@ -14,11 +14,13 @@ HypeMultiVar(x, date, hype.var, subid)
 with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 period averages, e.g. \code{"2000-2010"}.}
 
-\item{hype.var}{Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
+\item{hype.var}{Character vector of keywords to specify HYPE variable IDs, corresponding to second dimension 
 (columns) in \code{x}. See 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}}
 
-\item{subid}{Integer with HYPE sub-basin ID. Not case-sensitive.}
+\item{subid}{Integer, HYPE sub-basin ID. Either this or \code{outregid} needs to be supplied.}
+
+\item{outregid}{Integer, HYPE output region ID, alternative to \code{subid}.}
 }
 \value{
 Returns a 3-dimensional array with 
@@ -27,6 +29,7 @@ Returns a 3-dimensional array with
 \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
 \item{\strong{variable}}{A character vector of HYPE output variable IDs.}
 \item{\strong{subid}}{A single SUBID.}
+\item{\strong{subid}}{A single OUTREGID.}
 \item{\strong{timestep}}{A character keyword for the time step.}
 }
 }
@@ -38,6 +41,6 @@ multiple model runs, typically imported HYPE basin output results.
 S3 class constructor function for array objects which can hold (multiple) HYPE basin output results.
 }
 \examples{
-\dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", ccon), , subid = 23, tstep = "day"}
+\dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", "ccon"), , subid = 23, tstep = "day"}
 
 }

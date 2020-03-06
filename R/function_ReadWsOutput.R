@@ -11,7 +11,7 @@
 #' \code{subid}. Format of return value depends on output type, see details.
 #' @param hype.var Character string, keyword to specify HYPE output variable to import. Not case-sensitive. Required in combination 
 #' with \code{type} \code{"time"} or \code{"map"}.
-#' @param subid Integer, giving a single SUBID for which to import basin output files. Required in combination with \code{type} 
+#' @param id Integer, giving a single SUBID or OUTREGID for which to import basin output files. Required in combination with \code{type} 
 #' \code{"basin"}.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in imported 
 #' result files to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
@@ -49,14 +49,15 @@
 #' \code{[time, subid, iteration]} dimensions, basin output file imports return an array of class \code{\link{HypeMultiVar}} with 
 #' \code{[time, variable, iteration]} dimensions. An additional attribute \code{subid.nan} might be 
 #' returned, see argument \code{warn.nan}, containing a list with SUBID vector elements. Vectors contain iterations where \code{NaN} 
-#' values occur for hte given subid.
+#' values occur for the given subid.
 
 #' 
 #' Returned arrays contain additional \code{\link{attributes}}:
 #' \describe{
 #' \item{\strong{date}}{A vector of date-times, \code{POSIX} if argument \code{dt.format} is non-\code{NULL}. Corresponds to 1st array 
 #' dimension.}
-#' \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files.}
+#' \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files. \code{NA} if not applicable.}
+#' \item{\strong{outregid}}{A vector of OUTREGIDs. Corresponds to 2nd array dimension for time and map output files. \code{NA} if not applicable.}
 #' \item{\strong{variable}}{A vector of HYPE output variables. Corresponds to 2nd array dimension for basin output files.}
 #' \item{\strong{nan (optional)}}{A named list with SUBID or HYPE variable vector elements. Vectors contain iterations where \code{NaN} 
 #' values occur for the given SUBID/HYPE variable.}
@@ -71,7 +72,7 @@
 
 
 
-ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL, subid = NULL, dt.format = NULL, 
+ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL, id = NULL, dt.format = NULL, 
                          select = NULL, from = NULL, to = NULL, progbar = TRUE, warn.nan = FALSE) {
   
   type <- match.arg(type)
@@ -103,14 +104,14 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
   # create vector of basin file locations
   if (type == "basin") {
     # check if required argument subid exists
-    if (is.null(subid)) {
-      stop("Argument 'subid' required with basin output files.")
+    if (is.null(id)) {
+      stop("Argument 'id' required with basin output files.")
     }
     # import
-    locs <- list.files(path = path, pattern = glob2rx(paste0("*", subid, "_", "*.txt")), full.names = TRUE)
+    locs <- list.files(path = path, pattern = glob2rx(paste0("*", id, "_", "*.txt")), full.names = TRUE)
     # break if no files found
     if (length(locs) == 0) {
-      stop(paste("No", type, "output files for subid", subid, "found in directory specified in argument 'path'."))
+      stop(paste("No", type, "output files for SUBID/OUTREGID", id, "found in directory specified in argument 'path'."))
     }
   }
   
@@ -169,7 +170,8 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     }
     
     attr(res, "date") <- te[, 1]
-    attr(res, "subid") <- subid
+    attr(res, "subid") <- attr(te, "subid")
+    attr(res, "outregid") <- attr(te, "outregid")
     attr(res, "variable") <- names(te)[-1]
     class(res) <- c("HypeMultiVar", "array")
     

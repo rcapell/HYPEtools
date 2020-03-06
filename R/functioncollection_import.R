@@ -162,22 +162,27 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hmv"} to return a \code{\link{HypeMultiVar}} array. 
-#' @param subid Integer, SUBID of the imported sub-basin results. If \code{NULL} (default), the function attempts to read this 
+#' @param id Integer, SUBID or OUTREGID of the imported sub-basin or outregion results. If \code{NULL} (default), the function attempts to read this 
 #' from the imported file's name, which only works for standard HYPE basin output file names or any where the first 7 digits 
-#' give the SUBID with leading zeros.
+#' give the SUBID or OUTREGID with leading zeros. See details.
 #' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
 #' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
 #' 
 #' @details
-#' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package 
+#' \code{ReadBasinOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package 
 #' \code{\link{data.table}}, with conversion of date-time strings to
 #' POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
+#' 
+#' HYPE basin output files can contain results for a single sub-basin or for a user-defined output region. \code{ReadBasinOutput} checks HYPE 
+#' variable names (column headers in imported file) for an "RG"-prefix. If it is found, the ID read from either file name or argument 
+#' \code{id} is saved to attribute \code{outregid}, otherwise to attribute \code{subid}.
 #' 
 #' @return
 #' \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{unit}, a vector of HYPE variable units, 
-#' \code{subid}, the HYPE SUBID to which the time series belong, and \code{timestep} with a time step keyword attribute. 
-#' An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
+#' \code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created, assigned \code{NA} 
+#' if not applicable to data contents), and \code{timestep} 
+#' with a time step keyword attribute. An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
 
 
 #' @note
@@ -188,7 +193,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 #' Results will then contain values of '****************'. \code{ReadBasinOutput} will convert those cases to 'NA' entries.
 #' 
-#' Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
+#' Current versions of HYPE allow for defining significant numbers of digits instead of fixed ones, which should prevent this 
 #' issue from arising.
 #' 
 #' @examples
@@ -198,21 +203,34 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' @export
 
 
-ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid = NULL, warn.nan = FALSE) {
+ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt", "hmv"), id = NULL, warn.nan = FALSE) {
   
   # handling output type user choice
+  type <- match.arg(type)
   if (type == "df") {
     d.t <- F
-  } else if (type %in% c("dt", "hmv")) {
-    d.t <- T
   } else {
-    stop(paste0("Unknown type ", type, "."))
+    d.t <- T
   }
-  nm <- strsplit(readLines(filename, n = 1),split = "\t")[[1]]
+  
+  # read header with variable names
+  nm <- toupper(strsplit(readLines(filename, n = 1),split = "\t")[[1]])
+  
+  # import data
   x <- fread(filename, 
-             na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
+             na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", 
+                            "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
              skip = 2, sep = "\t", header = F, data.table = d.t, colClasses = c("character", rep("numeric", length(nm) - 1)))      
-  names(x) <- c("DATE", nm[-1])
+  
+  # check if results are region outputs and update header with HYPE variable names
+  if (all(substr(nm[-1], 1, 2) == "RG")) {
+    reg.out <- T
+    nm[-1] <- substr(nm[-1], 3, 100)
+  } else {
+    reg.out <- F
+  }
+  
+  names(x) <- nm
   
   
   ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
@@ -269,16 +287,18 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
     xd <- NA
   }
   
-  ## extract attributes to hold measurement units and SUBID
+  ## extract attributes to hold measurement units and SUBID/OUTREGID
+  
   munit <- readLines(filename, n = 2)
   munit <- strsplit(munit[2], split = "\t")[[1]][-1]
-  # subid conditional on user argument
-  if (is.null(subid)) {
+  
+  # subid/outregid conditional on user argument
+  if (is.null(id)) {
     sbd <- strsplit(filename, "/")[[1]]
     sbd <- as.integer(substr(sbd[length(sbd)], start = 1, stop = 7))
     #as.integer(gsub("[[:alpha:][:punct:]]", "", sbd[length(sbd)]))
   } else {
-    sbd  <- subid
+    sbd  <- id
   }
   # conditional: timestep attribute identified by difference between first two entries
   tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
@@ -313,9 +333,14 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
     
     # update with new attributes
     attr(x, which = "unit") <- munit
-    attr(x, which = "subid") <- sbd
     attr(x, which = "timestep") <- tstep
-    
+    if (reg.out) {
+      attr(x, which = "outregid") <- sbd
+      attr(x, which = "subid") <- NA
+    } else {
+      attr(x, which = "outregid") <- NA
+      attr(x, which = "subid") <- sbd
+    }
     
   } else {
     ## HypeMultiVar formatting
@@ -326,13 +351,17 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = "df", subid
     x <- as.array(as.matrix(x))
     # adding 'iteration' dimension
     dim(x) <- c(dim(x), 1)
-    x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, subid = sbd)
+    # construct HypeMultiVar array, conditional on subid/outregid contents
+    if (reg.out) {
+      x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, outregid = sbd)
+    } else {
+      x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, subid = sbd)
+    }
+    
   }
   
   return(x)
 }
-
-
 
 
 
