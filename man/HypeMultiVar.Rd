@@ -29,7 +29,7 @@ Returns a 3-dimensional array with
 \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
 \item{\strong{variable}}{A character vector of HYPE output variable IDs.}
 \item{\strong{subid}}{A single SUBID.}
-\item{\strong{subid}}{A single OUTREGID.}
+\item{\strong{outregid}}{A single OUTREGID.}
 \item{\strong{timestep}}{A character keyword for the time step.}
 }
 }
