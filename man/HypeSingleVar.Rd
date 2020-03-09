@@ -4,17 +4,20 @@
 \alias{HypeSingleVar}
 \title{HypeSingleVar arrays}
 \usage{
-HypeSingleVar(x, date, subid, hype.var)
+HypeSingleVar(x, date, subid = NULL, outregid = NULL, hype.var)
 }
 \arguments{
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one variable as (in order)
-\code{[date, subid, iteration]}.}
+\code{[date, subid/outregid, iteration]}.}
 
 \item{date}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
 with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 period averages, e.g. \code{"2000-2010"}.}
 
-\item{subid}{Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}.}
+\item{subid}{Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}. Either this 
+or \code{outregid} needs to be supplied.}
+
+\item{outregid}{Integer vector with HYPE output region IDs, alternative to \code{subid}.}
 
 \item{hype.var}{Character string, four-letter keyword to specify HYPE variable ID, see 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}. 
@@ -25,7 +28,8 @@ Returns a 3-dimensional array with
 \code{[time, subid, iteration]} dimensions and additional \code{\link{attributes}}:
 \describe{
 \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
-\item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension.}
+\item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension (\code{NA}, if it does not apply to data contents).}
+\item{\strong{outregid}}{A vector of OUTREGIDs. Corresponds to 2nd array dimension (\code{NA}, if it does not apply to data contents).}
 \item{\strong{variable}}{HYPE output variable ID.}
 }
 }

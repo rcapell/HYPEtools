@@ -8,9 +8,10 @@ ReadTimeOutput(
   filename,
   dt.format = "\%Y-\%m-\%d",
   hype.var = NULL,
-  type = "df",
+  out.reg = NULL,
+  type = c("df", "dt", "hsv"),
   select = NULL,
-  subid = NULL,
+  id = NULL,
   nrows = -1L,
   skip = 0L,
   warn.nan = FALSE
@@ -24,32 +25,36 @@ Paths are separated by '/', not '\\'.}
 and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.}
 
-\item{hype.var}{Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
-(columns) in \code{x}. See 
+\item{hype.var}{Character, HYPE variable ID in \code{x}. See 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
 If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
-time output file names.}
+time output file names (incl. regional and class outputs).}
+
+\item{out.reg}{Logical, specify if file contents are sub-basin or output region results (i.e. SUBIDs or OUTREGIDs as columns). 
+\code{TRUE} for output regions, \code{FALSE} for sub-basins. \strong{Use only in combination with user-provided \code{hype.var} 
+argument.}}
 
 \item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
 
 \item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported and will be added if missing.}
 
-\item{subid}{Integer vector, HYPE SUBIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.}
+\item{id}{Integer vector, HYPE SUBIDs/OUTREGIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.}
 
 \item{nrows}{Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.}
 
 \item{skip}{Integer, number of \strong{data} rows to skip on import. Time output header lines are always skipped.}
 
 \item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
-a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.}
+a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.}
 }
 \value{
 \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
-\code{subid}, a vector of subid integers (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
-and \code{comment} with first row comment of imported file as character string. An additional attribute \code{subid.nan} might be 
-returned, see argument \code{warn.nan}.
+\code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onwards) to which the time 
+series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a 
+time step attribute, and \code{comment} with first row comment of imported file as character string. An additional attribute 
+\code{id.nan} might be returned, see argument \code{warn.nan}.
 }
 \description{
 This is a convenience wrapper function to import a time output file ('time<\emph{HYPE_output_variable}>.txt') into R.

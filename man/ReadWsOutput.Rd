@@ -25,8 +25,8 @@ Paths are separated by '/', not '\\'.}
 \code{"basin"}. Can be abbreviated. The first two require specification of argument \code{hype.var}, the latter of argument 
 \code{subid}. Format of return value depends on output type, see details.}
 
-\item{hype.var}{Character string, keyword to specify HYPE output variable to import. Not case-sensitive. Required in combination 
-with \code{type} \code{"time"} or \code{"map"}.}
+\item{hype.var}{Character string, keyword to specify HYPE output variable to import. Must include "RG"-prefix in case of output region files.
+Not case-sensitive. Required in combination with \code{type} \code{"time"} or \code{"map"}.}
 
 \item{id}{Integer, giving a single SUBID or OUTREGID for which to import basin output files. Required in combination with \code{type} 
 \code{"basin"}.}
@@ -62,8 +62,10 @@ Returned arrays contain additional \code{\link{attributes}}:
 \describe{
 \item{\strong{date}}{A vector of date-times, \code{POSIX} if argument \code{dt.format} is non-\code{NULL}. Corresponds to 1st array 
 dimension.}
-\item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files. \code{NA} if not applicable.}
-\item{\strong{outregid}}{A vector of OUTREGIDs. Corresponds to 2nd array dimension for time and map output files. \code{NA} if not applicable.}
+\item{\strong{subid}}{A (vector of) SUBID(s). Corresponds to 2nd array dimension for time and map output files. 
+\code{NA} if not applicable.}
+\item{\strong{outregid}}{A (vector of) OUTREGID(s). Corresponds to 2nd array dimension for time and map output files. 
+\code{NA} if not applicable.}
 \item{\strong{variable}}{A vector of HYPE output variables. Corresponds to 2nd array dimension for basin output files.}
 \item{\strong{nan (optional)}}{A named list with SUBID or HYPE variable vector elements. Vectors contain iterations where \code{NaN} 
 values occur for the given SUBID/HYPE variable.}

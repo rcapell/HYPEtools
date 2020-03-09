@@ -179,7 +179,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' @return
 #' \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{unit}, a vector of HYPE variable units, 
-#' \code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created, assigned \code{NA} 
+#' \code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created and assigned \code{NA} 
 #' if not applicable to data contents), and \code{timestep} 
 #' with a time step keyword attribute. An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
 
@@ -901,19 +901,21 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
 #' and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
-#' @param hype.var Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second dimension 
-#' (columns) in \code{x}. See 
+#' @param hype.var Character, HYPE variable ID in \code{x}. See 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
 #' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
-#' time output file names.
+#' time output file names (incl. regional and class outputs).
+#' @param out.reg Logical, specify if file contents are sub-basin or output region results (i.e. SUBIDs or OUTREGIDs as columns). 
+#' \code{TRUE} for output regions, \code{FALSE} for sub-basins. \strong{Use only in combination with user-provided \code{hype.var} 
+#' argument.} 
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
 #' @param select Integer vector, column numbers to import. Note: first column with dates must be imported and will be added if missing.
-#' @param subid Integer vector, HYPE SUBIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.
+#' @param id Integer vector, HYPE SUBIDs/OUTREGIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.
 #' @param nrows Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.
 #' @param skip Integer, number of \strong{data} rows to skip on import. Time output header lines are always skipped. 
 #' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
-#' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
+#' a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.
 #' 
 #' @details
 #' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
@@ -924,9 +926,10 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' @return
 #' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
-#' \code{subid}, a vector of subid integers (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
-#' and \code{comment} with first row comment of imported file as character string. An additional attribute \code{subid.nan} might be 
-#' returned, see argument \code{warn.nan}.
+#' \code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onwards) to which the time 
+#' series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a 
+#' time step attribute, and \code{comment} with first row comment of imported file as character string. An additional attribute 
+#' \code{id.nan} might be returned, see argument \code{warn.nan}.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -945,8 +948,8 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' @importFrom data.table fread is.data.table
 #' @export
 
-ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, type = "df", select = NULL, subid = NULL, 
-                           nrows = -1L, skip = 0L, warn.nan = FALSE) {
+ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, out.reg = NULL, type = c("df", "dt", "hsv"), 
+                           select = NULL, id = NULL, nrows = -1L, skip = 0L, warn.nan = FALSE) {
   
   # argument checks
   if (!is.null(select) && !(1 %in% select)) {
@@ -954,52 +957,114 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   }
   
   # handling output type user choice
+  type <- match.arg(type)
   if (type == "df") {
     d.t <- F
-  } else if (type %in% c("dt", "hsv")) {
-    d.t <- T
   } else {
-    stop(paste("Unknown type", type, "."))
+    d.t <- T
   }
-  
-  # import subids, prepare subid attribute vector
+
+  # import subids/outregids, prepare attribute vector
   xattr <- readLines(filename, n = 2)
   sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
   
-  # create select vector from 'subid' argument, overrides 'select' argument
-  if (!is.null(subid)) {
+  # create select vector from 'id' argument, overrides 'select' argument
+  if (!is.null(id)) {
     if (!is.null(select)) {
-      warning("Arguments 'select' and 'subid' provided. 'subid' takes precedence.")
+      warning("Arguments 'select' and 'id' provided. 'id' takes precedence.")
     }
-    te <- match(subid, sbd)
-    # stop if unknown subids provided by user
+    te <- match(id, sbd)
+    # stop if unknown ids provided by user
     if (any(is.na(te))) {
-      stop(paste0("Argument 'subid': SUBIDs ", paste(subid[is.na(te)], collapse = ", "), " not found in imported file."))
+      stop(paste0("Argument 'id': IDs ", paste(id[is.na(te)], collapse = ", "), " not found in imported file."))
     }
     select <- c(1, te + 1)
-    sbd <- subid
+    sbd <- id
   } else if (!is.null(select)) {
-    # update subid attribute to selected subids
+    # update id attribute to selected ids
     sbd <- sbd[select[-1] - 1]
   }
   
   
   
   # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
-  if (is.null(select) && is.null(subid)) {
+  if (is.null(select) && is.null(id)) {
     select <- 1:(length(sbd) + 1)
   }
   
   # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
   x <- fread(filename, 
-             na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
+             na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", 
+                            "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
              skip = 2 + skip, sep = "\t", header = F, data.table = d.t, select = select, nrows = nrows)
   
   
   # read hype.var from filename, if not provided by user
   if (is.null(hype.var)) {
-    hype.var <- strsplit(filename, "time")[[1]]
-    hype.var <- substr(hype.var[length(hype.var)], start = 1, stop = 4)
+    
+    # extract filename from path-filename string
+    te <-strsplit(filename, "/")[[1]]
+    te <- strsplit(te[length(te)], "[.]")[[1]][1]
+    
+    # check if standard HYPE file name, and extract variable ID
+    if (substr(te, 1, 4) == "time") {
+      
+      ## HYPE variable string should be in the eight characters after "time" prefix (max. 6 char ID + optional "RG" for regional outputs)
+      # extract string to extract from, inbuilt lookup vector is uppercase
+      te <- toupper(substr(te, 5, 12))
+      
+      # check against lookup vector
+      if (te %in% INTERNAL.hype.vars) {
+        
+        # exists as is, normal SUBID results
+        hype.var <- te
+        out.reg <- F
+        
+      } else if (substr(te, 1, 6) %in% INTERNAL.hype.vars) {
+        
+        # exists, normal SUBID results
+        hype.var <- substr(te, 1, 6)
+        out.reg <- F
+      }
+      else if (substr(te, 1, 4) %in% INTERNAL.hype.vars) {
+        
+        # exists, normal SUBID results
+        hype.var <- substr(te, 1, 4)
+        out.reg <- F
+      }
+      else if (substr(te, 3, 8) %in% INTERNAL.hype.vars) {
+        
+        # exists, is a regional variable
+        hype.var <- substr(te, 3, 8)
+        out.reg <- T
+      }
+      else if (substr(te, 3, 6) %in% INTERNAL.hype.vars) {
+        
+        # exists, is a regional variable
+        hype.var <- substr(te, 3, 6)
+        out.reg <- T
+      } else {
+        
+        stop("Could not extract HYPE variable ID from filename, please provide arguments 'hype.var' and 'out.reg'.")
+      }
+      
+    } else {
+      
+      stop("Could not extract HYPE variable ID from filename, please provide arguments 'hype.var' and 'out.reg'.")
+    }
+  } else {
+    
+    # check that there a valid value for out.reg
+    if (is.null(out.reg) || !is.logical(out.reg)) {
+      stop("Please provide valid value for argument 'out.reg'.")
+    }
+    
+    # convert user-provided string to uppercase and warn if not in lookup vector
+    hype.var <- toupper(hype.var)
+    if (!(hype.var %in% INTERNAL.hype.vars)) {
+      warning("User-provided HYPE variable ID unknown. Proceeding to import.")
+    }
+    
   }
   
   # create column names, special treatment if only dates are imported
@@ -1067,16 +1132,22 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
   if (warn.nan) {
     te <- apply(as.data.frame(x[, -1]), 2, function(x) any(is.nan(x)))
     if (any(te)) {
-      warning("'NaN' values found in one or more SUBIDs. SUBIDs saved in attribute 'subid.nan'.")
-      attr(x, "subid.nan") <- sbd[te]
+      warning("'NaN' values found in one or more IDs. IDs saved in attribute 'id.nan'.")
+      attr(x, "id.nan") <- sbd[te]
     }
   }
   
   # conditional on user choice: output formatting
   if (type %in% c("dt", "df")) {
     
-    attr(x, which = "subid") <- sbd
-    attr(x, "variable") <- toupper(hype.var)
+    if (out.reg) {
+      attr(x, which = "subid") <- NA
+      attr(x, which = "outregid") <- sbd
+    } else {
+      attr(x, which = "subid") <- sbd
+      attr(x, which = "outregid") <- NA
+    }
+    attr(x, "variable") <- hype.var
     attr(x, "comment") <- xattr[1]
     
     # conditional: timestep attribute identified by difference between first two entries
@@ -1108,6 +1179,13 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ty
     # adding 'iteration' dimension
     dim(x) <- c(dim(x), 1)
     x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
+    # construct HypeSingleVar array, conditional on subid/outregid contents
+    if (out.reg) {
+      x <- HypeSingleVar(x = x, date = xd, outregid = sbd, hype.var = toupper(hype.var))
+    } else {
+      x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
+    }
+    
   }
   
   return(x)

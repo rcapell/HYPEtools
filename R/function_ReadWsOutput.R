@@ -9,8 +9,8 @@
 #' @param type Character string, keyword for HYPE output file type to import. One of \code{"time"}, \code{"map"}, or 
 #' \code{"basin"}. Can be abbreviated. The first two require specification of argument \code{hype.var}, the latter of argument 
 #' \code{subid}. Format of return value depends on output type, see details.
-#' @param hype.var Character string, keyword to specify HYPE output variable to import. Not case-sensitive. Required in combination 
-#' with \code{type} \code{"time"} or \code{"map"}.
+#' @param hype.var Character string, keyword to specify HYPE output variable to import. Must include "RG"-prefix in case of output region files.
+#' Not case-sensitive. Required in combination with \code{type} \code{"time"} or \code{"map"}.
 #' @param id Integer, giving a single SUBID or OUTREGID for which to import basin output files. Required in combination with \code{type} 
 #' \code{"basin"}.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in imported 
@@ -56,8 +56,10 @@
 #' \describe{
 #' \item{\strong{date}}{A vector of date-times, \code{POSIX} if argument \code{dt.format} is non-\code{NULL}. Corresponds to 1st array 
 #' dimension.}
-#' \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension for time and map output files. \code{NA} if not applicable.}
-#' \item{\strong{outregid}}{A vector of OUTREGIDs. Corresponds to 2nd array dimension for time and map output files. \code{NA} if not applicable.}
+#' \item{\strong{subid}}{A (vector of) SUBID(s). Corresponds to 2nd array dimension for time and map output files. 
+#' \code{NA} if not applicable.}
+#' \item{\strong{outregid}}{A (vector of) OUTREGID(s). Corresponds to 2nd array dimension for time and map output files. 
+#' \code{NA} if not applicable.}
 #' \item{\strong{variable}}{A vector of HYPE output variables. Corresponds to 2nd array dimension for basin output files.}
 #' \item{\strong{nan (optional)}}{A named list with SUBID or HYPE variable vector elements. Vectors contain iterations where \code{NaN} 
 #' values occur for the given SUBID/HYPE variable.}
@@ -84,7 +86,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
       stop("Argument 'hype.var' required with time and map output files.")
     }
     # import
-    locs <- list.files(path = path, pattern = glob2rx(paste0(type, toupper(hype.var), "*.txt")), full.names = TRUE)
+    locs <- list.files(path = path, pattern = glob2rx(paste0(type, toupper(hype.var), "?*.txt")), full.names = TRUE)
     # break if no files found
     if (length(locs) == 0) {
       stop(paste("No", type, "output files for variable", toupper(hype.var), "found in directory specified in argument 'path'."))
@@ -123,16 +125,17 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     
     # import
     if (progbar) {
-      res <- pblapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt", hype.var = hype.var)[, !"DATE", with = F])})
+      res <- pblapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt")[, !"DATE", with = F])})
       res <- simplify2array(res)
     } else {
-      res <- lapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt", hype.var = hype.var)[, !"DATE", with = F])})
+      res <- lapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt")[, !"DATE", with = F])})
       res <- simplify2array(res)
     }
     # add attributes with information
     attr(res, "variable") <- toupper(hype.var)
     attr(res, "date") <- te[, DATE]
     attr(res, "subid") <- attr(te, "subid")
+    attr(res, "outregid") <- attr(te, "outregid")
     class(res) <- c("HypeSingleVar", "array")
     
   } else if (type == "map") {
@@ -152,6 +155,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     attr(res, "variable") <- toupper(hype.var)
     attr(res, "date") <- attr(te, "date")
     attr(res, "subid") <- te[, SUBID]
+    attr(res, "outregid") <- attr(te, "outregid")
     dimnames(res)[[2]] <- paste0("X", te[, SUBID])
     class(res) <- c("HypeSingleVar", "array")
     
