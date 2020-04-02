@@ -47,7 +47,7 @@
 WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
   
   # format par list contents to avoid scientific format in output
-  fx <- sapply(x, format, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T, justify = "none")
+  fx <- lapply(x, format, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T, justify = "none")
   
   # write formatted list elements to file, first converts all list elements (vectors) and their names to concatenated strings.
   write(sapply(seq_along(x), function(x, y) paste(c(names(y)[x], y[[x]]), collapse="\t"), y = fx), filename)
