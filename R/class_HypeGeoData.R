@@ -217,7 +217,7 @@ summary.HypeGeoData <- function(x, ...) {
   res$unit.river.length <- suppressWarnings(tryCatch(signif(c(mean(rlu), median(rlu), min(rlu), max(rlu)), digits = 3), error = function (e) return(NULL)))
   
   # internal lake catchment fraction
-  if (exists("x$ICATCH")) {
+  if ("ICATCH" %in% toupper(names(x))) {
     res$icatch <- suppressWarnings(tryCatch(signif(c(mean(x$ICATCH), median(x$ICATCH), min(x$ICATCH), max(x$ICATCH)), digits = 3), error = function (e) return(rep("-", 4))))
   } else {
     res$icatch <- rep("-", 4)
