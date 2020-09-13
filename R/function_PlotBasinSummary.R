@@ -359,7 +359,7 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
     
     ## panel 4: upstream crop bars
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "c", progbar = F), type = "c", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
+    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "cr", progbar = F), type = "cr", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
     
     ## panels 5 and 6: upstream TN and TP loads in ton/year
     cp <- cp + 1
