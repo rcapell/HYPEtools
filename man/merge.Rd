@@ -5,7 +5,7 @@
 \alias{merge.HypeGeoData}
 \title{Merge HypeGeoData object}
 \usage{
-merge.HypeGeoData(x, y, sort = FALSE, ...)
+\method{merge}{HypeGeoData}(x, y, sort = FALSE, ...)
 }
 \arguments{
 \item{x}{\code{link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.}

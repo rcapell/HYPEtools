@@ -16,7 +16,8 @@ Depends:
 Imports:
     sp,
     pbapply,
-    data.table (>= 1.9.8)
+    data.table (>= 1.9.8),
+    ncdf4
 License: LGPL-3
 LazyData: true
 Packaged: 2014-11-21 15:25:14 UTC; rene

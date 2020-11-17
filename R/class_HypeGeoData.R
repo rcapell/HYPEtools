@@ -388,6 +388,7 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' A \code{HypeGeoData} data frame.
 #' 
 #' @name merge
+#' @method merge HypeGeoData
 #' 
 #' @seealso \code{\link[base]{merge}}, the S3 generic function.
 #' 
