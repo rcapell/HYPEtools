@@ -6,6 +6,7 @@
 #     - [.HypeGeoData (indexing method)
 #     - summary method
 #     - print method for summary list
+#     - merge method with class preservation
 #     - 
 #
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -14,6 +15,7 @@
 
 #--------------------------------------------------------------------------------------------------------------------------------------
 # Constructor function
+#--------------------------------------------------------------------------------------------------------------------------------------
 
 #' HypeGeoData data frames
 #' 
@@ -188,7 +190,8 @@ summary.HypeGeoData <- function(x, ...) {
   # remove comment columns which happen to look like SLC columns, e.g. "SLC_98old"
   pos.s <- pos.s[!is.na(n.s)]
   n.s <- n.s[!is.na(n.s)]
-  # number
+  # number of SLC classes and column positions into result list
+  res$pos.slc <- pos.s
   res$n.slc <- length(n.s)
   # SCR positions and their SCR numbers
   pos.r <- which(substr(names(x), 1, 4) == "SCR_")
@@ -197,7 +200,8 @@ summary.HypeGeoData <- function(x, ...) {
   # remove comment columns which happen to look like SCR columns, e.g. "SCR_98old"
   pos.r <- pos.r[!is.na(n.r)]
   n.r <- n.r[!is.na(n.r)]
-  # number
+  # number of SCR columns and column positions into result list
+  res$pos.scr <- pos.r
   res$n.scr <- length(n.r)
   # DHSLC positions and their DHSLC numbers
   pos.d <- which(substr(names(x), 1, 6) == "DHSLC_")
@@ -206,7 +210,8 @@ summary.HypeGeoData <- function(x, ...) {
   # remove comment columns which happen to look like SCR columns, e.g. "SCR_98old"
   pos.d <- pos.d[!is.na(n.d)]
   n.d <- n.d[!is.na(n.d)]
-  # number
+  # numberof DHSLC columns and column positions into result list
+  res$pos.dhslc <- pos.d
   res$n.dhslc <- length(n.d)
   
   # subbasin area range in km2
@@ -256,6 +261,7 @@ print.summaryHypeGeoData <- function(x, ...) {
         rbind(x$columns[(2 * te + 1):nrow(x$columns), ], data.frame(column = rep("", tep), name = rep("", tep), class = rep("", tep)))
         ), row.names = F)
   
+  
   ## range table
   # subbasin area range
   tes <- c("Sub-basin area (km2):", format(x$subbasin.area, scientific = F, trim = T, drop0trailing = T))
@@ -285,16 +291,139 @@ print.summaryHypeGeoData <- function(x, ...) {
   # number of DHSLC classes
   cat(paste("          Number of DHSLC classes:", x$n.dhslc, "\n"))
   
+  
+  ## SLC class columns as ASCII text representation, copy-paste-friendly (friendlier than dput() output with disjointed columns)
+  # create comparison data
+  te <- x$pos.slc
+  te1 <- c(-2, -1, te)
+  te2 <- c(-1, te, te[length(te)] + 2)
+  te3 <- c(te, te[length(te)] + 2:3)
+  
+  # replace column number with colon, if either next or previous SLC column is a direct neighbour
+  te.str <- ifelse(te3 - te2 > 1 | te2 - te1 > 1, te2, ":")[-c(1, length(te) + 2)]
+  
+  # string formatting, condense into c()-function string
+  te.str <- paste0("c(", gsub(", :, ", ":", paste(na.omit(ifelse(te.str == ":" & c(te.str[-1], "") == ":", NA, te.str)), collapse = ", ")), ")")
+  
+  # print columns
+  cat(paste("                      SLC columns:", te.str, "\n"))
+  
+  
+  ## SCR columns as ASCII text representation, copy-paste-friendly (friendlier than dput() output with disjointed columns)
+  # create comparison data
+  te <- x$pos.scr
+  
+  # just print if there are any SCR classes
+  if (length(te) > 0) {
+    te1 <- c(-2, -1, te)
+    te2 <- c(-1, te, te[length(te)] + 2)
+    te3 <- c(te, te[length(te)] + 2:3)
+    
+    # replace column number with colon, if either next or previous SLC column is a direct neighbour
+    te.str <- ifelse(te3 - te2 > 1 | te2 - te1 > 1, te2, ":")[-c(1, length(te) + 2)]
+    
+    # string formatting, condense into c()-function string
+    te.str <- paste0("c(", gsub(", :, ", ":", paste(na.omit(ifelse(te.str == ":" & c(te.str[-1], "") == ":", NA, te.str)), collapse = ", ")), ")")
+    
+    # print columns
+    cat(paste("                      SCR columns:", te.str, "\n"))
+    
+  }
+  
+  
+  ## DHSLC columns as ASCII text representation, copy-paste-friendly (friendlier than dput() output with disjointed columns)
+  # create comparison data
+  te <- x$pos.dhslc
+  
+  # just print if there are any SCR classes
+  if (length(te) > 0) {
+    te1 <- c(-2, -1, te)
+    te2 <- c(-1, te, te[length(te)] + 2)
+    te3 <- c(te, te[length(te)] + 2:3)
+    
+    # replace column number with colon, if either next or previous SLC column is a direct neighbour
+    te.str <- ifelse(te3 - te2 > 1 | te2 - te1 > 1, te2, ":")[-c(1, length(te) + 2)]
+    
+    # string formatting, condense into c()-function string
+    te.str <- paste0("c(", gsub(", :, ", ":", paste(na.omit(ifelse(te.str == ":" & c(te.str[-1], "") == ":", NA, te.str)), collapse = ", ")), ")")
+    
+    # print columns
+    cat(paste("                    DHSLC columns:", te.str, "\n"))
+    
+  }
+  
 }
+
 
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 # merge method
+
+#' Merge HypeGeoData object
+#' 
+#' Merge an imported HYPE GeoData table of class \code{link{HypeGeoData}} with another data frame. 
+#' 
+#' @param x \code{link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.
+#' @param y Data frame, with mandatory \code{SUBID} column.
+#' @param sort Logical, result sorting by \code{by} columns. Defaults to \code{FALSE}, as opposed to default method.
+#' @param ... Arguments passed to S3 method for data frames, see \code{\link{merge}} and Details.
+#' 
+#' @details 
+#' \code{merge.HypeGeoData} allows to merge new columns to an existing HYPE GeoData table, while preserving the \code{HypeGeoData} 
+#' class attribute. Duplicate columns are marked with a \code{".y"}-suffix for the merged \code{y} data frame.
+#' 
+#' The following arguments of the default method are hard-coded:
+#' 
+#' \itemize{
+#' \item{\code{by, by.x, by.y}, set to \code{"SUBID"}}
+#' \item{\code{suffixes}, set to \code{c("", ".y")}}
+#' }
+#' 
+#' The method warns if any of these arguments is supplied by the user. To override these nonetheless, call the data frame method 
+#' explicitly (\code{merge.data.frame}).
+#' 
+#' @return 
+#' A \code{HypeGeoData} data frame.
+#' 
+#' @name merge
+#' 
+#' @seealso \code{\link[base]{merge}}, the S3 generic function.
+#' 
 #' @export
-merge.HypeGeoData <- function(x, ...) {
-  y <- NextMethod("merge")
-  y <- HypeGeoData(y)
-  return(y)
+
+merge.HypeGeoData <- function(x, y, sort = FALSE, ...) {
+  
+  ## check if a hard-coded argument is supplied by user and warn accordingly
+  # list user-supplied arguments
+  dots <- list(...)
+  # hard-coded argument names
+  hardcoded <- c("suffixes", "by", "by.x", "by.y")
+  # match
+  te <- which(names(dots) %in% hardcoded)
+  
+  # conditional: duplicates found
+  if (length(te) > 0) {
+    
+    # duplicated arguments
+    dupli.arg <- hardcoded[hardcoded %in% names(dots)]
+    
+    # remove duplicated from list
+    dots <- dots[-te]
+    
+    # throw meaningful warning
+    warning(paste0("Argument(s) '", paste(dupli.arg, collapse = "', '"), "' will be ignored."))
+  }
+  
+  # combine user-defined arguments with hard-coded ones in one list
+  combined.args <- c(list(x = x, y = y, sort = sort, by = "SUBID", suffixes = c("", ".y")), dots)
+  
+  # call function (do.call construct to be able to pass combined argument list into the function)
+  z <- do.call("merge.default", args = combined.args)
+  
+  # add class and return result
+  z <- HypeGeoData(z)
+  return(z)
+  
 }
