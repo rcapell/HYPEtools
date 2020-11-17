@@ -367,8 +367,12 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' 
 #' @param x \code{link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.
 #' @param y Data frame, with mandatory \code{SUBID} column.
-#' @param sort Logical, result sorting by \code{by} columns. Defaults to \code{FALSE}, as opposed to default method.
-#' @param ... Arguments passed to S3 method for data frames, see \code{\link{merge}} and Details.
+#' @param all.x Logical, keep all rows from \code{x}. Defaults to \code{TRUE}, as opposed to default method, thus extending the GeData 
+#' table with columns in \code{y}.
+#' @param sort Logical, result sorting by \code{by} columns. In addition to the default method's choices \code{TRUE, FALSE}, a third 
+#' option \code{NA} (default) will use sorting of \code{x} for results. I.e. a sorted GeoData table will be runnable in HYPE even after 
+#' merging.
+#' @param ... Arguments passed to S3 method for data frames, see \code{\link[base]{merge}} and Details.
 #' 
 #' @details 
 #' \code{merge.HypeGeoData} allows to merge new columns to an existing HYPE GeoData table, while preserving the \code{HypeGeoData} 
@@ -381,11 +385,14 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' \item{\code{suffixes}, set to \code{c("", ".y")}}
 #' }
 #' 
-#' The method warns if any of these arguments is supplied by the user. To override these nonetheless, call the data frame method 
-#' explicitly (\code{merge.data.frame}).
+#' The method warns if any of these arguments is supplied by the user. To override, call the data frame method 
+#' explicitly (\code{merge.data.frame()}).
 #' 
 #' @return 
 #' A \code{HypeGeoData} data frame.
+#' 
+#' @examples 
+#' \dontrun{merge(gd1, gd2)}
 #' 
 #' @name merge
 #' @method merge HypeGeoData
@@ -394,7 +401,23 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' 
 #' @export
 
-merge.HypeGeoData <- function(x, y, sort = FALSE, ...) {
+merge.HypeGeoData <- function(x, y, all.x = TRUE, sort = NA, ...) {
+  
+  # check user-supplied arguments
+  if (!(sort %in% c(NA, TRUE, FALSE))) {
+    stop("Argument 'sort' must be of type logical.")
+  }
+  if (!(all.x %in% c(TRUE, FALSE))) {
+    stop("Argument 'all.x' must be of type logical.")
+  }
+  
+  # prepare for NA sorting, which will be resolved after merge function call
+  if (is.na(sort)) {
+    sort <- TRUE
+    sort.na <- TRUE
+  } else {
+    sort.na <- FALSE
+  }
   
   ## check if a hard-coded argument is supplied by user and warn accordingly
   # list user-supplied arguments
@@ -414,14 +437,19 @@ merge.HypeGeoData <- function(x, y, sort = FALSE, ...) {
     dots <- dots[-te]
     
     # throw meaningful warning
-    warning(paste0("Argument(s) '", paste(dupli.arg, collapse = "', '"), "' will be ignored."))
+    warning(paste0("Argument(s) '", paste(dupli.arg, collapse = "', '"), "' are hard-coded in this method and will be ignored."))
   }
   
   # combine user-defined arguments with hard-coded ones in one list
-  combined.args <- c(list(x = x, y = y, sort = sort, by = "SUBID", suffixes = c("", ".y")), dots)
+  combined.args <- c(list(x = x, y = y, all.x = all.x, sort = sort, by = "SUBID", suffixes = c("", ".y")), dots)
   
   # call function (do.call construct to be able to pass combined argument list into the function)
   z <- do.call("merge.default", args = combined.args)
+  
+  # conditional: sort in order of x
+  if (sort.na) {
+    z <- z[na.omit(match(x$SUBID, z$SUBID)), ]
+  }
   
   # add class and return result
   z <- HypeGeoData(z)

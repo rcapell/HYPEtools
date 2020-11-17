@@ -5,16 +5,21 @@
 \alias{merge.HypeGeoData}
 \title{Merge HypeGeoData object}
 \usage{
-\method{merge}{HypeGeoData}(x, y, sort = FALSE, ...)
+\method{merge}{HypeGeoData}(x, y, all.x = TRUE, sort = NA, ...)
 }
 \arguments{
 \item{x}{\code{link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.}
 
 \item{y}{Data frame, with mandatory \code{SUBID} column.}
 
-\item{sort}{Logical, result sorting by \code{by} columns. Defaults to \code{FALSE}, as opposed to default method.}
+\item{all.x}{Logical, keep all rows from \code{x}. Defaults to \code{TRUE}, as opposed to default method, thus extending the GeData 
+table with columns in \code{y}.}
 
-\item{...}{Arguments passed to S3 method for data frames, see \code{\link{merge}} and Details.}
+\item{sort}{Logical, result sorting by \code{by} columns. In addition to the default method's choices \code{TRUE, FALSE}, a third 
+option \code{NA} (default) will use sorting of \code{x} for results. I.e. a sorted GeoData table will be runnable in HYPE even after 
+merging.}
+
+\item{...}{Arguments passed to S3 method for data frames, see \code{\link[base]{merge}} and Details.}
 }
 \value{
 A \code{HypeGeoData} data frame.
@@ -33,8 +38,12 @@ The following arguments of the default method are hard-coded:
 \item{\code{suffixes}, set to \code{c("", ".y")}}
 }
 
-The method warns if any of these arguments is supplied by the user. To override these nonetheless, call the data frame method 
-explicitly (\code{merge.data.frame}).
+The method warns if any of these arguments is supplied by the user. To override, call the data frame method 
+explicitly (\code{merge.data.frame()}).
+}
+\examples{
+\dontrun{merge(gd1, gd2)}
+
 }
 \seealso{
 \code{\link[base]{merge}}, the S3 generic function.
