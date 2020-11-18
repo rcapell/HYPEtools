@@ -65,9 +65,12 @@ GroupSLCClasses <- function(gd, gcl = NULL, type = c("landuse", "soil", "crop"),
     grname <- "group"
   }
   
-  # columns with SLCs in GeoData
-  gdcols.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")
-  
+  # SLC positions
+  gdcols.slc <- which(substr(names(gd), 1, 4) == "SLC_")
+  # extract SLC numbers
+  suppressWarnings(n.s <- as.numeric(substr(names(gd)[gdcols.slc], 5, 99)))
+  # remove comment columns which happen to look like SLC columns, e.g. "SLC_98old"
+  gdcols.slc <- gdcols.slc[!is.na(n.s)]
   
   # extract slc class area fractions or absolute slc areas as working data frame
   if (abs.area) {
