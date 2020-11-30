@@ -18,6 +18,7 @@
 #     - ReadOptpar()
 #     - ReadSubass()
 #     - ReadDescription()
+#     - ReadSimass()
 #     - 
 #--------------------------------------------------------------------------------------------------------------------------------------
 
@@ -894,10 +895,13 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 
 #' Read a Time Output File
 #'
-#' This is a convenience wrapper function to import a time output file ('time<\emph{HYPE_output_variable}>.txt') into R.
+#' Import a time output file 'time<\emph{HYPE_output_variable}>.txt' or a converted time output file in netCDF format 
+#' into R.
 #' 
-#' @param filename Path to and file name of the time output file to import. Windows users: Note that 
-#' Paths are separated by '/', not '\\'.
+#' @param filename Path to and file name of the time output file to import. Acceptable file choices are \code{*.txt} files following 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:timexxxx.txt}{HYPE time output file format} or \code{.nc} 
+#' files following the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}. 
+#' See also details for netCDF import. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
 #' and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
@@ -916,12 +920,17 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' @param skip Integer, number of \strong{data} rows to skip on import. Time output header lines are always skipped. 
 #' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
 #' a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.
+#' @param verbose Logical, print information during import.
 #' 
 #' @details
-#' \code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
-#' \code{\link{data.table}}, 
-#' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
-#' of the time step period.
+#' \code{ReadTimeOutput} imports from text or netCDF files. Text file import uses \code{\link[data.table]{fread}} from package  
+#' \code{\link{data.table}}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}. 
+#' Date-time representations in data files are converted to POSIX time representations. Monthly and annual time steps are returned as 
+#' first day of the time step period. 
+#' 
+#' Import from netCDF files requires an \code{id} dimension in the netCDF data. Gridded data with remapped HYPE results in spatial x/y 
+#' dimensions as defined in the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard} 
+#' are currently not supported. 
 #' 
 #' @return
 #' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
@@ -946,10 +955,22 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "%Y-%m")}
 #' 
 #' @importFrom data.table fread is.data.table
+#' @importFrom ncdf4 nc_open nc_close
 #' @export
 
 ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, out.reg = NULL, type = c("df", "dt", "hsv"), 
-                           select = NULL, id = NULL, nrows = -1L, skip = 0L, warn.nan = FALSE) {
+                           select = NULL, id = NULL, nrows = -1L, skip = 0L, warn.nan = FALSE, verbose = T) {
+  
+  # check file type to import
+  ftype <- tolower(substr(filename, nchar(filename) - 2, nchar(filename)))
+  if (ftype == "txt") {
+    nc <- F
+  } else if (ftype == ".nc") {
+    nc <- T
+  } else {
+    stop("Unknown file extension. Accepted file types are standard HYPE text files (*.txt), or netcdf 
+         files following the HYPE standard (*.nc).")
+  }
   
   # argument checks
   if (!is.null(select) && !(1 %in% select)) {
@@ -963,7 +984,31 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
   } else {
     d.t <- T
   }
-
+  
+  
+  ## data import, conditional on file type
+  
+  if (nc) {
+    
+    ## import from netCDF file
+    
+    # open netCDF file connection
+    ncf <- nc_open(filename = filename)
+    
+    nm.var <- names(ncf$var)
+    nm.dim <- names(ncf$dim)
+    
+    "id" %in% nm.dim
+    
+    # close netCDF file connection
+    nc_close(ncf)
+    
+  } else {
+    
+    # import from text file
+    
+  }
+  
   # import subids/outregids, prepare attribute vector
   xattr <- readLines(filename, n = 2)
   sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
@@ -1892,3 +1937,153 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 
 
 
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadSimass
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+
+#' Read a 'simass.txt' file
+#'
+#' This is a convenience wrapper function to import an simass.txt simulation assessment file as data frame into R.
+#' Simulation assessment files contain domain-wide aggregated performance criteria results, as defined in 'info.txt'.
+#' 
+#' @param filename Path to and file name of the 'simass.txt' file to import. 
+#'  
+#' @details
+#' \code{ReadSimass} imports a simulation assessement file into R. Evaluated variables and other metadata are stored as additional 
+#' \code{\link{attributes}}.
+#' 
+#' The function interpretes character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions. 
+#' Sub-daily time steps are currently not treated and will probably result in a warning during time step evaluation within the 
+#' function. Please update issue #106 on \href{https://github.com/rcapell/HYPEtools} if you need support for sub-daily time steps!
+#' 
+#' @return
+#' \code{ReadSubass} returns a data frame with column-wise performance measure values of evaluated variable pairs and performance 
+#' measure names in the first column. Additional attributes: 
+#' \itemize{
+#' \item{\code{n.data.regional}, \code{numeric} vector with number of data points used in regional criteria (optional, depending on 
+#' HYPE version)}
+#' \item{\code{n.area.mean}, \code{numeric} vector with number of subbasins used in mean and median criteria (optional, depending on 
+#' HYPE version)}
+#' \item{\code{variable.obs}, \code{character} vector with HYPE variable ID(s) used as observed variable}
+#' \item{\code{variable.sim}, \code{character} vector with HYPE variable ID(s) used as simulated variable}
+#' \item{\code{agg.period}, \code{numeric} vector with integer code(s) for time period aggregation used in evaluation. Same format 
+#' as used in info.txt files, i.e. 1 = daily, 2 = weekly, 3 = monthly, 4 = annual.}
+#' \item{\code{n.simulation}, \code{integer}, simulation number (e.g. with Monte Carlo simulations)}
+#' \item{\code{crit.total}, \code{numeric}, total criteria value}
+#' \item{\code{crit.conditional}, \code{numeric}, conditional criteria value}
+#' \item{\code{threshold}, \code{integer}, data limit threshold}
+#' }
+#' 
+#' @examples
+#' \dontrun{ReadSimass("simass.txt")}
+#'
+#' @export 
+
+
+ReadSimass <- function(filename = "simass.txt") {
+  
+  # file header with simulation info
+  fhead <- readLines(con = filename, n = 5)
+  
+  # determine number of header rows
+  if(nchar(gsub(" ", "", fhead[5])) == 0) {
+    n.head <- 5
+  } else {
+    n.head <- 4
+  }
+  
+  # import data content
+  te <- read.table(file = filename, sep = ":", fill = T, skip = n.head, header = F, stringsAsFactors = F, blank.lines.skip = F)
+
+
+  # calculate number of performance measures and variable pairs for which performance measures are present (different numbers of 
+  # perf meas possible, depending on HYPE version)
+  # conditional: treat case with only 1 variable pair separately (diff() does not work then)
+  te.perf <- which(gsub(pattern = "[[:blank:]]", replacement = "", x = te[, 1]) == "Variables")
+  if (length(te.perf) == 1) {
+    n.perf <- nrow(te)
+  } else {
+    n.perf <- diff(te.perf)[1]
+  }
+  n.var <- nrow(te) / n.perf
+  
+  # extract performance measures for each variable pair into data frame
+  res <- data.frame(matrix(unlist(tapply(te[, 2], rep(1:n.var, each = n.perf), 
+                                         function(x) {te <- as.numeric(c(x[3:(n.perf - 1)])); ifelse(te == -9999, NA, te)})), 
+                           nrow = n.perf - 3, byrow = F))
+  
+  
+  # add performance measure name as first column, strip from superfluous space characters along the way
+  res <- cbind(NAME = gsub(pattern = "^ *|(?<= ) | *$", replacement = "", te[, 1][3:(n.perf - 1)], perl = TRUE), res)
+  
+  
+  # move data numbers for regional and mean/median criteria to attribute vectors, if they exist
+  if (res[nrow(res) - 1, 1] == "Number of data for regional criterion") {
+    attr(res, "n.data.regional") <- as.numeric(res[nrow(res) - 1, -1])
+    res <- res[-(nrow(res) - 1), ]
+  }
+  
+  if (res[nrow(res), 1] == "Number of areas in mean/median criterion") {
+    attr(res, "n.area.mean") <- as.numeric(res[nrow(res), -1])
+    res <- res[-(nrow(res)), ]
+  }
+  
+  
+  # add HYPE variables as attributes and column names
+  hvar <- strsplit(gsub(pattern = "^ *", replacement = "", te[, 2][seq(from = 1, length.out = n.var, by = n.perf)]), ", ")
+  hvar <- matrix(toupper(unlist(hvar)), ncol = 2, byrow = T)
+  attr(res, "variable.obs") <- hvar[, 1]
+  attr(res, "variable.sim") <- hvar[, 2]
+  names(res)[-1] <- apply(hvar, 1, paste, collapse = ".")
+  
+  
+  ## add aggregation periods as attributes, with conversion of letter code to standard HYPE numeric codes (as used in info.txt)
+  
+  # extract information
+  agg.period <- te[, 2][seq(from = 2, length.out = n.var, by = n.perf)]
+  
+  # conditional: check if periods are given as numeric, and if not, try to convert from predefined character codes, 
+  #              as last option return whatever was found in file and return a warning
+  
+  if (any(is.na(suppressWarnings(as.numeric(agg.period))))) {
+    
+    # periods are coded as characters, try to convert to numeric code
+    te.agg <- gsub(pattern = "^ *", replacement = "", agg.period)
+    if (all(te.agg %in% c("DD", "WW", "MM", "YY"))) {
+      te.agg <- factor(te.agg, levels = c("DD", "WW", "MM", "YY"))
+      levels(te.agg) <- 1:4
+      te.agg <- as.numeric(te.agg)
+      attr(res, "agg.period") <- te.agg
+    } else {
+      attr(res, "agg.period") <- te.agg
+      warning("Aggregation period code unknown. Returned as imported in attribute 'agg.period'.")
+    }
+  } else {
+    # periods are coded numerically, just return the numbers
+    attr(res, "agg.period") <- as.numeric(agg.period)
+  }
+  
+  
+  ## add general simulation attributes from simass.txt file header
+  
+  # simulation number (in case of monte carlo results)
+  attr(res, "n.simulation") <- as.numeric(substr(fhead[2], 20, 100))
+  
+  # conditional on number of header rows
+  if (n.head == 5) {
+    te.head <- as.numeric(na.omit(suppressWarnings(as.numeric(strsplit(paste(fhead[3:4], collapse = " "), split = " +|,")[[1]]))))
+  } else {
+    te.head <- as.numeric(na.omit(suppressWarnings(as.numeric(strsplit(fhead[3], split = " +|,")[[1]]))))
+  }
+  
+  # total criteria value
+  attr(res, "crit.total") <- te.head[1]
+  # conditional criteria value
+  attr(res, "crit.conditional") <- te.head[2]
+  # threshold
+  attr(res, "threshold") <- te.head[3]
+  
+  return(res)
+  
+}
