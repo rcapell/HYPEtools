@@ -1944,36 +1944,35 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 
 #' Read a 'simass.txt' file
 #'
-#' This is a convenience wrapper function to import an simass.txt simulation assessment file as data frame into R.
+#' Import a HYPE simass.txt simulation assessment file as data frame into R.
 #' Simulation assessment files contain domain-wide aggregated performance criteria results, as defined in 'info.txt'.
 #' 
 #' @param filename Path to and file name of the 'simass.txt' file to import. 
 #'  
 #' @details
-#' \code{ReadSimass} imports a simulation assessement file into R. Evaluated variables and other metadata are stored as additional 
-#' \code{\link{attributes}}.
+#' \code{ReadSimass} imports a simulation assessment file into R. 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:simass.txt}{HYPE simass.txt files} contain 
+#' domain-wide performance measures for observed-simulated variable pairs as defined in 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt#performance_criteria_options}{HYPE info.txt files}. 
 #' 
-#' The function interpretes character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions. 
-#' Sub-daily time steps are currently not treated and will probably result in a warning during time step evaluation within the 
-#' function. Please update issue #106 on \href{https://github.com/rcapell/HYPEtools} if you need support for sub-daily time steps!
+#' The function interprets character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions. 
+#' \strong{Sub-daily time steps are currently not treated} and will probably result in a warning during time step evaluation within the 
+#' function. Please update issue #106 on \href{https://github.com/rcapell/HYPEtools}{github} if you need support for sub-daily time steps!
 #' 
 #' @return
-#' \code{ReadSubass} returns a data frame with column-wise performance measure values of evaluated variable pairs and performance 
-#' measure names in the first column. Additional attributes: 
+#' \code{ReadSubass} returns a data frame with columns for HYPE variable names (observed, simulated), aggregation periods, and 
+#' performance measure values of evaluated variable pairs. Aggregation periods are coded as in info.txt files, i.e. 1 = daily, 
+#' 2 = weekly, 3 = monthly, 4 = annual. Metadata is added to the data frame as additional \code{\link{attributes}}: 
 #' \itemize{
-#' \item{\code{n.data.regional}, \code{numeric} vector with number of data points used in regional criteria (optional, depending on 
-#' HYPE version)}
-#' \item{\code{n.area.mean}, \code{numeric} vector with number of subbasins used in mean and median criteria (optional, depending on 
-#' HYPE version)}
-#' \item{\code{variable.obs}, \code{character} vector with HYPE variable ID(s) used as observed variable}
-#' \item{\code{variable.sim}, \code{character} vector with HYPE variable ID(s) used as simulated variable}
-#' \item{\code{agg.period}, \code{numeric} vector with integer code(s) for time period aggregation used in evaluation. Same format 
-#' as used in info.txt files, i.e. 1 = daily, 2 = weekly, 3 = monthly, 4 = annual.}
+#' \item{\code{names.long}, \code{character} vector with long names, corresponding to abbreviations uses as actural column names}
 #' \item{\code{n.simulation}, \code{integer}, simulation number (e.g. with Monte Carlo simulations)}
 #' \item{\code{crit.total}, \code{numeric}, total criteria value}
 #' \item{\code{crit.conditional}, \code{numeric}, conditional criteria value}
 #' \item{\code{threshold}, \code{integer}, data limit threshold}
 #' }
+#' 
+#' @seealso 
+#' \code{\link{ReadSubass}}
 #' 
 #' @examples
 #' \dontrun{ReadSimass("simass.txt")}
@@ -1984,11 +1983,15 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 ReadSimass <- function(filename = "simass.txt") {
   
   # file header with simulation info
-  fhead <- readLines(con = filename, n = 5)
+  fhead <- readLines(con = filename, n = 10)
   
   # determine number of header rows
-  if(nchar(gsub(" ", "", fhead[5])) == 0) {
-    n.head <- 5
+  if (nchar(gsub(" ", "", fhead[5])) == 0) {
+    if (substr(fhead[6], 1, 11) == " Individual") {
+      n.head <- 9
+    } else {
+      n.head <- 5
+    }
   } else {
     n.head <- 4
   }
@@ -2009,43 +2012,45 @@ ReadSimass <- function(filename = "simass.txt") {
   n.var <- nrow(te) / n.perf
   
   # extract performance measures for each variable pair into data frame
-  res <- data.frame(matrix(unlist(tapply(te[, 2], rep(1:n.var, each = n.perf), 
+  # transpose along the way to get column-wise performances (comparable to subass tables)
+  res <- data.frame(t(matrix(unlist(tapply(te[, 2], rep(1:n.var, each = n.perf), 
                                          function(x) {te <- as.numeric(c(x[3:(n.perf - 1)])); ifelse(te == -9999, NA, te)})), 
-                           nrow = n.perf - 3, byrow = F))
+                           nrow = n.perf - 3, byrow = F)))
+  
+  # look-up table for short performance measure names used as column names
+  lookup.perf <- data.frame( long = c("Regional NSE", "Regional RA", "Regional RE", "Regional MAE", "Average NSE", "Average RA", 
+                                      "Average RE", "Average RSDE", "Average CC", "Average ARE", "Average KGE", "Aver scalKGE", 
+                                      "Spatial NSE", "Spatial RA", "Spatial RE", "Spatial Bias", "Spatial RMSE", "Kendalls Tau", 
+                                      "Median NSE", "Median RA", "Median KGE", "Median NRMSE", "Mean NSEW", 
+                                      "Number of data for regional criterion", "Number of areas in mean/median criterion"), 
+                             short = c("RR2", "RRA", "RRE", "RMAE", "MR2", "MRA", "MRE", "MRS", "MCC", "MAR", "AKG", "ASCKG", "SR2", 
+                                       "SRA", "SRE", "SBIAS", "SRMSE", "TAU", "MD2", "MDA", "MKG", "MNR", "MNW", "NDATREG", "NSUBME"))
+  
+  # extract performance measure names in the imported file, strip from superfluous space characters along the way
+  nm.perf <- gsub(pattern = "^ *|(?<= ) | *$", replacement = "", te[, 1][3:(n.perf - 1)], perl = TRUE)
+  
+  # add short performance measure names as column names, prepare long names attribute vector
+  names(res) <- lookup.perf$short[match(nm.perf, lookup.perf$long)]
+  nm.long <- lookup.perf$long[match(nm.perf, lookup.perf$long)]
   
   
-  # add performance measure name as first column, strip from superfluous space characters along the way
-  res <- cbind(NAME = gsub(pattern = "^ *|(?<= ) | *$", replacement = "", te[, 1][3:(n.perf - 1)], perl = TRUE), res)
   
+  ## add additional columns to results and long name attribute vector
   
-  # move data numbers for regional and mean/median criteria to attribute vectors, if they exist
-  if (res[nrow(res) - 1, 1] == "Number of data for regional criterion") {
-    attr(res, "n.data.regional") <- as.numeric(res[nrow(res) - 1, -1])
-    res <- res[-(nrow(res) - 1), ]
+  # individual criteria
+  
+  if (n.head == 9) {
+    res <- cbind(CRIT = as.numeric(na.omit(suppressWarnings(as.numeric(strsplit(fhead[8], split = " ")[[1]])))), res)
+    nm.long <- c("Individual criterion", nm.long)
   }
   
-  if (res[nrow(res), 1] == "Number of areas in mean/median criterion") {
-    attr(res, "n.area.mean") <- as.numeric(res[nrow(res), -1])
-    res <- res[-(nrow(res)), ]
-  }
   
+  # aggregation periods, with conversion of letter code to standard HYPE numeric codes (as used in info.txt)
   
-  # add HYPE variables as attributes and column names
-  hvar <- strsplit(gsub(pattern = "^ *", replacement = "", te[, 2][seq(from = 1, length.out = n.var, by = n.perf)]), ", ")
-  hvar <- matrix(toupper(unlist(hvar)), ncol = 2, byrow = T)
-  attr(res, "variable.obs") <- hvar[, 1]
-  attr(res, "variable.sim") <- hvar[, 2]
-  names(res)[-1] <- apply(hvar, 1, paste, collapse = ".")
-  
-  
-  ## add aggregation periods as attributes, with conversion of letter code to standard HYPE numeric codes (as used in info.txt)
-  
-  # extract information
   agg.period <- te[, 2][seq(from = 2, length.out = n.var, by = n.perf)]
   
   # conditional: check if periods are given as numeric, and if not, try to convert from predefined character codes, 
   #              as last option return whatever was found in file and return a warning
-  
   if (any(is.na(suppressWarnings(as.numeric(agg.period))))) {
     
     # periods are coded as characters, try to convert to numeric code
@@ -2054,24 +2059,38 @@ ReadSimass <- function(filename = "simass.txt") {
       te.agg <- factor(te.agg, levels = c("DD", "WW", "MM", "YY"))
       levels(te.agg) <- 1:4
       te.agg <- as.numeric(te.agg)
-      attr(res, "agg.period") <- te.agg
+      agg.period <- te.agg
     } else {
-      attr(res, "agg.period") <- te.agg
-      warning("Aggregation period code unknown. Returned as imported in attribute 'agg.period'.")
+      agg.period <- te.agg
+      warning("Aggregation period code unknown. Returned as imported in column 'PERIOD'.")
     }
   } else {
     # periods are coded numerically, just return the numbers
-    attr(res, "agg.period") <- as.numeric(agg.period)
+    agg.period <- as.numeric(agg.period)
   }
+  res <- cbind(PERIOD = agg.period, res)
+  nm.long <- c("Aggregation period", nm.long)
   
   
-  ## add general simulation attributes from simass.txt file header
+  # simulated and observed HYPE variables
+  
+  hvar <- strsplit(gsub(pattern = "^ *", replacement = "", te[, 2][seq(from = 1, length.out = n.var, by = n.perf)]), ", ")
+  hvar <- matrix(toupper(unlist(hvar)), ncol = 2, byrow = T)
+  res <- cbind(VAR.OBS = hvar[, 1], VAR.SIM = hvar[, 2], res)
+  nm.long <- c("Observed variable", "Simulated variable", nm.long)
+  
+  
+  
+  ## add attributes to results
+  
+  # long names
+  attr(res, "names.long") <- nm.long
   
   # simulation number (in case of monte carlo results)
   attr(res, "n.simulation") <- as.numeric(substr(fhead[2], 20, 100))
   
   # conditional on number of header rows
-  if (n.head == 5) {
+  if (n.head %in% c(5, 9)) {
     te.head <- as.numeric(na.omit(suppressWarnings(as.numeric(strsplit(paste(fhead[3:4], collapse = " "), split = " +|,")[[1]]))))
   } else {
     te.head <- as.numeric(na.omit(suppressWarnings(as.numeric(strsplit(fhead[3], split = " +|,")[[1]]))))
