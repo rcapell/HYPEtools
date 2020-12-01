@@ -24,7 +24,7 @@ Not case-sensitive.}
 \value{
 Returns a data frame of class \code{HypeXobs} with additional \code{\link{attributes}}:
 \describe{
-\item{\strong{comment}}{A character string.}
+\item{\strong{comment}}{A character vector.}
 \item{\strong{variable}}{A character vector of HYPE variable IDs.}
 \item{\strong{subid}}{A vector of SUBIDs.}
 \item{\strong{timestep}}{Time step keyword, \code{"day"}, or \code{"n hour"} (n = number of hours). \code{NULL}, if \code{x} 

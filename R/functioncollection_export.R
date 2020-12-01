@@ -250,7 +250,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
       }
     } else {
       # export comment argument
-      writeLines(comment, con = fcon)
+      writeLines(paste(comment, collapse = "\t"), con = fcon)
     }
     
     ## export variable line
