@@ -105,11 +105,13 @@ HypeGeoData <- function(x) {
   }
 }
 
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Indexing method, drops HypeGeoData class if mandatory columns are removed
 #--------------------------------------------------------------------------------------------------------------------------------------
 
-
-# indexing method, drops HypeGeoData class if mandatory columns are removed
 #' @export
+
 `[.HypeGeoData` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], drop = T) {
   y <- NextMethod("[", drop)
   
@@ -169,11 +171,12 @@ HypeGeoData <- function(x) {
 
 
 
-
+#--------------------------------------------------------------------------------------------------------------------------------------
+# Summary method
 #--------------------------------------------------------------------------------------------------------------------------------------
 
-# summary method
 #' @export
+
 summary.HypeGeoData <- function(x, ...) {
   
   # initialise result list
@@ -238,7 +241,7 @@ summary.HypeGeoData <- function(x, ...) {
   # create dataframe with column numbers, names and classes
   res$columns <- data.frame(column = as.character((1:ncol(x))[-c(pos.s, pos.r, pos.d)]), name = names(col.cls), class = as.character(col.cls))
   
-  class(res) <- "summaryHypeGeoData"
+  class(res) <- c("summaryHypeGeoData", "list")
   print(res)
   invisible(res)
 }
