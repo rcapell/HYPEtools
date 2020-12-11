@@ -30,17 +30,18 @@ e.g. an imported 'GeoData.txt' file.}
 is \code{NULL} or contains many SUBIDs.}
 }
 \value{
-\code{UpstreamPointSources} returns a data frame with columns containing SUBIDs, point source types, volumes, total nitrogen 
-concentrations, and total phosphorus concentrations.
+\code{UpstreamPointSources} returns a data frame with columns containing SUBIDs, point source types, volumes, and concentrations found in \code{psd}: total nitrogen, 
+total phosphorus, total suspended sediment, tracer, and temperature.
 }
 \description{
-Function to calculate point source emissions over all upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table. 
-Only total nitrogen and total phosphorus emissions are summarised.
+Function to calculate point source emissions over all upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table.
 }
 \details{
 \code{UpstreamPointSources} calculates summarised upstream point source emissions. For each sub-basin with at least one upstream 
 point source (including the sub-basin itself), summed emission volumes and volume weighted emission concentrations are calculated. 
-HYPE point source types ('ps_type') are returned in separate rows. Water abstraction point sources are ignored
+HYPE point source types ('ps_type') are returned in separate rows. \code{UpstreamPointSources} requires point source types to be one of \code{-1, 0, 1, 2, 3}, 
+corresponding to water abstractions, no differentiation/tracer, and type 1 to 3 (e.g. wastewater treatment plants, industries, and urban stormwater). 
+For water abstraction point sources, only summed upstream volumes are returned, i.e., concentrations are simply set to zero in results.
 }
 \examples{
 \dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypsdata, bd = mybranchdata)}
