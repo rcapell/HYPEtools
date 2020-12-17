@@ -1409,7 +1409,7 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
 #' @param filename Path to and file name of HYPE data file file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param verbose Logical, display message if columns contain \code{NA} values.
-#' @param header \code{\link{read.table}} argument, with appropriate default for HYPE data file import.
+#' @param header \code{\link{read.table}} or \code{\link[data.table]{fread}} argument, with appropriate default for HYPE data file import.
 #' @param na.strings See \code{header}.
 #' @param sep See \code{header}.
 #' @param stringsAsFactors See \code{header}.
@@ -1417,11 +1417,12 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
 #' @param encoding \code{\link{read.table}} argument. Specify character encoding when 
 #' importing files created under Windows (default encoding "latin1") in Linux (default encoding "UTF-8") 
 #' and vice versa.
+#' @param data.table Logical, return data.table instead of data frame. \code{\link[data.table]{fread}} argument.
 #' @param ... Other parameters passed to \code{\link{read.table}}. 
 #'  
 #' @details
-#' Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
-#' specifications:
+#' Hype data file imports, simple \code{\link{read.table}} or \code{\link[data.table]{fread}} wrappers with 
+#' formatting arguments set to match HYPE file specifications:
 #' 
 #' \itemize{
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
@@ -1580,18 +1581,22 @@ ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, header = T, na.
 }
 
 #' @rdname HypeDataImport
+#' @importFrom data.table fread
 #' @export
 ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                                stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+                                stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), data.table = F, ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
-  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
-                    stringsAsFactors = stringsAsFactors, encoding = encoding, ...)
+  res <- fread(file = filename, header = header, na.strings = na.strings, sep = sep, 
+               stringsAsFactors = stringsAsFactors, encoding = encoding, data.table = data.table, ...)
   names(res) <- toupper(names(res))
   # check for NAs
-  te <- apply(res, 2, function(x) {any(is.na(x))})
-  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  if (verbose) {
+    te <- apply(res, 2, function(x) {any(is.na(x))})
+    if (any(te)) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  }
+  
   return(res)
 }
 
