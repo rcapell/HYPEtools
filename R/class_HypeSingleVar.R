@@ -126,7 +126,9 @@ HypeSingleVar <- function(x, datetime, subid = NULL, outregid = NULL, hype.var) 
   y <- NextMethod("[", drop = F)
   attr(y, "variable") <- attr(x, "variable")
   attr(y, "datetime") <- attr(x, "datetime")[i]
-  attr(y, "subid") <- attr(x, "subid")[j]
+  attr(y, "subid") <- if (!is.na(attr(x, "subid"))) attr(x, "subid")[j] else NA
+  attr(y, "outregid") <- if (!is.na(attr(x, "outregid"))) attr(x, "outregid")[j] else NA
+  attr(x, "timestep") <- tstep
   class(y) <- c("HypeSingleVar", "array")
   return(y)
 }
@@ -138,9 +140,9 @@ HypeSingleVar <- function(x, datetime, subid = NULL, outregid = NULL, hype.var) 
 # summary method
 #' @export
 # #' @rdname HypeSingleVar
-summary.HypeSingleVar <- function(object, ...) {
-  vari <- attr(object, "variable")
-  dat <- attr(object, "datetime")
+summary.HypeSingleVar <- function(x, ...) {
+  vari <- attr(x, "variable")
+  dat <- attr(x, "datetime")
   ldat <- length(dat)
   ans <- list(hypevar = vari, tslen = ldat)
   if (ldat > 1) {
@@ -152,8 +154,8 @@ summary.HypeSingleVar <- function(object, ...) {
     ans$edate <- NA
     ans$period <- dat
   }
-  ans$nsbd <- length(attr(object, "subid"))
-  ans$niter <- dim(object)[3]
+  ans$nsbd <- if (is.na(subid(x))) length(attr(x, "outregid")) else length(subid(x))
+  ans$niter <- dim(x)[3]
   class(ans) <- "summaryHypeSingleVar"
   print(ans)
   invisible(ans)
