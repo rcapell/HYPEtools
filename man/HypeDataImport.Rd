@@ -113,6 +113,7 @@ ReadPointSourceData(
   sep = "\\t",
   stringsAsFactors = F,
   encoding = c("unknown", "latin1", "UTF-8"),
+  data.table = F,
   ...
 )
 
@@ -130,7 +131,7 @@ Paths are separated by '/', not '\\'.}
 
 \item{verbose}{Logical, display message if columns contain \code{NA} values.}
 
-\item{header}{\code{\link{read.table}} argument, with appropriate default for HYPE data file import.}
+\item{header}{\code{\link{read.table}} or \code{\link[data.table]{fread}} argument, with appropriate default for HYPE data file import.}
 
 \item{na.strings}{See \code{header}.}
 
@@ -145,6 +146,8 @@ and vice versa.}
 \item{...}{Other parameters passed to \code{\link{read.table}}.}
 
 \item{quote}{See \code{header}.}
+
+\item{data.table}{Logical, return data.table instead of data frame. \code{\link[data.table]{fread}} argument.}
 }
 \value{
 Imported files are returned as data frames.
@@ -153,8 +156,8 @@ Imported files are returned as data frames.
 These are simple convenience wrapper functions to import various HYPE data files as data frame into R.
 }
 \details{
-Hype data file imports, simple \code{\link{read.table}} wrappers with formatting arguments set to match HYPE file 
-specifications:
+Hype data file imports, simple \code{\link{read.table}} or \code{\link[data.table]{fread}} wrappers with 
+formatting arguments set to match HYPE file specifications:
 
 \itemize{
   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}

@@ -605,14 +605,14 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
   # convert date comment to text, if requested
   if (!is.null(dt.format)) {
-    if (!(inherits(attr(x, "date"), "POSIXt") | inherits(attr(x, "date"), "Date"))) {
+    if (!(inherits(attr(x, "datetime"), "POSIXt") | inherits(attr(x, "datetime"), "Date"))) {
       warning("Date formatting requested through argument 'dt.format' but date attribute of 'x' contains only strings. Continuing without formatting.")
-      dt <- attr(x, "date")
+      dt <- attr(x, "datetime")
     } else {
-      dt <- format(attr(x, "date"), format = dt.format)
+      dt <- format(attr(x, "datetime"), format = dt.format)
     }
   } else {
-    dt <- attr(x, "date")
+    dt <- attr(x, "datetime")
   }
   
   # create and open a file connection to write header to

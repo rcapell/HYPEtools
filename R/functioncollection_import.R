@@ -843,7 +843,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
   # conditional on user choice: output formatting
   if (type %in% c("dt", "df")) {
     
-    attr(x, which = "date") <- xd
+    attr(x, which = "datetime") <- xd
     attr(x, "variable") <- toupper(hype.var)
     attr(x, "comment") <- xattr[1]
     
@@ -876,7 +876,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
     x <- as.array(as.matrix(x))
     # adding 'iteration' dimension
     dim(x) <- c(dim(x), 1)
-    x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
+    x <- HypeSingleVar(x = x, datetime = xd, subid = sbd, hype.var = toupper(hype.var))
   }
   
   return(x)
@@ -1223,12 +1223,11 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     x <- as.array(as.matrix(x))
     # adding 'iteration' dimension
     dim(x) <- c(dim(x), 1)
-    x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
     # construct HypeSingleVar array, conditional on subid/outregid contents
     if (out.reg) {
-      x <- HypeSingleVar(x = x, date = xd, outregid = sbd, hype.var = toupper(hype.var))
+      x <- HypeSingleVar(x = x, datetime = xd, outregid = sbd, hype.var = toupper(hype.var))
     } else {
-      x <- HypeSingleVar(x = x, date = xd, subid = sbd, hype.var = toupper(hype.var))
+      x <- HypeSingleVar(x = x, datetime = xd, subid = sbd, hype.var = toupper(hype.var))
     }
     
   }

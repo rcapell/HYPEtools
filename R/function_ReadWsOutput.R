@@ -133,7 +133,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     }
     # add attributes with information
     attr(res, "variable") <- toupper(hype.var)
-    attr(res, "date") <- te[, DATE]
+    attr(res, "datetime") <- te[, DATE]
     attr(res, "subid") <- attr(te, "subid")
     attr(res, "outregid") <- attr(te, "outregid")
     class(res) <- c("HypeSingleVar", "array")
@@ -153,7 +153,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     }
     # add attributes with information
     attr(res, "variable") <- toupper(hype.var)
-    attr(res, "date") <- attr(te, "date")
+    attr(res, "datetime") <- attr(te, "datetime")
     attr(res, "subid") <- te[, SUBID]
     attr(res, "outregid") <- attr(te, "outregid")
     dimnames(res)[[2]] <- paste0("X", te[, SUBID])
@@ -173,7 +173,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
       res <- simplify2array(res)
     }
     
-    attr(res, "date") <- te[, 1]
+    attr(res, "datetime") <- te[, 1]
     attr(res, "subid") <- attr(te, "subid")
     attr(res, "outregid") <- attr(te, "outregid")
     attr(res, "variable") <- names(te)[-1]

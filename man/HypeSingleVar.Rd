@@ -4,13 +4,13 @@
 \alias{HypeSingleVar}
 \title{HypeSingleVar arrays}
 \usage{
-HypeSingleVar(x, date, subid = NULL, outregid = NULL, hype.var)
+HypeSingleVar(x, datetime, subid = NULL, outregid = NULL, hype.var)
 }
 \arguments{
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one variable as (in order)
-\code{[date, subid/outregid, iteration]}.}
+\code{[datetime, subid/outregid, iteration]}.}
 
-\item{date}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
+\item{datetime}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
 with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 period averages, e.g. \code{"2000-2010"}.}
 
@@ -27,10 +27,11 @@ Not case-sensitive.}
 Returns a 3-dimensional array with 
 \code{[time, subid, iteration]} dimensions and additional \code{\link{attributes}}:
 \describe{
-\item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
+\item{\strong{datetime}}{A vector of date-times. Corresponds to 1st array dimension.}
 \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension (\code{NA}, if it does not apply to data contents).}
 \item{\strong{outregid}}{A vector of OUTREGIDs. Corresponds to 2nd array dimension (\code{NA}, if it does not apply to data contents).}
 \item{\strong{variable}}{HYPE output variable ID.}
+\item{\strong{timestep}}{A character keyword for the time step.}
 }
 }
 \description{
@@ -41,6 +42,6 @@ and multiple model runs, typically imported time and map output results.
 S3 class constructor function for array objects which can hold (multiple) HYPE time or map output results.
 }
 \examples{
-\dontrun{HypeSingleVar(mytimeoutput, date = mydates, subid = c(23, 45, 56), hype.var = "cctn")}
+\dontrun{HypeSingleVar(mytimeoutput, datetime = mydates, subid = c(23, 45, 56), hype.var = "cctn")}
 
 }

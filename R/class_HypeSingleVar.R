@@ -20,8 +20,8 @@
 #' and multiple model runs, typically imported time and map output results.
 #' 
 #' @param x numeric \code{\link{array}} with three dimensions, which holds HYPE results for one variable as (in order)
-#' \code{[date, subid/outregid, iteration]}.
-#' @param date \code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
+#' \code{[datetime, subid/outregid, iteration]}.
+#' @param datetime \code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
 #' with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 #' period averages, e.g. \code{"2000-2010"}.
 #' @param subid Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}. Either this 
@@ -39,18 +39,19 @@
 #' Returns a 3-dimensional array with 
 #' \code{[time, subid, iteration]} dimensions and additional \code{\link{attributes}}:
 #' \describe{
-#' \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
+#' \item{\strong{datetime}}{A vector of date-times. Corresponds to 1st array dimension.}
 #' \item{\strong{subid}}{A vector of SUBIDs. Corresponds to 2nd array dimension (\code{NA}, if it does not apply to data contents).}
 #' \item{\strong{outregid}}{A vector of OUTREGIDs. Corresponds to 2nd array dimension (\code{NA}, if it does not apply to data contents).}
 #' \item{\strong{variable}}{HYPE output variable ID.}
+#' \item{\strong{timestep}}{A character keyword for the time step.}
 #' }
 #' 
 #' @examples
-#' \dontrun{HypeSingleVar(mytimeoutput, date = mydates, subid = c(23, 45, 56), hype.var = "cctn")}
+#' \dontrun{HypeSingleVar(mytimeoutput, datetime = mydates, subid = c(23, 45, 56), hype.var = "cctn")}
 #' 
 #' @export
 
-HypeSingleVar <- function(x, date, subid = NULL, outregid = NULL, hype.var) {
+HypeSingleVar <- function(x, datetime, subid = NULL, outregid = NULL, hype.var) {
   
   # ID argument checks
   if ((!is.null(subid) && !is.numeric(subid)) || (!is.null(outregid) && !is.numeric(outregid))) {
@@ -74,8 +75,8 @@ HypeSingleVar <- function(x, date, subid = NULL, outregid = NULL, hype.var) {
     }
     
     # check attribute length conformity
-    if (length(date) != dim(x)[1]) {
-      stop("Different lengths of argument 'date' and corresponding dimension of 'x'.")
+    if (length(datetime) != dim(x)[1]) {
+      stop("Different lengths of argument 'datetime' and corresponding dimension of 'x'.")
     }
     if (!is.null(subid) && length(subid) != dim(x)[2]) {
       stop("Different lengths of argument 'subid' and corresponding dimension of 'x'.")
@@ -83,11 +84,32 @@ HypeSingleVar <- function(x, date, subid = NULL, outregid = NULL, hype.var) {
     if (!is.null(outregid) && length(outregid) != dim(x)[2]) {
       stop("Different lengths of argument 'outregid' and corresponding dimension of 'x'.")
     }
+    
+    # conditional: timestep attribute identified by difference between first two entries in date
+    tdff <- as.numeric(difftime(datetime[2], datetime[1], units = "hours"))
+    if (!is.na(tdff)) {
+      if (tdff == 24) {
+        tstep <- "day"
+      } else if (tdff == 168) {
+        tstep <- "week"
+      } else if (tdff %in% c(744, 720, 696, 672)) {
+        tstep <- "month"
+      } else if (tdff %in% c(8760, 8784)) {
+        tstep <- "year"
+      } else {
+        tstep <- paste(tdff, "hour", sep = "")
+      }
+    } else {
+      # add timestep attribute with placeholder value
+      tstep <- "none"
+    }
+    
     class(x) <- c("HypeSingleVar", "array")
-    attr(x, "date") <- date
+    attr(x, "datetime") <- datetime
     attr(x, "subid") <- if (is.null(subid)) NA else subid
     attr(x, "outregid") <- if (is.null(outregid)) NA else outregid
     attr(x, "variable") <- toupper(hype.var)
+    attr(x, "timestep") <- tstep
     return(x)
   } else {
     stop("Non-array input.")
@@ -103,7 +125,7 @@ HypeSingleVar <- function(x, date, subid = NULL, outregid = NULL, hype.var) {
 `[.HypeSingleVar` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], ...) {
   y <- NextMethod("[", drop = F)
   attr(y, "variable") <- attr(x, "variable")
-  attr(y, "date") <- attr(x, "date")[i]
+  attr(y, "datetime") <- attr(x, "datetime")[i]
   attr(y, "subid") <- attr(x, "subid")[j]
   class(y) <- c("HypeSingleVar", "array")
   return(y)
@@ -118,7 +140,7 @@ HypeSingleVar <- function(x, date, subid = NULL, outregid = NULL, hype.var) {
 # #' @rdname HypeSingleVar
 summary.HypeSingleVar <- function(object, ...) {
   vari <- attr(object, "variable")
-  dat <- attr(object, "date")
+  dat <- attr(object, "datetime")
   ldat <- length(dat)
   ans <- list(hypevar = vari, tslen = ldat)
   if (ldat > 1) {

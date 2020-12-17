@@ -17,8 +17,8 @@
 #' multiple model runs, typically imported HYPE basin output results.
 #' 
 #' @param x numeric \code{\link{array}} with three dimensions, which holds HYPE results for one sub-basin as (in order)
-#' \code{[date, variable, iteration]}.
-#' @param date \code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
+#' \code{[datetime, variable, iteration]}.
+#' @param datetime \code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
 #' with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 #' period averages, e.g. \code{"2000-2010"}.
 #' @param hype.var Character vector of keywords to specify HYPE variable IDs, corresponding to second dimension 
@@ -34,7 +34,7 @@
 #' Returns a 3-dimensional array with 
 #' \code{[time, variable, iteration]} dimensions and additional \code{\link{attributes}}:
 #' \describe{
-#' \item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
+#' \item{\strong{datetime}}{A vector of date-times. Corresponds to 1st array dimension.}
 #' \item{\strong{variable}}{A character vector of HYPE output variable IDs.}
 #' \item{\strong{subid}}{A single SUBID.}
 #' \item{\strong{outregid}}{A single OUTREGID.}
@@ -42,11 +42,11 @@
 #' }
 #' 
 #' @examples
-#' \dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", "ccon"), , subid = 23, tstep = "day"}
+#' \dontrun{HypeMultiVar(mybasinoutput, datetime = mydates, hype.var = c("cctn", "ccin", "ccon"), , subid = 23, tstep = "day"}
 #' 
 #' @export
 
-HypeMultiVar <- function(x, date, hype.var, subid = NULL, outregid = NULL) {
+HypeMultiVar <- function(x, datetime, hype.var, subid = NULL, outregid = NULL) {
   
   # ID argument checks
   if ((!is.null(subid) && !is.numeric(subid)) || (!is.null(outregid) && !is.numeric(outregid))) {
@@ -70,15 +70,15 @@ HypeMultiVar <- function(x, date, hype.var, subid = NULL, outregid = NULL) {
     }
     
     # check attribute length conformity
-    if (length(date) != dim(x)[1]) {
-      stop("Different lengths of argument 'date' and corresponding dimension of 'x'.")
+    if (length(datetime) != dim(x)[1]) {
+      stop("Different lengths of argument 'datetime' and corresponding dimension of 'x'.")
     }
     if (length(hype.var) != dim(x)[2]) {
       stop("Different lengths of argument 'hype.var' and corresponding dimension of 'x'.")
     }
     
     # conditional: timestep attribute identified by difference between first two entries in date
-    tdff <- as.numeric(difftime(date[2], date[1], units = "hours"))
+    tdff <- as.numeric(difftime(datetime[2], datetime[1], units = "hours"))
     if (!is.na(tdff)) {
       if (tdff == 24) {
         tstep <- "day"
@@ -97,7 +97,7 @@ HypeMultiVar <- function(x, date, hype.var, subid = NULL, outregid = NULL) {
     }
     
     class(x) <- c("HypeMultiVar", "array")
-    attr(x, "date") <- date
+    attr(x, "datetime") <- datetime
     attr(x, "variable") <- toupper(hype.var)
     attr(x, "subid") <- if (is.null(subid)) NA else subid
     attr(x, "outregid") <- if (is.null(outregid)) NA else outregid

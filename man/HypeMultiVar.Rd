@@ -4,13 +4,13 @@
 \alias{HypeMultiVar}
 \title{HypeMultiVar arrays}
 \usage{
-HypeMultiVar(x, date, hype.var, subid = NULL, outregid = NULL)
+HypeMultiVar(x, datetime, hype.var, subid = NULL, outregid = NULL)
 }
 \arguments{
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one sub-basin as (in order)
-\code{[date, variable, iteration]}.}
+\code{[datetime, variable, iteration]}.}
 
-\item{date}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
+\item{datetime}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
 with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 period averages, e.g. \code{"2000-2010"}.}
 
@@ -26,7 +26,7 @@ period averages, e.g. \code{"2000-2010"}.}
 Returns a 3-dimensional array with 
 \code{[time, variable, iteration]} dimensions and additional \code{\link{attributes}}:
 \describe{
-\item{\strong{date}}{A vector of date-times. Corresponds to 1st array dimension.}
+\item{\strong{datetime}}{A vector of date-times. Corresponds to 1st array dimension.}
 \item{\strong{variable}}{A character vector of HYPE output variable IDs.}
 \item{\strong{subid}}{A single SUBID.}
 \item{\strong{outregid}}{A single OUTREGID.}
@@ -41,6 +41,6 @@ multiple model runs, typically imported HYPE basin output results.
 S3 class constructor function for array objects which can hold (multiple) HYPE basin output results.
 }
 \examples{
-\dontrun{HypeMultiVar(mybasinoutput, date = mydates, hype.var = c("cctn", "ccin", "ccon"), , subid = 23, tstep = "day"}
+\dontrun{HypeMultiVar(mybasinoutput, datetime = mydates, hype.var = c("cctn", "ccin", "ccon"), , subid = 23, tstep = "day"}
 
 }
