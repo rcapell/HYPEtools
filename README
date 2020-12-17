@@ -1,2 +1,1 @@
-This repository contains source and binary files for an R package, providing functions to 
-work with files from and for the hydrological model HYPE.
+This repository contains source files for an R package HYPEtools, which provides functions to work with files from and for the hydrological model HYPE. 
