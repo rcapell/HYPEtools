@@ -21,7 +21,7 @@
 #' @param datetime \code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
 #' with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 #' period averages, e.g. \code{"2000-2010"}.
-#' @param hype.var Character vector of keywords to specify HYPE variable IDs, corresponding to second dimension 
+#' @param hype.var,hype.unit Character vectors of keywords to specify HYPE variable IDs, corresponding to second dimension 
 #' (columns) in \code{x}. See 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}
 #' @param subid Integer, HYPE sub-basin ID. Either this or \code{outregid} needs to be supplied.
@@ -36,6 +36,7 @@
 #' \describe{
 #' \item{\strong{datetime}}{A vector of date-times. Corresponds to 1st array dimension.}
 #' \item{\strong{variable}}{A character vector of HYPE output variable IDs.}
+#' \item{\strong{hypeunit}}{A character vector of HYPE output variable units.}
 #' \item{\strong{subid}}{A single SUBID.}
 #' \item{\strong{outregid}}{A single OUTREGID.}
 #' \item{\strong{timestep}}{A character keyword for the time step.}
@@ -46,7 +47,7 @@
 #' 
 #' @export
 
-HypeMultiVar <- function(x, datetime, hype.var, subid = NULL, outregid = NULL) {
+HypeMultiVar <- function(x, datetime, hype.var, hype.unit, subid = NULL, outregid = NULL) {
   
   # ID argument checks
   if ((!is.null(subid) && !is.numeric(subid)) || (!is.null(outregid) && !is.numeric(outregid))) {
@@ -99,6 +100,7 @@ HypeMultiVar <- function(x, datetime, hype.var, subid = NULL, outregid = NULL) {
     class(x) <- c("HypeMultiVar", "array")
     attr(x, "datetime") <- datetime
     attr(x, "variable") <- toupper(hype.var)
+    attr(x, "hypeunit") <- toupper(hype.unit)
     attr(x, "subid") <- if (is.null(subid)) NA else subid
     attr(x, "outregid") <- if (is.null(outregid)) NA else outregid
     attr(x, "timestep") <- tstep
@@ -120,6 +122,7 @@ HypeMultiVar <- function(x, datetime, hype.var, subid = NULL, outregid = NULL) {
   y <- NextMethod("[", drop = F)
   attr(y, "date") <- attr(x, "date")[i]
   attr(y, "variable") <- attr(x, "variable")[j]
+  attr(y, "hypeunit") <- attr(x, "hypeunit")[j]
   attr(y, "subid") <- attr(x, "subid")
   attr(y, "outregid") <- attr(x, "outregid")
   attr(y, "timestep") <- attr(x, "timestep")
