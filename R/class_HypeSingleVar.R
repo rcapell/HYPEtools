@@ -25,9 +25,9 @@
 #' with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 #' period averages, e.g. \code{"2000-2010"}.
 #' @param subid Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}. Either this 
-#' or \code{outregid} needs to be supplied.
+#' or \code{outregid} must be supplied.
 #' @param outregid Integer vector with HYPE output region IDs, alternative to \code{subid}.
-#' @param hype.var Character string, four-letter keyword to specify HYPE variable ID, see 
+#' @param hype.var Character string, keyword to specify HYPE variable ID, see 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}. 
 #' Not case-sensitive.
 # #' @param ... Ignored.
@@ -104,13 +104,18 @@ HypeSingleVar <- function(x, datetime, subid = NULL, outregid = NULL, hype.var) 
       tstep <- "none"
     }
     
-    class(x) <- c("HypeSingleVar", "array")
-    attr(x, "datetime") <- datetime
-    attr(x, "subid") <- if (is.null(subid)) NA else subid
-    attr(x, "outregid") <- if (is.null(outregid)) NA else outregid
-    attr(x, "variable") <- toupper(hype.var)
-    attr(x, "timestep") <- tstep
+    # add class names and other attributes
+    attributes(x) <- c(attributes(x), 
+                       class = c("HypeSingleVar", "array"), 
+                       datetime = datetime, 
+                       subid = if (length(subid) == 0) NA else subid, 
+                       outregid = if (length(outregid) == 0) NA else outregid, 
+                       variable = toupper(hype.var), 
+                       timestep = tstep)
+    
+    # return S3 object 'HypeSingleVar'
     return(x)
+    
   } else {
     stop("Non-array input.")
   }
@@ -121,18 +126,36 @@ HypeSingleVar <- function(x, datetime, subid = NULL, outregid = NULL, hype.var) 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 # indexing method
-#' @export
+# #' @export
 `[.HypeSingleVar` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], ...) {
   y <- NextMethod("[", drop = F)
-  attr(y, "variable") <- attr(x, "variable")
-  attr(y, "datetime") <- attr(x, "datetime")[i]
-  attr(y, "subid") <- if (!is.na(attr(x, "subid"))) attr(x, "subid")[j] else NA
-  attr(y, "outregid") <- if (!is.na(attr(x, "outregid"))) attr(x, "outregid")[j] else NA
-  attr(x, "timestep") <- tstep
-  class(y) <- c("HypeSingleVar", "array")
-  return(y)
+  print(names(attributes(y)))
+  # add class names and other attributes, sub-set them where needed
+  attributes(y) <- c(attributes(y), 
+                     class = c("HypeSingleVar", "array"), 
+                     datetime = attr(x, "datetime")[i], 
+                     subid = if (length(subid(x)) == 1 && is.na(subid(x))) NA else subid(x)[j], 
+                     outregid = if (length(outregid(x)) == 1 && is.na(outregid(x))) NA else outregid(x)[j], 
+                     variable = variable(x), 
+                     timestep = timestep(x))
+  
+  y
+  
 }
 
+
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
+# summaryHypeSingleVar constructor, used for printing summaries
+#' @export
+summaryHypeSingleVar <- function(x) {
+  
+  # expects a list with elements sdate, edate, period, nsbd, and niter
+  class(x) <- "summaryHypeSingleVar"
+  
+  x
+}
 
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -154,9 +177,9 @@ summary.HypeSingleVar <- function(x, ...) {
     ans$edate <- NA
     ans$period <- dat
   }
-  ans$nsbd <- if (is.na(subid(x))) length(attr(x, "outregid")) else length(subid(x))
+  ans$nsbd <- if (length(subid(x) == 1) && is.na(subid(x))) length(attr(x, "outregid")) else length(subid(x))
   ans$niter <- dim(x)[3]
-  class(ans) <- "summaryHypeSingleVar"
+  ans <- summaryHypeSingleVar(x = ans)
   print(ans)
   invisible(ans)
 }
@@ -168,8 +191,8 @@ summary.HypeSingleVar <- function(x, ...) {
 # print method for summary list object
 #' @export
 print.summaryHypeSingleVar <- function(x, ...) {
-  nm <- c("HYPE variable:\t\t\t\t", "Simulation time series length:\t\t", "Simulation start date:\t\t\t", 
-          "Simulation end date:\t\t\t", "Simulation time period:\t\t\t", "Number of SUBIDs in simulation:\t\t", 
+  nm <- c("HYPE variable:\t\t\t\t", "Simulation time series length:\t\t", "Simulation start:\t\t\t", 
+          "Simulation end:\t\t\t\t", "Simulation time period:\t\t\t", "Number of SUBIDs in simulation:\t\t", 
           "Number of iterations in simulation:\t")
   cat("\n")
   for (i in 1:length(x)) {
