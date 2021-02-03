@@ -41,6 +41,7 @@
 #' 
 #' @examples
 #' \dontrun{HypeGeoData(x = )}
+#' 
 #' @export
 
 HypeGeoData <- function(x) {
@@ -175,6 +176,7 @@ HypeGeoData <- function(x) {
 # Summary method
 #--------------------------------------------------------------------------------------------------------------------------------------
 
+#' @method summary HypeGeoData
 #' @export
 
 summary.HypeGeoData <- function(x, ...) {
