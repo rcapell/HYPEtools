@@ -3,24 +3,48 @@
 \name{HypeAttrAccess}
 \alias{HypeAttrAccess}
 \alias{datetime}
+\alias{datetime<-}
+\alias{hypeunit}
+\alias{hypeunit<-}
 \alias{obsid}
+\alias{obsid<-}
 \alias{outregid}
+\alias{outregid<-}
 \alias{subid}
+\alias{subid<-}
 \alias{timestep}
+\alias{timestep<-}
 \alias{variable}
-\title{Quickly query HYPE-specific attributes}
+\alias{variable<-}
+\title{Quickly query and set HYPE-specific attributes}
 \usage{
 datetime(x)
 
+datetime(x) <- value
+
+hypeunit(x)
+
+hypeunit(x) <- value
+
 obsid(x)
+
+obsid(x) <- value
 
 outregid(x)
 
+outregid(x) <- value
+
 subid(x)
+
+subid(x) <- value
 
 timestep(x)
 
+timestep(x) <- value
+
 variable(x)
+
+variable(x) <- value
 }
 \arguments{
 \item{x}{an object whose attribute is to be accessed}
