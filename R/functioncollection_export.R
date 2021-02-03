@@ -450,7 +450,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
 #'
 #' Function to export a basin output file from R.
 #' 
-#' @param x The object to be written, a dataframe with \code{unit} attribute, as an object returned from \code{\link{ReadBasinOutput}}.
+#' @param x The object to be written, a dataframe with \code{hypeunit} attribute, as an object returned from \code{\link{ReadBasinOutput}}.
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
@@ -473,7 +473,7 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   conn <- file(description = filename, open = "w")
   # write header lines
   writeLines(paste(names(x), collapse = "\t"), con = conn)
-  writeLines(paste(c("UNITS", attr(x, "unit")), collapse = "\t"), con = conn)
+  writeLines(paste(c("UNITS", attr(x, "hypeunit")), collapse = "\t"), con = conn)
   # close the connection
   close(conn)
   

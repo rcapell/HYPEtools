@@ -14,12 +14,15 @@ ReadTimeOutput(
   id = NULL,
   nrows = -1L,
   skip = 0L,
-  warn.nan = FALSE
+  warn.nan = FALSE,
+  verbose = T
 )
 }
 \arguments{
-\item{filename}{Path to and file name of the time output file to import. Windows users: Note that 
-Paths are separated by '/', not '\\'.}
+\item{filename}{Path to and file name of the time output file to import. Acceptable file choices are \code{*.txt} files following 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:timexxxx.txt}{HYPE time output file format} or \code{.nc} 
+files following the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}. 
+See also details for netCDF import.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
 and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
@@ -47,6 +50,8 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return 
 
 \item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
 a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.}
+
+\item{verbose}{Logical, print information during import.}
 }
 \value{
 \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
@@ -57,13 +62,18 @@ time step attribute, and \code{comment} with first row comment of imported file 
 \code{id.nan} might be returned, see argument \code{warn.nan}.
 }
 \description{
-This is a convenience wrapper function to import a time output file ('time<\emph{HYPE_output_variable}>.txt') into R.
+Import a time output file 'time<\emph{HYPE_output_variable}>.txt' or a converted time output file in netCDF format 
+into R.
 }
 \details{
-\code{ReadTimeOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
-\code{\link{data.table}}, 
-with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
-of the time step period.
+\code{ReadTimeOutput} imports from text or netCDF files. Text file import uses \code{\link[data.table]{fread}} from package  
+\code{\link{data.table}}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}. 
+Date-time representations in data files are converted to POSIX time representations. Monthly and annual time steps are returned as 
+first day of the time step period. 
+
+Import from netCDF files requires an \code{id} dimension in the netCDF data. Gridded data with remapped HYPE results in spatial x/y 
+dimensions as defined in the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard} 
+are currently not supported.
 }
 \note{
 For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 

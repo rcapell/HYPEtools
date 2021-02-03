@@ -179,7 +179,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' 
 #' @return
 #' \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
-#' Data frames and data tables contain additional \code{\link{attributes}}: \code{unit}, a vector of HYPE variable units, 
+#' Data frames and data tables contain additional \code{\link{attributes}}: \code{hypeunit}, a vector of HYPE variable units, 
 #' \code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created and assigned \code{NA} 
 #' if not applicable to data contents), and \code{timestep} 
 #' with a time step keyword attribute. An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
@@ -287,7 +287,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     xd <- NA
   }
   
-  ## extract attributes to hold measurement units and SUBID/OUTREGID
+  ## extract attributes to hold hype variable units and SUBID/OUTREGID
   
   munit <- readLines(filename, n = 2)
   munit <- strsplit(munit[2], split = "\t")[[1]][-1]
@@ -332,7 +332,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
   if (type %in% c("dt", "df")) {
     
     # update with new attributes
-    attr(x, which = "unit") <- munit
+    attr(x, which = "hypeunit") <- munit
     attr(x, which = "timestep") <- tstep
     if (reg.out) {
       attr(x, which = "outregid") <- sbd
@@ -353,9 +353,9 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     dim(x) <- c(dim(x), 1)
     # construct HypeMultiVar array, conditional on subid/outregid contents
     if (reg.out) {
-      x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, outregid = sbd)
+      x <- HypeMultiVar(x = x, datetime = xd, hype.var = hvar, outregid = sbd)
     } else {
-      x <- HypeMultiVar(x = x, date = xd, hype.var = hvar, subid = sbd)
+      x <- HypeMultiVar(x = x, datetime = xd, hype.var = hvar, subid = sbd)
     }
     
   }
@@ -576,7 +576,7 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
   ## assign HypeGeoData class, check if requirements are met and strip class if not
   
   class(res) <- c("HypeGeoData", "data.frame")
-  
+
   # mandatory columns except SLCs and their positions
   m <- c("AREA", "SUBID", "MAINDOWN", "RIVLEN")
   pos.m <- match(m, names(res))
@@ -602,14 +602,16 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
   if (any(is.na(pos.m))) {
     # warn if mandatory columns are missing
     warning(paste0("Mandatory 'HypeGeoData' column(s) '", paste(m[is.na(pos.m)], collapse = "', '"), "' missing. Imported as 'data.frame'."))
-    class(res) <- class(res)[-1]
+#    class(res) <- class(res)[-1]
+    class(res) <- "data.frame"
   }
   
   if (length(pos.s) == 0) {
     # warn if there are no SLC columns
     warning("Mandatory 'HypeGeoData' column(s) 'SLC_n' missing. Imported as 'data.frame'.")
     if (class(res)[1] == "HypeGeoData") {
-      class(res) <- class(res)[-1]
+      #    class(res) <- class(res)[-1]
+      class(res) <- "data.frame"
     }
   }
   
@@ -1276,7 +1278,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' 
 #' @return
 #' \code{ReadPTQobs} returns a data frame with additional attributes: \code{obsid} with observation IDs, \code{timestep} with a time 
-#' step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported), and \code{variable} wih a HYPE 
+#' step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported), and \code{variable} with a HYPE 
 #' variable ID string.
 #' 
 #' @note

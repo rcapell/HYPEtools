@@ -55,8 +55,8 @@ If non-NULL, variable labels are read from here instead of \code{sim} and \code{
 \item{xlab}{Character string or \code{\link{plotmath}} expression string, x-axis label. Defaults to a string giving the 
 time period on which the regime is based.}
 
-\item{ylab}{Character or \code{\link{plotmath}} expression string. Y-axis label. Defaults to a measurement unit string taken from 
-\code{x} \code{\link{attributes}} \code{'unit'}.}
+\item{ylab}{Character or \code{\link{plotmath}} expression string. Y-axis label. Defaults to a HYPE variable unit string taken from 
+\code{x} \code{\link{attributes}} \code{'hypeunit'}.}
 
 \item{mar}{Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.}
 

@@ -7,7 +7,7 @@
 WriteBasinOutput(x, filename, dt.format = "\%Y-\%m-\%d")
 }
 \arguments{
-\item{x}{The object to be written, a dataframe with \code{unit} attribute, as an object returned from \code{\link{ReadBasinOutput}}.}
+\item{x}{The object to be written, a dataframe with \code{hypeunit} attribute, as an object returned from \code{\link{ReadBasinOutput}}.}
 
 \item{filename}{A character string naming a file to write to. Windows users: Note that 
 Paths are separated by '/', not '\\'.}

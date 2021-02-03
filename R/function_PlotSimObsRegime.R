@@ -23,8 +23,8 @@
 #' @param ylim  Numeric vector of length two, giving y-axis limits. Defaults to min-max range of all plotted data.
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Defaults to a string giving the 
 #' time period on which the regime is based.
-#' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label. Defaults to a measurement unit string taken from 
-#' \code{x} \code{\link{attributes}} \code{'unit'}.
+#' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label. Defaults to a HYPE variable unit string taken from 
+#' \code{x} \code{\link{attributes}} \code{'hypeunit'}.
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
 #' 
@@ -152,9 +152,9 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   }
   if (is.null(ylab)) {
     if (is.null(obs)) {
-      ylab <- attr(x, "unit")[col.sim - 1]
+      ylab <- attr(x, "hypeunit")[col.sim - 1]
     } else {
-      ylab <- attr(x, "unit")[col.obs - 1]
+      ylab <- attr(x, "hypeunit")[col.obs - 1]
     }
   }
   
