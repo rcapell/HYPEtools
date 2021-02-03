@@ -4,7 +4,7 @@
 \alias{HypeMultiVar}
 \title{HypeMultiVar arrays}
 \usage{
-HypeMultiVar(x, datetime, hype.var, subid = NULL, outregid = NULL)
+HypeMultiVar(x, datetime, hype.var, hype.unit, subid = NULL, outregid = NULL)
 }
 \arguments{
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one sub-basin as (in order)
@@ -14,7 +14,7 @@ HypeMultiVar(x, datetime, hype.var, subid = NULL, outregid = NULL)
 with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
 period averages, e.g. \code{"2000-2010"}.}
 
-\item{hype.var}{Character vector of keywords to specify HYPE variable IDs, corresponding to second dimension 
+\item{hype.var, hype.unit}{Character vectors of keywords to specify HYPE variable IDs, corresponding to second dimension 
 (columns) in \code{x}. See 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}}
 
@@ -28,6 +28,7 @@ Returns a 3-dimensional array with
 \describe{
 \item{\strong{datetime}}{A vector of date-times. Corresponds to 1st array dimension.}
 \item{\strong{variable}}{A character vector of HYPE output variable IDs.}
+\item{\strong{hypeunit}}{A character vector of HYPE output variable units.}
 \item{\strong{subid}}{A single SUBID.}
 \item{\strong{outregid}}{A single OUTREGID.}
 \item{\strong{timestep}}{A character keyword for the time step.}

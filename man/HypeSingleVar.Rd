@@ -15,11 +15,11 @@ with equidistant time steps (starting day for time steps from weekly to annual),
 period averages, e.g. \code{"2000-2010"}.}
 
 \item{subid}{Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}. Either this 
-or \code{outregid} needs to be supplied.}
+or \code{outregid} must be supplied.}
 
 \item{outregid}{Integer vector with HYPE output region IDs, alternative to \code{subid}.}
 
-\item{hype.var}{Character string, four-letter keyword to specify HYPE variable ID, see 
+\item{hype.var}{Character string, keyword to specify HYPE variable ID, see 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}. 
 Not case-sensitive.}
 }
