@@ -980,6 +980,8 @@ WriteForcKey <- function(x, filename = "ForcKey.txt") {
 #' @details
 #' \code{WriteOptpar} writes an 'optpar.txt' file, typically originating from an imported and modified 'optpar.txt'.
 #' 
+#' @seealso \code{\link{ReadOptpar}} with a description of the expected content of \code{x}.
+#' 
 #' @examples
 #' \dontrun{WriteOptpar(myoptpar)}
 #' 
@@ -991,16 +993,25 @@ WriteOptpar <- function (x, filename = "optpar.txt", digits = 10, nsmall = 1) {
   # convert all data frames in x$pars to lists of vectors and then flatten list of lists to list with vector elements
   px <- unlist(lapply(x$pars, as.list), recursive = FALSE)
   # format list contents to avoid scientific format in output
-  px <- sapply(px, format, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T, justify = "none")
+  px <- lapply(px, format, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T, justify = "none")
   # add parameter names in first position of vector elements
-  px <- sapply(1:length(px), function(x, y, z) {c(y[x], z[[x]])}, y = rep(names(x$pars), each = 3), z = px)
+  px <- lapply(1:length(px), function(x, y, z) {c(y[x], z[[x]])}, y = rep(names(x$pars), each = 3), z = px)
   
   # create and open file device
   out <- file(description = filename, open = "w")
+  
   # write comment row
   writeLines(text = x$comment, con = out)
+  
   # write optimisation settings
   write(apply(x$tasks, 1, paste, collapse = "\t"), file = out)
+  
+  # write empty lines to fill optimisation settings section (static section in optpar file, line 2 to 21)
+  if (nrow(x$tasks) < 20) {
+    empty <- rep("", 20 - nrow(x$tasks))
+    writeLines(empty, con = out)
+  }
+  
   # write parameter ranges
   write(sapply(px, paste, collapse = "\t"), file = out)
   close(out)

@@ -26,3 +26,6 @@ Paths are separated by '/', not '\\'.}
 \dontrun{WriteOptpar(myoptpar)}
 
 }
+\seealso{
+\code{\link{ReadOptpar}} with a description of the expected content of \code{x}.
+}
