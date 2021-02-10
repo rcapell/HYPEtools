@@ -36,7 +36,7 @@ return a \code{\link[data.table]{data.table}} object.}
 }
 \value{
 \code{ReadPTQobs} returns a data frame with additional attributes: \code{obsid} with observation IDs, \code{timestep} with a time 
-step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported), and \code{variable} wih a HYPE 
+step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported), and \code{variable} with a HYPE 
 variable ID string.
 }
 \description{
