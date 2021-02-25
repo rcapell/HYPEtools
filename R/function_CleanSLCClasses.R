@@ -90,6 +90,9 @@
 #' @return
 #' \code{CleanSLCClasses} returns the GeoData data frame passed to the function in argument \code{gd} with cleaned SLC class columns. 
 #' 
+#' @seealso 
+#' \code{\link{RescaleSLCClasses}} for rescaling of SLC area fraction sums.
+#' 
 #' @examples
 #' \dontrun{
 #' my.gd <- ReadGeoData("GeoData.txt")

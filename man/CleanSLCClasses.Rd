@@ -111,3 +111,6 @@ CleanSLCClasses(gd = my.gd, gcl = my.gcl, m1.file = "myTransferSoil.txt", m1.cle
 }
 
 }
+\seealso{
+\code{\link{RescaleSLCClasses}} for rescaling of SLC area fraction sums.
+}
