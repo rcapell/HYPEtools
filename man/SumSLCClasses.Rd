@@ -4,12 +4,14 @@
 \alias{SumSLCClasses}
 \title{Calculate sums of SLC classes in a GeoData file}
 \usage{
-SumSLCClasses(gd, plot.box = T, ...)
+SumSLCClasses(gd, plot.box = T, silent = F, ...)
 }
 \arguments{
 \item{gd}{Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
 
 \item{plot.box}{Logical, if \code{TRUE}, a box plot of SLC area sums is returned.}
+
+\item{silent}{Logical, if set to \code{TRUE}, the default printing of a result summary is suppressed.}
 
 \item{...}{Other arguments to be passed to \code{\link{boxplot}}.}
 }
@@ -27,6 +29,7 @@ GeoData data frame sum up to 1.
 \dontrun{
 my.gd <- ReadGeoData("GeoData.txt")
 SumSLCClasses(gd = my.gd, plot.box = F)
+my.gd[SumSLCClasses(gd = my.gd, plot.box = F, silent = T) < .5, ]
 }
 
 }
