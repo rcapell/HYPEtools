@@ -151,13 +151,15 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt", use.comment = FALSE) {
     } else {
       
       warning("Attribute 'comment' not found in 'x'. Column names exported instead.")
-      fwrite(file = filename, x = x, append = FALSE, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+      writeLines(paste0("!", paste(names(x), collapse = "\t")), con = filename)
+      fwrite(file = filename, x = x, append = FALSE, quote = FALSE, sep = "\t", row.names = FALSE, col.names = FALSE)
       
     }
     
   } else {
     
-    fwrite(file = filename, x = x, append = FALSE, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+    writeLines(paste0("!", paste(names(x), collapse = "\t")), con = filename)
+    fwrite(file = filename, x = x, append = FALSE, quote = FALSE, sep = "\t", row.names = FALSE, col.names = FALSE)
     
   }
 }
