@@ -370,7 +370,7 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' 
 #' Merge an imported HYPE GeoData table of class \code{link{HypeGeoData}} with another data frame. 
 #' 
-#' @param x \code{link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.
+#' @param x \code{\link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.
 #' @param y Data frame, with mandatory \code{SUBID} column.
 #' @param all.x Logical, keep all rows from \code{x}. Defaults to \code{TRUE}, as opposed to default method, thus extending the GeData 
 #' table with columns in \code{y}.
@@ -390,8 +390,8 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' \item{\code{suffixes}, set to \code{c("", ".y")}}
 #' }
 #' 
-#' The method warns if any of these arguments is supplied by the user. To override, call the data frame method 
-#' explicitly (\code{merge.data.frame()}).
+#' The method warns if any of these arguments is supplied by the user. To override, use the GeoData table as argument \code{y} or 
+#' call the data frame method explicitly (\code{merge.data.frame()}).
 #' 
 #' @return 
 #' A \code{HypeGeoData} data frame.

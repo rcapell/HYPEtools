@@ -8,7 +8,7 @@
 \method{merge}{HypeGeoData}(x, y, all.x = TRUE, sort = NA, ...)
 }
 \arguments{
-\item{x}{\code{link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.}
+\item{x}{\code{\link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.}
 
 \item{y}{Data frame, with mandatory \code{SUBID} column.}
 
@@ -38,8 +38,8 @@ The following arguments of the default method are hard-coded:
 \item{\code{suffixes}, set to \code{c("", ".y")}}
 }
 
-The method warns if any of these arguments is supplied by the user. To override, call the data frame method 
-explicitly (\code{merge.data.frame()}).
+The method warns if any of these arguments is supplied by the user. To override, use the GeoData table as argument \code{y} or 
+call the data frame method explicitly (\code{merge.data.frame()}).
 }
 \examples{
 \dontrun{merge(gd1, gd2)}
