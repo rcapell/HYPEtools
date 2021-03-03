@@ -34,16 +34,17 @@ SumSLCClasses <- function(gd, plot.box = T, silent = F, ...) {
     stop("No SLC classes found in 'gd'. Exiting.")
   }
   
-  # print number of SLC classes
-  cat(paste("\nNumber of SLCs in 'gd':", length(gdcols.slc), "\n"))
   
   # calculate row sums
   res <- rowSums(gd[, gdcols.slc])
   
-  # print range
+  
+  # print number of SLC classes and range
   if (!silent) {
+    cat(paste("\nNumber of SLCs in 'gd':", length(gdcols.slc), "\n"))
     cat(paste("\nSLC sums range from", min(res), "to", max(res), "\n"))
   }
+  
   
   # plot results if desired, otherwise return res
   if (plot.box) {
