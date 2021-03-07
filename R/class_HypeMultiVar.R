@@ -26,6 +26,7 @@
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}
 #' @param subid Integer, HYPE sub-basin ID. Either this or \code{outregid} needs to be supplied.
 #' @param outregid Integer, HYPE output region ID, alternative to \code{subid}.
+#' @param hype.comment Character, first-row optional comment string of basin output file. \code{NA}, if non-existing.
 #' 
 #' @details
 #' S3 class constructor function for array objects which can hold (multiple) HYPE basin output results. 
@@ -40,6 +41,7 @@
 #' \item{\strong{subid}}{A single SUBID.}
 #' \item{\strong{outregid}}{A single OUTREGID.}
 #' \item{\strong{timestep}}{A character keyword for the time step.}
+#' \item{\strong{comment}}{A comment string, currently used for class group outputs.}
 #' }
 #' 
 #' @examples
@@ -47,7 +49,7 @@
 #' 
 #' @export
 
-HypeMultiVar <- function(x, datetime, hype.var, hype.unit, subid = NULL, outregid = NULL) {
+HypeMultiVar <- function(x, datetime, hype.var, hype.unit, subid = NULL, outregid = NULL, hype.comment = NA) {
   
   # ID argument checks
   if ((!is.null(subid) && !is.numeric(subid)) || (!is.null(outregid) && !is.numeric(outregid))) {
@@ -104,6 +106,7 @@ HypeMultiVar <- function(x, datetime, hype.var, hype.unit, subid = NULL, outregi
     attr(x, "subid") <- if (is.null(subid)) NA else subid
     attr(x, "outregid") <- if (is.null(outregid)) NA else outregid
     attr(x, "timestep") <- tstep
+    comment(x) <- hype.comment
     return(x)
     
   } else {

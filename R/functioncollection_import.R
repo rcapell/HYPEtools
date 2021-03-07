@@ -181,8 +181,8 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{hypeunit}, a vector of HYPE variable units, 
 #' \code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created and assigned \code{NA} 
-#' if not applicable to data contents), and \code{timestep} 
-#' with a time step keyword attribute. An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
+#' if not applicable to data contents), \code{timestep} with a time step keyword attribute, and \code{comment} with contents of an optional 
+#' first-row comment (\code{NA} otherwise). An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
 
 
 #' @note
@@ -213,14 +213,24 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     d.t <- T
   }
   
+  # check if metadata comment row exists
+  te <- toupper(strsplit(readLines(filename, n = 1),split = "\t")[[1]])
+  if (substr(te, 1, 1) == "!") {
+    mc <- 1
+    cmt <- substr(te, 3, nchar(te))
+  } else {
+    mc <- 0
+    cmt <- NA
+  }
+  
   # read header with variable names
-  nm <- toupper(strsplit(readLines(filename, n = 1),split = "\t")[[1]])
+  nm <- toupper(strsplit(readLines(filename, n = 1 + mc)[1 + mc],split = "\t")[[1]])
   
   # import data
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", 
                             "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             skip = 2, sep = "\t", header = F, data.table = d.t, colClasses = c("character", rep("numeric", length(nm) - 1)))      
+             skip = 2 + mc, sep = "\t", header = F, data.table = d.t, colClasses = c("character", rep("numeric", length(nm) - 1)))      
   
   # check if results are region outputs and update header with HYPE variable names
   if (all(substr(nm[-1], 1, 2) == "RG")) {
@@ -332,14 +342,15 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
   if (type %in% c("dt", "df")) {
     
     # update with new attributes
-    attr(x, which = "hypeunit") <- munit
-    attr(x, which = "timestep") <- tstep
+    hypeunit(x) <- munit
+    timestep(x) <- tstep
+    comment(x) <- cmt
     if (reg.out) {
-      attr(x, which = "outregid") <- sbd
-      attr(x, which = "subid") <- NA
+      outregid(x) <- sbd
+      subid(x) <- NA
     } else {
-      attr(x, which = "outregid") <- NA
-      attr(x, which = "subid") <- sbd
+      outregid(x) <- NA
+      subid(x) <- sbd
     }
     
   } else {
@@ -353,9 +364,9 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     dim(x) <- c(dim(x), 1)
     # construct HypeMultiVar array, conditional on subid/outregid contents
     if (reg.out) {
-      x <- HypeMultiVar(x = x, datetime = xd, hype.var = hvar, outregid = sbd)
+      x <- HypeMultiVar(x = x, datetime = xd, hype.var = hvar, outregid = sbd, hype.comment = cmt, hype.unit = munit)
     } else {
-      x <- HypeMultiVar(x = x, datetime = xd, hype.var = hvar, subid = sbd)
+      x <- HypeMultiVar(x = x, datetime = xd, hype.var = hvar, subid = sbd, hype.comment = cmt, hype.unit = munit)
     }
     
   }
@@ -1007,172 +1018,183 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     
   } else {
     
-    # import from text file
+    ## import from text file
     
-  }
-  
-  # import subids/outregids, prepare attribute vector
-  xattr <- readLines(filename, n = 2)
-  sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
-  
-  # create select vector from 'id' argument, overrides 'select' argument
-  if (!is.null(id)) {
-    if (!is.null(select)) {
-      warning("Arguments 'select' and 'id' provided. 'id' takes precedence.")
+    # check file contents for metadata header and extract contents if present
+    ## HEADER DIGESTION UNFINISHED, CONTINUE WITH ASSIGNING CONTENTS TO ATTRIBUTES
+    te <- readLines(con = filename, n = 1)
+    if (substr(te, 1, 1) == "!") {
+      metadata <- .ExtractHeader(x = te)
+      mc <- 1
+    } else {
+      mc <- 0
     }
-    te <- match(id, sbd)
-    # stop if unknown ids provided by user
-    if (any(is.na(te))) {
-      stop(paste0("Argument 'id': IDs ", paste(id[is.na(te)], collapse = ", "), " not found in imported file."))
+    
+    
+    # import subids/outregids, prepare attribute vector
+    xattr <- readLines(filename, n = 2)
+    sbd <- as.numeric(strsplit(xattr[2], split = "\t")[[1]][-1])
+    
+    # create select vector from 'id' argument, overrides 'select' argument
+    if (!is.null(id)) {
+      if (!is.null(select)) {
+        warning("Arguments 'select' and 'id' provided. 'id' takes precedence.")
+      }
+      te <- match(id, sbd)
+      # stop if unknown ids provided by user
+      if (any(is.na(te))) {
+        stop(paste0("Argument 'id': IDs ", paste(id[is.na(te)], collapse = ", "), " not found in imported file."))
+      }
+      select <- c(1, te + 1)
+      sbd <- id
+    } else if (!is.null(select)) {
+      # update id attribute to selected ids
+      sbd <- sbd[select[-1] - 1]
     }
-    select <- c(1, te + 1)
-    sbd <- id
-  } else if (!is.null(select)) {
-    # update id attribute to selected ids
-    sbd <- sbd[select[-1] - 1]
-  }
-  
-  
-  
-  # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
-  if (is.null(select) && is.null(id)) {
-    select <- 1:(length(sbd) + 1)
-  }
-  
-  # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
-  x <- fread(filename, 
-             na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", 
-                            "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             skip = 2 + skip, sep = "\t", header = F, data.table = d.t, select = select, nrows = nrows)
-  
-  
-  # read hype.var from filename, if not provided by user
-  if (is.null(hype.var)) {
     
-    # extract filename from path-filename string
-    te <-strsplit(filename, "/")[[1]]
-    te <- strsplit(te[length(te)], "[.]")[[1]][1]
     
-    # check if standard HYPE file name, and extract variable ID
-    if (substr(te, 1, 4) == "time") {
+    
+    # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
+    if (is.null(select) && is.null(id)) {
+      select <- 1:(length(sbd) + 1)
+    }
+    
+    # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
+    x <- fread(filename, 
+               na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", 
+                              "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
+               skip = 2 + skip, sep = "\t", header = F, data.table = d.t, select = select, nrows = nrows)
+    
+    
+    # read hype.var from filename, if not provided by user
+    if (is.null(hype.var)) {
       
-      ## HYPE variable string should be in the eight characters after "time" prefix (max. 6 char ID + optional "RG" for regional outputs)
-      # extract string to extract from, inbuilt lookup vector is uppercase
-      te <- toupper(substr(te, 5, 12))
+      # extract filename from path-filename string
+      te <-strsplit(filename, "/")[[1]]
+      te <- strsplit(te[length(te)], "[.]")[[1]][1]
       
-      # check against lookup vector
-      if (te %in% INTERNAL.hype.vars) {
+      # check if standard HYPE file name, and extract variable ID
+      if (substr(te, 1, 4) == "time") {
         
-        # exists as is, normal SUBID results
-        hype.var <- te
-        out.reg <- F
+        ## HYPE variable string should be in the eight characters after "time" prefix (max. 6 char ID + optional "RG" for regional outputs)
+        # extract string to extract from, inbuilt lookup vector is uppercase
+        te <- toupper(substr(te, 5, 12))
         
-      } else if (substr(te, 1, 6) %in% INTERNAL.hype.vars) {
+        # check against lookup vector
+        if (te %in% INTERNAL.hype.vars) {
+          
+          # exists as is, normal SUBID results
+          hype.var <- te
+          out.reg <- F
+          
+        } else if (substr(te, 1, 6) %in% INTERNAL.hype.vars) {
+          
+          # exists, normal SUBID results
+          hype.var <- substr(te, 1, 6)
+          out.reg <- F
+        }
+        else if (substr(te, 1, 4) %in% INTERNAL.hype.vars) {
+          
+          # exists, normal SUBID results
+          hype.var <- substr(te, 1, 4)
+          out.reg <- F
+        }
+        else if (substr(te, 3, 8) %in% INTERNAL.hype.vars) {
+          
+          # exists, is a regional variable
+          hype.var <- substr(te, 3, 8)
+          out.reg <- T
+        }
+        else if (substr(te, 3, 6) %in% INTERNAL.hype.vars) {
+          
+          # exists, is a regional variable
+          hype.var <- substr(te, 3, 6)
+          out.reg <- T
+        } else {
+          
+          stop("Could not extract HYPE variable ID from filename, please provide arguments 'hype.var' and 'out.reg'.")
+        }
         
-        # exists, normal SUBID results
-        hype.var <- substr(te, 1, 6)
-        out.reg <- F
-      }
-      else if (substr(te, 1, 4) %in% INTERNAL.hype.vars) {
-        
-        # exists, normal SUBID results
-        hype.var <- substr(te, 1, 4)
-        out.reg <- F
-      }
-      else if (substr(te, 3, 8) %in% INTERNAL.hype.vars) {
-        
-        # exists, is a regional variable
-        hype.var <- substr(te, 3, 8)
-        out.reg <- T
-      }
-      else if (substr(te, 3, 6) %in% INTERNAL.hype.vars) {
-        
-        # exists, is a regional variable
-        hype.var <- substr(te, 3, 6)
-        out.reg <- T
       } else {
         
         stop("Could not extract HYPE variable ID from filename, please provide arguments 'hype.var' and 'out.reg'.")
       }
-      
     } else {
       
-      stop("Could not extract HYPE variable ID from filename, please provide arguments 'hype.var' and 'out.reg'.")
-    }
-  } else {
-    
-    # check that there a valid value for out.reg
-    if (is.null(out.reg) || !is.logical(out.reg)) {
-      stop("Please provide valid value for argument 'out.reg'.")
-    }
-    
-    # convert user-provided string to uppercase and warn if not in lookup vector
-    hype.var <- toupper(hype.var)
-    if (!(hype.var %in% INTERNAL.hype.vars)) {
-      warning("User-provided HYPE variable ID unknown. Proceeding to import.")
-    }
-    
-  }
-  
-  # create column names, special treatment if only dates are imported
-  if (length(sbd) == 0) {
-    names(x) <- c("DATE")
-  } else {
-    names(x) <- c("DATE", paste0("X", sbd))
-  }
-  
-  ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
-  ## handles errors which might occur if the date string differs from the specified format. On error, strings are returned.
-  
-  # if user-requested, hop over date-time conversion
-  if (!is.null(dt.format)) {
-    
-    # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
-    # conditional on class of imported data (different syntax for data.table)
-    if (is.data.table(x)) {
-      
-      if (dt.format == "%Y-%m") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-        x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
-      } else if (dt.format == "%Y%m") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
-        x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
-      } else if (dt.format == "%Y") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-        x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
-      } else {
-        xd <- as.POSIXct(strptime(x[, DATE], format = dt.format), tz = "GMT")
-        x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+      # check that there a valid value for out.reg
+      if (is.null(out.reg) || !is.logical(out.reg)) {
+        stop("Please provide valid value for argument 'out.reg'.")
       }
       
+      # convert user-provided string to uppercase and warn if not in lookup vector
+      hype.var <- toupper(hype.var)
+      if (!(hype.var %in% INTERNAL.hype.vars)) {
+        warning("User-provided HYPE variable ID unknown. Proceeding to import.")
+      }
+      
+    }
+    
+    # create column names, special treatment if only dates are imported
+    if (length(sbd) == 0) {
+      names(x) <- c("DATE")
     } else {
-      
-      if (dt.format == "%Y-%m") {
-        xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-        x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-      } else if (dt.format == "%Y%m") {
-        xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
-        x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-      } else if (dt.format == "%Y") {
-        xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
-        x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-      } else {
-        xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
-        x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
-      }
+      names(x) <- c("DATE", paste0("X", sbd))
     }
-  } else {
-    # dummy date vector as there is always one needed in timestep attribute derivation below
-    xd <- NA
+    
+    ## Date string handling, conditional on import format (HYPE allows for matlab or posix type, without or with hyphens),
+    ## handles errors which might occur if the date string differs from the specified format. On error, strings are returned.
+    
+    # if user-requested, hop over date-time conversion
+    if (!is.null(dt.format)) {
+      
+      # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
+      # conditional on class of imported data (different syntax for data.table)
+      if (is.data.table(x)) {
+        
+        if (dt.format == "%Y-%m") {
+          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+          x[, DATE := tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+        } else if (dt.format == "%Y%m") {
+          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+          x[, DATE := tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+        } else if (dt.format == "%Y") {
+          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+          x[, DATE := tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+        } else {
+          xd <- as.POSIXct(strptime(x[, DATE], format = dt.format), tz = "GMT")
+          x[, DATE := tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+        }
+        
+      } else {
+        
+        if (dt.format == "%Y-%m") {
+          xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+          x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+        } else if (dt.format == "%Y%m") {
+          xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+          x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+        } else if (dt.format == "%Y") {
+          xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+          x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+        } else {
+          xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+          x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
+        }
+      }
+    } else {
+      # dummy date vector as there is always one needed in timestep attribute derivation below
+      xd <- NA
+    }
   }
+  
   
   
   # check for existence of NaN values
