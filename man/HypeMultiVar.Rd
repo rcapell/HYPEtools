@@ -4,7 +4,15 @@
 \alias{HypeMultiVar}
 \title{HypeMultiVar arrays}
 \usage{
-HypeMultiVar(x, datetime, hype.var, hype.unit, subid = NULL, outregid = NULL)
+HypeMultiVar(
+  x,
+  datetime,
+  hype.var,
+  hype.unit,
+  subid = NULL,
+  outregid = NULL,
+  hype.comment = NA
+)
 }
 \arguments{
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one sub-basin as (in order)
@@ -21,6 +29,8 @@ period averages, e.g. \code{"2000-2010"}.}
 \item{subid}{Integer, HYPE sub-basin ID. Either this or \code{outregid} needs to be supplied.}
 
 \item{outregid}{Integer, HYPE output region ID, alternative to \code{subid}.}
+
+\item{hype.comment}{Character, first-row optional comment string of basin output file. \code{NA}, if non-existing.}
 }
 \value{
 Returns a 3-dimensional array with 
@@ -32,6 +42,7 @@ Returns a 3-dimensional array with
 \item{\strong{subid}}{A single SUBID.}
 \item{\strong{outregid}}{A single OUTREGID.}
 \item{\strong{timestep}}{A character keyword for the time step.}
+\item{\strong{comment}}{A comment string, currently used for class group outputs.}
 }
 }
 \description{

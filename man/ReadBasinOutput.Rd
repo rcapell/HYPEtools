@@ -34,8 +34,8 @@ a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. 
 \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
 Data frames and data tables contain additional \code{\link{attributes}}: \code{hypeunit}, a vector of HYPE variable units, 
 \code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created and assigned \code{NA} 
-if not applicable to data contents), and \code{timestep} 
-with a time step keyword attribute. An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
+if not applicable to data contents), \code{timestep} with a time step keyword attribute, and \code{comment} with contents of an optional 
+first-row comment (\code{NA} otherwise). An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
 }
 \description{
 This is a convenience wrapper function to import a basin output file as data frame or matrix into R.
