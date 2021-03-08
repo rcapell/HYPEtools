@@ -220,7 +220,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     cmt <- substr(te, 3, nchar(te))
   } else {
     mc <- 0
-    cmt <- NA
+    cmt <- ""
   }
   
   # read header with variable names
@@ -299,8 +299,8 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
   
   ## extract attributes to hold hype variable units and SUBID/OUTREGID
   
-  munit <- readLines(filename, n = 2)
-  munit <- strsplit(munit[2], split = "\t")[[1]][-1]
+  munit <- readLines(filename, n = 2 + mc)[2 + mc]
+  munit <- strsplit(munit, split = "\t")[[1]]
   
   # subid/outregid conditional on user argument
   if (is.null(id)) {

@@ -11,7 +11,7 @@ HypeMultiVar(
   hype.unit,
   subid = NULL,
   outregid = NULL,
-  hype.comment = NA
+  hype.comment = ""
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ period averages, e.g. \code{"2000-2010"}.}
 
 \item{outregid}{Integer, HYPE output region ID, alternative to \code{subid}.}
 
-\item{hype.comment}{Character, first-row optional comment string of basin output file. \code{NA}, if non-existing.}
+\item{hype.comment}{Character, first-row optional comment string of basin output file. Empty string, if non-existing.}
 }
 \value{
 Returns a 3-dimensional array with 
