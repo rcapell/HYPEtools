@@ -214,7 +214,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
   }
   
   # check if metadata comment row exists
-  te <- toupper(strsplit(readLines(filename, n = 1),split = "\t")[[1]])
+  te <- readLines(filename, n = 1)
   if (substr(te, 1, 1) == "!") {
     mc <- 1
     cmt <- substr(te, 3, nchar(te))
