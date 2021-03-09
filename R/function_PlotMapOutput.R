@@ -5,8 +5,8 @@
 #' 
 #' @param x HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 #' second column containing model results to plot. See details.
-#' @param map A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
-#' requires additional packages, e.g. \code{\link{rgdal}}.
+#' @param map A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin vector polygon file. Import of vector polygons  
+#' requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}.
 #' @param map.subid.column Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 #' HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.
@@ -150,9 +150,9 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.adj =
       # color breaks: special defaults for some of the inbuilt color ramp functions
       if (identical(col, ColDiffTemp)) {
         # temperature differences
-        cbrks <- c(ifelse(min(x[,2]) < 7.5, min(x[,2]) - 1, 30), -7.5, -5, -2.5, 1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2]) > 7.5, max(x[,2]) + 1, 30))
+        cbrks <- c(ifelse(min(x[,2]) < 7.5, min(x[,2]) - 1, 30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2]) > 7.5, max(x[,2]) + 1, 30))
       } else if (identical(col, ColDiffGeneric)) {
-        # create a break point sequence which is centered around zero, with class withs based on equal intervals of the log-scaled
+        # create a break point sequence which is centered around zero, with class widths based on equal intervals of the log-scaled
         # variable distribution
         cbrks <- c(rev(exp(seq(0, log(max(abs(range(x[,2]))) + 1), length.out = 5)) * -1), exp(seq(0, log(max(abs(range(x[,2]))) + 1), length.out = 5)))
       } else {

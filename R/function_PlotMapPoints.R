@@ -5,10 +5,10 @@
 #' 
 #' @param x Information to plot, typically model performances from imported HYPE 'subassX.txt' files. Data frame object 
 #' with two columns, first column containing SUBIDs and second column containing model results to plot. See details.
-#' @param sites A \code{SpatialPointsDataFrame} object. Typically an imported outlet point shape file, shape file import requires 
-#' additional packages, e.g. \code{rgdal}.
+#' @param sites A \code{SpatialPointsDataFrame} object. Typically an imported outlet point vector point file. Import of vector points  
+#' requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}.
 #' @param sites.subid.column Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
-#' @param bg A \code{SpatialPolygonsDataFrame} object to plot as grey background. Typically an imported sub-basin shape file. 
+#' @param bg A \code{SpatialPolygonsDataFrame} object to plot as grey background. Typically an imported sub-basin vector polygon file. 
 #' For plots with several background layers, use \code{add = TRUE} and plot background layer(s) first.
 #' @param map.adj Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
 #' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.

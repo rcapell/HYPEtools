@@ -30,8 +30,8 @@ PlotMapOutput(
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 second column containing model results to plot. See details.}
 
-\item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin shape file, shape file import 
-requires additional packages, e.g. \code{\link{rgdal}}.}
+\item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
+requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}.}
 
 \item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
