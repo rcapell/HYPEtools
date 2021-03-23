@@ -22,6 +22,7 @@ PlotMapPoints(
   pt.cex = 1,
   par.cex = 1,
   par.mar = rep(0, 4) + 0.1,
+  pch = 21,
   add = FALSE,
   restore.par = FALSE
 )
@@ -78,6 +79,8 @@ projected maps based on meter units, not geographical projections}
 
 \item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 In standard use cases of this function, plot margins do not need to be changed.}
+
+\item{pch}{Integer, plotting symbol. See \code{\link{points}}.}
 
 \item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
 
