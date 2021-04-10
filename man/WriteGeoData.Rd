@@ -8,7 +8,7 @@ WriteGeoData(x, filename = "GeoData.txt", digits = 3)
 }
 \arguments{
 \item{x}{The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoData}}. 
-No \code{NA}s in parameter values allowed.}
+\code{NA}s in any column will result in a warning (no \code{NA}s allowed in GeoData data columns).}
 
 \item{filename}{A character string naming a file to write to. Windows users: Note that 
 Paths are separated by '/', not '\\'.}
