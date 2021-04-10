@@ -9,7 +9,7 @@ ReadPTQobs(
   variable = c("", "prec", "temp", "rout"),
   dt.format = "\%Y-\%m-\%d",
   nrows = -1,
-  type = "df",
+  type = c("df", "dt"),
   select = NULL,
   obsid = NULL
 )

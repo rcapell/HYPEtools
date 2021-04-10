@@ -1319,7 +1319,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 
 
 ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.format = "%Y-%m-%d", nrows = -1, 
-                       type = "df", select = NULL, obsid = NULL) {
+                       type = c("df", "dt"), select = NULL, obsid = NULL) {
   
   # extract hype variable
   variable <- match.arg(variable)
@@ -1337,24 +1337,23 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
     }
   }
   
+  # handling output type user choice
+  type <- match.arg(type)
+  if (type == "df") {
+    d.t <- F
+  } else {
+    d.t <- T
+  }
+  
   ## import ptqobs file header, extract obsid attribute
   # import
-  xattr <- readLines(filename,n = 1)
+  xattr <- readLines(filename, n = 1)
   # extract obsids
   sbd <- as.integer(strsplit(xattr, split = "\t")[[1]][-1])
   
   # argument checks
   if (!is.null(select) && !(1 %in% select)) {
     select <- c(1, select)
-  }
-  
-  # handling output type user choice
-  if (type == "df") {
-    d.t <- F
-  } else if (type == "dt") {
-    d.t <- T
-  } else {
-    stop(paste("Unknown type", type, "."))
   }
   
   # create select vector from 'obsid' argument, overrides 'select' argument
@@ -1375,40 +1374,40 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
   }
   
   
-  # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
-  if (is.null(select) && is.null(obsid)) {
-    select <- 1:(length(sbd) + 1)
-  }
+  # # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
+  # if (is.null(select) && is.null(obsid)) {
+  #   select <- 1:(length(sbd) + 1)
+  # }
   
   # read the data
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select)
+             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, tz = "UTC", colClasses = list("POSIXct" = 1))
 
-  # date conversion 
-  xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
-  x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-    print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
-    })
+  # # date conversion, NOT NEEDED ANYMORE, LEFT FOR THE MOMENT BUT CAN BE REMOVED AFTER A WHILE
+  # xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+  # x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+  #   print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
+  #   })
   
   
   ## add attributes
   
-  attr(x, which = "obsid") <- sbd
+  obsid(x) <- sbd
   
-  # conditional: timestep attribute identified by difference between first two entries
-  tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+  # conditional: timestep attribute identified by difference between first two rows
+  tdff <- as.numeric(difftime(x$DATE[2], x$DATE[1], units = "hours"))
   if (!is.na(tdff)) {
     if (tdff == 24) {
-      attr(x, which = "timestep") <- "day"
+      timestep(x) <- "day"
     } else {
-      attr(x, which = "timestep") <- paste(tdff, "hour", sep = "")
+      timestep(x) <- paste(tdff, "hour", sep = "")
     }
   } else {
     # add timestep attribute with placeholder value
-    attr(x, which = "timestep") <- "unknown"
+    timestep(x) <- "unknown"
   }
-  attr(x, "variable") <- variable
+  variable(x) <- variable
   
   return(x)
 }

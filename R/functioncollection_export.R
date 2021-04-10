@@ -68,7 +68,7 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 #' This is a convenience wrapper function to export a 'GeoData.txt' file from R.
 #' 
 #' @param x The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoData}}. 
-#' No \code{NA}s in parameter values allowed.
+#' \code{NA}s in any column will result in a warning (no \code{NA}s allowed in GeoData data columns).
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param digits Integer, number of significant digits \strong{in SLC class columns} to export. See \code{\link{signif}}.
@@ -97,6 +97,10 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
   
   # round slc class columns to requested number of significant digits
   x[, substr(names(x), 1, 4) == "SLC_"] <- signif(x[, substr(names(x), 1, 4) == "SLC_"], digits = digits)
+  
+  # convert SUBID and MAINDOWN columns to character to suppress scientific notation
+  x[, tolower(names(x)) == "subid"] <- format(x[, tolower(names(x)) == "subid"], scientific = F)
+  x[, tolower(names(x)) == "maindown"] <- format(x[, tolower(names(x)) == "maindown"], scientific = F)
   
   # export
   fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
@@ -691,8 +695,8 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @param obsid Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
 #' in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 
 #' in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.
-#' @param digits Integer, number of significant digits to export. See \code{\link{signif}}.
-# #' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
+#' @param digits Integer, number of significant digits to export. See \code{\link{signif}}. If \code{NULL} (default), the data to export 
+#' is not touched.
 #'  
 #' @details
 #' \code{WritePTQobs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
@@ -717,7 +721,7 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @export
 
 
-WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid = NULL) {
+WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = NULL, obsid = NULL) {
   
   ## check if consistent header information is available, obsid arguments take precedence before attribute
   ## construct HYPE-conform header for export (violates R header rules)
@@ -738,14 +742,20 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = 3, obsid 
   }
   
   # date conversion, conditional on that the date column is a posix class
-  if (any(class(x[, 1]) == "POSIXt")) {
-    x[, 1] <- format(x[, 1], format = dt.format)
+  if (any(class(x$DATE) == "POSIXt")) {
+    x$DATE <- format(x$DATE, format = dt.format)
   } else {
     warning("First column in export data frame is not of class 'POSIXt', will be exported unchanged.")
   }
   
   # round to user-specified number of significant digits
-  x[, -1] <- signif(x[, -1], digits = digits)
+  if (!is.null(digits)) {
+    if ("data.table" %in% class(x)) {
+      x[, 2:ncol(x)] <- x[, signif(.SD, digits), .SDcols=2:ncol(x)]
+    } else {
+      x[, -1] <- signif(x[, -1], digits = digits)
+    }
+  }
   
   # export
  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)

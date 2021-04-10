@@ -4,7 +4,13 @@
 \alias{WritePTQobs}
 \title{Write 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files}
 \usage{
-WritePTQobs(x, filename, dt.format = "\%Y-\%m-\%d", digits = 3, obsid = NULL)
+WritePTQobs(
+  x,
+  filename,
+  dt.format = "\%Y-\%m-\%d",
+  digits = NULL,
+  obsid = NULL
+)
 }
 \arguments{
 \item{x}{The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs or OBSIDs in 
@@ -16,7 +22,8 @@ Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
 
-\item{digits}{Integer, number of significant digits to export. See \code{\link{signif}}.}
+\item{digits}{Integer, number of significant digits to export. See \code{\link{signif}}. If \code{NULL} (default), the data to export 
+is not touched.}
 
 \item{obsid}{Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
 in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 
