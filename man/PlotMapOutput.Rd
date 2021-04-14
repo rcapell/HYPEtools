@@ -19,6 +19,7 @@ PlotMapOutput(
   col = "auto",
   col.ramp.fun,
   col.breaks = NULL,
+  col.rev = F,
   plot.scale = T,
   plot.arrow = T,
   par.cex = 1,
@@ -83,6 +84,8 @@ Meaningful results require the lowest and uppermost breaks to bracket all model 
 unclassified white spots on the map plot. Not mandatory, can optionally 
 be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
 classification will be applied (see details).}
+
+\item{col.rev}{Logical, If \code{TRUE}, then color palette will be reversed.}
 
 \item{plot.scale}{Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with 
 projected maps based on meter units, not geographical projections}

@@ -40,6 +40,7 @@
 #' unclassified white spots on the map plot. Not mandatory, can optionally 
 #' be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
 #' classification will be applied (see details).
+#' @param col.rev Logical, If \code{TRUE}, then color palette will be reversed.
 #' @param plot.scale Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with 
 #' projected maps based on meter units, not geographical projections
 #' @param plot.arrow Logical, plot a North arrow below legend (i.e. position defined by legend position).
@@ -116,7 +117,7 @@
 
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", map.adj = 0, plot.legend = T, 
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), 
-                          col = "auto", col.ramp.fun, col.breaks = NULL, plot.scale = T, plot.arrow = T, 
+                          col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = F, plot.scale = T, plot.arrow = T, 
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE,
                           leaf.line.weight = 0.15, leaf.line.opacity = 0.75, leaf.fill.opacity = 0.5, leaf.na.color = "#808080",
                           leaf.plot.search = F, leaf.plot.label = F, leaf.save.image.path = "", leaf.save.image.width = 1424,
@@ -293,9 +294,18 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     levels(x[, 3]) <- col
   } else {
     if(map.type == "leaflet" & any(is.na(x[[2]]))){
-      levels(x[, 3]) <- crfun(length(cbrks)) # Add extra legend break for NA in leaflet maps
+      if(col.rev == F){
+        levels(x[, 3]) <- crfun(length(cbrks)) # Add extra legend break for NA in leaflet maps
+      } else if(col.rev == T){
+        rev.col <- rev(crfun(length(cbrks))) # Add extra legend break for NA in leaflet maps, reverse color palette
+        levels(x[, 3]) <- rev.col[c(2:length(rev.col),1)] # Reorder colors so that NA color is still last
+      }
     } else{
-      levels(x[, 3]) <- crfun(length(cbrks) - 1)
+      if(col.rev == F){
+        levels(x[, 3]) <- crfun(length(cbrks) - 1)
+      } else if(col.rev == T){
+        levels(x[, 3]) <- rev(crfun(length(cbrks) - 1)) # Reverse color palette
+      }
     }
   }
   
@@ -303,7 +313,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
   x[, 3] <- as.character(x[, 3])
   # give it a name
   names(x)[3] <- "color"
-
+  
   if(map.type == "default"){
     # add x to subid map table (in data slot, indicated by @), merge by SUBID
     map@data <- data.frame(map@data, x[match(map@data[, map.subid.column], x[,1]),])
@@ -344,9 +354,18 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     lcol <- col
   } else {
     if(map.type == "leaflet" & any(is.na(x[[2]]))){
-      lcol <- crfun(length(cbrks)) # Add extra legend color for NA for leaflet maps
+      if(col.rev == F){
+        lcol <- crfun(length(cbrks)) # Add extra legend color for NA for leaflet maps
+      } else if(col.rev == T){
+        rev.col <- rev(crfun(length(cbrks))) # Add extra legend color for NA for leaflet maps, reverse color palette
+        lcol <- rev.col[c(2:length(rev.col),1)] # Reorder colors so that NA color is still last
+      }
     } else{
-      lcol <- crfun(length(cbrks) - 1)
+      if(col.rev == F){
+        lcol <- crfun(length(cbrks) - 1)
+      } else if(col.rev == T){
+        lcol <- rev(crfun(length(cbrks) - 1)) # Reverse color palette
+      }
     }
   }
 
