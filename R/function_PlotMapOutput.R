@@ -34,8 +34,8 @@
 #' \item A vector of colors. This can be a character vector of R's built-in color names or hexadecimal strings as returned by 
 #' \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 #' }
-#' @param col.breaks A numeric vector, specifying break points for discretisation of model result values into classes. Class boundaries will be
-#' interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
+#' @param col.breaks A numeric vector, specifying break points for discretisation of model result values into classes. Used if a color palette is specified with \code{col} argument.
+#' Class boundaries will be interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
 #' Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be 
 #' unclassified white spots on the map plot. Not mandatory, can optionally 
 #' be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
@@ -582,15 +582,16 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     invisible(map)
     
   } else if(map.type == "leaflet"){
+
     # Create legend labels, change NA color to selected NA color
     if(any(is.na(x[[2]]))){
-      l.label <- c(unlist(lapply(1:(length(cbrks)-1),function(X){paste(cbrks[X],"to",cbrks[X+1])})),"NA")
+      l.label <- c(unlist(lapply(1:(length(cbrks)-1),function(X){paste(signif(cbrks[X],2),"to",signif(cbrks[X+1],2))})),"NA")
       lcol[which(lcol%in%unique(x$color[which(is.na(x[[2]]))]))] <- leaf.na.color
       x[which(is.na(x[[2]])),"color"] <- leaf.na.color
     } else{
-      l.label <- unlist(lapply(1:(length(cbrks)-1),function(X){paste(cbrks[X],"-",cbrks[X+1])}))
+      l.label <- unlist(lapply(1:(length(cbrks)-1),function(X){paste(signif(cbrks[X],2),"-",signif(cbrks[X+1],2))}))
     }
-    
+
     # Create Leaflet Map
     print("Generating Map",quote=F)
     leafmap <- leaflet(options=leafletOptions(preferCanvas=T))%>%
@@ -640,7 +641,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       leafmap <- leafmap%>%
         addScaleBar(position="bottomright")
     }
-    
+
     # Add legend to map
     if(plot.legend==T){
       leafmap <- leafmap%>%

@@ -77,8 +77,8 @@ available in \code{HYPEtools}, see \code{\link{CustomColors}}
 \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 }}
 
-\item{col.breaks}{A numeric vector, specifying break points for discretisation of model result values into classes. Class boundaries will be
-interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
+\item{col.breaks}{A numeric vector, specifying break points for discretisation of model result values into classes. Used if a color palette is specified with \code{col} argument.
+Class boundaries will be interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
 Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be 
 unclassified white spots on the map plot. Not mandatory, can optionally 
 be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
