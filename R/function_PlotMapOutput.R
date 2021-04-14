@@ -22,6 +22,7 @@
 #' @param legend.outer Logical. If \code{TRUE}, outer break point values will be plotted in legend.
 #' @param legend.inset Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
 #' See \code{\link{legend}} and details below.
+#' @param legend.signif Integer, number of significant digits to display in legend labels.
 #' @param col Colors to use on the map. One of the following: \itemize{
 #' \item \code{"auto"} to allow for automatic selection from tailored color ramp palettes and break points based on argument \code{var.name},
 #' see details
@@ -116,7 +117,7 @@
 
 
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", map.adj = 0, plot.legend = T, 
-                          legend.pos = "bottomright", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), 
+                          legend.pos = "bottomright", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), legend.signif = 2,
                           col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = F, plot.scale = T, plot.arrow = T, 
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE,
                           leaf.line.weight = 0.15, leaf.line.opacity = 0.75, leaf.fill.opacity = 0.5, leaf.na.color = "#808080",
@@ -388,7 +389,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     ## prepare legend annotation
     
     # formatted annotation text (to be placed between legend boxes which is not possible with legend() directly)
-    ann.txt <- signif(cbrks, digits = 2)
+    ann.txt <- signif(cbrks, digits = legend.signif)
     # conditional: remove outer break points
     if (!legend.outer) {
       ann.txt[c(1, length(ann.txt))] <- ""
@@ -604,11 +605,11 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
 
     # Create legend labels, change NA color to selected NA color
     if(any(is.na(x[[2]]))){
-      l.label <- c(unlist(lapply(1:(length(cbrks)-1),function(X){paste(signif(cbrks[X],2),"to",signif(cbrks[X+1],2))})),"NA")
+      l.label <- c(unlist(lapply(1:(length(cbrks)-1),function(X){paste(signif(cbrks[X],legend.signif),"to",signif(cbrks[X+1],legend.signif))})),"NA")
       lcol[which(lcol%in%unique(x$color[which(is.na(x[[2]]))]))] <- leaf.na.color
       x[which(is.na(x[[2]])),"color"] <- leaf.na.color
     } else{
-      l.label <- unlist(lapply(1:(length(cbrks)-1),function(X){paste(signif(cbrks[X],2),"-",signif(cbrks[X+1],2))}))
+      l.label <- unlist(lapply(1:(length(cbrks)-1),function(X){paste(signif(cbrks[X],legend.signif),"-",signif(cbrks[X+1],legend.signif))}))
     }
 
     # Create Leaflet Map

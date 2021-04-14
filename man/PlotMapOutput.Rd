@@ -16,6 +16,7 @@ PlotMapOutput(
   legend.title = NULL,
   legend.outer = F,
   legend.inset = c(0, 0),
+  legend.signif = 2,
   col = "auto",
   col.ramp.fun,
   col.breaks = NULL,
@@ -68,6 +69,8 @@ is used as legend title string. For select HYPE variables, pretty legend titles 
 
 \item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
 See \code{\link{legend}} and details below.}
+
+\item{legend.signif}{Integer, number of significant digits to display in legend labels.}
 
 \item{col}{Colors to use on the map. One of the following: \itemize{
 \item \code{"auto"} to allow for automatic selection from tailored color ramp palettes and break points based on argument \code{var.name},
