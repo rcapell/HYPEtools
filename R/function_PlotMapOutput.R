@@ -124,8 +124,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                           leaf.plot.search = F, leaf.plot.label = F, leaf.save.image.path = "", leaf.save.image.width = 1424,
                           leaf.save.image.height = 1000, leaf.save.html.name = "") {
   
-  # Clear plotting devices - prevents R fatal errors caused if PlotMapOutput tries to add things to existing plot
-  if(!is.null(dev.list())) dev.off()
+  # Clear plotting devices if add argument is false - prevents R fatal errors caused if PlotMapOutput tries to add default plot to existing Leaflet map
+  if(add == F & !is.null(dev.list())) dev.off()
   
   # input argument checks
   stopifnot(is.data.frame(x), dim(x)[2] == 2, is.null(col.breaks) || is.numeric(col.breaks),("sf" %in% class(map) | "SpatialPolygonsDataFrame" %in% class(map)))
