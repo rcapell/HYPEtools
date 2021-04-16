@@ -9,42 +9,58 @@ PlotMapOutput(
   map,
   map.subid.column = 1,
   var.name = "",
+  map.type = "default",
   map.adj = 0,
   plot.legend = T,
-  legend.pos = "right",
+  legend.pos = "bottomright",
   legend.title = NULL,
   legend.outer = F,
   legend.inset = c(0, 0),
+  legend.signif = 2,
   col = "auto",
   col.ramp.fun,
   col.breaks = NULL,
+  col.rev = F,
   plot.scale = T,
   plot.arrow = T,
   par.cex = 1,
   par.mar = rep(0, 4) + 0.1,
   add = FALSE,
-  restore.par = FALSE
+  restore.par = FALSE,
+  leaf.line.weight = 0.15,
+  leaf.line.opacity = 0.75,
+  leaf.fill.opacity = 0.5,
+  leaf.na.color = "#808080",
+  leaf.plot.search = F,
+  leaf.plot.label = F,
+  leaf.save.image.path = "",
+  leaf.save.image.width = 1424,
+  leaf.save.image.height = 1000,
+  leaf.save.html.name = ""
 )
 }
 \arguments{
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
 second column containing model results to plot. See details.}
 
-\item{map}{A \code{SpatialPolygonsDataFrame} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
-requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}.}
+\item{map}{A \code{SpatialPolygonsDataFrame} or \code{sf} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
+requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}. For interactive Leaflet maps a small/simplified polygon file should be used as larger
+files can take an excessive amount of time to render.}
 
 \item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
 \item{var.name}{Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.}
 
+\item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
+
 \item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
 or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.}
 
 \item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}}.}
 
-\item{legend.pos}{Legend, scale, and north arrow position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
-\code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.}
+\item{legend.pos}{Legend, scale, and north arrow position, keyword string. For static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"}, 
+\code{"right"}, \code{"bottomright"}, \code{"bottomleft"}. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}.}
 
 \item{legend.title}{Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
 is used as legend title string. For select HYPE variables, pretty legend titles are in-built.}
@@ -53,6 +69,8 @@ is used as legend title string. For select HYPE variables, pretty legend titles 
 
 \item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
 See \code{\link{legend}} and details below.}
+
+\item{legend.signif}{Integer, number of significant digits to display in legend labels.}
 
 \item{col}{Colors to use on the map. One of the following: \itemize{
 \item \code{"auto"} to allow for automatic selection from tailored color ramp palettes and break points based on argument \code{var.name},
@@ -63,12 +81,14 @@ available in \code{HYPEtools}, see \code{\link{CustomColors}}
 \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 }}
 
-\item{col.breaks}{A numeric vector, specifying break points for discretisation of model result values into classes. Class boundaries will be
-interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
+\item{col.breaks}{A numeric vector, specifying break points for discretisation of model result values into classes. Used if a color palette is specified with \code{col} argument.
+Class boundaries will be interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
 Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be 
 unclassified white spots on the map plot. Not mandatory, can optionally 
 be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
 classification will be applied (see details).}
+
+\item{col.rev}{Logical, If \code{TRUE}, then color palette will be reversed.}
 
 \item{plot.scale}{Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with 
 projected maps based on meter units, not geographical projections}
@@ -83,10 +103,31 @@ In standard use cases of this function, plot margins do not need to be changed.}
 \item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
 
 \item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
+
+\item{leaf.line.weight}{Numeric, weight of subbasin boundary lines in Leaflet maps.}
+
+\item{leaf.line.opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps.}
+
+\item{leaf.fill.opacity}{Numeric, opacity of subbasin polygons in Leaflet maps.}
+
+\item{leaf.na.color}{Character string of color to use to symbolize subbasin polygons in Leaflet maps which correspond to \code{NA} values.}
+
+\item{leaf.plot.search}{Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps.}
+
+\item{leaf.plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins.}
+
+\item{leaf.save.image.path}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified.}
+
+\item{leaf.save.image.width}{Numeric, width of the exported Leaflet map image in pixels.}
+
+\item{leaf.save.image.height}{Numeric, height of the exported Leaflet map image in pixels.}
+
+\item{leaf.save.html.name}{Save Leaflet map to an interactive HTML file in the working directory by specifying the name of the desired HTML file using this argument.}
 }
 \value{
-\code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}} 
-as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot.
+For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}} 
+as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
+an object of class \code{leaflet}.
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables.
@@ -95,6 +136,8 @@ Draw HYPE map results, with pretty scale discretisations and color ramp defaults
 \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
 \code{x} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with 
 several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}. 
+
+\code{PlotMapOutput} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}. 
 
 Mapped variables are visualised using color-coded data intervals. \code{HYPEtools} provides a number of color ramps functions for HYPE variables, 
 see \code{\link{CustomColors}}. These are either single-color ramps with less saturated colors for smaller values
@@ -115,8 +158,8 @@ is built into \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'
 \code{PlotMapOutput} per default works with a margin-less figure and positions map and legend items close to the plot boundaries. 
 In order to move map and legend closer to each other, change the plot device width.
 
-Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the right side of the map. \code{legend.pos} and 
-\code{map.adj} should be chosen so that legend and map do not overlap. Additionally, the legend position can be fine-tuned using 
+Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the bottom right side of the map. For static plots, \code{legend.pos} and 
+\code{map.adj} should be chosen so that legend and map do not overlap, and the legend position can be fine-tuned using 
 argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. For details on inset 
 specification see \code{inset} in \code{\link{legend}}.
 }
