@@ -27,16 +27,16 @@ PlotMapOutput(
   par.mar = rep(0, 4) + 0.1,
   add = FALSE,
   restore.par = FALSE,
-  leaf.line.weight = 0.15,
-  leaf.line.opacity = 0.75,
-  leaf.fill.opacity = 0.5,
-  leaf.na.color = "#808080",
-  leaf.plot.search = F,
-  leaf.plot.label = F,
-  leaf.save.image.path = "",
-  leaf.save.image.width = 1424,
-  leaf.save.image.height = 1000,
-  leaf.save.html.name = ""
+  weight = 0.15,
+  opacity = 0.75,
+  fillOpacity = 0.5,
+  na.color = "#808080",
+  plot.searchbar = F,
+  plot.label = F,
+  file = "",
+  vwidth = 1424,
+  vheight = 1000,
+  html.name = ""
 )
 }
 \arguments{
@@ -104,25 +104,25 @@ In standard use cases of this function, plot margins do not need to be changed.}
 
 \item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
 
-\item{leaf.line.weight}{Numeric, weight of subbasin boundary lines in Leaflet maps.}
+\item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.}
 
-\item{leaf.line.opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps.}
+\item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.}
 
-\item{leaf.fill.opacity}{Numeric, opacity of subbasin polygons in Leaflet maps.}
+\item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.}
 
-\item{leaf.na.color}{Character string of color to use to symbolize subbasin polygons in Leaflet maps which correspond to \code{NA} values.}
+\item{na.color}{Character string of color to use to symbolize subbasin polygons in Leaflet maps which correspond to \code{NA} values.}
 
-\item{leaf.plot.search}{Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps.}
+\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \code{\link{addSearchFeatures}}.}
 
-\item{leaf.plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins.}
+\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See \code{\link{addPolygons}}.}
 
-\item{leaf.save.image.path}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified.}
+\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.}
 
-\item{leaf.save.image.width}{Numeric, width of the exported Leaflet map image in pixels.}
+\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
 
-\item{leaf.save.image.height}{Numeric, height of the exported Leaflet map image in pixels.}
+\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
 
-\item{leaf.save.html.name}{Save Leaflet map to an interactive HTML file in the working directory by specifying the name of the desired HTML file using this argument.}
+\item{html.name}{Save Leaflet map to an interactive HTML file in the working directory by specifying the name of the desired HTML file using this argument. See \code{\link{saveWidget}}.}
 }
 \value{
 For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}} 

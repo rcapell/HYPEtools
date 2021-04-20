@@ -50,16 +50,16 @@
 #' In standard use cases of this function, plot margins do not need to be changed.
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
-#' @param leaf.line.weight Numeric, weight of subbasin boundary lines in Leaflet maps.
-#' @param leaf.line.opacity Numeric, opacity of subbasin boundary lines in Leaflet maps.
-#' @param leaf.fill.opacity Numeric, opacity of subbasin polygons in Leaflet maps.
-#' @param leaf.na.color Character string of color to use to symbolize subbasin polygons in Leaflet maps which correspond to \code{NA} values.
-#' @param leaf.plot.search Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps.
-#' @param leaf.plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins.
-#' @param leaf.save.image.path Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified.
-#' @param leaf.save.image.width Numeric, width of the exported Leaflet map image in pixels.
-#' @param leaf.save.image.height Numeric, height of the exported Leaflet map image in pixels.
-#' @param leaf.save.html.name Save Leaflet map to an interactive HTML file in the working directory by specifying the name of the desired HTML file using this argument.
+#' @param weight Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.
+#' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.
+#' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.
+#' @param na.color Character string of color to use to symbolize subbasin polygons in Leaflet maps which correspond to \code{NA} values.
+#' @param plot.searchbar Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \code{\link{addSearchFeatures}}.
+#' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See \code{\link{addPolygons}}.
+#' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
+#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
+#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
+#' @param html.name Save Leaflet map to an interactive HTML file in the working directory by specifying the name of the desired HTML file using this argument. See \code{\link{saveWidget}}.
 #' 
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
@@ -120,9 +120,9 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), legend.signif = 2,
                           col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = F, plot.scale = T, plot.arrow = T, 
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE,
-                          leaf.line.weight = 0.15, leaf.line.opacity = 0.75, leaf.fill.opacity = 0.5, leaf.na.color = "#808080",
-                          leaf.plot.search = F, leaf.plot.label = F, leaf.save.image.path = "", leaf.save.image.width = 1424,
-                          leaf.save.image.height = 1000, leaf.save.html.name = "") {
+                          weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
+                          plot.searchbar = F, plot.label = F, file = "", vwidth = 1424,
+                          vheight = 1000, html.name = "") {
   
   # Clear plotting devices if add argument is false - prevents R fatal errors caused if PlotMapOutput tries to add default plot to existing Leaflet map
   if(add == F & !is.null(dev.list())) dev.off()
@@ -606,8 +606,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # Create legend labels, change NA color to selected NA color
     if(any(is.na(x[[2]]))){
       l.label <- c(unlist(lapply(1:(length(cbrks)-1),function(X){paste(signif(cbrks[X],legend.signif),"to",signif(cbrks[X+1],legend.signif))})),"NA")
-      lcol[which(lcol%in%unique(x$color[which(is.na(x[[2]]))]))] <- leaf.na.color
-      x[which(is.na(x[[2]])),"color"] <- leaf.na.color
+      lcol[which(lcol%in%unique(x$color[which(is.na(x[[2]]))]))] <- na.color
+      x[which(is.na(x[[2]])),"color"] <- na.color
     } else{
       l.label <- unlist(lapply(1:(length(cbrks)-1),function(X){paste(signif(cbrks[X],legend.signif),"-",signif(cbrks[X+1],legend.signif))}))
     }
@@ -622,7 +622,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         options=layersControlOptions(collapsed=F,autoIndex=T))%>%
       addResetMapButton()
     
-    if(leaf.plot.label==T){ # Create polygons with labels
+    if(plot.label==T){ # Create polygons with labels
       
       # Create labels
       x <- x%>%
@@ -632,10 +632,10 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         addPolygons(group="Subbasins",
                     data=x,
                     color="black",
-                    weight=leaf.line.weight,
-                    opacity=leaf.line.opacity,
+                    weight=weight,
+                    opacity=opacity,
                     fillColor=~color,
-                    fillOpacity=leaf.fill.opacity,
+                    fillOpacity=fillOpacity,
                     label=~label)
     }
     else{ # Create polygons without labels
@@ -643,14 +643,14 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         addPolygons(group="Subbasins",
                     data=x,
                     color="black",
-                    weight=leaf.line.weight,
-                    opacity=leaf.line.opacity,
+                    weight=weight,
+                    opacity=opacity,
                     fillColor=x$color,
-                    fillOpacity=leaf.fill.opacity)
+                    fillOpacity=fillOpacity)
     }
     
     # Add searchbar to map
-    if(leaf.plot.search==T){
+    if(plot.searchbar==T){
       leafmap <- leafmap%>%
         addSearchFeatures(targetGroups="Subbasins",
                           options=searchFeaturesOptions(zoom=10,hideMarkerOnCollapse=F))
@@ -681,15 +681,15 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       addProviderTiles("CartoDB.PositronOnlyLabels",group="Satellite")
     
     # Save Image 
-    if(!leaf.save.image.path==""){
+    if(!file==""){
       print("Saving Image",quote=F)
-      mapshot(leafmap,file=leaf.save.image.path,vwidth=leaf.save.image.width,vheight=leaf.save.image.height,remove_controls=c("zoomControl","layersControl","homeButton","drawToolbar","easyButton"))
+      mapshot(leafmap,file=file,vwidth=vwidth,vheight=vheight,remove_controls=c("zoomControl","layersControl","homeButton","drawToolbar","easyButton"))
     }
     
     # Save HTML
-    if(!leaf.save.html.name==""){
+    if(!html.name==""){
       print("Saving HTML",quote=F)
-      saveWidget(leafmap,file=paste0(leaf.save.html.name,".html"),title=leaf.save.html.name)
+      saveWidget(leafmap,file=paste0(html.name,".html"),title=html.name)
     }
     
     return(leafmap)
