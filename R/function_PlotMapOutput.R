@@ -685,7 +685,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # Save Image 
     if(!file==""){
       print("Saving Image",quote=F)
-      mapshot(leafmap,file=file,vwidth=vwidth,vheight=vheight,remove_controls=c("zoomControl","layersControl","homeButton","drawToolbar","easyButton"))
+      mapshot(leafmap,file=file,vwidth=vwidth,vheight=vheight,remove_controls=c("zoomControl","layersControl","homeButton","drawToolbar","easyButton"),selfcontained=F)
     }
     
     # Save HTML
