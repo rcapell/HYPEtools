@@ -60,6 +60,8 @@
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
 #' @param html.name Save Leaflet map to an interactive HTML file in the working directory by specifying the name of the desired HTML file using this argument. See \code{\link{saveWidget}}.
+#' @param selfcontained Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
+#' Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins and/or subbasin vector polygon files with unsimplified geometry. 
 #' 
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
@@ -122,7 +124,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE,
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           plot.searchbar = F, plot.label = F, file = "", vwidth = 1424,
-                          vheight = 1000, html.name = "") {
+                          vheight = 1000, html.name = "", selfcontained = TRUE) {
   
   # Clear plotting devices if add argument is false - prevents R fatal errors caused if PlotMapOutput tries to add default plot to existing Leaflet map
   if(add == F & !is.null(dev.list())) dev.off()
@@ -689,7 +691,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # Save HTML
     if(!html.name==""){
       print("Saving HTML",quote=F)
-      saveWidget(leafmap,file=paste0(html.name,".html"),title=html.name)
+      saveWidget(leafmap,file=paste0(html.name,".html"),title=html.name,selfcontained=selfcontained)
     }
     
     return(leafmap)

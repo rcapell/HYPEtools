@@ -36,7 +36,8 @@ PlotMapOutput(
   file = "",
   vwidth = 1424,
   vheight = 1000,
-  html.name = ""
+  html.name = "",
+  selfcontained = TRUE
 )
 }
 \arguments{
@@ -123,6 +124,9 @@ In standard use cases of this function, plot margins do not need to be changed.}
 \item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
 
 \item{html.name}{Save Leaflet map to an interactive HTML file in the working directory by specifying the name of the desired HTML file using this argument. See \code{\link{saveWidget}}.}
+
+\item{selfcontained}{Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
+Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins and/or subbasin vector polygon files with unsimplified geometry.}
 }
 \value{
 For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}} 
