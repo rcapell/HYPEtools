@@ -6,11 +6,11 @@ Title: Tools for Processing and Analysing Files from the Conceptual
 Description: This package contains functions to handle and analyse input and
     output files from the conceptual rainfall-runoff model HYPE (HYdrological
     Predictions for the Environment).
-Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email =
-    "rene.capell@smhi.se"), person("Jafet", "Andersson", role = "ctb"),
-    person("David", "Gustafsson", role = "ctb"), 
-    person("Jude", "Musuuza", "Lubega", role = "ctb")), 
-    person("Conrad", "Brendel", role = c("aut"))
+Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email ="rene.capell@smhi.se"), 
+    person("Jafet", "Andersson", role = "ctb"),
+    person("David", "Gustafsson", role = "ctb"),
+    person("Jude", "Musuuza", "Lubega", role = "ctb"),
+    person("Conrad", "Brendel", role = "aut"))
 Depends:
     R (>= 3.0.0),
     hydroGOF
