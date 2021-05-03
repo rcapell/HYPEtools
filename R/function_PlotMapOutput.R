@@ -59,9 +59,9 @@
 #' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
-#' @param html.name Save Leaflet map to an interactive HTML file in the working directory by specifying the name of the desired HTML file using this argument. See \code{\link{saveWidget}}.
+#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}} If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).
 #' @param selfcontained Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
-#' Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins and/or subbasin vector polygon files with unsimplified geometry. 
+#' Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory. 
 #' 
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
@@ -124,7 +124,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE,
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           plot.searchbar = F, plot.label = F, file = "", vwidth = 1424,
-                          vheight = 1000, html.name = "", selfcontained = TRUE) {
+                          vheight = 1000, html.name = "", selfcontained = FALSE) {
   
   # Clear plotting devices if add argument is false - prevents R fatal errors caused if PlotMapOutput tries to add default plot to existing Leaflet map
   if(add == F & !is.null(dev.list())) dev.off()
@@ -693,7 +693,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # Save HTML
     if(!html.name==""){
       print("Saving HTML",quote=F)
-      saveWidget(leafmap,file=paste0(html.name,".html"),title=html.name,selfcontained=selfcontained)
+      saveWidget(leafmap,file=html.name,title=sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)),selfcontained=selfcontained)
     }
     
     return(leafmap)
