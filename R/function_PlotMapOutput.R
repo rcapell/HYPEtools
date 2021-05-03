@@ -194,7 +194,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       # color breaks: special defaults for some of the inbuilt color ramp functions
       if (identical(col, ColDiffTemp)) {
         # temperature differences
-        cbrks <- c(ifelse(min(x[,2]) < 7.5, min(x[,2]) - 1, 30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2]) > 7.5, max(x[,2]) + 1, 30))
+        cbrks <- c(ifelse(min(x[,2]) < 7.5, min(x[,2],na.rm=T) - 1, 30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2],na.rm=T) > 7.5, max(x[,2],na.rm=T) + 1, 30))
       } else if (identical(col, ColDiffGeneric)) {
         # create a break point sequence which is centered around zero, with class widths based on equal intervals of the log-scaled
         # variable distribution
@@ -209,7 +209,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # for undefined variables
     if (toupper(var.name) == "CCTN") {
       crfun <- ColNitr
-      cbrks <- c(0, 10, 50, 100, 250, 500, 1000, 2500, 5000, ifelse(max(x[,2]) > 5000, max(x[,2]) + 1, 10000))
+      cbrks <- c(0, 10, 50, 100, 250, 500, 1000, 2500, 5000, ifelse(max(x[,2],na.rm=T) > 5000, max(x[,2],na.rm=T) + 1, 10000))
       if (is.null(legend.title)) {
         if(map.type == "default"){
           legend.title <- expression(paste("Total N (", mu, "g l"^"-1", ")"))
@@ -219,7 +219,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       }
     } else if (toupper(var.name) == "CCTP") {
       crfun <- ColPhos
-      cbrks <- c(0, 5, 10, 25, 50, 100, 150, 200, 250, ifelse(max(x[,2]) > 250, max(x[,2]) + 1, 1000))
+      cbrks <- c(0, 5, 10, 25, 50, 100, 150, 200, 250, ifelse(max(x[,2],na.rm=T) > 250, max(x[,2],na.rm=T) + 1, 1000))
       if (is.null(legend.title)) {
         if(map.type == "default"){
           legend.title <- expression(paste("Total P (", mu, "g l"^"-1", ")"))
@@ -229,7 +229,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       }
     } else if (toupper(var.name) == "COUT") {
       crfun <- ColQ
-      cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(x[,2]) > 500, max(x[,2]) + 1, 2000))
+      cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(x[,2],na.rm=T) > 500, max(x[,2],na.rm=T) + 1, 2000))
       if (is.null(legend.title)) {
         if(map.type == "default"){
           legend.title <- expression(paste("Q (m"^3, "s"^"-1", ")"))
@@ -239,7 +239,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       }
     } else if (toupper(var.name) == "TEMP") {
       crfun <- ColTemp
-      cbrks <- c(ifelse(min(x[,2]) < -7.5, min(x[,2]) - 1, -30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2]) > 7.5, max(x[,2]) + 1, 30))
+      cbrks <- c(ifelse(min(x[,2]) < -7.5, min(x[,2]) - 1, -30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[,2],na.rm=T) > 7.5, max(x[,2],na.rm=T) + 1, 30))
       if (is.null(legend.title)) {
         if(map.type == "default"){
           legend.title <- expression(paste("Air Temp. ("*degree, "C)"))
@@ -316,12 +316,14 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
   x[, 3] <- as.character(x[, 3])
   # give it a name
   names(x)[3] <- "color"
-  
+
   if(map.type == "default"){
     # add x to subid map table (in data slot, indicated by @), merge by SUBID
     map@data <- data.frame(map@data, x[match(map@data[, map.subid.column], x[,1]),])
   } else if(map.type == "leaflet"){
-    x <- suppressMessages(right_join(map[,map.subid.column],x))
+    # x <- suppressMessages(right_join(map[,map.subid.column],x))
+    print(paste("Joining GIS Data To MapOutput Using",colnames(map)[map.subid.column],"=",colnames(x)[1]),quote=F)
+    x <- right_join(map[,map.subid.column],x,by=setNames(nm=colnames(map)[map.subid.column],colnames(x)[1])) # Join GIS Data with MapOutput Data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay)
   }
   
   # update legend title if none was provided by user or "auto" selection
