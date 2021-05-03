@@ -38,7 +38,7 @@
 #' @param par.cex Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}.
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
 #' In standard use cases of this function, plot margins do not need to be changed.
-#' @param pch Integer, plotting symbol. See \code{\link{points}}.
+#' @param pch,lwd Integer, plotting symbol and line width. See \code{\link{points}}.
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
 
@@ -78,7 +78,7 @@
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj = 0, plot.legend = T, 
                           legend.pos = "right", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), col = NULL, 
                           col.breaks = NULL, plot.scale = T, plot.arrow = T, pt.cex = 1, 
-                          par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, add = FALSE, restore.par = FALSE) {
+                          par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE, restore.par = FALSE) {
   
   # input argument checks
   stopifnot(is.data.frame(x), dim(x)[2] == 2, class(sites)=="SpatialPointsDataFrame", 
@@ -363,9 +363,9 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.adj =
   # map
   if (!is.null(bg)) {
     plot(bg, col = "grey90", border = "grey70", ylim = pylim, xlim = pxlim, add = add)
-    plot(sts, bg = sts$color, border = 1, pch = pch, lwd = .8, cex = 1.2 * pt.cex, add = T)
+    plot(sts, bg = sts$color, border = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, add = T)
   } else {
-    plot(sts, bg = sts$color, col = 1, pch = pch, lwd = .8, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
+    plot(sts, bg = sts$color, col = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
   }
   # legend
   if (plot.legend) {
