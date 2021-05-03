@@ -59,7 +59,7 @@
 #' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
-#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}} If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).
+#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).
 #' @param selfcontained Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
 #' Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory. 
 #' 
@@ -322,7 +322,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     map@data <- data.frame(map@data, x[match(map@data[, map.subid.column], x[,1]),])
   } else if(map.type == "leaflet"){
     # x <- suppressMessages(right_join(map[,map.subid.column],x))
-    print(paste("Joining GIS Data To MapOutput Using",colnames(map)[map.subid.column],"=",colnames(x)[1]),quote=F)
+    print(paste0('Joining "',colnames(map)[map.subid.column],'" from GIS Data (map) To "',colnames(x)[1],'" from MapOutput (x)'),quote=F)
     x <- right_join(map[,map.subid.column],x,by=setNames(nm=colnames(map)[map.subid.column],colnames(x)[1])) # Join GIS Data with MapOutput Data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay)
   }
   
