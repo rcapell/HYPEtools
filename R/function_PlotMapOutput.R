@@ -621,7 +621,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     leafmap <- leaflet(options=leafletOptions(preferCanvas=T))%>%
       addTiles()%>%
       addLayersControl(
-        baseGroups=c("Map","Topo","Satellite"),
+        baseGroups=c("Map","Street","Topo","Satellite"),
         overlayGroups=c("Subbasins"),
         options=layersControlOptions(collapsed=F,autoIndex=T))%>%
       addResetMapButton()
@@ -680,6 +680,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     
     # Add various basemaps
     leafmap <- leafmap%>%
+      addProviderTiles("CartoDB.Positron",group="Map")%>%
+      addTiles(group="Street")%>%
       addProviderTiles("Esri.WorldTopoMap",group="Topo")%>%
       addProviderTiles("Esri.WorldImagery",group="Satellite")%>%
       addProviderTiles("CartoDB.PositronOnlyLabels",group="Satellite")
