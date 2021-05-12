@@ -1,5 +1,5 @@
 Package: HYPEtools
-Version: 0.4-7
+Version: 0.4.7
 Date: 
 Title: Tools for Processing and Analysing Files from the Conceptual
     Rainfall-Runoff Model HYPE
@@ -7,28 +7,27 @@ Description: This package contains functions to handle and analyse input and
     output files from the conceptual rainfall-runoff model HYPE (HYdrological
     Predictions for the Environment).
 Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email ="rene.capell@smhi.se"), 
+    person("Conrad", "Brendel", role = "aut"),
     person("Jafet", "Andersson", role = "ctb"),
     person("David", "Gustafsson", role = "ctb"),
-    person("Jude", "Musuuza", "Lubega", role = "ctb"),
-    person("Conrad", "Brendel", role = "aut"))
+    person("Jude", "Musuuza", "Lubega", role = "ctb"))
 Depends:
-    R (>= 3.0.0),
-    hydroGOF
+    R (>= 3.0.0)
 Imports:
     sp,
-    pbapply,
     data.table (>= 1.9.8),
-    ncdf4,
+    dplyr,
+    htmlwidgets,
+    hydroGOF,
     leaflet,
+    leaflet.extras,
     mapview,
+    ncdf4,
+    pbapply,
     sf
 License: LGPL-3
 LazyData: true
-Packaged: 2014-11-21 15:25:14 UTC; rene
-Author: Rene Capell [aut, cre],
-    Jafet Andersson [aut],
-    David Gustafsson [aut],
-    Jude M Lubega [aut]
-Maintainer: Rene Capell <rene.capell@smhi.se>
+URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
+BugReports: https://github.com/rcapell/HYPEtools/issues
 RoxygenNote: 7.1.1
 Encoding: UTF-8
