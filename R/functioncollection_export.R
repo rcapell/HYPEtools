@@ -99,8 +99,8 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
   x[, substr(names(x), 1, 4) == "SLC_"] <- signif(x[, substr(names(x), 1, 4) == "SLC_"], digits = digits)
   
   # convert SUBID and MAINDOWN columns to character to suppress scientific notation
-  x[, tolower(names(x)) == "subid"] <- format(x[, tolower(names(x)) == "subid"], scientific = F)
-  x[, tolower(names(x)) == "maindown"] <- format(x[, tolower(names(x)) == "maindown"], scientific = F)
+  x[, tolower(names(x)) == "subid"] <- format(x[, tolower(names(x)) == "subid"], scientific = F, trim = T)
+  x[, tolower(names(x)) == "maindown"] <- format(x[, tolower(names(x)) == "maindown"], scientific = F, trim = T)
   
   # export
   fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
