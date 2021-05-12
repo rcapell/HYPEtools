@@ -923,20 +923,22 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
 #' time output file names (incl. regional and class outputs).
 #' @param out.reg Logical, specify if file contents are sub-basin or output region results (i.e. SUBIDs or OUTREGIDs as columns). 
-#' \code{TRUE} for output regions, \code{FALSE} for sub-basins. \strong{Use only in combination with user-provided \code{hype.var} 
+#' \code{TRUE} for output regions, \code{FALSE} for sub-basins. \emph{Use only in combination with user-provided \code{hype.var} 
 #' argument.} 
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
 #' @param select Integer vector, column numbers to import. Note: first column with dates must be imported and will be added if missing.
 #' @param id Integer vector, HYPE SUBIDs/OUTREGIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.
 #' @param nrows Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.
-#' @param skip Integer, number of \strong{data} rows to skip on import. Time output header lines are always skipped. 
+#' @param skip Integer, number of \emph{data} rows to skip on import. Time output header lines are always skipped. 
 #' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
 #' a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.
 #' @param verbose Logical, print information during import.
 #' 
 #' @details
-#' \code{ReadTimeOutput} imports from text or netCDF files. Text file import uses \code{\link[data.table]{fread}} from package  
+#' \code{ReadTimeOutput} imports from text or netCDF files. \emph{netCDF import is experimental and not feature-complete (e.g. attributes are 
+#' not yet fully digested).} 
+#' Text file import uses \code{\link[data.table]{fread}} from package  
 #' \code{\link{data.table}}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}. 
 #' Date-time representations in data files are converted to POSIX time representations. Monthly and annual time steps are returned as 
 #' first day of the time step period. 
@@ -950,8 +952,9 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 #' \code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onwards) to which the time 
 #' series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a 
-#' time step attribute, and \code{comment} with first row comment of imported file as character string. An additional attribute 
-#' \code{id.nan} might be returned, see argument \code{warn.nan}.
+#' time step attribute, and \code{comment} with first row comment of imported text file as character string or global attributes of imported 
+#' netCDF file as character string of collated key-value pairs. An additional attribute \code{id.nan} might be returned, see argument 
+#' \code{warn.nan}.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -960,14 +963,13 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 #' decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 #' Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
-#' 
 #' Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
 #' issue from arising.
 #' 
 #' @examples 
 #' \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "%Y-%m")}
 #' 
-#' @importFrom data.table fread is.data.table
+#' @importFrom data.table fread is.data.table data.table
 #' @importFrom ncdf4 nc_open nc_close
 #' @export
 
@@ -1003,22 +1005,75 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
   
   if (nc) {
     
-    ## import from netCDF file
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # import from netCDF file
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    
     
     # open netCDF file connection
     ncf <- nc_open(filename = filename)
+    
     
     nm.var <- names(ncf$var)
     nm.dim <- names(ncf$dim)
     
     "id" %in% nm.dim
     
+    # select and import HYPE variable, other variables (positions) discarded for now
+    hype.var <- toupper(nm.var[!(nm.var %in% paste0("geo_", c("x", "y", "z")))])
+    hdata <- ncvar_get(nc = ncf, hvar)
+    
+    # import time dimension
+    dim.time <- as.numeric(ncvar_get(nc = ncf, "time"))
+    
+    # import id dimension
+    # FUTURE DEV: ADD IDENTIFICATION OF OTHER ID TYPES, EG REGIONAL ID
+    sbd <- as.numeric(ncvar_get(nc = ncf, "id"))
+    out.reg <- F
+    
+    # global metadata, CURRENTLY JUST SAVED AS COMMENT, SHOULD BE DIGESTED IN FUTURE DEVELOPMENT
+    gmdata <- ncatt_get(ncf, varid = 0)
+    # ncatt_get(ncf, varid = 0, attname = "title")$value
+    # ncatt_get(ncf, varid = 0, attname = "history")
+    
+    ## create POSIX time from time dimension and its attributes
+    
+    # extract and disaggregate time unit string
+    tunits <- ncatt_get(ncf, varid = "time")$units
+    tunits <- strsplit(x = tunits, split = " since ")[[1]]
+    
+    # convert origin string to POSIX
+    torigin <- as.POSIXct(tunits[2], tz = "GMT")
+    
+    # create POSIX vector
+    if (tunits[1] == "minutes") {
+      tsteps <- torigin + (dim.time * 60)
+    } else if (tunits[1] == "hours") {
+      tsteps <- torigin + (dim.time * 3600)
+    } else if (tunits[1] == "days") {
+      tsteps <- torigin + (dim.time * 86400)
+    } else {
+      stop(paste0("Unknown time unit ", tunits[1], " in file."))
+    }
+    
+    
+    # create result data frame or data table
+    if (d.t) {
+      x <- data.table(DATE = tsteps, t(hdata))
+    } else {
+      x <- data.frame(DATE = tsteps, t(hdata))
+    }
+    names(x)[-1] <- paste0("X", sbd)
+    
     # close netCDF file connection
     nc_close(ncf)
     
   } else {
     
-    ## import from text file
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # import from text file
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    
     
     # check file contents for metadata header and extract contents if present
     ## HEADER DIGESTION UNFINISHED, CONTINUE WITH ASSIGNING CONTENTS TO ATTRIBUTES
@@ -1210,17 +1265,22 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
   if (type %in% c("dt", "df")) {
     
     if (out.reg) {
-      attr(x, which = "subid") <- NA
-      attr(x, which = "outregid") <- sbd
+      subid(x) <- NA
+      outregid(x) <- sbd
     } else {
-      attr(x, which = "subid") <- sbd
-      attr(x, which = "outregid") <- NA
+      subid(x) <- sbd
+      outregid(x) <- NA
     }
-    attr(x, "variable") <- hype.var
-    attr(x, "comment") <- xattr[1]
+    variable(x) <- hype.var
+    # add comment row if text file, or global attributes if netCDF file
+    if (nc) {
+      comment(x) <- paste(names(gmdata), "=", gmdata, collapse = ";")
+    } else {
+      comment(x) <- xattr[1]
+    }
     
     # conditional: timestep attribute identified by difference between first two entries
-    tdff <- as.numeric(difftime(xd[2], xd[1], units = "hours"))
+    tdff <- as.numeric(difftime(x[2, 1], x[1, 1], units = "hours"))
     if (!is.na(tdff)) {
       if (tdff == 24) {
         attr(x, which = "timestep") <- "day"
@@ -1243,7 +1303,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     ## HypeSingleVar formatting
     # remove dates
     x <- x[, !"DATE", with = F]
-    # convert to array (straigtht conversion to array gives error, therefore intermediate matrix)
+    # convert to array (straight conversion to array gives error, therefore intermediate matrix)
     x <- as.array(as.matrix(x))
     # adding 'iteration' dimension
     dim(x) <- c(dim(x), 1)
