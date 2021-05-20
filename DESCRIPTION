@@ -23,7 +23,8 @@ Imports:
     mapview,
     ncdf4,
     pbapply,
-    sf
+    sf,
+    shiny
 License: LGPL-3
 LazyData: true
 URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
