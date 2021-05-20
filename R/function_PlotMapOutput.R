@@ -57,6 +57,7 @@
 #' @param plot.searchbar Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \code{\link{addSearchFeatures}}.
 #' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See \code{\link{addPolygons}}.
 #' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
+#' You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
 #' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).
