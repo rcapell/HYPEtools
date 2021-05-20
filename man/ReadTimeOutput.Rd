@@ -34,7 +34,7 @@ If \code{NULL} (default), the variable ID is extracted from the provided file na
 time output file names (incl. regional and class outputs).}
 
 \item{out.reg}{Logical, specify if file contents are sub-basin or output region results (i.e. SUBIDs or OUTREGIDs as columns). 
-\code{TRUE} for output regions, \code{FALSE} for sub-basins. \strong{Use only in combination with user-provided \code{hype.var} 
+\code{TRUE} for output regions, \code{FALSE} for sub-basins. \emph{Use only in combination with user-provided \code{hype.var} 
 argument.}}
 
 \item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
@@ -46,7 +46,7 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return 
 
 \item{nrows}{Integer, number of rows to import, see documentation in \code{\link[data.table]{fread}}.}
 
-\item{skip}{Integer, number of \strong{data} rows to skip on import. Time output header lines are always skipped.}
+\item{skip}{Integer, number of \emph{data} rows to skip on import. Time output header lines are always skipped.}
 
 \item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
 a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.}
@@ -58,15 +58,18 @@ a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds n
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 \code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onwards) to which the time 
 series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a 
-time step attribute, and \code{comment} with first row comment of imported file as character string. An additional attribute 
-\code{id.nan} might be returned, see argument \code{warn.nan}.
+time step attribute, and \code{comment} with first row comment of imported text file as character string or global attributes of imported 
+netCDF file as character string of collated key-value pairs. An additional attribute \code{id.nan} might be returned, see argument 
+\code{warn.nan}.
 }
 \description{
 Import a time output file 'time<\emph{HYPE_output_variable}>.txt' or a converted time output file in netCDF format 
 into R.
 }
 \details{
-\code{ReadTimeOutput} imports from text or netCDF files. Text file import uses \code{\link[data.table]{fread}} from package  
+\code{ReadTimeOutput} imports from text or netCDF files. \emph{netCDF import is experimental and not feature-complete (e.g. attributes are 
+not yet fully digested).} 
+Text file import uses \code{\link[data.table]{fread}} from package  
 \code{\link{data.table}}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}. 
 Date-time representations in data files are converted to POSIX time representations. Monthly and annual time steps are returned as 
 first day of the time step period. 
@@ -82,7 +85,6 @@ side effects when working with the imported data (and possibly converting to str
 HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
 decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
 Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
-
 Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
 issue from arising.
 }
