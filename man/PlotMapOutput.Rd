@@ -117,7 +117,8 @@ In standard use cases of this function, plot margins do not need to be changed.}
 
 \item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See \code{\link{addPolygons}}.}
 
-\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.}
+\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
+You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.}
 
 \item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
 
