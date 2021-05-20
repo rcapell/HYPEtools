@@ -87,6 +87,18 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
       # Given an object from R environment
     } else {
       file <- file
+
+      # Format Info/Par if given object from R environment
+      if (type %in% c("Info", "Par")) {
+        list <- file
+        file <- data.frame(FILE_ROW = as.numeric(), Name = as.character(), Value = as.character())
+        for (i in 1:length(list)) {
+          file[i, "FILE_ROW"] <- i
+          file[i, "Name"] <- names(list[i])
+          file[i, "Value"] <- paste(unlist(list[i]), collapse = " ")
+        }
+        file
+      }
     }
 
     # Add Row Number for types where row number wasn't added on import
