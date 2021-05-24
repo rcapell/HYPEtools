@@ -16,12 +16,15 @@ shinyAppUI <- fluidPage(
                   "Period:",
                   min = 1,
                   max = 312,
-                  value = 1)
+                  value = 1),
+      hr(),
+      dataTableOutput("table")
     ),
 
     # Show a plot of the generated distribution
     mainPanel(
-      leafletOutput("map")
+      leafletOutput("map"),
+      plotlyOutput("plot")
     )
   )
 )
