@@ -323,7 +323,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     map@data <- data.frame(map@data, x[match(map@data[, map.subid.column], x[,1]),])
   } else if(map.type == "leaflet"){
     # x <- suppressMessages(right_join(map[,map.subid.column],x))
-    print(paste0('Joining "',colnames(map)[map.subid.column],'" from GIS Data (map) To "',colnames(x)[1],'" from MapOutput (x)'),quote=F)
+    message(paste0('Joining "',colnames(map)[map.subid.column],'" from GIS Data (map) To "',colnames(x)[1],'" from MapOutput (x)'))
     x <- right_join(map[,map.subid.column],x,by=setNames(nm=colnames(map)[map.subid.column],colnames(x)[1])) # Join GIS Data with MapOutput Data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay)
   }
   
@@ -618,7 +618,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     }
 
     # Create Leaflet Map
-    print("Generating Map",quote=F)
+    message("Generating Map")
     leafmap <- leaflet(options=leafletOptions(preferCanvas=T))%>%
       addTiles()%>%
       addLayersControl(
@@ -689,13 +689,13 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     
     # Save Image 
     if(!file==""){
-      print("Saving Image",quote=F)
+      message("Saving Image")
       mapshot(leafmap,file=file,vwidth=vwidth,vheight=vheight,remove_controls=c("zoomControl","layersControl","homeButton","drawToolbar","easyButton"),selfcontained=F)
     }
     
     # Save HTML
     if(!html.name==""){
-      print("Saving HTML",quote=F)
+      message("Saving HTML")
       saveWidget(leafmap,file=html.name,title=sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)),selfcontained=selfcontained)
     }
     
