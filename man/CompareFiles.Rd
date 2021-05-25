@@ -15,7 +15,7 @@ File contents are compared to those of \code{x}.}
 
 \item{type}{Character string identifying the type of HYPE model file. Used to determine appropriate read function. One of
 \code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{GeoClass},
-\code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Par}, \code{PointsourceData}, \code{PTQobs},
+\code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointsourceData}, \code{PTQobs},
 \code{TimeOutput}, or \code{Xobs}.}
 
 \item{by}{Character vector, names of columns in \code{x} and \code{y} to use to join data. See \code{\link{full_join}}.}

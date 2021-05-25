@@ -8,7 +8,7 @@
 #' File contents are compared to those of \code{x}.
 #' @param type Character string identifying the type of HYPE model file. Used to determine appropriate read function. One of
 #' \code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{GeoClass},
-#' \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Par}, \code{PointsourceData}, \code{PTQobs},
+#' \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointsourceData}, \code{PTQobs},
 #' \code{TimeOutput}, or \code{Xobs}.
 #' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See \code{\link{full_join}}.
 #' @param compare.order Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
@@ -69,8 +69,12 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
         file <- ReadMapOutput(file)
       } else if (type == "MgmtData") {
         file <- ReadMgmtData(file)
-        # } else if (type=="Optpar"){
-        #   file <- ReadOptpar(file) # Untested
+      } else if (type == "Optpar") {
+        list <- ReadOptpar(file)
+        file <- data.frame(list) %>%
+          mutate("tasks.NA" = do.call(paste, .[grep("tasks.NA", colnames(.), value = T)])) %>% # Merge tasks.NA columns
+          select(-grep("tasks.NA.*.", colnames(.), value = T)) # Drop original tasks.NA columns
+        file
         # } else if(type=="Outregions"){
         #   file <- ReadOutregions(file) # Untested
         # } else if(type=="Pmsf"){
@@ -98,6 +102,11 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
           file[i, "Value"] <- paste(unlist(list[i]), collapse = " ")
         }
         file
+        # Format Optpar if given object from R environment
+      } else if (type == "Optpar") {
+        file <- data.frame(file) %>%
+          mutate("tasks.NA" = do.call(paste, .[grep("tasks.NA", colnames(.), value = T)])) %>% # Merge tasks.NA columns
+          select(-grep("tasks.NA.*.", colnames(.), value = T)) # Drop original tasks.NA columns
       }
     }
 
