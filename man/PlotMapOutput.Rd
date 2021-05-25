@@ -41,7 +41,7 @@ PlotMapOutput(
 )
 }
 \arguments{
-\item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and 
+\item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and
 second column containing model results to plot. See details.}
 
 \item{map}{A \code{SpatialPolygonsDataFrame} or \code{sf} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
@@ -55,12 +55,12 @@ HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.}
 
 \item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
 
-\item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified 
+\item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified
 or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.}
 
 \item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}}.}
 
-\item{legend.pos}{Legend, scale, and north arrow position, keyword string. For static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"}, 
+\item{legend.pos}{Legend, scale, and north arrow position, keyword string. For static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
 \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}.}
 
 \item{legend.title}{Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
@@ -68,7 +68,7 @@ is used as legend title string. For select HYPE variables, pretty legend titles 
 
 \item{legend.outer}{Logical. If \code{TRUE}, outer break point values will be plotted in legend.}
 
-\item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow. 
+\item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow.
 See \code{\link{legend}} and details below.}
 
 \item{legend.signif}{Integer, number of significant digits to display in legend labels.}
@@ -76,29 +76,29 @@ See \code{\link{legend}} and details below.}
 \item{col}{Colors to use on the map. One of the following: \itemize{
 \item \code{"auto"} to allow for automatic selection from tailored color ramp palettes and break points based on argument \code{var.name},
 see details
-\item A color ramp palette function, e.g. as returned from a call to \code{\link{colorRampPalette}}. A number of tailored functions are 
+\item A color ramp palette function, e.g. as returned from a call to \code{\link{colorRampPalette}}. A number of tailored functions are
 available in \code{HYPEtools}, see \code{\link{CustomColors}}
-\item A vector of colors. This can be a character vector of R's built-in color names or hexadecimal strings as returned by 
+\item A vector of colors. This can be a character vector of R's built-in color names or hexadecimal strings as returned by
 \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 }}
 
 \item{col.breaks}{A numeric vector, specifying break points for discretisation of model result values into classes. Used if a color palette is specified with \code{col} argument.
 Class boundaries will be interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
-Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be 
-unclassified white spots on the map plot. Not mandatory, can optionally 
+Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
+unclassified white spots on the map plot. Not mandatory, can optionally
 be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
 classification will be applied (see details).}
 
 \item{col.rev}{Logical, If \code{TRUE}, then color palette will be reversed.}
 
-\item{plot.scale}{Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with 
+\item{plot.scale}{Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with
 projected maps based on meter units, not geographical projections}
 
 \item{plot.arrow}{Logical, plot a North arrow below legend (i.e. position defined by legend position).}
 
 \item{par.cex}{Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}.}
 
-\item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot. 
+\item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
 In standard use cases of this function, plot margins do not need to be changed.}
 
 \item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
@@ -130,7 +130,7 @@ You may need to run \code{webshot::install_phantomjs()} the first time you save 
 Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.}
 }
 \value{
-For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}} 
+For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}}
 as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
 an object of class \code{leaflet}.
 }
@@ -138,40 +138,42 @@ an object of class \code{leaflet}.
 Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables.
 }
 \details{
-\code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}. 
-\code{x} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with 
-several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}. 
+\code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}.
+\code{x} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with
+several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}.
 
-\code{PlotMapOutput} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}. 
+\code{PlotMapOutput} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}.
 
-Mapped variables are visualised using color-coded data intervals. \code{HYPEtools} provides a number of color ramps functions for HYPE variables, 
+Mapped variables are visualised using color-coded data intervals. \code{HYPEtools} provides a number of color ramps functions for HYPE variables,
 see \code{\link{CustomColors}}. These are either single-color ramps with less saturated colors for smaller values
-and more saturated values for higher values, suitable for e.g. concentration or volume ranges, or multi-color ramps suitable for calculated 
+and more saturated values for higher values, suitable for e.g. concentration or volume ranges, or multi-color ramps suitable for calculated
 differences, e.g. between two model runs.
 
-Break points between color classes of in-built or user-provided color ramp palettes can optionally be provided in argument 
-\code{col.breaks}. This is particularly useful when specific pretty class boundaries are needed, e.g. for publication figures. Per default, 
-break points for internal single color ramps and user-provided ramps are calculated based on 10\% percentiles of HYPE results given in 
-\code{x}. Default break points for internal color ramp \code{ColDiffGeneric} are based on an equal distance classification of log-scaled 
+Break points between color classes of in-built or user-provided color ramp palettes can optionally be provided in argument
+\code{col.breaks}. This is particularly useful when specific pretty class boundaries are needed, e.g. for publication figures. Per default,
+break points for internal single color ramps and user-provided ramps are calculated based on 10\% percentiles of HYPE results given in
+\code{x}. Default break points for internal color ramp \code{ColDiffGeneric} are based on an equal distance classification of log-scaled
 \code{x} ranges, centered around zero. For internal color ramp \code{ColDiffTemp}, they are breaks in an interval from -7.5 to 7.5 K.
 
-For select common HYPE variables, given in argument \code{var.name}, an automatic color ramp selection including pretty breaks and legend titles 
-is built into \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword 
-\code{"auto"} in \code{col}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points with 
+For select common HYPE variables, given in argument \code{var.name}, an automatic color ramp selection including pretty breaks and legend titles
+is built into \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword
+\code{"auto"} in \code{col}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points with
 \code{"auto"} color selection.
 
-\code{PlotMapOutput} per default works with a margin-less figure and positions map and legend items close to the plot boundaries. 
+\code{PlotMapOutput} per default works with a margin-less figure and positions map and legend items close to the plot boundaries.
 In order to move map and legend closer to each other, change the plot device width.
 
-Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the bottom right side of the map. For static plots, \code{legend.pos} and 
-\code{map.adj} should be chosen so that legend and map do not overlap, and the legend position can be fine-tuned using 
-argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. For details on inset 
+Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the bottom right side of the map. For static plots, \code{legend.pos} and
+\code{map.adj} should be chosen so that legend and map do not overlap, and the legend position can be fine-tuned using
+argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. For details on inset
 specification see \code{inset} in \code{\link{legend}}.
 }
 \examples{
-\dontrun{require(rgdal)
+\dontrun{
+require(rgdal)
 x11(width = 5, height = 8)
-PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")}
+PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")
+}
 
 }
 \seealso{
