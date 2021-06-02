@@ -1155,7 +1155,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
   }
   
   # layout definition
-  nf <- layout(mat = lay.mat, widths = lay.widths, heights = lay.heights)
+  nf <- graphics::layout(mat = lay.mat, widths = lay.widths, heights = lay.heights)
   #layout.show(nf)
   
   # plot all commands in list

@@ -2162,7 +2162,7 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
   }
   
   # layout definition
-  nf <- layout(mat = lay.mat[-1, , drop = FALSE], widths = lay.widths, heights = lay.heights)
+  nf <- graphics::layout(mat = lay.mat[-1, , drop = FALSE], widths = lay.widths, heights = lay.heights)
   # layout.show(nf)
   
   # plot all commands in list
