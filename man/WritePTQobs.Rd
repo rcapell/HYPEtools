@@ -8,7 +8,8 @@ WritePTQobs(
   x,
   filename,
   dt.format = "\%Y-\%m-\%d",
-  digits = NULL,
+  round = NULL,
+  signif = NULL,
   obsid = NULL
 )
 }
@@ -22,8 +23,8 @@ Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
 
-\item{digits}{Integer, number of significant digits to export. See \code{\link{signif}}. If \code{NULL} (default), the data to export 
-is not touched.}
+\item{round, signif}{Integer, number of decimal places and number of significant digits to export. See \code{\link{round}}. Applied in 
+sequence. If \code{NULL} (default), the data to export is not touched.}
 
 \item{obsid}{Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
 in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 

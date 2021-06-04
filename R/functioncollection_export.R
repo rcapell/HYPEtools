@@ -695,8 +695,8 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @param obsid Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
 #' in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 
 #' in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.
-#' @param digits Integer, number of significant digits to export. See \code{\link{signif}}. If \code{NULL} (default), the data to export 
-#' is not touched.
+#' @param round,signif Integer, number of decimal places and number of significant digits to export. See \code{\link{round}}. Applied in 
+#' sequence. If \code{NULL} (default), the data to export is not touched.
 #'  
 #' @details
 #' \code{WritePTQobs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
@@ -721,7 +721,7 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @export
 
 
-WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = NULL, obsid = NULL) {
+WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif = NULL, obsid = NULL) {
   
   ## check if consistent header information is available, obsid arguments take precedence before attribute
   ## construct HYPE-conform header for export (violates R header rules)
@@ -732,7 +732,7 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = NULL, obs
       stop("Length of function argument 'obsid' does not match number of obsid columns in export object.")
     }
   } else if (!is.null(attr(x, which = "obsid"))) {
-      if (length(attr(x, which = "obsid")) == ncol(x) - 1) {
+      if (length(obsid(x)) == ncol(x) - 1) {
         names(x) <- c("DATE", attr(x, which = "obsid"))
       } else {
         stop("Length of attribute 'obsid' does not match number of obsid columns in export object.")
@@ -748,12 +748,19 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", digits = NULL, obs
     warning("First column in export data frame is not of class 'POSIXt', will be exported unchanged.")
   }
   
-  # round to user-specified number of significant digits
-  if (!is.null(digits)) {
+  # round to user-specified number of decimals and significant digits
+  if (!is.null(round)) {
     if ("data.table" %in% class(x)) {
-      x[, 2:ncol(x)] <- x[, signif(.SD, digits), .SDcols=2:ncol(x)]
+      x[, 2:ncol(x)] <- x[, round(.SD, round), .SDcols=2:ncol(x)]
     } else {
-      x[, -1] <- signif(x[, -1], digits = digits)
+      x[, -1] <- round(x[, -1], digits = round)
+    }
+  }
+  if (!is.null(signif)) {
+    if ("data.table" %in% class(x)) {
+      x[, 2:ncol(x)] <- x[, signif(.SD, signif), .SDcols=2:ncol(x)]
+    } else {
+      x[, -1] <- signif(x[, -1], digits = signif)
     }
   }
   
