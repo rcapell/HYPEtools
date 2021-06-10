@@ -1393,7 +1393,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 
 
 ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "tmax", "vwnd", "uwnd", "snff", "swrd", "rhum", "wind"), 
-                    dt.format = "%Y-%m-%d", nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
+                    dt.format = c("%Y-%m-%d", "%Y%m%d"), nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
   
   # extract hype variable
   variable <- match.arg(variable)
@@ -1435,13 +1435,13 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
     d.t <- T
   }
   
-  ## import ptqobs file header, extract obsid attribute
+  ## import file header, extract obsid attribute
   # import
   xattr <- readLines(filename, n = 1)
   # extract obsids
   sbd <- as.integer(strsplit(xattr, split = "\t")[[1]][-1])
   
-  # argument checks
+  # check and if needed add date column to selection
   if (!is.null(select) && !(1 %in% select)) {
     select <- c(1, select)
   }
@@ -1464,22 +1464,24 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
   }
   
   
-  # # create full select vector for fread, workaround for suspected bug in data.table (reported at https://github.com/Rdatatable/data.table/issues/2007)
-  # if (is.null(select) && is.null(obsid)) {
-  #   select <- 1:(length(sbd) + 1)
-  # }
-  
-  # read the data
+  ## import, date treatment depending on format
+  if (dt.format == "%Y%m%d") {
+    cC <- NULL
+  } else {
+    cC <- list("POSIXct" = 1)
+  }
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, tz = "UTC", colClasses = list("POSIXct" = 1))
+             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, tz = "UTC", colClasses = cC)
+  # manual date conversion with matlab-like date strings
+  if (dt.format == "%Y%m%d") {
+    xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+    x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+      print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
+      })
+    
+  }
 
-  # # date conversion, NOT NEEDED ANYMORE, LEFT FOR THE MOMENT BUT CAN BE REMOVED AFTER A WHILE
-  # xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
-  # x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-  #   print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
-  #   })
-  
   
   ## add attributes
   obsid(x) <- sbd

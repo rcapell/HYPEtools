@@ -8,7 +8,7 @@ ReadObs(
   filename,
   variable = c("", "prec", "temp", "rout", "tmin", "tmax", "vwnd", "uwnd", "snff",
     "swrd", "rhum", "wind"),
-  dt.format = "\%Y-\%m-\%d",
+  dt.format = c("\%Y-\%m-\%d", "\%Y\%m\%d"),
   nrows = -1,
   type = c("df", "dt"),
   select = NULL,
