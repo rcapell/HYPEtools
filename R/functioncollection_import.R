@@ -1330,20 +1330,21 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------
-# ReadPTQobs
+# ReadObs
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 
-#' Read 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files
+#' Read HYPE observation data files
 #'
-#' Import forcing data and discharge observation files as data frame into R.
+#' Import single-variable HYPE observation files into R.
 #' 
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
 #' @param variable Character string, HYPE variable ID of file contents. If \code{""} (default), the ID is extracted 
-#' from \code{filename}, which only works with file names as required by HYPE or file names beginning with those names 
-#' ('e.g. Pobs_old.txt').
+#' from \code{filename}, which only works with file names as required by HYPE or file names including those names 
+#' (e.g. 'Pobs_old.txt', 'testSFobs.txt'). Some of the observation data files have no corresponding HYPE variable ID. 
+#' In these cases, a dummy ID is used, see table in Details.
 #' @param nrows Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
 #' to import.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame or \code{"dt"} to 
@@ -1352,16 +1353,29 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' @param obsid Integer vector, HYPE OBSIDs to import. Alternative to argument \code{select}, takes precedence if both are provided.
 #'  
 #' @details
-#' \code{ReadPTQobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
+#' \code{ReadObs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 #' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Observation IDs (SUBIDs or IDs connected to SUBIDs with a 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 
-#' attribute \code{obsid} (see \code{\link{attr}} on how to access it). 
+#' attribute \code{obsid} (directly accessible through \code{\link{obsid}}). 
+#' 
+#' Observation file types for which no corresponding HYPE variable ID exists use the following dummy variable IDs:
+#' 
+#' | **File**    | **Dummy ID** |
+#' | ----------- |:------------:|
+#' | TMINobs.txt | tmin         |
+#' | TMAXobs.txt | tmax         |
+#' | VWobs.txt   | vwnd         |
+#' | UWobs.txt   | uwnd         |
+#' | SFobs.txt   | snff         |
+#' | SWobs.txt   | swrd         |
+#' | RHobs.txt   | rhum         |
+#' | Uobs.txt    | wind         |
 #' 
 #' @return
-#' \code{ReadPTQobs} returns a data frame with additional attributes: \code{obsid} with observation IDs, \code{timestep} with a time 
-#' step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported), and \code{variable} with a HYPE 
-#' variable ID string.
+#' \code{ReadObs} returns a data frame or data table with additional attributes: \code{obsid} with observation IDs, \code{timestep} 
+#' with a time step string, either \code{"day"} or \code{"nhour"} (only daily or n-hourly time steps supported), and \code{variable} 
+#' with a HYPE variable ID string.
 #' 
 #' @note
 #' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
@@ -1369,29 +1383,45 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' 
 #' @seealso 
 #' \code{\link{WritePTQobs}}
-#' \code{\link{ReadXobs}}
+#' \code{\link{ReadXobs}} for multi-variable HYPE observation files
 #' 
 #' @examples
-#' \dontrun{ReadPTQobs("Tobs.txt")}
+#' \dontrun{ReadObs("Tobs.txt")}
 #' 
 #' @importFrom data.table fread
 #' @export
 
 
-ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.format = "%Y-%m-%d", nrows = -1, 
-                       type = c("df", "dt"), select = NULL, obsid = NULL) {
+ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "tmax", "vwnd", "uwnd", "snff", "swrd", "rhum", "wind"), 
+                    dt.format = "%Y-%m-%d", nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
   
   # extract hype variable
   variable <- match.arg(variable)
   if (variable == "") {
     te <- strsplit(filename, split = c("/"))[[1]]
-    te <- tolower(substr(te[length(te)], 1, 4))
-    if (te == "qobs") {
-      variable <- "rout"
-    } else if (te == "pobs") {
+    te <- tolower(te[length(te)])
+    if (length(grep("pobs", te)) > 0) {
       variable <- "prec"
-    } else if (te == "tobs") {
+    } else if (length(grep("tobs", te)) > 0) {
       variable <- "temp"
+    } else if (length(grep("qobs", te)) > 0) {
+      variable <- "rout" 
+    } else if (length(grep("tminobs", te)) > 0) {
+      variable <- "tmin" 
+    } else if (length(grep("tmaxobs", te)) > 0) {
+      variable <- "tmax" 
+    } else if (length(grep("vwobs", te)) > 0) {
+      variable <- "vwnd"
+    } else if (length(grep("uwobs", te)) > 0) {
+      variable <- "uwnd"
+    } else if (length(grep("sfobs", te)) > 0) {
+      variable <- "snff"
+    } else if (length(grep("swobs", te)) > 0) {
+      variable <- "swrd"
+    } else if (length(grep("rhobs", te)) > 0) {
+      variable <- "rhum"
+    } else if (length(grep("uobs", te)) > 0) {
+      variable <- "wind"
     } else {
       stop("Unable to extract HYPE variable name from file name, please provide argument 'variable'.")
     }
@@ -1452,7 +1482,6 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
   
   
   ## add attributes
-  
   obsid(x) <- sbd
   
   # conditional: timestep attribute identified by difference between first two rows
@@ -1472,7 +1501,9 @@ ReadPTQobs <- function(filename, variable = c("", "prec", "temp", "rout"), dt.fo
   return(x)
 }
 
-
+# alias, for backwards compatibility
+#' @export
+ReadPTQobs <- ReadObs
 
 
 
