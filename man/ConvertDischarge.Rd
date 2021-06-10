@@ -7,7 +7,7 @@
 ConvertDischarge(q, area, from = "m3s", to = "mmd")
 }
 \arguments{
-\item{q}{An object of type \code{numeric}, containing volumetric or specific discharge values, 
+\item{q}{An object of type \code{numeric}, containing volumetric or specific discharge values,
 typically HYPE variables COUT or ROUT.}
 
 \item{area}{An object of type \code{numeric}, containing a catchment area in \eqn{m^2}.}
@@ -18,7 +18,7 @@ typically HYPE variables COUT or ROUT.}
 
 \code{"mmd"} (\eqn{mm d^{-1}})
 
-\code{"mmh"} (\eqn{mm h^{-1}}), 
+\code{"mmh"} (\eqn{mm h^{-1}}),
 
 or a volumetric discharge, one of:
 
@@ -32,7 +32,7 @@ or a volumetric discharge, one of:
 \code{ConvertDischarge} converts volumetric discharge to specific discharge (unit area discharge) and vice versa.
 }
 \details{
-\code{ConvertDischarge} is a simple conversion function, most likely to be used in combination with \code{\link{apply}} 
+\code{ConvertDischarge} is a simple conversion function, most likely to be used in combination with \code{\link{apply}}
 or related functions.
 }
 \examples{

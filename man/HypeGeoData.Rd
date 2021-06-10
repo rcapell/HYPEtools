@@ -16,13 +16,13 @@ Returns a data frame with added \code{\link{class}} attribute \code{HypeGeoData}
 Constructor function for data frames which hold HYPE GeoData tables with information on sub-basins.
 }
 \details{
-S3 constructor function for data frames which hold HYPE GeoData tables. These are normal data frames with at least five mandatory 
-columns, all \code{numeric}: \emph{AREA}, \emph{SUBID}, \emph{MAINDOWN}, \emph{RIVLEN}, and \emph{SLC_n}, where \emph{n} are 
-consecutive SLC class numbers (up to 999).See also the 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE file description} 
- for GeoData.txt files for reference. 
+S3 constructor function for data frames which hold HYPE GeoData tables. These are normal data frames with at least five mandatory
+columns, all \code{numeric}: \emph{AREA}, \emph{SUBID}, \emph{MAINDOWN}, \emph{RIVLEN}, and \emph{SLC_n}, where \emph{n} are
+consecutive SLC class numbers (up to 999).See also the
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE file description}
+for GeoData.txt files for reference.
 
-Usually, this class will be assigned to GeoData tables on import with \code{\link{ReadGeoData}}. A \code{summary} method exists for 
+Usually, this class will be assigned to GeoData tables on import with \code{\link{ReadGeoData}}. A \code{summary} method exists for
 \code{HypeGeoData} data frames.
 }
 \examples{

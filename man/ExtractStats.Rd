@@ -20,11 +20,11 @@ Typically an imported time output file from HYPE.}
 
 \item{start.mon}{Integer between 1 and 12, starting month of the hydrological year.}
 
-\item{aggperiod}{Character string, timestep for aggregated results. One of \code{"year"} for annual statistics, 
+\item{aggperiod}{Character string, timestep for aggregated results. One of \code{"year"} for annual statistics,
 \code{"season1"} (winter/summer half-years), \code{"season2"} (4 seasons), or \code{"month"}. See details.}
 
-\item{timestep}{Character string, timestep of data in \code{x}. Attribute \code{timestep} in \code{x} per default. 
-Otherwise one of \code{"month"} (not allowed with \code{aggperiod = "month"}), \code{"week"}, \code{"day"}, or 
+\item{timestep}{Character string, timestep of data in \code{x}. Attribute \code{timestep} in \code{x} per default.
+Otherwise one of \code{"month"} (not allowed with \code{aggperiod = "month"}), \code{"week"}, \code{"day"}, or
 \code{"nhour"} (n = number of hours).}
 
 \item{subid}{Integer, a vector of HYPE subbasin IDs for data in \code{x}. Attribute \code{subid} in \code{x} per default.}
@@ -34,21 +34,21 @@ Otherwise one of \code{"month"} (not allowed with \code{aggperiod = "month"}), \
 \item{...}{Optional arguments to \code{FUN}.}
 }
 \value{
-\code{ExtractStats} returns a dataframe with starting dates for each aggregation period in the first column, and a descriptive 
-aggregation period name in the second. Remaining columns contain aggregated results as ordered in \code{x}. Additional attributes 
-\code{subid} with subbasin IDs, \code{timestep} with time step of the source data, and \code{period} with a two-element POSIXct vector 
+\code{ExtractStats} returns a dataframe with starting dates for each aggregation period in the first column, and a descriptive
+aggregation period name in the second. Remaining columns contain aggregated results as ordered in \code{x}. Additional attributes
+\code{subid} with subbasin IDs, \code{timestep} with time step of the source data, and \code{period} with a two-element POSIXct vector
 containing start and end dates of the source data.
 }
 \description{
 Calculate aggregated statistics from long-term time series, typically imported HYPE time output files.
 }
 \details{
-\code{ExtractStats} uses \code{\link{aggregate}} to calculate statistics for all data columns provided in \code{x}. Argument 
-\code{start.mon} allows to define the start of the hydrological year. Hydrological seasons begin with winter (season1) or 
+\code{ExtractStats} uses \code{\link{aggregate}} to calculate statistics for all data columns provided in \code{x}. Argument
+\code{start.mon} allows to define the start of the hydrological year. Hydrological seasons begin with winter (season1) or
 autumn (season2).
 }
 \note{
-If \code{FUN} returns several values per aggregation period, these are returned in nested columns in the resulting dataframe. See 
+If \code{FUN} returns several values per aggregation period, these are returned in nested columns in the resulting dataframe. See
 \code{Value} section for \code{\link{aggregate}} and example code below.
 }
 \examples{

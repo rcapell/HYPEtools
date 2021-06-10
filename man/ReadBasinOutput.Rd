@@ -13,51 +13,51 @@ ReadBasinOutput(
 )
 }
 \arguments{
-\item{filename}{Path to and file name of the basin output file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the basin output file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
-\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
+\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly
+and annual values allowed, e.g. '\\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.}
 
-\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
+\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to
 return a \code{\link[data.table]{data.table}} object, or \code{"hmv"} to return a \code{\link{HypeMultiVar}} array.}
 
-\item{id}{Integer, SUBID or OUTREGID of the imported sub-basin or outregion results. If \code{NULL} (default), the function attempts to read this 
-from the imported file's name, which only works for standard HYPE basin output file names or any where the first 7 digits 
+\item{id}{Integer, SUBID or OUTREGID of the imported sub-basin or outregion results. If \code{NULL} (default), the function attempts to read this
+from the imported file's name, which only works for standard HYPE basin output file names or any where the first 7 digits
 give the SUBID or OUTREGID with leading zeros. See details.}
 
-\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found,
 a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.}
 }
 \value{
-\code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
-Data frames and data tables contain additional \code{\link{attributes}}: \code{hypeunit}, a vector of HYPE variable units, 
-\code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created and assigned \code{NA} 
-if not applicable to data contents), \code{timestep} with a time step keyword attribute, and \code{comment} with contents of an optional 
+\code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array.
+Data frames and data tables contain additional \code{\link{attributes}}: \code{hypeunit}, a vector of HYPE variable units,
+\code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created and assigned \code{NA}
+if not applicable to data contents), \code{timestep} with a time step keyword attribute, and \code{comment} with contents of an optional
 first-row comment (\code{NA} otherwise). An additional attribute \code{subid.nan} might be returned, see argument \code{warn.nan}.
 }
 \description{
 This is a convenience wrapper function to import a basin output file as data frame or matrix into R.
 }
 \details{
-\code{ReadBasinOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package 
+\code{ReadBasinOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package
 \code{\link{data.table}}, with conversion of date-time strings to
 POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
 
-HYPE basin output files can contain results for a single sub-basin or for a user-defined output region. \code{ReadBasinOutput} checks HYPE 
-variable names (column headers in imported file) for an "RG"-prefix. If it is found, the ID read from either file name or argument 
+HYPE basin output files can contain results for a single sub-basin or for a user-defined output region. \code{ReadBasinOutput} checks HYPE
+variable names (column headers in imported file) for an "RG"-prefix. If it is found, the ID read from either file name or argument
 \code{id} is saved to attribute \code{outregid}, otherwise to attribute \code{subid}.
 }
 \note{
-For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time
 side effects when working with the imported data (and possibly converting to string representations during the process).
 
-HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
-decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
+HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of
+decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print.
 Results will then contain values of '****************'. \code{ReadBasinOutput} will convert those cases to 'NA' entries.
 
-Current versions of HYPE allow for defining significant numbers of digits instead of fixed ones, which should prevent this 
+Current versions of HYPE allow for defining significant numbers of digits instead of fixed ones, which should prevent this
 issue from arising.
 }
 \examples{

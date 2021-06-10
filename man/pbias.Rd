@@ -20,12 +20,12 @@ in the array, only the first will be used.}
 \item{...}{ignored}
 }
 \value{
-\code{pbias.HypeSingleVar} returns a 2-dimensional array of NSE performances for all SUBIDs and model iterations provided in 
-argument \code{sim}, with values in the same order 
+\code{pbias.HypeSingleVar} returns a 2-dimensional array of NSE performances for all SUBIDs and model iterations provided in
+argument \code{sim}, with values in the same order
 as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 }
 \description{
-Percent bias (PBIAS) calculation for imported HYPE outputs with single variables for several catchments, i.e. time and 
+Percent bias (PBIAS) calculation for imported HYPE outputs with single variables for several catchments, i.e. time and
 map files, optionally multiple model runs combined.
 }
 \seealso{

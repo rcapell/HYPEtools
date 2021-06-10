@@ -12,7 +12,7 @@ r(sim, obs, ...)
 \arguments{
 \item{sim}{\code{\link[=HypeSingleVar]{HypeSingleVar array}} with simulated variable (one or several iterations).}
 
-\item{obs}{\code{\link[=HypeSingleVar]{HypeSingleVar array}} with observed variable, (one iteration). If several iterations 
+\item{obs}{\code{\link[=HypeSingleVar]{HypeSingleVar array}} with observed variable, (one iteration). If several iterations
 are present in the array, only the first will be used.}
 
 \item{...}{Ignored.}
@@ -20,17 +20,17 @@ are present in the array, only the first will be used.}
 \item{progbar}{Logical, if \code{TRUE} progress bars will be printed for main computational steps.}
 }
 \value{
-\code{r.HypeSingleVar} returns a 2-dimensional array of Pearson correlation coefficients for all SUBIDs and model 
-iterations provided in argument \code{sim}, with values in the same order 
+\code{r.HypeSingleVar} returns a 2-dimensional array of Pearson correlation coefficients for all SUBIDs and model
+iterations provided in argument \code{sim}, with values in the same order
 as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 }
 \description{
 Pearson product-moment correlation coefficient calculation, a specific case of function \code{\link{cor}}.
 }
 \details{
-This function wraps a call to \code{cor(x = obs, y = sim, use = "na.or.complete", method = "pearson")}. 
+This function wraps a call to \code{cor(x = obs, y = sim, use = "na.or.complete", method = "pearson")}.
 
-Method \code{r.HypeSingleVar} calculates Pearson's r for imported HYPE outputs with single variables for several 
+Method \code{r.HypeSingleVar} calculates Pearson's r for imported HYPE outputs with single variables for several
 catchments, i.e. time and map files, optionally multiple model runs combined, typically results from calibration runs.
 }
 \seealso{

@@ -9,10 +9,10 @@ RescaleSLCClasses(gd, slc.exclude = NULL, target = 1, plot.box = T)
 \arguments{
 \item{gd}{A data frame containing columns 'SLC_n' (\eqn{n \ge 1}), typically an imported 'GeoData.txt' file.}
 
-\item{slc.exclude}{Integer, SLC class numbers. Area fractions of classes listed here are kept fixed 
+\item{slc.exclude}{Integer, SLC class numbers. Area fractions of classes listed here are kept fixed
 during rescaling. If \code{NULL} (default), all classes are rescaled.}
 
-\item{target}{Numeric, target sum for SLC class fractions in each subbasin after re-scaling. Either a single 
+\item{target}{Numeric, target sum for SLC class fractions in each subbasin after re-scaling. Either a single
 number or a vector with one value for each row in \code{gd}.}
 
 \item{plot.box}{Logical, if \code{TRUE}, a box plot of SLC area sums is returned.}
@@ -21,13 +21,13 @@ number or a vector with one value for each row in \code{gd}.}
 \code{RescaleSLCClasses} returns the data frame provided in \code{gd}, with rescaled SLC class fractions.
 }
 \description{
-\code{RescaleSLCClasses} rescales several or all SLC classes for each SUBID in a GeoData data frame 
+\code{RescaleSLCClasses} rescales several or all SLC classes for each SUBID in a GeoData data frame
 to a new target sum for all classes.
 }
 \details{
-\code{RescaleSLCClasses} allows to rescale SLC classes, e.g. as part of a post-processing work flow during 
-HYPE model setup. Individual SLC classes can be excluded to protect. This can be useful e.g. for lake areas which 
-maybe must correspond to areas a LakeData file. The function will throw a warning if excluded SLC class fractions 
+\code{RescaleSLCClasses} allows to rescale SLC classes, e.g. as part of a post-processing work flow during
+HYPE model setup. Individual SLC classes can be excluded to protect. This can be useful e.g. for lake areas which
+maybe must correspond to areas a LakeData file. The function will throw a warning if excluded SLC class fractions
 are greater than sums provided in \code{target}, but not if they are smaller.
 }
 \examples{

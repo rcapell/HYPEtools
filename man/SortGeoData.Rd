@@ -20,7 +20,7 @@ SortGeoData(gd, bd = NULL, progbar = TRUE)
 Function to sort an imported GeoData.txt file in downstream order, so that all upstream sub-basins are listed in rows above downstream sub-basins.
 }
 \details{
-GeoData.txt files need to be sorted in downstream order for HYPE to run without errors. \code{SortGeoData} considers bifurcation connections, but not 
+GeoData.txt files need to be sorted in downstream order for HYPE to run without errors. \code{SortGeoData} considers bifurcation connections, but not
 irrigation or groundwater flow links.
 }
 \examples{

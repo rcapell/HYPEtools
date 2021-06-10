@@ -7,17 +7,17 @@
 ReadPar(filename = "par.txt", encoding = c("unknown", "UTF-8", "latin1"))
 }
 \arguments{
-\item{filename}{Path to and file name of the parameter file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the parameter file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
-\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
-importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See
 also argument description in \code{\link{scan}}.}
 }
 \value{
-\code{ReadPar} returns a list of named vectors. Parameters are returned as numeric vectors with HYPE parameter names as list 
-element names. Comments are returned in separate list elements as single character strings, former inline comments are moved 
-to elements preceding the original comment position (i.e. to a line above in the par.txt file structure). Comment elements are 
+\code{ReadPar} returns a list of named vectors. Parameters are returned as numeric vectors with HYPE parameter names as list
+element names. Comments are returned in separate list elements as single character strings, former inline comments are moved
+to elements preceding the original comment position (i.e. to a line above in the par.txt file structure). Comment elements are
 named \code{`!!`}.
 }
 \description{

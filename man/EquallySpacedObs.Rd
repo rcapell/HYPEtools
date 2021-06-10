@@ -7,7 +7,7 @@
 EquallySpacedObs(x, sort.data = TRUE, timestep, ts.col = 1)
 }
 \arguments{
-\item{x}{A \code{data.frame}, with a date-time column in \code{\link{POSIXt}} or 
+\item{x}{A \code{data.frame}, with a date-time column in \code{\link{POSIXt}} or
 \code{\link{Date}} format, and one or several columns with observed variables.}
 
 \item{sort.data}{Logical, if \code{TRUE}, \code{x} will be sorted by date-time.}
@@ -20,12 +20,12 @@ EquallySpacedObs(x, sort.data = TRUE, timestep, ts.col = 1)
 \code{EquallySpacedObs} returns a dataframe.
 }
 \description{
-\code{EquallySpacedObs} creates equally spaced time series with missing observations from a data frame with irregular 
+\code{EquallySpacedObs} creates equally spaced time series with missing observations from a data frame with irregular
 observations.
 }
 \details{
-\code{EquallySpacedObs} will preserve additional attributes present in \code{x}. If datetime column is of class 
-\code{\link{Date}}, there may occur problems with daylight saving time shifts. To avoid problems, use class 
+\code{EquallySpacedObs} will preserve additional attributes present in \code{x}. If datetime column is of class
+\code{\link{Date}}, there may occur problems with daylight saving time shifts. To avoid problems, use class
 \code{\link{POSIXct}} and set time zone to \code{"GMT"}.
 }
 \examples{

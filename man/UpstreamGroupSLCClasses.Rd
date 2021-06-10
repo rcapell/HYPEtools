@@ -16,24 +16,24 @@ UpstreamGroupSLCClasses(
 )
 }
 \arguments{
-\item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
+\item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}).
 If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
 
 \item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
-\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt'
 file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.}
 
-\item{type}{Keyword character string for use with \code{gcl}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
+\item{type}{Keyword character string for use with \code{gcl}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"},
 can be abbreviated.}
 
 \item{group}{Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gcl} + \code{type}.}
 
 \item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding.}
 
-\item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
+\item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid}
 is \code{NULL} or contains many SUBIDs.}
 }
 \value{
@@ -43,8 +43,8 @@ is \code{NULL} or contains many SUBIDs.}
 Function to calculate averages of grouped SLC class fractions calculated from imported GeoData.txt and GeoClass.txt or any other user-defined grouping.
 }
 \details{
-\code{UpstreamGroupSLCClasses} calculates area-weighted upstream averages of CropID fractions from SLC class fractions in a GeoData table and corresponding 
-grouping columns in a GeoClass table or a user-provided vector. Upstream calculations include branch connections in case of stream bifurcations but not 
+\code{UpstreamGroupSLCClasses} calculates area-weighted upstream averages of CropID fractions from SLC class fractions in a GeoData table and corresponding
+grouping columns in a GeoClass table or a user-provided vector. Upstream calculations include branch connections in case of stream bifurcations but not
 potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area.
 
 The function builds on \code{\link{GroupSLCClasses}}, which provides grouped sums of SLC classes for several or all sub-basins in a GeoData dataframe.

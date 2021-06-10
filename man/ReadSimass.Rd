@@ -10,9 +10,9 @@ ReadSimass(filename = "simass.txt")
 \item{filename}{Path to and file name of the 'simass.txt' file to import.}
 }
 \value{
-\code{ReadSubass} returns a data frame with columns for HYPE variable names (observed, simulated), aggregation periods, and 
-performance measure values of evaluated variable pairs. Aggregation periods are coded as in info.txt files, i.e. 1 = daily, 
-2 = weekly, 3 = monthly, 4 = annual. Metadata is added to the data frame as additional \code{\link{attributes}}: 
+\code{ReadSubass} returns a data frame with columns for HYPE variable names (observed, simulated), aggregation periods, and
+performance measure values of evaluated variable pairs. Aggregation periods are coded as in info.txt files, i.e. 1 = daily,
+2 = weekly, 3 = monthly, 4 = annual. Metadata is added to the data frame as additional \code{\link{attributes}}:
 \itemize{
 \item{\code{names.long}, \code{character} vector with long names, corresponding to abbreviations uses as actural column names}
 \item{\code{n.simulation}, \code{integer}, simulation number (e.g. with Monte Carlo simulations)}
@@ -26,13 +26,13 @@ Import a HYPE simass.txt simulation assessment file as data frame into R.
 Simulation assessment files contain domain-wide aggregated performance criteria results, as defined in 'info.txt'.
 }
 \details{
-\code{ReadSimass} imports a simulation assessment file into R. 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:simass.txt}{HYPE simass.txt files} contain 
-domain-wide performance measures for observed-simulated variable pairs as defined in 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt#performance_criteria_options}{HYPE info.txt files}. 
+\code{ReadSimass} imports a simulation assessment file into R.
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:simass.txt}{HYPE simass.txt files} contain
+domain-wide performance measures for observed-simulated variable pairs as defined in
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt#performance_criteria_options}{HYPE info.txt files}.
 
-The function interprets character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions. 
-\strong{Sub-daily time steps are currently not treated} and will probably result in a warning during time step evaluation within the 
+The function interprets character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions.
+\strong{Sub-daily time steps are currently not treated} and will probably result in a warning during time step evaluation within the
 function. Please update issue #106 on \href{https://github.com/rcapell/HYPEtools}{github} if you need support for sub-daily time steps!
 }
 \examples{

@@ -25,21 +25,21 @@ PlotAnnualRegime(
 )
 }
 \arguments{
-\item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average 
+\item{x}{List, typically a result from \code{\link{AnnualRegime}}, containing data frames with aggregated long-term average
 regime data and two attributes \code{period} and \code{timestep}.
 See Details and Value sections there.}
 
 \item{line}{Character string, keyword for type of average line to plot. Either \code{"mean"} or \code{"median"}.}
 
-\item{band}{Character vector, keyword for variation bands. If \code{"none"} (default), plot average line(s) only. \code{"minmax"}, 
-\code{"p25p75"}, or \code{p5p95} to include bands of variation. Combinations of bands are allowed, but providing \code{"none"} 
+\item{band}{Character vector, keyword for variation bands. If \code{"none"} (default), plot average line(s) only. \code{"minmax"},
+\code{"p25p75"}, or \code{p5p95} to include bands of variation. Combinations of bands are allowed, but providing \code{"none"}
 will always prevent plotting of any band. See details.}
 
 \item{add.legend}{Logical. If \code{TRUE}, a legend will be added to the plot.}
 
 \item{l.legend}{Character vector. If non-NULL, legend labels are read from here instead of from column names in \code{x$mean}.}
 
-\item{l.position}{Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"}, 
+\item{l.position}{Legend position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"},
 \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.}
 
 \item{log}{Logical, if \code{TRUE}, y-axis will be log-scaled.}
@@ -48,19 +48,19 @@ will always prevent plotting of any band. See details.}
 
 \item{ylab}{Character or \code{\link{plotmath}} expression string. Y-axis label, with a default for discharge regimes.}
 
-\item{xlab}{Character string or \code{\link{plotmath}} expression string, x-axis label. Default prints the time period on which the 
+\item{xlab}{Character string or \code{\link{plotmath}} expression string, x-axis label. Default prints the time period on which the
 regime is based, read from \code{x$period}.}
 
-\item{col}{Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile 
+\item{col}{Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile
 series in \code{freq}.}
 
-\item{alpha}{Numeric, alpha transparancy value for variation bands. Value between \code{0} (transparent) and \code{255} (opaque), see 
+\item{alpha}{Numeric, alpha transparancy value for variation bands. Value between \code{0} (transparent) and \code{255} (opaque), see
 also \code{\link{rgb}}}
 
-\item{lty}{Line type specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
+\item{lty}{Line type specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile
 series in \code{freq}.}
 
-\item{lwd}{Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
+\item{lwd}{Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile
 series in \code{freq}.}
 
 \item{mar}{Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.}
@@ -76,13 +76,13 @@ series in \code{freq}.}
 Convenience wrapper function for a combined line \code{\link{plot}} with \code{\link{polygon}} variation ranges.
 }
 \details{
-\code{PlotAnnualRegime} plots contents from lists as returned by \code{\link{AnnualRegime}} (for format details, see there). If 
-\code{NA} values are present in the plot data, the function will throw a warning if \code{verbose = TRUE} and proceed with plotting 
-all available data. 
+\code{PlotAnnualRegime} plots contents from lists as returned by \code{\link{AnnualRegime}} (for format details, see there). If
+\code{NA} values are present in the plot data, the function will throw a warning if \code{verbose = TRUE} and proceed with plotting
+all available data.
 
-Argument \code{band} allows to plot variation bands to be plotted in addition to average lines. These can be (combinations of) ranges 
-between minima and maxima, 5th and 95th percentiles, and 25th and 75th percentiles, i.e. all moments available in \code{AnnualRegime} 
-results. 
+Argument \code{band} allows to plot variation bands to be plotted in addition to average lines. These can be (combinations of) ranges
+between minima and maxima, 5th and 95th percentiles, and 25th and 75th percentiles, i.e. all moments available in \code{AnnualRegime}
+results.
 
 Grid lines plotted in the background are mid-month lines.
 }

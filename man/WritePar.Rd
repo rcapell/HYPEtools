@@ -9,7 +9,7 @@ WritePar(x, filename = "par.txt", digits = 10, nsmall = 1)
 \arguments{
 \item{x}{The object to be written, a list with named vector elements, as an object returned from \code{\link{ReadPar}}.}
 
-\item{filename}{A character string naming a file to write to. Windows users: Note that 
+\item{filename}{A character string naming a file to write to. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{digits}{Integer, number of significant digits to export. See \code{\link{format}}.}

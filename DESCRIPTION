@@ -29,4 +29,5 @@ LazyData: true
 URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
 BugReports: https://github.com/rcapell/HYPEtools/issues
 RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
 Encoding: UTF-8

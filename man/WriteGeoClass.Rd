@@ -9,7 +9,7 @@ WriteGeoClass(x, filename = "GeoClass.txt", use.comment = FALSE)
 \arguments{
 \item{x}{The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoClass}}.}
 
-\item{filename}{A character string naming a file to write to. Windows users: Note that 
+\item{filename}{A character string naming a file to write to. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{use.comment}{Logical, set to \code{TRUE} to export comment lines saved in \code{attribute} 'comment'. Per
@@ -19,10 +19,10 @@ default, column names are exported as header. See details.}
 This is a convenience wrapper function to export a 'GeoClass.txt' file from R.
 }
 \details{
-\code{WriteGeoClass} exports a GeoClass dataframe. HYPE accepts comment rows with a leading '!' in the beginning rows of a 
-GeoClass file. Comment rows typically contain some class descriptions in a non-structured way. With argument 
-\code{use.comment = TRUE}, the export function looks for those in \code{attribute} 'comment', 
-where \code{\link{ReadGeoClass}} stores such comments. Description files (see \code{\link{ReadDescription}}) offer a more structured 
+\code{WriteGeoClass} exports a GeoClass dataframe. HYPE accepts comment rows with a leading '!' in the beginning rows of a
+GeoClass file. Comment rows typically contain some class descriptions in a non-structured way. With argument
+\code{use.comment = TRUE}, the export function looks for those in \code{attribute} 'comment',
+where \code{\link{ReadGeoClass}} stores such comments. Description files (see \code{\link{ReadDescription}}) offer a more structured
 way of storing that information.
 }
 \examples{

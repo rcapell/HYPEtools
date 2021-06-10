@@ -27,106 +27,106 @@ PlotBasinSummary(
 )
 }
 \arguments{
-\item{x}{Data frame, with column-wise daily time series of HYPE variables. Date-times in 
-\code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
+\item{x}{Data frame, with column-wise daily time series of HYPE variables. Date-times in
+\code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}.
 See details for HYPE output variables required for plotting.}
 
-\item{filename}{String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting 
+\item{filename}{String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting
 to screen device. \emph{Device dimensions are currently hard-coded, see Details.}}
 
 \item{driver}{String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.}
 
 \item{panels}{Integer, either \code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.}
 
-\item{gd}{A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file. 
+\item{gd}{A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file.
 Only needed with bar chart panels, see Details.}
 
-\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. 
+\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file.
 Optional argument. Only needed with bar chart panels, see Details.}
 
-\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt'
 file imported with \code{\link{ReadGeoClass}}. Only needed with bar chart panels, see Details.}
 
-\item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with 
+\item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with
 \code{\link{ReadPointSourceData}}. Only needed with bar chart panels, see Details.}
 
-\item{subid}{Integer, SUBID of sub-basin for which results are plotted. If \code{NULL} (default), a \code{subid} attribute is 
+\item{subid}{Integer, SUBID of sub-basin for which results are plotted. If \code{NULL} (default), a \code{subid} attribute is
 required in \code{x}. Only needed with bar chart panels, see Details.}
 
 \item{desc}{List for use with \code{type}. Class description labels imported from a 'description.txt' file, for bar labeling.
 See \code{\link{ReadDescription}} for formatting details. Only needed with bar chart panels, see Details.}
 
-\item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
+\item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
 
-\item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-specified selection of HYPE variables 
-to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details 
-for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"wq"} (water quality), for which a pre-selected range of 
-(available) result variables is plotted. Alternatively, a character vector holding HYPE output variable IDs to be plotted. Variables unknown 
+\item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-specified selection of HYPE variables
+to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details
+for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"wq"} (water quality), for which a pre-selected range of
+(available) result variables is plotted. Alternatively, a character vector holding HYPE output variable IDs to be plotted. Variables unknown
 to the function will be ignored with a warning.}
 
-\item{from, to}{Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
+\item{from, to}{Integer or date string of format \\%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are
 interpreted as row indices of \code{x}.}
 
 \item{log}{Logical, log scaling discharge and concentrations.}
 
-\item{xscale}{Character string, keyword for x-axis scaling. Either \code{"lin"} for linear scaling or \code{"gauss"} for gaussian scaling. 
+\item{xscale}{Character string, keyword for x-axis scaling. Either \code{"lin"} for linear scaling or \code{"gauss"} for gaussian scaling.
 See description in \code{\link{PlotDurationCurve}}.}
 
-\item{start.mon}{Integer between 1 and 12, starting month of the hydrological year. For regime plots, see also 
+\item{start.mon}{Integer between 1 and 12, starting month of the hydrological year. For regime plots, see also
 \code{\link{AnnualRegime}}.}
 
 \item{name}{Character or expression string. Site name to plot besides bar chart panels. Only relevant with \code{panels} \code{1} or \code{3}.}
 
-\item{ylab.t1}{String or \code{\link{plotmath}} expression, y axis label for T1 tracer time series panel (tracer concentration units 
+\item{ylab.t1}{String or \code{\link{plotmath}} expression, y axis label for T1 tracer time series panel (tracer concentration units
 are not prescribed in HYPE).}
 }
 \value{
 Returns a multi-panel plot in a new graphics device.
 }
 \description{
-Plot a standard suite of plots summarising properties of a sub-basin including upstream area and model performance 
+Plot a standard suite of plots summarising properties of a sub-basin including upstream area and model performance
 for discharge and concentrations of nutrients, sediment, and tracers.
 }
 \details{
-\code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a 
-chosen sub-basin. Performance plots include discharge, HYPE-modelled nutrient species for nitrogen (total, inorganic, organic) 
+\code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a
+chosen sub-basin. Performance plots include discharge, HYPE-modelled nutrient species for nitrogen (total, inorganic, organic)
 and phosphorus (total, particulate, soluble), and HYPE modelled suspended and total sediment concentrations.
 
-Plotted panels show: 
+Plotted panels show:
 \itemize{
-\item{\emph{Summarised catchment characteristics as bar charts}: Upstream-averaged land use, soil, and crop group fractions; modelled nutrient 
-loads in sub-basin outlet, and summed upstream gross loads from point sources and rural households (if necessary variables available, omitted 
+\item{\emph{Summarised catchment characteristics as bar charts}: Upstream-averaged land use, soil, and crop group fractions; modelled nutrient
+loads in sub-basin outlet, and summed upstream gross loads from point sources and rural households (if necessary variables available, omitted
 otherwise).}
-\item{\emph{Goodness-of-fit measures for discharge and concentrations}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS 
-(Percentage Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency). 
+\item{\emph{Goodness-of-fit measures for discharge and concentrations}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS
+(Percentage Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency).
 See package \code{\link{hydroGOF}} for details.}
-\item{\emph{Simulation-observation relationships for discharge and concentrations}: Simulated and observed concentration-discharge relationships, 
+\item{\emph{Simulation-observation relationships for discharge and concentrations}: Simulated and observed concentration-discharge relationships,
 relationship between observed and simulated nutrient, sediment, and tracer concentrations.}
 \item{\emph{Duration curves for flow and concentrations}: Pairwise simulated and observed curves.}
-\item{\emph{Annual regimes for flow and concentrations}: Pairwise simulated and observed regime plots at monthly aggregation, with 
+\item{\emph{Annual regimes for flow and concentrations}: Pairwise simulated and observed regime plots at monthly aggregation, with
 number of observations for concentration regimes.}
 \item{\emph{Corresponding plots for IN/TN and SP/TP ratios}.}
 }
 
-Per default, the function plots from available model variables in an imported HYPE basin output file, and missing variables will be 
+Per default, the function plots from available model variables in an imported HYPE basin output file, and missing variables will be
 automatically omitted. Variable selection can be additionally fine-tuned using argument \code{hype.vars}.
 
-Argument \code{panels} allows to choose if bar chart panels should be plotted. This can be time-consuming for sites with many upstream 
-sub-basins and might not necessary e.g. during calibration. If \code{1} (default), all panels are plotted. If set to \code{2}, bar 
-charts will be excluded. If \code{3}, only bar charts will be plotted. Arguments \code{gd}, \code{bd}, \code{gcl}, \code{psd}, \code{subid}, 
+Argument \code{panels} allows to choose if bar chart panels should be plotted. This can be time-consuming for sites with many upstream
+sub-basins and might not necessary e.g. during calibration. If \code{1} (default), all panels are plotted. If set to \code{2}, bar
+charts will be excluded. If \code{3}, only bar charts will be plotted. Arguments \code{gd}, \code{bd}, \code{gcl}, \code{psd}, \code{subid},
 and \code{desc} are only needed for bar chart plotting.
 
-Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file. 
-For a detailed description of the variables, see the 
+Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file.
+For a detailed description of the variables, see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 
 \code{basinoutput variable cout rout ccin rein ccon reon cctn retn ccsp resp ccpp repp cctp retp ctnl ctpl ccss ress ccts rets cct1 ret1}
 
-#' \emph{Device dimensions} are hard-coded to a width of 13 inches and height depending on the number of plotted time series. When plotting 
-to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 
-\code{PlotBasinOutput} throws a warning if the plot height exceeds 10 inches, which can lead to overlapping plot elements. On screens with 
-less than 10 inch screen height, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects 
+#' \emph{Device dimensions} are hard-coded to a width of 13 inches and height depending on the number of plotted time series. When plotting
+to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing.
+\code{PlotBasinOutput} throws a warning if the plot height exceeds 10 inches, which can lead to overlapping plot elements. On screens with
+less than 10 inch screen height, redrawing is inhibited, which can lead to an empty plot. The recommended solution for both effects
 is to plot to pdf or png file devices instead.
 }
 \examples{
@@ -134,6 +134,6 @@ is to plot to pdf or png file devices instead.
 
 }
 \seealso{
-\code{\link{PlotBasinOutput}}, \code{\link{BarplotUpstreamClasses}}, \code{\link{PlotSimObsRegime}}, \code{\link{PlotAnnualRegime}}, 
+\code{\link{PlotBasinOutput}}, \code{\link{BarplotUpstreamClasses}}, \code{\link{PlotSimObsRegime}}, \code{\link{PlotAnnualRegime}},
 \code{\link{PlotDurationCurve}}, \code{\link{ReadBasinOutput}}
 }

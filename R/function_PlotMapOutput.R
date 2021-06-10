@@ -65,7 +65,7 @@
 #' Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.
 #'
 #' @details
-#' \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}.
+#' \code{PlotMapOutput} plots HYPE results from 'map\[variable name\].txt' files, typically imported using \code{\link{ReadMapOutput}}.
 #' \code{x} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with
 #' several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}.
 #'

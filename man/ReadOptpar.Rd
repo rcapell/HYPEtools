@@ -9,17 +9,17 @@ ReadOptpar(filename = "optpar.txt", encoding = c("unknown", "UTF-8", "latin1"))
 \arguments{
 \item{filename}{Path to and file name of the 'optpar.txt' file to import.}
 
-\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
-importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See
 also argument description in \code{\link{scan}}.}
 }
 \value{
-\code{ReadOptpar} returns a \code{\link{list}} object with three elements: \itemize{ 
+\code{ReadOptpar} returns a \code{\link{list}} object with three elements: \itemize{
 \item \code{comment}, the file's first-row comment string.
 \item \code{tasks}, a two-column dataframe with row-wise key-value pairs for tasks and settings.
-\item \code{pars}, a list of dataframes, each containing values for one parameter. Three columns each, holding parameter 
-range minima, maxima, and intervals. 
-The number of rows in each dataframe corresponds to the number of soil or land use classes for class-specific parameters. 
+\item \code{pars}, a list of dataframes, each containing values for one parameter. Three columns each, holding parameter
+range minima, maxima, and intervals.
+The number of rows in each dataframe corresponds to the number of soil or land use classes for class-specific parameters.
 Parameter names as list element names.
 }
 }
@@ -27,7 +27,7 @@ Parameter names as list element names.
 This function imports an 'optpar.txt' into a list.
 }
 \details{
-\code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimisation 
+\code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimisation
 and parameter value ranges, for details on the file format, see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
 }

@@ -18,12 +18,12 @@ HypeMultiVar(
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one sub-basin as (in order)
 \code{[datetime, variable, iteration]}.}
 
-\item{datetime}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
-with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
+\item{datetime}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x}
+with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model
 period averages, e.g. \code{"2000-2010"}.}
 
-\item{hype.var, hype.unit}{Character vectors of keywords to specify HYPE variable IDs, corresponding to second dimension 
-(columns) in \code{x}. See 
+\item{hype.var, hype.unit}{Character vectors of keywords to specify HYPE variable IDs, corresponding to second dimension
+(columns) in \code{x}. See
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}}
 
 \item{subid}{Integer, HYPE sub-basin ID. Either this or \code{outregid} needs to be supplied.}
@@ -33,7 +33,7 @@ period averages, e.g. \code{"2000-2010"}.}
 \item{hype.comment}{Character, first-row optional comment string of basin output file. Empty string, if non-existing.}
 }
 \value{
-Returns a 3-dimensional array with 
+Returns a 3-dimensional array with
 \code{[time, variable, iteration]} dimensions and additional \code{\link{attributes}}:
 \describe{
 \item{\strong{datetime}}{A vector of date-times. Corresponds to 1st array dimension.}
@@ -46,7 +46,7 @@ Returns a 3-dimensional array with
 }
 }
 \description{
-Constructor function for arrays which hold equidistant time series of multiple HYPE variables for a single sub-basin and 
+Constructor function for arrays which hold equidistant time series of multiple HYPE variables for a single sub-basin and
 multiple model runs, typically imported HYPE basin output results.
 }
 \details{

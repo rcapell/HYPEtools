@@ -11,26 +11,26 @@ ReadGeoData(
 )
 }
 \arguments{
-\item{filename}{Path to and file name of the GeoData file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the GeoData file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{sep}{character string. Field separator character as described in \code{\link{read.table}}.}
 
-\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
-importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See
 also argument description in \code{\link[data.table]{fread}}.}
 }
 \value{
-If the imported file is a HYPE-conform GeoData file, \code{ReadGeoData} returns an object of S3 class \code{\link{HypeGeoData}} 
-(see the class description there), providing its own \code{summary} method. If mandatory GeoData columns are missing, 
+If the imported file is a HYPE-conform GeoData file, \code{ReadGeoData} returns an object of S3 class \code{\link{HypeGeoData}}
+(see the class description there), providing its own \code{summary} method. If mandatory GeoData columns are missing,
 a standard dataframe is returned along with informative warning messages.
 }
 \description{
 Import a GeoData file into R.
 }
 \details{
-\code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
-with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and 
+\code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \code{\link{data.table}} package
+with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and
 upper-case column names.
 }
 \examples{

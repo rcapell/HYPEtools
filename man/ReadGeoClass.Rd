@@ -11,11 +11,11 @@ ReadGeoClass(
 )
 }
 \arguments{
-\item{filename}{Path to and file name of the GeoClass file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the GeoClass file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
-\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
-importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See
 also argument description in \code{\link[data.table]{fread}}.}
 
 \item{verbose}{Print information on number of data columns in imported file.}
@@ -25,12 +25,12 @@ also argument description in \code{\link[data.table]{fread}}.}
 }
 \description{
 This is a convenience wrapper function to import a GeoClass file as data frame into R. GeoClass files contain definitions
-of SLC (\bold{S}oil and \bold{L}and use \bold{C}rop) classes in twelve to 14 predefined columns, see 
+of SLC (\bold{S}oil and \bold{L}and use \bold{C}rop) classes in twelve to 14 predefined columns, see
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geoclass.txt}{GeoClass.txt documentation}.
 }
 \details{
-\code{ReadGeoClass} is a convenience wrapper function of \code{\link[data.table]{fread}}, with treatment of leading 
-comment rows. Column names are created on import, optional comment rows are imported as strings in \code{attribute} 'comment'. 
+\code{ReadGeoClass} is a convenience wrapper function of \code{\link[data.table]{fread}}, with treatment of leading
+comment rows. Column names are created on import, optional comment rows are imported as strings in \code{attribute} 'comment'.
 Optional inline comments (additional non-numeric columns) are automatically identified and imported along with data columns.
 }
 \examples{

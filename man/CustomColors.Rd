@@ -44,7 +44,7 @@ ColPurples(n)
 \item{n}{Integer, number of colors to generate.}
 }
 \value{
-All functions return vectors of length \code{n} with interpolated RGB color values in hexadecimal 
+All functions return vectors of length \code{n} with interpolated RGB color values in hexadecimal
 notation (see \code{\link{rgb}}).
 }
 \description{

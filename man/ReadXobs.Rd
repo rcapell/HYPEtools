@@ -13,42 +13,42 @@ ReadXobs(
 )
 }
 \arguments{
-\item{filename}{Path to and file name of the Xobs file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the Xobs file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
 
-\item{variable}{Character vector, HYPE variable ID(s) to select for import. Not case-sensitive. If \code{NULL} (default), all 
-variables are imported. See \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt documentation} 
+\item{variable}{Character vector, HYPE variable ID(s) to select for import. Not case-sensitive. If \code{NULL} (default), all
+variables are imported. See \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt documentation}
 for a list of variable IDs.}
 
-\item{nrows}{Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives 
+\item{nrows}{Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives
 the number of rows to import.}
 
 \item{verbose}{Logical, throw warning if class \code{HypeXobs}'s attribute \code{timestep} cannot be computed.}
 }
 \value{
-If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HypeXobs}} object, a data frame with four 
-additional attributes \code{variable}, \code{subid}, \code{comment}, and \code{timestep}: \code{variable} 
-and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted). 
+If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HypeXobs}} object, a data frame with four
+additional attributes \code{variable}, \code{subid}, \code{comment}, and \code{timestep}: \code{variable}
+and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted).
 \code{comment} contains the content of the Xobs file comment row as single string. \code{timestep} contains a keyword string.
-Column names of the returned data frame are composed of variable names and SUBIDs, separated by an underscore, 
-i.e. \code{[variable]_[subid]}. If datetime conversion failed on import, the returned object is a data frame 
+Column names of the returned data frame are composed of variable names and SUBIDs, separated by an underscore,
+i.e. \code{[variable]_[subid]}. If datetime conversion failed on import, the returned object is a data frame
 (i.e. no class \code{HypeXobs}).
 }
 \description{
 This is a convenience wrapper function to import an Xobs file into R.
 }
 \details{
-\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
-\code{\link{data.table}}, 
-with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as 
+\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package
+\code{\link{data.table}},
+with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as
 attributes (see \code{\link{attr}} on how to access these).
 
 Duplicated variable-SUBID combinations are not allowed in HYPE Xobs files, and the function will throw a warning if any are found.
 }
 \note{
-For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time
 side effects when working with the imported data (and e.g. converting to string representations during the process).
 }
 \examples{

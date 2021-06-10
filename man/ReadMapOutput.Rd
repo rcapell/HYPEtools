@@ -13,49 +13,49 @@ ReadMapOutput(
 )
 }
 \arguments{
-\item{filename}{Path to and file name of the map output file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the map output file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
-\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in column 
-headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
-'\%Y'. \strong{Defaults to \code{NULL}, which prevents date-time conversion}, applicable e.g. for files containing just one column of 
+\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in column
+headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g.
+'\\%Y'. \strong{Defaults to \code{NULL}, which prevents date-time conversion}, applicable e.g. for files containing just one column of
 summary values over the model period.}
 
-\item{hype.var}{Character string, a four-letter keyword to specify HYPE variable ID of file contents. See 
+\item{hype.var}{Character string, a four-letter keyword to specify HYPE variable ID of file contents. See
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
-If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
+If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE
 map output file names.}
 
-\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
+\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to
 return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
 
-\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found,
 a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.}
 }
 \value{
-\code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
-Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
-\code{date}, a vector of date-times (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
-and \code{comment} with the first line of the imported file as text string. An additional attribute \code{subid.nan} might be 
+\code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array.
+Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID,
+\code{date}, a vector of date-times (corresponding to columns from column 2), \code{timestep} with a time step attribute,
+and \code{comment} with the first line of the imported file as text string. An additional attribute \code{subid.nan} might be
 returned, see argument \code{warn.nan}.
 }
 \description{
-This is a convenience wrapper function to import a 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mapxxxx.txt}{map output file} 
+This is a convenience wrapper function to import a
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mapxxxx.txt}{map output file}
 ('map<\emph{HYPE_output_variable}>.txt') into R.
 }
 \details{
-\code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
-\code{\link{data.table}}, 
-with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
+\code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package
+\code{\link{data.table}},
+with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day
 of the time step period.
 }
 \note{
-HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
-decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
-Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries. 
+HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of
+decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print.
+Results will then contain values of '****************'. \code{ReadMapOutput} will convert those cases to 'NA' entries.
 
-Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
+Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this
 issue from arising.
 }
 \examples{

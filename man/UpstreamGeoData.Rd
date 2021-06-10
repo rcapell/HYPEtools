@@ -15,7 +15,7 @@ UpstreamGeoData(
 )
 }
 \arguments{
-\item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}). 
+\item{subid}{Integer vector of SUBIDs for which to calculate upstream properties (must exist in \code{gd}).
 If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.}
@@ -24,36 +24,36 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{olake.slc}{Integer,SLC class number which represents outlet lake fractions. Mandatory for weighted averaging of outlet lake depths.}
 
-\item{bd.weight}{Logical, if set to \code{TRUE}, flow weights will be applied for areas upstream of stream bifurcations. See 
+\item{bd.weight}{Logical, if set to \code{TRUE}, flow weights will be applied for areas upstream of stream bifurcations. See
 \code{\link{AllUpstreamSubids}} for further details on flow fraction computation.}
 
-\item{signif.digits}{Integer, number of significant digits to round upstream variables to. See also \code{\link{signif}}. 
+\item{signif.digits}{Integer, number of significant digits to round upstream variables to. See also \code{\link{signif}}.
 Set to \code{NULL} to prevent rounding.}
 
-\item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful 
+\item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful
 when \code{subid} is \code{NULL} or contains many SUBIDs.}
 }
 \value{
-\code{UpstreamGeoData} returns a data frame with the same number of columns as argument \code{gd} and number of rows corresponding to number of 
+\code{UpstreamGeoData} returns a data frame with the same number of columns as argument \code{gd} and number of rows corresponding to number of
 SUBIDs in argument \code{subid}, with updated upstream columns marked with a leading 'UP_' in the column names.
 }
 \description{
 Function to calculate upstream sums and averages for selected variables of imported GeoData.txt files.
 }
 \details{
-\code{UpstreamGeoData} calculates upstream averages or sums of selected variables in a GeoData data frame, including branch connections 
-in case of stream bifurcations but not including potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area, with 
-the exception of outlet lake depths and rural household emission concentrations provided in GeoData variables 'lake_depth', 'loc_tn', 
-and 'loc_tp'. Outlet lake depths are weighted by outlet lake area and the GeoData column with 
-SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Rural household emissions are weighted by 
-emission volume as provided in column 'loc_vol'. Elevation and slope standard deviations are 
+\code{UpstreamGeoData} calculates upstream averages or sums of selected variables in a GeoData data frame, including branch connections
+in case of stream bifurcations but not including potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area, with
+the exception of outlet lake depths and rural household emission concentrations provided in GeoData variables 'lake_depth', 'loc_tn',
+and 'loc_tp'. Outlet lake depths are weighted by outlet lake area and the GeoData column with
+SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Rural household emissions are weighted by
+emission volume as provided in column 'loc_vol'. Elevation and slope standard deviations are
 averaged if the corresponding mean values exist (sample means are required to calculate overall means of std. devs.).
 
 Currently, the following variables are considered:
 \describe{
-  \item{Area-weighted average}{elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, lake depths, elev_std, slope_std}
-  \item{Volume-weighted average}{loc_tn, loc_tp}
-  \item{Sum}{area, rivlen, loc_vol}
+\item{Area-weighted average}{elev_mean, slope_mean, buffer, close_w, latitude, longitude, all SLC classes, lake depths, elev_std, slope_std}
+\item{Volume-weighted average}{loc_tn, loc_tp}
+\item{Sum}{area, rivlen, loc_vol}
 }
 }
 \examples{

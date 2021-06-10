@@ -14,30 +14,30 @@ WritePTQobs(
 )
 }
 \arguments{
-\item{x}{The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs or OBSIDs in 
-remaining columns. If argument \code{obsid} is not provided, \code{x} must have an additional attribute \code{obsid} containing 
+\item{x}{The object to be written, a \code{dataframe} containing observation date-times in first and observations in SUBIDs or OBSIDs in
+remaining columns. If argument \code{obsid} is not provided, \code{x} must have an additional attribute \code{obsid} containing
 observation IDs/SUBIDs in column order.}
 
-\item{filename}{Path to and file name of the file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
 
-\item{round, signif}{Integer, number of decimal places and number of significant digits to export. See \code{\link{round}}. Applied in 
+\item{round, signif}{Integer, number of decimal places and number of significant digits to export. See \code{\link{round}}. Applied in
 sequence. If \code{NULL} (default), the data to export is not touched.}
 
-\item{obsid}{Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
-in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 
+\item{obsid}{Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header
+in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid}
 in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.}
 }
 \description{
 Export forcing data and discharge observation files from R.
 }
 \details{
-\code{WritePTQobs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
-headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
+\code{WritePTQobs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file.
+headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it).
 
-Observation IDs are SUBIDs or IDs connected to SUBIDs with a 
+Observation IDs are SUBIDs or IDs connected to SUBIDs with a
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
 }
 \examples{
@@ -45,6 +45,6 @@ Observation IDs are SUBIDs or IDs connected to SUBIDs with a
 
 }
 \seealso{
-\code{\link{ReadPTQobs}}
+\code{\link{ReadObs}}
 \code{\link{WriteXobs}}
 }

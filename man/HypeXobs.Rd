@@ -7,18 +7,18 @@
 HypeXobs(x, comment, variable, subid, verbose = TRUE)
 }
 \arguments{
-\item{x}{\code{\link{data.frame}} with \code{\link{POSIXct}} formatted time steps in the first, and \code{\link{numeric}} 
+\item{x}{\code{\link{data.frame}} with \code{\link{POSIXct}} formatted time steps in the first, and \code{\link{numeric}}
 variables in the remaining columns.}
 
 \item{comment}{Character string, metadata or other information, first line of a HYPE Xobs.txt file.}
 
-\item{variable}{Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second to 
+\item{variable}{Character vector of four-letter keywords to specify HYPE variable IDs, corresponding to second to
 last column in \code{x}.}
 
 \item{subid}{Integer vector with HYPE sub-basin IDs, corresponding to second to last column in \code{x}.}
 
 \item{verbose}{Logical, throw warning if attribute \code{timestep} cannot be computed.
- 
+
 Not case-sensitive.}
 }
 \value{
@@ -27,19 +27,19 @@ Returns a data frame of class \code{HypeXobs} with additional \code{\link{attrib
 \item{\strong{comment}}{A character vector.}
 \item{\strong{variable}}{A character vector of HYPE variable IDs.}
 \item{\strong{subid}}{A vector of SUBIDs.}
-\item{\strong{timestep}}{Time step keyword, \code{"day"}, or \code{"n hour"} (n = number of hours). \code{NULL}, if \code{x} 
+\item{\strong{timestep}}{Time step keyword, \code{"day"}, or \code{"n hour"} (n = number of hours). \code{NULL}, if \code{x}
 contains just one row.}
 }
 }
 \description{
-Constructor function for data frames which hold HYPE Xobs.txt file contents, i.e. time series of a multiple observation 
+Constructor function for data frames which hold HYPE Xobs.txt file contents, i.e. time series of a multiple observation
 variables for multiple sub-basins and equidistant time steps in POSIXct format in the first column.
 }
 \details{
-S3 class constructor function for \code{HypeXobs} data frame objects which hold HYPE Xobs.txt file contents. Xobs.txt 
-files contain three header rows, see the 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt description in the HYPE documentation}. 
- These headers are stored as additional attributes in  objects.
+S3 class constructor function for \code{HypeXobs} data frame objects which hold HYPE Xobs.txt file contents. Xobs.txt
+files contain three header rows, see the
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt description in the HYPE documentation}.
+These headers are stored as additional attributes in  objects.
 }
 \examples{
 \dontrun{HypeXobs(mydata, comment = "Water quality data", variable = c("cctn", "cctp", "cctp"), subid = c(23, 45, 56))}

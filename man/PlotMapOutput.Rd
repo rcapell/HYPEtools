@@ -151,7 +151,7 @@ differences, e.g. between two model runs.
 
 Break points between color classes of in-built or user-provided color ramp palettes can optionally be provided in argument
 \code{col.breaks}. This is particularly useful when specific pretty class boundaries are needed, e.g. for publication figures. Per default,
-break points for internal single color ramps and user-provided ramps are calculated based on 10\% percentiles of HYPE results given in
+break points for internal single color ramps and user-provided ramps are calculated based on 10\\% percentiles of HYPE results given in
 \code{x}. Default break points for internal color ramp \code{ColDiffGeneric} are based on an equal distance classification of log-scaled
 \code{x} ranges, centered around zero. For internal color ramp \code{ColDiffTemp}, they are breaks in an interval from -7.5 to 7.5 K.
 

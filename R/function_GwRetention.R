@@ -27,9 +27,9 @@
 #' 
 #' \eqn{R = 1 - \frac{OUT}{IN} = 1 - \frac{nfrz - gts3 + nfs3 + locsoil * lr}{nfrz + locsoil * lr}}{R = 1 - OUT/IN = 1 - (nfrz - gts3 + nfs3 + locsoil * lr)/li} [-]
 #'
-#'  \eqn{li = nfrz + locsoil * lr} [kg/y]
+#'  \eqn{li = nfrz + locsoil * lr} \[kg/y\]
 #'
-#'  \eqn{lr = LOC_VOL * LOC_TN * 0.365} [kg/y]
+#'  \eqn{lr = LOC_VOL * LOC_TN * 0.365} \[kg/y\]
 #' 
 #' , where \emph{li} is incoming load to groundwater (leaching rates), \emph{lr} is rural load (total from geodata converted to kg/yr; \emph{locsoil} in the formula converts it to rural load into soil layer 3), and 
 #' \emph{nfrz}, \emph{gts3}, \emph{nfs3} are soil loads as in function arguments described above. See Examples for HYPE variable names for \code{TN} loads.

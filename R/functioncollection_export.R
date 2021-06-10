@@ -452,7 +452,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
 # WriteBasinOutput
 #--------------------------------------------------------------------------------------------------------------------------------------
 
-#' Write a basin output '[SUBID].txt' file
+#' Write a basin output '\[SUBID\].txt' file
 #'
 #' Function to export a basin output file from R.
 #' 
@@ -460,7 +460,7 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-#' and annual values allowed, e.g. '\%Y'.
+#' and annual values allowed, e.g. '\\%Y'.
 #'  
 #' @details
 #' \code{WriteBasinOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's basin output files.
@@ -528,10 +528,10 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-#' and annual values allowed, e.g. '\%Y'.
+#' and annual values allowed, e.g. '\\%Y'.
 #'  
 #' @details
-#' \code{WriteTimeOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's time output files.
+#' \code{WriteTimeOutput} exports a data frame with headers and formatting options adjusted to match HYPE's time output files.
 #  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
 #' 
 #' @examples
@@ -711,7 +711,7 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 # #' hard-coded into \code{WritePTQobs}.
 #' 
 #' @seealso 
-#' \code{\link{ReadPTQobs}}
+#' \code{\link{ReadObs}}
 #' \code{\link{WriteXobs}}
 #' 
 #' @examples

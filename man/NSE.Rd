@@ -20,8 +20,8 @@ in the array, only the first will be used.}
 \item{...}{ignored}
 }
 \value{
-\code{NSE.HypeSingleVar} returns a 2-dimensional array of NSE performances for all SUBIDs and model iterations provided in 
-argument \code{sim}, with values in the same order 
+\code{NSE.HypeSingleVar} returns a 2-dimensional array of NSE performances for all SUBIDs and model iterations provided in
+argument \code{sim}, with values in the same order
 as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 }
 \description{

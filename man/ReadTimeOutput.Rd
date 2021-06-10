@@ -19,25 +19,25 @@ ReadTimeOutput(
 )
 }
 \arguments{
-\item{filename}{Path to and file name of the time output file to import. Acceptable file choices are \code{*.txt} files following 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:timexxxx.txt}{HYPE time output file format} or \code{.nc} 
-files following the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}. 
+\item{filename}{Path to and file name of the time output file to import. Acceptable file choices are \code{*.txt} files following
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:timexxxx.txt}{HYPE time output file format} or \code{.nc}
+files following the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}.
 See also details for netCDF import.}
 
-\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
+\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly
+and annual values allowed, e.g. '\\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.}
 
-\item{hype.var}{Character, HYPE variable ID in \code{x}. See 
+\item{hype.var}{Character, HYPE variable ID in \code{x}. See
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
-If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
+If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE
 time output file names (incl. regional and class outputs).}
 
-\item{out.reg}{Logical, specify if file contents are sub-basin or output region results (i.e. SUBIDs or OUTREGIDs as columns). 
-\code{TRUE} for output regions, \code{FALSE} for sub-basins. \emph{Use only in combination with user-provided \code{hype.var} 
+\item{out.reg}{Logical, specify if file contents are sub-basin or output region results (i.e. SUBIDs or OUTREGIDs as columns).
+\code{TRUE} for output regions, \code{FALSE} for sub-basins. \emph{Use only in combination with user-provided \code{hype.var}
 argument.}}
 
-\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
+\item{type}{Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to
 return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.}
 
 \item{select}{Integer vector, column numbers to import. Note: first column with dates must be imported and will be added if missing.}
@@ -48,44 +48,44 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return 
 
 \item{skip}{Integer, number of \emph{data} rows to skip on import. Time output header lines are always skipped.}
 
-\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
+\item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found,
 a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.}
 
 \item{verbose}{Logical, print information during import.}
 }
 \value{
-\code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
-Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
-\code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onwards) to which the time 
-series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a 
-time step attribute, and \code{comment} with first row comment of imported text file as character string or global attributes of imported 
-netCDF file as character string of collated key-value pairs. An additional attribute \code{id.nan} might be returned, see argument 
+\code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array.
+Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID,
+\code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onwards) to which the time
+series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a
+time step attribute, and \code{comment} with first row comment of imported text file as character string or global attributes of imported
+netCDF file as character string of collated key-value pairs. An additional attribute \code{id.nan} might be returned, see argument
 \code{warn.nan}.
 }
 \description{
-Import a time output file 'time<\emph{HYPE_output_variable}>.txt' or a converted time output file in netCDF format 
+Import a time output file 'time<\emph{HYPE_output_variable}>.txt' or a converted time output file in netCDF format
 into R.
 }
 \details{
-\code{ReadTimeOutput} imports from text or netCDF files. \emph{netCDF import is experimental and not feature-complete (e.g. attributes are 
-not yet fully digested).} 
-Text file import uses \code{\link[data.table]{fread}} from package  
-\code{\link{data.table}}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}. 
-Date-time representations in data files are converted to POSIX time representations. Monthly and annual time steps are returned as 
-first day of the time step period. 
+\code{ReadTimeOutput} imports from text or netCDF files. \emph{netCDF import is experimental and not feature-complete (e.g. attributes are
+not yet fully digested).}
+Text file import uses \code{\link[data.table]{fread}} from package
+\code{\link{data.table}}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}.
+Date-time representations in data files are converted to POSIX time representations. Monthly and annual time steps are returned as
+first day of the time step period.
 
-Import from netCDF files requires an \code{id} dimension in the netCDF data. Gridded data with remapped HYPE results in spatial x/y 
-dimensions as defined in the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard} 
+Import from netCDF files requires an \code{id} dimension in the netCDF data. Gridded data with remapped HYPE results in spatial x/y
+dimensions as defined in the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}
 are currently not supported.
 }
 \note{
-For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time
 side effects when working with the imported data (and possibly converting to string representations during the process).
 
-HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
-decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print. 
+HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of
+decimals to print. If large numbers are printed, this can result in a total number of digits which is too large to print.
 Results will then contain values of '****************'. \code{ReadTimeOutput} will convert those cases to 'NA' entries.
-Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this 
+Current versions of HYPE allow for defining significant instead of fixed number of digits, which should prevent this
 issue from arising.
 }
 \examples{

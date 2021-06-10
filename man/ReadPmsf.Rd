@@ -7,7 +7,7 @@
 ReadPmsf(filename = "pmsf.txt")
 }
 \arguments{
-\item{filename}{Path to and file name of the pmsf file to import. Windows users: Note that 
+\item{filename}{Path to and file name of the pmsf file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 }
 \value{
@@ -17,10 +17,10 @@ Paths are separated by '/', not '\\'.}
 This is a small convenience function to import a 'partial model setup file' as integer vector into R.
 }
 \details{
-\code{ReadPmsf} imports 'pmsf.txt' files, which contain SUBIDs and are used to run only parts of a HYPE setup's domain 
+\code{ReadPmsf} imports 'pmsf.txt' files, which contain SUBIDs and are used to run only parts of a HYPE setup's domain
 without having to extract a separate model setup. For details on the file format, see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pmsf.txt}{pmsf.txt online documentation}.
-Pmsf.txt files imported with \code{ReadPmsf} are stripped from the first value containing the total number of subcatchments 
+Pmsf.txt files imported with \code{ReadPmsf} are stripped from the first value containing the total number of subcatchments
 in the file. No additional attribute is added to hold this number since it can be easily obtained using \code{\link{length}}.
 }
 \examples{

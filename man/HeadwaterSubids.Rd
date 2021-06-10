@@ -7,8 +7,8 @@
 HeadwaterSubids(gd)
 }
 \arguments{
-\item{gd}{A data frame, containing among others two columns \code{subid} and \code{maindown}. Column names are not case-sensitive 
-and column positions in the data frame are irrelevant. 
+\item{gd}{A data frame, containing among others two columns \code{subid} and \code{maindown}. Column names are not case-sensitive
+and column positions in the data frame are irrelevant.
 Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
 }
 \value{
@@ -18,7 +18,7 @@ Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
 Function to find all headwater SUBIDs of a HYPE model domain.
 }
 \details{
-\code{HeadwaterSubids} finds all headwater SUBIDs of a model domain as provided in a 'GeoData.txt' file, i.e. all subcatchments 
+\code{HeadwaterSubids} finds all headwater SUBIDs of a model domain as provided in a 'GeoData.txt' file, i.e. all subcatchments
 which do not have any upstream subcatchments.
 }
 \examples{

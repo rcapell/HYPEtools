@@ -14,10 +14,10 @@ UpstreamPointSources(
 )
 }
 \arguments{
-\item{subid}{Integer vector of SUBIDs to calculate upstream point sources for (must exist in \code{gd}). 
+\item{subid}{Integer vector of SUBIDs to calculate upstream point sources for (must exist in \code{gd}).
 If \code{NULL}, upstream point sources for all SUBIDs in 'gd' will be calculated.}
 
-\item{gd}{A data frame containing columns 'SUBID' with SUBIDs and 'MAINDOWN' with downstream SUBIDs, 
+\item{gd}{A data frame containing columns 'SUBID' with SUBIDs and 'MAINDOWN' with downstream SUBIDs,
 e.g. an imported 'GeoData.txt' file.}
 
 \item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with \code{\link{ReadPointSourceData}}.}
@@ -26,21 +26,21 @@ e.g. an imported 'GeoData.txt' file.}
 
 \item{signif.digits}{Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding.}
 
-\item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
+\item{progbar}{Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid}
 is \code{NULL} or contains many SUBIDs.}
 }
 \value{
-\code{UpstreamPointSources} returns a data frame with columns containing SUBIDs, point source types, volumes, and concentrations found in \code{psd}: total nitrogen, 
+\code{UpstreamPointSources} returns a data frame with columns containing SUBIDs, point source types, volumes, and concentrations found in \code{psd}: total nitrogen,
 total phosphorus, total suspended sediment, tracer, and temperature.
 }
 \description{
 Function to calculate point source emissions over all upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table.
 }
 \details{
-\code{UpstreamPointSources} calculates summarised upstream point source emissions. For each sub-basin with at least one upstream 
-point source (including the sub-basin itself), summed emission volumes and volume weighted emission concentrations are calculated. 
-HYPE point source types ('ps_type') are returned in separate rows. \code{UpstreamPointSources} requires point source types to be one of \code{-1, 0, 1, 2, 3}, 
-corresponding to water abstractions, no differentiation/tracer, and type 1 to 3 (e.g. wastewater treatment plants, industries, and urban stormwater). 
+\code{UpstreamPointSources} calculates summarised upstream point source emissions. For each sub-basin with at least one upstream
+point source (including the sub-basin itself), summed emission volumes and volume weighted emission concentrations are calculated.
+HYPE point source types ('ps_type') are returned in separate rows. \code{UpstreamPointSources} requires point source types to be one of \code{-1, 0, 1, 2, 3},
+corresponding to water abstractions, no differentiation/tracer, and type 1 to 3 (e.g. wastewater treatment plants, industries, and urban stormwater).
 For water abstraction point sources, only summed upstream volumes are returned, i.e., concentrations are simply set to zero in results.
 }
 \examples{

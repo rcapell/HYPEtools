@@ -7,14 +7,14 @@
 WriteMapOutput(x, filename, dt.format = "\%Y-\%m-\%d")
 }
 \arguments{
-\item{x}{The object to be written, a dataframe with \code{comment}, \code{date}, and \code{timestep} 
+\item{x}{The object to be written, a dataframe with \code{comment}, \code{date}, and \code{timestep}
 attributes, as an object returned from \code{\link{ReadMapOutput}}.}
 
-\item{filename}{A character string naming a file to write to. Windows users: Note that 
+\item{filename}{A character string naming a file to write to. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Date format for export of column headers.
-Incomplete format strings for monthly and annual values allowed, e.g. '\%Y', if columns contain annual aggregates. 
+Incomplete format strings for monthly and annual values allowed, e.g. '\\%Y', if columns contain annual aggregates.
 Use \code{NULL} for single-column dataframes, i.e. long-term average map files.}
 }
 \description{
@@ -22,7 +22,7 @@ Function to export a map output file from R.
 }
 \details{
 \code{WriteTimeOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's map output files.
- The function attempts to format date-time information to strings and will return a warning if the attempt fails.
+The function attempts to format date-time information to strings and will return a warning if the attempt fails.
 }
 \examples{
 \dontrun{WriteMapOutput(x = myCCTN, filename = "mapCCTN.txt")}

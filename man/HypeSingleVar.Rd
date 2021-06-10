@@ -10,21 +10,21 @@ HypeSingleVar(x, datetime, subid = NULL, outregid = NULL, hype.var)
 \item{x}{numeric \code{\link{array}} with three dimensions, which holds HYPE results for one variable as (in order)
 \code{[datetime, subid/outregid, iteration]}.}
 
-\item{datetime}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x} 
-with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model 
+\item{datetime}{\code{\link{POSIXct}} date-time vector of the same length as \code{time} dimension of \code{x}
+with equidistant time steps (starting day for time steps from weekly to annual), or character string for full model
 period averages, e.g. \code{"2000-2010"}.}
 
-\item{subid}{Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}. Either this 
+\item{subid}{Integer vector with HYPE sub-basin IDs, of the same length as \code{subid} dimension of \code{x}. Either this
 or \code{outregid} must be supplied.}
 
 \item{outregid}{Integer vector with HYPE output region IDs, alternative to \code{subid}.}
 
-\item{hype.var}{Character string, keyword to specify HYPE variable ID, see 
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}. 
+\item{hype.var}{Character string, keyword to specify HYPE variable ID, see
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}.
 Not case-sensitive.}
 }
 \value{
-Returns a 3-dimensional array with 
+Returns a 3-dimensional array with
 \code{[time, subid, iteration]} dimensions and additional \code{\link{attributes}}:
 \describe{
 \item{\strong{datetime}}{A vector of date-times. Corresponds to 1st array dimension.}
@@ -35,7 +35,7 @@ Returns a 3-dimensional array with
 }
 }
 \description{
-Constructor function for arrays which hold equi-distant time series of a single HYPE variable for multiple sub-basins 
+Constructor function for arrays which hold equi-distant time series of a single HYPE variable for multiple sub-basins
 and multiple model runs, typically imported time and map output results.
 }
 \details{

@@ -9,11 +9,11 @@ WriteBasinOutput(x, filename, dt.format = "\%Y-\%m-\%d")
 \arguments{
 \item{x}{The object to be written, a dataframe with \code{hypeunit} attribute, as an object returned from \code{\link{ReadBasinOutput}}.}
 
-\item{filename}{A character string naming a file to write to. Windows users: Note that 
+\item{filename}{A character string naming a file to write to. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
-\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-and annual values allowed, e.g. '\%Y'.}
+\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly
+and annual values allowed, e.g. '\\\%Y'.}
 }
 \description{
 Function to export a basin output file from R.

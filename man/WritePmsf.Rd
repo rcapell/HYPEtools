@@ -9,14 +9,14 @@ WritePmsf(x, filename = "../pmsf.txt")
 \arguments{
 \item{x}{The object to be written, an \code{integer} vector containing SUBIDs.}
 
-\item{filename}{A character string naming a file to write to. Windows users: Note that 
+\item{filename}{A character string naming a file to write to. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 }
 \description{
 This is a small convenience function to export a 'partial model setup file' from R.
 }
 \details{
-Pmsf files are represented as integer vectors in R. The total number of subcatchments in the file are added as first value on export. 
+Pmsf files are represented as integer vectors in R. The total number of subcatchments in the file are added as first value on export.
 pmsf.txt files need to be ordered as downstream sequence.
 }
 \examples{

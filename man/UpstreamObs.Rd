@@ -15,38 +15,38 @@ UpstreamObs(
 )
 }
 \arguments{
-\item{filename}{Path to and file name of the forcing data text file to extract from. Windows users: Note that 
+\item{filename}{Path to and file name of the forcing data text file to extract from. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{subid}{Integer, giving a single SUBID for which upstream forcing data are to be calculated.}
 
 \item{gd}{A data frame, containing 'SUBID' and 'MAINDOWN' columns, e.g. an imported 'GeoData.txt' file. Mandatory argument.}
 
-\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument. 
+\item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
 If provided, upstream areas will include areas linked through bifurcations.}
 
-\item{nr.obs}{Integer, number of rows in forcing data file. Optional argument, computed if \code{NULL}, which can be costly 
+\item{nr.obs}{Integer, number of rows in forcing data file. Optional argument, computed if \code{NULL}, which can be costly
 depending on file size. If argument \code{verbose} is \code{TRUE}, \code{UpstreamObs} prints a message containing the number of rows.}
 
 \item{dry.run}{Logical, if \code{TRUE}, only obs file dimensions will be computed. Set argument \code{verbose} to \code{TRUE} to
 print them to standard output.}
 
-\item{verbose}{Logical, if \code{TRUE}, information about obs file dimensions and the current computational status will be 
+\item{verbose}{Logical, if \code{TRUE}, information about obs file dimensions and the current computational status will be
 printed to the standard output during runtime.}
 }
 \value{
-\code{UpstreamObs} returns a data frame with two columns, and one additional attribute \code{subid}, suitable for export using 
-\code{\link{WritePTQobs}}. First column \code{DATE} contains POSIX dates or character strings if date-time conversion failed, 
-conversion failure will produce a message to the standard output. The second column \code{meanobs} contains area-weighted upstream 
+\code{UpstreamObs} returns a data frame with two columns, and one additional attribute \code{subid}, suitable for export using
+\code{\link{WritePTQobs}}. First column \code{DATE} contains POSIX dates or character strings if date-time conversion failed,
+conversion failure will produce a message to the standard output. The second column \code{meanobs} contains area-weighted upstream
 average forcing.
 }
 \description{
-Calculate average upstream forcing time series for a single SUBID from area-weighted upstream forcing data, given as HYPE forcing data 
+Calculate average upstream forcing time series for a single SUBID from area-weighted upstream forcing data, given as HYPE forcing data
 text file.
 }
 \details{
-\code{UpstreamObs} reads from HYPE forcing data text files, primarily Pobs.txt and Tobs.txt. Depending on the model domain, these 
-can be large (several GB). The function therefore does not import the files but uses external read and computation routines and only 
+\code{UpstreamObs} reads from HYPE forcing data text files, primarily Pobs.txt and Tobs.txt. Depending on the model domain, these
+can be large (several GB). The function therefore does not import the files but uses external read and computation routines and only
 imports the averaged upstream results for the target catchment given in argument \code{subid}.
 }
 \note{

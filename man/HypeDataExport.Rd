@@ -34,7 +34,7 @@ WriteForcKey(x, filename = "ForcKey.txt")
 \arguments{
 \item{x}{The object to be written, a dataframe as returned from the \code{\link{HypeDataImport}} functions.}
 
-\item{filename}{A character string naming a path and file name to write to. Windows users: Note that 
+\item{filename}{A character string naming a path and file name to write to. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{verbose}{Logical, display informative warning messages if columns contain \code{NA} values or if character strings are
@@ -44,25 +44,25 @@ too long. See Details.}
 These are simple convenience wrapper functions to export various HYPE data files from R.
 }
 \details{
-Hype data file exports, simple \code{\link[data.table]{fwrite}} wrappers with formatting options adjusted to match HYPE file 
+Hype data file exports, simple \code{\link[data.table]{fwrite}} wrappers with formatting options adjusted to match HYPE file
 specifications:
 
 \itemize{
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
 }
 
-In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
-allowed in additional comment columns which are not read by HYPE. Informative warnings will be thrown if \code{NA}s are 
-found during export. Character string lengths in comment columns of HYPE data files are restricted to 100 characters, 
+In most files, HYPE requires \code{NA}-free input in required columns, but empty values are
+allowed in additional comment columns which are not read by HYPE. Informative warnings will be thrown if \code{NA}s are
+found during export. Character string lengths in comment columns of HYPE data files are restricted to 100 characters,
 the functions will return with a warning if longer strings were exported.
 }
 \examples{

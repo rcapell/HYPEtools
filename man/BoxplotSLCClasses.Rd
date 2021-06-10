@@ -25,16 +25,16 @@ BoxplotSLCClasses(
 \arguments{
 \item{gd}{Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
 
-\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt'
 file imported with \code{\link{ReadGeoClass}}.}
 
-\item{col.landuse}{Specification of colors for box outlines, to represent land use classes. Either a keyword character string, or a vector of 
-colors with one element for each land use class as given in argument \code{gcl} in ascending order. Possible keywords are \code{'rainbow'} (default) 
-or \code{'auto'}. \code{'rainbow'} triggers a generation of land use class colors using the \code{\link{rainbow}} palette. \code{'auto'} triggers 
-generation of a pretty color palette with similar colors for land use groups. This option requires specification of land use groups in argument 
+\item{col.landuse}{Specification of colors for box outlines, to represent land use classes. Either a keyword character string, or a vector of
+colors with one element for each land use class as given in argument \code{gcl} in ascending order. Possible keywords are \code{'rainbow'} (default)
+or \code{'auto'}. \code{'rainbow'} triggers a generation of land use class colors using the \code{\link{rainbow}} palette. \code{'auto'} triggers
+generation of a pretty color palette with similar colors for land use groups. This option requires specification of land use groups in argument
 \code{col.group}.}
 
-\item{col.group}{Integer vector of the same length as the number of land use classes given in \code{gcl}. Specifies a land use group ID for 
+\item{col.group}{Integer vector of the same length as the number of land use classes given in \code{gcl}. Specifies a land use group ID for
 each land use class ID, in ascending order. Groups and group IDs to use (in parentheses):
 \itemize{
 \item Water, snow, and ice (1)
@@ -44,14 +44,14 @@ each land use class ID, in ascending order. Groups and group IDs to use (in pare
 \item Natural non-forested (5)
 }}
 
-\item{lab.legend}{Character string giving optional land use and soil class names to label the legend. Land use classes first, then soil classes. 
+\item{lab.legend}{Character string giving optional land use and soil class names to label the legend. Land use classes first, then soil classes.
 Both following class IDs as given in \code{gcl} in ascending order.}
 
 \item{pos.legend}{Numeric, legend position in x direction. Given as position on the right hand outside of the plot area in x-axis units.}
 
 \item{abs.area}{Logical, if \code{TRUE}, boxes will be plotted for absolute areas instead of area fractions.}
 
-\item{log}{Character string, passed to \code{\link{boxplot}}. Empty string for linearly scaled axes, \code{'y'} for log scaled y-axis 
+\item{log}{Character string, passed to \code{\link{boxplot}}. Empty string for linearly scaled axes, \code{'y'} for log scaled y-axis
 (particularly in combination with \code{abs.area = TRUE}).}
 
 \item{ylim}{Numeric vector of length 2, y-axis minimum and maximum. Set automatically if not specified.}
@@ -61,20 +61,20 @@ Both following class IDs as given in \code{gcl} in ascending order.}
 \item{mar, mgp, tcl, xaxs, xpd}{Arguments to \code{\link{par}} with changed defaults. See documentation in there.}
 }
 \value{
-\code{BoxplotSLCClasses} returns a plot to the currently active plot device, and invisibly a data frame of SLC class fractions with \code{0} 
+\code{BoxplotSLCClasses} returns a plot to the currently active plot device, and invisibly a data frame of SLC class fractions with \code{0}
 values replaced by \code{NA}s. If absolute areas are plotted, these are returned in the data frame.
 }
 \description{
-\code{BoxplotSLCClasses} plots SLC class distributions for all SUBIDs in a GeoData data frame as boxplots. Boxes can represent distributions 
+\code{BoxplotSLCClasses} plots SLC class distributions for all SUBIDs in a GeoData data frame as boxplots. Boxes can represent distributions
 of area fractions
 }
 \details{
-\code{BoxplotSLCClasses} allows to analyse the occurrence of individual SLCs in a given model set-up. both in terms of area fractions (SLC values) 
-and absolute areas. The function uses \code{\link{boxplot}} to plot distributions of SLCs of all SUBIDs in a GeoData data frame. Land use classes 
+\code{BoxplotSLCClasses} allows to analyse the occurrence of individual SLCs in a given model set-up. both in terms of area fractions (SLC values)
+and absolute areas. The function uses \code{\link{boxplot}} to plot distributions of SLCs of all SUBIDs in a GeoData data frame. Land use classes
 are color-coded, and soil classes marked by a point symbol below each box. Box whiskers extend to the data extremes.
 }
 \note{
-There is a maximum of 26 symbols available for marking soil classes. \code{BoxplotSLCClasses} can be quite crowded, depending on the number of SLCs 
+There is a maximum of 26 symbols available for marking soil classes. \code{BoxplotSLCClasses} can be quite crowded, depending on the number of SLCs
 in a model set-up. Tested and recommended plot device dimensions are 14 x 7 inches (width x height), e.g.:
 
 \kbd{> x11(width = 14, height = 7)}

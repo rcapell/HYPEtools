@@ -7,53 +7,53 @@
 GwRetention(nfrz, nfs3, gts3, gd, par, unit.area = TRUE, nutrient = "tn")
 }
 \arguments{
-\item{nfrz}{Data frame with two-columns. Sub-basin IDs in first column, net loads from root zone in kg/year in second column. Typically an 
+\item{nfrz}{Data frame with two-columns. Sub-basin IDs in first column, net loads from root zone in kg/year in second column. Typically an
 imported HYPE map output file, HYPE output variable SL06. See Details.}
 
-\item{nfs3}{Data frame with two-columns. Sub-basin IDs in first column, net loads from soil layer 3 in kg/year in second column. 
+\item{nfs3}{Data frame with two-columns. Sub-basin IDs in first column, net loads from soil layer 3 in kg/year in second column.
 Typically an imported HYPE map output file, HYPE output variable SL18. See Details.}
 
-\item{gts3}{Data frame with two-columns. Sub-basin IDs in first column, gross loads to soil layer 3 in kg/year in second column. 
+\item{gts3}{Data frame with two-columns. Sub-basin IDs in first column, gross loads to soil layer 3 in kg/year in second column.
 Typically an imported HYPE map output file, HYPE output variable SL17. See Details.}
 
-\item{gd}{Data frame, with columns containing sub-basin IDs and rural household emissions, e.g. an imported 'GeoData.txt' file. 
+\item{gd}{Data frame, with columns containing sub-basin IDs and rural household emissions, e.g. an imported 'GeoData.txt' file.
 See details.}
 
 \item{par}{List, HYPE parameter list, typically an imported 'par.txt' file. Must contain parameter \emph{locsoil} (not case-sensitive).}
 
 \item{unit.area}{Logical, set to \code{FALSE} to calculate incoming load (leaching rates) in kg/year instead of kg/(ha year).}
 
-\item{nutrient}{Character keyword, one of the HYPE-modelled nutrient groups, for which to calculate groundwater retention. Not 
+\item{nutrient}{Character keyword, one of the HYPE-modelled nutrient groups, for which to calculate groundwater retention. Not
 case-sensitive. \emph{Currently, only \code{tn} {total nitrogen} is implemented.}}
 }
 \value{
-\code{GwRetention} returns a three-column data frame, containing SUBIDs, retention in groundwater as a fraction of incoming loads 
-(if multiplied by 100, it becomes \%), and incoming loads to groundwater (leaching rates) in units depending on argument \code{unit.area}. 
+\code{GwRetention} returns a three-column data frame, containing SUBIDs, retention in groundwater as a fraction of incoming loads
+(if multiplied by 100, it becomes \\%), and incoming loads to groundwater (leaching rates) in units depending on argument \code{unit.area}.
 .
 }
 \description{
-Function to calculate nutrient load retention fractions in groundwater parts of HYPE, i.e. after rootzone retention. See Details for 
+Function to calculate nutrient load retention fractions in groundwater parts of HYPE, i.e. after rootzone retention. See Details for
 exact definition.
 }
 \details{
-\code{GwRetention} calculates a groundwater nutrient retention as fractions of outgoing and incoming loads using HYPE soil load variables. Incoming loads  
-include drainage into layer 3 from the root zone (defined as soil layer 1 and 2), rural load fractions into soil (dependent on parameter \emph{locsoil}), 
+\code{GwRetention} calculates a groundwater nutrient retention as fractions of outgoing and incoming loads using HYPE soil load variables. Incoming loads
+include drainage into layer 3 from the root zone (defined as soil layer 1 and 2), rural load fractions into soil (dependent on parameter \emph{locsoil}),
 tile drainage, surface flow, and flow from layer 1 and 2. Outgoing loads include runoff from all soil layers, tile drain, and surface flow.
 
-The retention fraction \emph{R} is calculated as (see also the 
+The retention fraction \emph{R} is calculated as (see also the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_model_description:hype_np_soil#diagnostic_output_variables_of_soil_nutrients}{variable description in the HYPE online documentation}):
 
-\eqn{R = 1 - \frac{OUT}{IN} = 1 - \frac{nfrz - gts3 + nfs3 + locsoil * lr}{nfrz + locsoil * lr}}{R = 1 - OUT/IN = 1 - (nfrz - gts3 + nfs3 + locsoil * lr)/li} [-]
+\eqn{R = 1 - \frac{OUT}{IN} = 1 - \frac{nfrz - gts3 + nfs3 + locsoil * lr}{nfrz + locsoil * lr}}{R = 1 - OUT/IN = 1 - (nfrz - gts3 + nfs3 + locsoil * lr)/li} \link{-}
 
- \eqn{li = nfrz + locsoil * lr} [kg/y]
+\eqn{li = nfrz + locsoil * lr} [kg/y]
 
- \eqn{lr = LOC_VOL * LOC_TN * 0.365} [kg/y]
+\eqn{lr = LOC_VOL * LOC_TN * 0.365} [kg/y]
 
-, where \emph{li} is incoming load to groundwater (leaching rates), \emph{lr} is rural load (total from geodata converted to kg/yr; \emph{locsoil} in the formula converts it to rural load into soil layer 3), and 
+, where \emph{li} is incoming load to groundwater (leaching rates), \emph{lr} is rural load (total from geodata converted to kg/yr; \emph{locsoil} in the formula converts it to rural load into soil layer 3), and
 \emph{nfrz}, \emph{gts3}, \emph{nfs3} are soil loads as in function arguments described above. See Examples for HYPE variable names for \code{TN} loads.
 
 Columns \code{SUBID}, \code{LOC_VOL}, and code{LOC_TN} must be present in \code{gd}, for a description of column contents see the
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData file description in the HYPE online documentation}. 
+\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData file description in the HYPE online documentation}.
 Column names are not case-sensitive.
 }
 \examples{

@@ -13,50 +13,50 @@ ReadDescription(
 \arguments{
 \item{filename}{Path to and file name of the 'description.txt' file to import.}
 
-\item{gcl}{dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare class IDs with. 
+\item{gcl}{dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare class IDs with.
 A warning will be thrown if not all class IDs in \code{gcl} exist in the description file.}
 
-\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
-importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+\item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when
+importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See
 also argument description in \code{\link{scan}}.}
 }
 \value{
-\code{ReadDescription} returns a named list with 11 named character elements, corresponding to the 
+\code{ReadDescription} returns a named list with 11 named character elements, corresponding to the
 imported lines:
 
-\code{Name}, \code{Version}, \code{lu.id}, \code{Landuse}, \code{lu} (short names), \code{so.id}, 
+\code{Name}, \code{Version}, \code{lu.id}, \code{Landuse}, \code{lu} (short names), \code{so.id},
 \code{Soil}, \code{so} (short names), \code{cr.id}, \code{Crop}, \code{cr} (short names)
 }
 \description{
-Read a 'description.txt' file as \code{list} object into R. A 'description.txt' file contains land use, soil, and crop 
+Read a 'description.txt' file as \code{list} object into R. A 'description.txt' file contains land use, soil, and crop
 class names of a HYPE set-up, as well as model set-up name and version.
 }
 \details{
-\code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for 
-e.g. plotting legend labels or examining imported GeoClass files. E.g., \code{\link{PlotBasinSummary}} requires a list 
-as returned from \code{ReadDescription} for labeling. 
+\code{ReadDescription} imports a 'description.txt' into R. This file is not used by HYPE, but is convenient for
+e.g. plotting legend labels or examining imported GeoClass files. E.g., \code{\link{PlotBasinSummary}} requires a list
+as returned from \code{ReadDescription} for labeling.
 
-A 'description.txt' file consists of 22 lines, alternating names and semicolon-separated content. Lines 
+A 'description.txt' file consists of 22 lines, alternating names and semicolon-separated content. Lines
 with names are not read by the import function, they just make it easier to compose and read the actual text file.
 
-File contents read by \code{ReadDescription}: 
+File contents read by \code{ReadDescription}:
 \itemize{
- \item HYPE set-up name (line 2)
- \item HYPE set-up version (line 4)
- \item Land use class IDs (line 6)
- \item Land use class names (line 6)
- \item Land use class short names (line 8)
- \item Soil class IDs (line 10)
- \item Soil class names (line 10)
- \item Soil class short names (line 12)
- \item Crop class IDs (line 14)
- \item Crop class names (line 14)
- \item Crop class short names (line 16)
+\item HYPE set-up name (line 2)
+\item HYPE set-up version (line 4)
+\item Land use class IDs (line 6)
+\item Land use class names (line 6)
+\item Land use class short names (line 8)
+\item Soil class IDs (line 10)
+\item Soil class names (line 10)
+\item Soil class short names (line 12)
+\item Crop class IDs (line 14)
+\item Crop class names (line 14)
+\item Crop class short names (line 16)
 }
 
 Note that Crop class IDs start from \code{0}, which means no crop, whereas land use and soil IDs start from \code{1} (or higher).
 
-Formatting example for description.txt files: 
+Formatting example for description.txt files:
 
 \code{# Name} \cr
 \code{MyHYPE} \cr

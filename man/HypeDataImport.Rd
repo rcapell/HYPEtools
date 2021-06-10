@@ -126,7 +126,7 @@ ReadForcKey(
 )
 }
 \arguments{
-\item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that 
+\item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
 \item{verbose}{Logical, display message if columns contain \code{NA} values.}
@@ -139,8 +139,8 @@ Paths are separated by '/', not '\\'.}
 
 \item{stringsAsFactors}{See \code{header}.}
 
-\item{encoding}{\code{\link{read.table}} argument. Specify character encoding when 
-importing files created under Windows (default encoding "latin1") in Linux (default encoding "UTF-8") 
+\item{encoding}{\code{\link{read.table}} argument. Specify character encoding when
+importing files created under Windows (default encoding "latin1") in Linux (default encoding "UTF-8")
 and vice versa.}
 
 \item{...}{Other parameters passed to \code{\link{read.table}}.}
@@ -156,23 +156,23 @@ Imported files are returned as data frames.
 These are simple convenience wrapper functions to import various HYPE data files as data frame into R.
 }
 \details{
-Hype data file imports, simple \code{\link{read.table}} or \code{\link[data.table]{fread}} wrappers with 
+Hype data file imports, simple \code{\link{read.table}} or \code{\link[data.table]{fread}} wrappers with
 formatting arguments set to match HYPE file specifications:
 
 \itemize{
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
-  \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
 }
 
-In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
+In most files, HYPE requires \code{NA}-free input in required columns, but empty values are
 allowed in additional comment columns. Informative warnings will be thrown if \code{NA}s are found during import.
 }
 \examples{
