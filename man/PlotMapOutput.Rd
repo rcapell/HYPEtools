@@ -56,9 +56,9 @@ HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.}
 \item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
 
 \item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified
-or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.}
+or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.}
 
-\item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}}.}
+\item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}} for default maps.}
 
 \item{legend.pos}{Legend, scale, and north arrow position, keyword string. For static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
 \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}.}
@@ -94,16 +94,16 @@ classification will be applied (see details).}
 \item{plot.scale}{Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with
 projected maps based on meter units, not geographical projections}
 
-\item{plot.arrow}{Logical, plot a North arrow below legend (i.e. position defined by legend position).}
+\item{plot.arrow}{Logical, plot a North arrow below legend for default maps (i.e. position defined by legend position).}
 
-\item{par.cex}{Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}.}
+\item{par.cex}{Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}. Only used for default maps.}
 
 \item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
-In standard use cases of this function, plot margins do not need to be changed.}
+In standard use cases of this function, plot margins do not need to be changed. Only used for default maps.}
 
-\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
+\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.}
 
-\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
+\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.}
 
 \item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.}
 

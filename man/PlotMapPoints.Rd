@@ -9,12 +9,14 @@ PlotMapPoints(
   sites,
   sites.subid.column = 1,
   bg = NULL,
+  map.type = "default",
   map.adj = 0,
   plot.legend = T,
-  legend.pos = "right",
+  legend.pos = "bottomright",
   legend.title = NULL,
   legend.outer = F,
   legend.inset = c(0, 0),
+  legend.signif = 2,
   col = NULL,
   col.breaks = NULL,
   plot.scale = T,
@@ -25,36 +27,55 @@ PlotMapPoints(
   pch = 21,
   lwd = 0.8,
   add = FALSE,
-  restore.par = FALSE
+  restore.par = FALSE,
+  radius = 5,
+  weight = 0.15,
+  opacity = 0.75,
+  fillOpacity = 0.5,
+  na.color = "#808080",
+  bg.weight = 0.15,
+  bg.opacity = 0.75,
+  bg.fillColor = "#e5e5e5",
+  bg.fillOpacity = 0.75,
+  plot.label = F,
+  file = "",
+  vwidth = 1424,
+  vheight = 1000,
+  html.name = "",
+  selfcontained = FALSE
 )
 }
 \arguments{
 \item{x}{Information to plot, typically model performances from imported HYPE 'subassX.txt' files. Data frame object
 with two columns, first column containing SUBIDs and second column containing model results to plot. See details.}
 
-\item{sites}{A \code{SpatialPointsDataFrame} object. Typically an imported outlet point vector point file. Import of vector points
+\item{sites}{A \code{SpatialPointsDataFrame} or \code{sf} object. Typically an imported outlet point vector point file. Import of vector points
 requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}.}
 
 \item{sites.subid.column}{Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
-\item{bg}{A \code{SpatialPolygonsDataFrame} object to plot as grey background. Typically an imported sub-basin vector polygon file.
-For plots with several background layers, use \code{add = TRUE} and plot background layer(s) first.}
+\item{bg}{A \code{SpatialPolygonsDataFrame} or \code{sf} object to plot in the background. Typically an imported sub-basin vector polygon file.
+For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.}
+
+\item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
 
 \item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified
-or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.}
+or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.}
 
-\item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}}.}
+\item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}} for default maps.}
 
-\item{legend.pos}{Legend, scale, and north arrow position, keyword string. One of \code{"left"}, \code{"topleft"}, \code{"topright"},
-\code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.}
+\item{legend.pos}{Legend, scale, and north arrow position, keyword string. For static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
+\code{"right"}, \code{"bottomright"}, \code{"bottomleft"}. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}.}
 
-\item{legend.title}{Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
-is used as legend title string. For select HYPE variables, pretty legend titles are in-built.}
+\item{legend.title}{Character string or mathematical expression. An optional title for the legend. If none is provided here, the name of the second column in \code{x}
+is used as legend title string.}
 
-\item{legend.outer}{Logical. If \code{TRUE}, outer break point values will be plotted in legend.}
+\item{legend.outer}{Logical. If \code{TRUE}, outer break point values will be plotted in legend. Only used for default maps.}
 
 \item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow.
-See \code{\link{legend}} and details below.}
+See \code{\link{legend}} and details below. Only used for default maps.}
+
+\item{legend.signif}{Integer, number of significant digits to display in legend labels.}
 
 \item{col}{Colors to use on the map. One of the following: \itemize{
 \item \code{NULL}, to use a default purple-red-yellow-blue color ramp, best used with \code{col.breaks = NULL}.
@@ -72,25 +93,58 @@ with 9 intervals, and an additional interval for negative values. This is suitab
 \item{plot.scale}{Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with
 projected maps based on meter units, not geographical projections}
 
-\item{plot.arrow}{Logical, plot a North arrow below legend (i.e. position defined by legend position).}
+\item{plot.arrow}{Logical, plot a North arrow below legend for default maps (i.e. position defined by legend position).}
 
 \item{pt.cex}{Numeric, plot point size expansion factor, works on top of \code{par.cex}.}
 
-\item{par.cex}{Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}.}
+\item{par.cex}{Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}. Only used for default maps.}
 
 \item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
-In standard use cases of this function, plot margins do not need to be changed.}
+In standard use cases of this function, plot margins do not need to be changed. Only used for default maps.}
 
-\item{pch, lwd}{Integer, plotting symbol and line width. See \code{\link{points}}.}
+\item{pch, lwd}{Integer, plotting symbol and line width. See \code{\link{points}}. Only used for default maps.}
 
-\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.}
+\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.}
 
-\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
+\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.}
+
+\item{radius}{Numeric, radius of markers in Leaflet maps. See \code{\link{addCircleMarkers}}.}
+
+\item{weight}{Numeric, weight of marker outlines in Leaflet maps. See \code{\link{addCircleMarkers}}.}
+
+\item{opacity}{Numeric, opacity of marker outlines in Leaflet maps. See \code{\link{addCircleMarkers}}.}
+
+\item{fillOpacity}{Numeric, opacity of markers in Leaflet maps. See \code{\link{addCircleMarkers}}.}
+
+\item{na.color}{Character string of color to use to symbolize markers in Leaflet maps which correspond to \code{NA} values.}
+
+\item{bg.weight}{Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{addPolygons}}.}
+
+\item{bg.opacity}{Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{addPolygons}}.}
+
+\item{bg.fillColor}{Character string of color to use to symbolize \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.}
+
+\item{bg.fillOpacity}{Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.}
+
+\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See \code{\link{addCircleMarkers}}.}
+
+\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
+You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.}
+
+\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
+
+\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
+
+\item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).}
+
+\item{selfcontained}{Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
+Users should set argument to \code{FALSE} for large Leaflet maps with lots of markers or subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.}
 }
 \value{
-\code{PlotMapPoints} returns a plot to the currently active plot device, and invisibly an object of class
+For default static maps, \code{PlotMapPoints} returns a plot to the currently active plot device, and invisibly an object of class
 \code{\link{SpatialPointsDataFrame}} as provided in argument \code{sites}, with plotted values and color codes added as columns
-in the data slot.
+in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
+an object of class \code{leaflet}.
 }
 \description{
 Plot mapped point information, e.g. model performances at observation sites.
@@ -101,13 +155,14 @@ measures as written to
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:subassx.txt}{HYPE 'subassX.txt' files}, but
 color scale and break point arguments are flexible enough to also be used with e.g. HYPE output variables or other data.
 
-\code{PlotMapPoints} per default works with a margin-less figure and positions map and legend items close to the plot boundaries.
+\code{PlotMapOutput} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}.
+By default, \code{PlotMapPoints} generates a margin-less figure and positions map and legend items close to the plot boundaries.
 In order to move map and legend closer to each other, change the plot device width.
 
-Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the right side of the map. \code{legend.pos} and
-\code{map.adj} should be chosen so that legend and map do not overlap. Additionally, the legend position can be fine-tuned using
+Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the bottom right side of the map. For default maps, \code{legend.pos} and
+\code{map.adj} should be chosen so that legend and map do not overlap, and the legend position can be fine-tuned using
 argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. For details on inset
-specification see \code{inset} in \code{\link{legend}}.
+specification for the default maps, see \code{inset} in \code{\link{legend}}.
 }
 \examples{
 \dontrun{require(rgdal)

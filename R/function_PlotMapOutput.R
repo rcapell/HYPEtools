@@ -13,8 +13,8 @@
 #' HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.
 #' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.
 #' @param map.adj Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified
-#' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified.
-#' @param plot.legend Logical, plot a legend along with the map. Uses function \code{\link{legend}}.
+#' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.
+#' @param plot.legend Logical, plot a legend along with the map. Uses function \code{\link{legend}} for default maps.
 #' @param legend.pos Legend, scale, and north arrow position, keyword string. For static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
 #' \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}.
 #' @param legend.title Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
@@ -44,12 +44,12 @@
 #' @param col.rev Logical, If \code{TRUE}, then color palette will be reversed.
 #' @param plot.scale Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with
 #' projected maps based on meter units, not geographical projections
-#' @param plot.arrow Logical, plot a North arrow below legend (i.e. position defined by legend position).
-#' @param par.cex Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}.
+#' @param plot.arrow Logical, plot a North arrow below legend for default maps (i.e. position defined by legend position).
+#' @param par.cex Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}. Only used for default maps.
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
-#' In standard use cases of this function, plot margins do not need to be changed.
-#' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect.
-#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
+#' In standard use cases of this function, plot margins do not need to be changed. Only used for default maps.
+#' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.
+#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.
 #' @param weight Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.
 #' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.
 #' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.
@@ -197,7 +197,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       # color breaks: special defaults for some of the inbuilt color ramp functions
       if (identical(col, ColDiffTemp)) {
         # temperature differences
-        cbrks <- c(ifelse(min(x[, 2]) < 7.5, min(x[, 2], na.rm = T) - 1, 30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[, 2], na.rm = T) > 7.5, max(x[, 2], na.rm = T) + 1, 30))
+        cbrks <- c(ifelse(min(x[, 2] ,na.rm = T) < 7.5, min(x[, 2], na.rm = T) - 1, 30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[, 2], na.rm = T) > 7.5, max(x[, 2], na.rm = T) + 1, 30))
       } else if (identical(col, ColDiffGeneric)) {
         # create a break point sequence which is centered around zero, with class widths based on equal intervals of the log-scaled
         # variable distribution
@@ -338,9 +338,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # add x to subid map table (in data slot, indicated by @), merge by SUBID
     map@data <- data.frame(map@data, x[match(map@data[, map.subid.column], x[, 1]), ])
   } else if (map.type == "leaflet") {
-    # x <- suppressMessages(right_join(map[,map.subid.column],x))
     message(paste0('Joining "', colnames(map)[map.subid.column], '" from GIS Data (map) To "', colnames(x)[1], '" from MapOutput (x)'))
-    x <- right_join(map[, map.subid.column], x, by = setNames(nm = colnames(map)[map.subid.column], colnames(x)[1])) # Join GIS Data with MapOutput Data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay)
+    x <- right_join(map[, map.subid.column]%>%mutate(across(1,~as.character(.x))), x%>%mutate(across(1,~as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], colnames(x)[1])) # Join GIS Data with MapOutput Data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
   }
 
   # update legend title if none was provided by user or "auto" selection
