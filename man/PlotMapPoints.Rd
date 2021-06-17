@@ -165,11 +165,13 @@ argument \code{legend.inset}. This is particularly useful for legend titles with
 specification for the default maps, see \code{inset} in \code{\link{legend}}.
 }
 \examples{
-\dontrun{require(rgdal)
+\dontrun{
+require(rgdal)
 x11(width = 5, height = 8)
 mysites <- readOGR(dsn = "../gisdata", layer = "myHYPEoutlets")
 mybg <- readOGR(dsn = "../gisdata", layer = "myHYPEsubids")
-PlotMappoints(x = mysubass, sites = mysites, map.subid.column = 2, bg = mybg)}
+PlotMappoints(x = mysubass, sites = mysites, map.subid.column = 2, bg = mybg)
+}
 
 }
 \seealso{
