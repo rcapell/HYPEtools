@@ -1,5 +1,5 @@
 Package: HYPEtools
-Version: 0.5.0
+Version: 0.5.0.9000
 Title: Tools for Processing and Analysing Files from the Conceptual
     Rainfall-Runoff Model HYPE
 Description: This package contains functions to handle and analyse input and
