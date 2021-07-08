@@ -10,6 +10,7 @@
 #' @param sites.subid.column Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param bg A \code{SpatialPolygonsDataFrame} or \code{sf} object to plot in the background. Typically an imported sub-basin vector polygon file.
 #' For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.
+#' @param bg.label.column Integer, column index in the \code{bg} 'data' \code{\link{slot}} holding labels (e.g. SUBIDs) to use for plotting.
 #' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.
 #' @param map.adj Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified
 #' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.
@@ -53,6 +54,8 @@
 #' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.
 #' @param bg.fillOpacity Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.
 #' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See \code{\link{addCircleMarkers}}.
+#' @param plot.bg.label String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
+#' labels for \code{bg} will be dislayed in Leaflet maps.
 #' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
 #' You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
@@ -98,20 +101,20 @@
 #' @import sp
 #' @importFrom dplyr right_join %>% mutate
 #' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
-#' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addCircleMarkers addPolygons addScaleBar addLegend addProviderTiles
-#' @importFrom sf as_Spatial st_as_sf
+#' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addCircleMarkers addPolygons addScaleBar addLegend addProviderTiles addLabelOnlyMarkers labelOptions
+#' @importFrom sf as_Spatial st_as_sf st_point_on_surface
 #' @importFrom mapview mapshot
 #' @importFrom htmlwidgets saveWidget
 
 
-PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.type = "default", map.adj = 0, plot.legend = T,
+PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.column = 1, map.type = "default", map.adj = 0, plot.legend = T,
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), legend.signif = 2,
                           col = NULL, col.breaks = NULL, plot.scale = T, plot.arrow = T, pt.cex = 1,
                           par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE, restore.par = FALSE,
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
                           # plot.searchbar = F, # leaflet.extras searchbar currently doesn't work for CircleMarkers
-                          plot.label = F, file = "", vwidth = 1424,
+                          plot.label = F, plot.bg.label = NULL, file = "", vwidth = 1424,
                           vheight = 1000, html.name = "", selfcontained = FALSE) {
 
   # Clear plotting devices if add argument is false - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
@@ -582,16 +585,47 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, map.type 
 
     # Add Subbasins
     if (!is.null(bg)) {
-      leafmap <- leafmap %>%
-        addPolygons(
-          group = "Subbasins",
-          data = bg,
-          color = "black",
-          weight = bg.weight,
-          opacity = bg.opacity,
-          fillColor = bg.fillColor,
-          fillOpacity = bg.fillOpacity
-        )
+      if (plot.bg.label == "hover"){
+        leafmap <- leafmap %>%
+          addPolygons(
+            group = "Subbasins",
+            data = bg,
+            label = bg[[bg.label.column]],
+            color = "black",
+            weight = bg.weight,
+            opacity = bg.opacity,
+            fillColor = bg.fillColor,
+            fillOpacity = bg.fillOpacity
+          )
+      } else if (plot.bg.label == "static"){
+        leafmap <- leafmap %>%
+          addPolygons(
+            group = "Subbasins",
+            data = bg,
+            color = "black",
+            weight = bg.weight,
+            opacity = bg.opacity,
+            fillColor = bg.fillColor,
+            fillOpacity = bg.fillOpacity
+          )%>%
+          addLabelOnlyMarkers(
+            group = "Subbasins",
+            data = st_point_on_surface(bg),
+            label = bg[[bg.label.column]],
+            labelOptions = labelOptions(noHide = T, direction = 'auto', textOnly = T)
+          )
+      } else{ # Do not plot labels
+          leafmap <- leafmap %>%
+            addPolygons(
+              group = "Subbasins",
+              data = bg,
+              color = "black",
+              weight = bg.weight,
+              opacity = bg.opacity,
+              fillColor = bg.fillColor,
+              fillOpacity = bg.fillOpacity
+            )
+      }
     }
 
     if (plot.label == T) { # Create points with labels

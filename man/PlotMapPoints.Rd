@@ -9,6 +9,7 @@ PlotMapPoints(
   sites,
   sites.subid.column = 1,
   bg = NULL,
+  bg.label.column = 1,
   map.type = "default",
   map.adj = 0,
   plot.legend = T,
@@ -38,6 +39,7 @@ PlotMapPoints(
   bg.fillColor = "#e5e5e5",
   bg.fillOpacity = 0.75,
   plot.label = F,
+  plot.bg.label = NULL,
   file = "",
   vwidth = 1424,
   vheight = 1000,
@@ -56,6 +58,8 @@ requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}.}
 
 \item{bg}{A \code{SpatialPolygonsDataFrame} or \code{sf} object to plot in the background. Typically an imported sub-basin vector polygon file.
 For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.}
+
+\item{bg.label.column}{Integer, column index in the \code{bg} 'data' \code{\link{slot}} holding labels (e.g. SUBIDs) to use for plotting.}
 
 \item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
 
@@ -127,6 +131,9 @@ In standard use cases of this function, plot margins do not need to be changed. 
 \item{bg.fillOpacity}{Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.}
 
 \item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See \code{\link{addCircleMarkers}}.}
+
+\item{plot.bg.label}{String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
+labels for \code{bg} will be dislayed in Leaflet maps.}
 
 \item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
 You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.}
