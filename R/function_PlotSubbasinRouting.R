@@ -49,15 +49,15 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
                                 font.size = 10, file = "", vwidth = 1424, vheight = 1000, html.name = "", selfcontained = FALSE) {
 
   # Import GIS Data
-  if("character" %in% class(map)){
+  if ("character" %in% class(map)) {
     map <- st_read(map)
-  } else if("SpatialPolygonsDataFrame" %in% class(map)){
+  } else if ("SpatialPolygonsDataFrame" %in% class(map)) {
     map <- st_as_sf(map)
   }
-  
-  # Rename columns to all uppercase
+
+  # Rename columns to all uppercase except geometry column
   map <- map %>%
-    rename_with(.fn = toupper, .cols = !matches("geometry"))
+    rename_with(.fn = toupper, .cols = !matches(attr(map, "sf_column")))
 
   # Check if GeoData is required
   if (is.null(gd) & !all(c("SUBID", "MAINDOWN") %in% colnames(map))) {
@@ -73,10 +73,10 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
   if (!is.null(bd) & typeof(bd) == "character") {
     bd <- suppressMessages(ReadBranchData(bd))
   }
-  
+
   # Format BranchData
-  if(!is.null(bd)){
-    bd <- bd%>%
+  if (!is.null(bd)) {
+    bd <- bd %>%
       filter(!is.na(SOURCEID))
   }
 
@@ -86,43 +86,52 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     map <- full_join(map[, map.subid.column] %>% mutate(across(1, ~ as.character(.x))), gd %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], "SUBID")) # Join GIS Data with GeoData in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
   }
 
-  # Create Subbasin Points
+  # Create Subbasin Points and remove rows where downstream subbasins don't exist
   map_point <- suppressWarnings(st_point_on_surface(map))
 
   # Get Downstream Subbasin Point
+  message("Finding Downstream Subbasins")
+
   map_point$ds_geometry <- st_sfc(unlist(lapply(1:nrow(map_point), function(X) {
-    
+
     # Get Downstream SUBID
     ds <- map_point$MAINDOWN[X]
 
     # If Downstream SUBID Exists
     if (ds %in% map_point$SUBID) {
-      st_geometry(map_point[which(map_point$SUBID == ds), "geometry"])
+      st_geometry(map_point[which(map_point$SUBID == ds), attr(map_point, "sf_column")])
     } else {
-      NA
+      st_sfc(st_point(c(0, 0))) # Assign Point 0,0 and remove later
     }
   }), recursive = F))
-  
+
   # Get Downstream Subbasin Points for Branches
-  if(!is.null(bd)){
-    for(i in 1:nrow(bd)){
-      
+  if (!is.null(bd)) {
+    message("Finding Branch Subbasins")
+    for (i in 1:nrow(bd)) {
+
       # Get row of data for source subbasin and change MAINDOWN to Branch subbasin
-      branch <- map_point[which(map_point$SUBID==bd$SOURCEID[i]),]%>%
+      branch <- map_point[which(map_point$SUBID == bd$SOURCEID[i]), ] %>%
         mutate(MAINDOWN = bd$BRANCHID[i])
-      
+
       # Get branch Geometry if branch SUBID Exists
-      if (bd$BRANCHID[i] %in% map_point$SUBID) {
-        branch$ds_geometry <- st_sfc(st_geometry(map_point[which(map_point$SUBID == bd$BRANCHID[i]), "geometry"]))
-      } else {
-        branch$ds_geometry <- st_sfc(st_point(as.numeric(c(NA,NA))))
+      if(nrow(branch)>0){
+        if (bd$BRANCHID[i] %in% map_point$SUBID) {
+          branch$ds_geometry <- st_sfc(st_geometry(map_point[which(map_point$SUBID == bd$BRANCHID[i]), attr(map, "sf_column")]))
+        } else {
+          branch$ds_geometry <- st_sfc(st_point(c(0, 0))) # Assign Point 0,0 and remove later
+        }
+        
+        # Add row to map_point
+        map_point <- map_point %>%
+          bind_rows(branch)
       }
-      
-      # Add row to map_point
-      map_point <- map_point%>%
-        bind_rows(branch)
     }
   }
+
+  # Remove Subbasins where downstream subbasin doesn't exist
+  map_point <- map_point %>%
+    filter(MAINDOWN %in% SUBID)
 
   # Create Leaflet Plot
   message("Creating Map")
@@ -152,16 +161,36 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       labelOptions = labelOptions(noHide = T, direction = "auto", textOnly = T, style = list("font-size" = paste0(font.size, "px")))
     )
 
+  # Create function to get colors for polylines
+  color_pal <- function(X) {
+    tryCatch(distinctColorPalette(X), # Try to get a distinct color for each line
+      error = function(e) {
+        rep_len(distinctColorPalette(100), X) # If there is an error, then repeat palette of 100 colors as necessary
+      }
+    )
+  }
+
+  # Get colors for polylines
+  colors <- color_pal(nrow(map_point))
+
   # Add Lines
   message("Adding Routing Lines")
+  progress <- 1
   for (i in 1:nrow(map_point)) {
+    
+    # Add Progress Message for datasets with >=1000 polylines
+    if(nrow(map_point)>=1000&i==ceiling(nrow(map_point)/10)*progress){
+      message(paste0("Adding Routing Lines: ",progress*10,"%"))
+      progress <- progress+1
+    }
+      
     leafmap <- leafmap %>%
       addPolylines(
         group = "Routing",
-        lat = c(st_coordinates(map_point$geometry)[i, 2], st_coordinates(map_point$ds_geometry)[i, 2]),
-        lng = c(st_coordinates(map_point$geometry)[i, 1], st_coordinates(map_point$ds_geometry)[i, 1]),
+        lat = c(st_coordinates(map_point[attr(map, "sf_column")])[i, 2], st_coordinates(map_point$ds_geometry)[i, 2]),
+        lng = c(st_coordinates(map_point[attr(map, "sf_column")])[i, 1], st_coordinates(map_point$ds_geometry)[i, 1]),
         label = paste("SUBID", map_point$SUBID[i], "to SUBID", map_point$MAINDOWN[i]),
-        color = distinctColorPalette(nrow(map_point))[i],
+        color = colors[i],
         weight = line.weight,
         opacity = line.opacity
       )
@@ -211,7 +240,6 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 # library(leaflet)
 # library(leaflet.extras)
 # library(randomcoloR)
-# map <- "C:/Users/a002416/Desktop/sediment_plots/banja/gis/subbasins/banja_20210413.shp"
 # map.subid.column <- 1
 # gd <- NULL
 # bd <- NULL
@@ -221,11 +249,11 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 # opacity <- 0.75
 # fillColor <- "#4d4d4d"
 # fillOpacity <- 0.25
-# line.weight = 5
-# line.opacity = 1
+# line.weight <- 5
+# line.opacity <- 1
 # font.size <- 10
 # file <- ""
-# vwidth = 1424
-# vheight = 1000
+# vwidth <- 1424
+# vheight <- 1000
 # html.name <- ""
-# selfcontained = FALSE
+# selfcontained <- FALSE
