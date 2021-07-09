@@ -2,7 +2,7 @@
 #'
 #' Plot routing of subbasins for a HYPE model on an interactive map.
 #'
-#' @param map String, path to file containing subbasin polygon GIS data (e.g. shapefile or geopackage). For large maps, a small/simplified polygon file should be used as larger files can take an excessive amount of time to render.
+#' @param map Path to file containing subbasin polygon GIS data (e.g. shapefile or geopackage) or a \code{SpatialPolygonsDataFrame} or \code{sf} object. For large maps, a small/simplified polygon file should be used as larger files can take an excessive amount of time to render.
 #' @param map.subid.column Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs). Only required if providing GeoData information with \code{gd}.
 #' @param gd Path to model GeoData.txt or a GeoData object from \code{\link{ReadGeoData}}. Only required if \code{map} does not contain SUBID and/or MAINDOWN fields.
 #' @param bd Path to model BranchData.txt or a BranchData object from \code{\link{ReadBranchData}}. Only required if model has a BranchData.txt file.
@@ -48,8 +48,15 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
                                 weight = 0.15, opacity = 0.75, fillColor = "#4d4d4d", fillOpacity = 0.25, line.weight = 5, line.opacity = 1,
                                 font.size = 10, file = "", vwidth = 1424, vheight = 1000, html.name = "", selfcontained = FALSE) {
 
-  # Import GIS Data and rename columns to all uppercase
-  map <- st_read(map) %>%
+  # Import GIS Data
+  if("character" %in% class(map)){
+    map <- st_read(map)
+  } else if("SpatialPolygonsDataFrame" %in% class(map)){
+    map <- st_as_sf(map)
+  }
+  
+  # Rename columns to all uppercase
+  map <- map %>%
     rename_with(.fn = toupper, .cols = !matches("geometry"))
 
   # Check if GeoData is required

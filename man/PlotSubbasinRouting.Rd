@@ -26,7 +26,7 @@ PlotSubbasinRouting(
 )
 }
 \arguments{
-\item{map}{String, path to file containing subbasin polygon GIS data (e.g. shapefile or geopackage). For large maps, a small/simplified polygon file should be used as larger files can take an excessive amount of time to render.}
+\item{map}{Path to file containing subbasin polygon GIS data (e.g. shapefile or geopackage) or a \code{SpatialPolygonsDataFrame} or \code{sf} object. For large maps, a small/simplified polygon file should be used as larger files can take an excessive amount of time to render.}
 
 \item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs). Only required if providing GeoData information with \code{gd}.}
 
