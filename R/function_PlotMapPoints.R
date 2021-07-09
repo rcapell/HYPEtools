@@ -666,7 +666,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     #   leafmap <- leafmap %>%
     #     addSearchFeatures(
     #       targetGroups = c("Points"),
-    #       options = searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = F)
+    #       options = searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
     #     )
     # }
 

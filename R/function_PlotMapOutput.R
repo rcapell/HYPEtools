@@ -706,7 +706,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       leafmap <- leafmap %>%
         addSearchFeatures(
           targetGroups = "Subbasins",
-          options = searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = F)
+          options = searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
         )
     }
 
