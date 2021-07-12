@@ -12,16 +12,16 @@ PlotMapPoints(
   bg.label.column = 1,
   map.type = "default",
   map.adj = 0,
-  plot.legend = T,
+  plot.legend = TRUE,
   legend.pos = "bottomright",
   legend.title = NULL,
-  legend.outer = F,
+  legend.outer = FALSE,
   legend.inset = c(0, 0),
   legend.signif = 2,
   col = NULL,
   col.breaks = NULL,
-  plot.scale = T,
-  plot.arrow = T,
+  plot.scale = TRUE,
+  plot.arrow = TRUE,
   pt.cex = 1,
   par.cex = 1,
   par.mar = rep(0, 4) + 0.1,
@@ -38,7 +38,10 @@ PlotMapPoints(
   bg.opacity = 0.75,
   bg.fillColor = "#e5e5e5",
   bg.fillOpacity = 0.75,
-  plot.label = F,
+  plot.label = FALSE,
+  noHide = FALSE,
+  textOnly = FALSE,
+  font.size = 10,
   plot.bg.label = NULL,
   file = "",
   vwidth = 1424,
@@ -131,6 +134,12 @@ In standard use cases of this function, plot margins do not need to be changed. 
 \item{bg.fillOpacity}{Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.}
 
 \item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See \code{\link{addCircleMarkers}}.}
+
+\item{noHide}{Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \code{\link{labelOptions}}.}
+
+\item{textOnly}{Logial, set to \code{TRUE} to hide marker label background in Leaflet maps. See \code{\link{labelOptions}}.}
+
+\item{font.size}{Numeric, font size (px) for marker labels in Leaflet maps.}
 
 \item{plot.bg.label}{String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
 labels for \code{bg} will be dislayed in Leaflet maps.}
