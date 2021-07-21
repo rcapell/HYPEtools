@@ -1836,9 +1836,9 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
           cp <- cp + 1
-          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccts, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccts, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
           cp <- cp + 1
-          list.plotexpr[[cp]] <- parse(text = 'points(cout, rets, col = "#00000080", pch = 16)')
+          list.plotexpr[[cp]] <- parse(text = 'points(rout, rets, col = "#00000080", pch = 16)')
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
           
@@ -1858,7 +1858,7 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
           cp <- cp + 1
-          list.plotexpr[[cp]] <- parse(text = 'plot(cout, rets, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+          list.plotexpr[[cp]] <- parse(text = 'plot(rout, rets, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
           
@@ -1939,15 +1939,18 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
       if (exi.t["rets"] && exi.t["ccts"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccts", obs = "rets", start.mon = start.mon, 
-                                     log = log.r, l.legend = c("sim. TS", "obs. TS"), mar = c(3.1, 3.1, .5, .5))')
+                                     log = log.r, l.legend = c("sim. TS", "obs. TS"), mar = c(3.1, 3.1, .5, .5),
+                                     ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["rets"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "rets", start.mon = start.mon, 
-                                     log = log.r, l.legend = c("obs. TS"), mar = c(3.1, 3.1, .5, .5))')
+                                     log = log.r, l.legend = c("obs. TS"), mar = c(3.1, 3.1, .5, .5),
+                                     ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccts"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccts", obs = NULL, start.mon = start.mon, 
-                                     log = log.r, l.legend = c("sim. TS"), mar = c(3.1, 3.1, .5, .5))')
+                                     log = log.r, l.legend = c("sim. TS"), mar = c(3.1, 3.1, .5, .5),
+                                     ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       }
     }
     
