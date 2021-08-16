@@ -1481,7 +1481,9 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
       })
     
   }
-
+  
+  # Force timezone to GMT
+  x[,1] <- force_tz(x[,1],tzone="GMT")
   
   ## add attributes
   obsid(x) <- sbd
