@@ -1389,6 +1389,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' \dontrun{ReadObs("Tobs.txt")}
 #' 
 #' @importFrom data.table fread
+#' @importFrom lubridate force_tz
 #' @export
 
 
