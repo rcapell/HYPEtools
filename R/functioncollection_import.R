@@ -1465,7 +1465,7 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
   
   
   ## import, date treatment depending on format
-  if (dt.format == "%Y%m%d") {
+  if (all(dt.format == "%Y%m%d")) {
     cC <- NULL
   } else {
     cC <- list("POSIXct" = 1)
@@ -1474,7 +1474,7 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
              sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, tz = "UTC", colClasses = cC)
   # manual date conversion with matlab-like date strings
-  if (dt.format == "%Y%m%d") {
+  if (all(dt.format == "%Y%m%d")) {
     xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
     x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
       print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
