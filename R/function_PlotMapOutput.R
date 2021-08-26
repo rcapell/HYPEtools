@@ -114,7 +114,7 @@
 #'
 #' @export
 #' @import sp
-#' @importFrom dplyr right_join %>% mutate
+#' @importFrom dplyr right_join %>% mutate filter
 #' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
 #' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addPolygons addScaleBar addLegend addProviderTiles
 #' @importFrom sf as_Spatial st_as_sf
@@ -647,7 +647,16 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # invisible unless assigned: return map with added data and color codes
     invisible(map)
   } else if (map.type == "leaflet") {
+    
+    # Reproject if not a lat/long CRS
+    if(st_is_longlat(x)==F){
+      x <- x%>%st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+    }
 
+    # Remove any empty geometries (these prevent labels from working)
+    x <- x %>%
+      dplyr::filter(!st_is_empty(.))
+    
     # Create legend labels, change NA color to selected NA color
     if (any(is.na(x[[2]]))) {
       l.label <- c(unlist(lapply(1:(length(cbrks) - 1), function(X) {

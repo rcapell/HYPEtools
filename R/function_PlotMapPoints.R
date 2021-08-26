@@ -104,7 +104,7 @@
 #'
 #' @export
 #' @import sp
-#' @importFrom dplyr right_join %>% mutate
+#' @importFrom dplyr right_join %>% mutate filter
 #' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
 #' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addCircleMarkers addPolygons addScaleBar addLegend addProviderTiles addLabelOnlyMarkers labelOptions
 #' @importFrom sf as_Spatial st_as_sf st_point_on_surface
@@ -565,6 +565,24 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     # invisible unless assigned: return map with added data and color codes
     invisible(sites)
   } else if (map.type == "leaflet") {
+    
+    # Reproject if not a lat/long CRS
+    if(st_is_longlat(x)==F){
+      x <- x%>%st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+    }
+    if(!is.null(bg)){
+      if(st_is_longlat(bg)==F){
+        bg <- bg%>%st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+      }
+    }
+    
+    # Remove any empty geometries (these prevent labels from working)
+    x <- x %>%
+      dplyr::filter(!st_is_empty(.))
+    if(!is.null(bg)){
+      bg <- bg %>%
+        dplyr::filter(!st_is_empty(.))
+    }
 
     # Create legend labels, change NA color to selected NA color
     if (any(is.na(x[[2]]))) {
@@ -590,19 +608,8 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
 
     # Add Subbasins
     if (!is.null(bg)) {
-      if (plot.bg.label == "hover"){
-        leafmap <- leafmap %>%
-          addPolygons(
-            group = "Subbasins",
-            data = bg,
-            label = bg[[bg.label.column]],
-            color = "black",
-            weight = bg.weight,
-            opacity = bg.opacity,
-            fillColor = bg.fillColor,
-            fillOpacity = bg.fillOpacity
-          )
-      } else if (plot.bg.label == "static"){
+      # Do Not Plot Labels
+      if(is.null(plot.bg.label)){
         leafmap <- leafmap %>%
           addPolygons(
             group = "Subbasins",
@@ -612,14 +619,39 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
             opacity = bg.opacity,
             fillColor = bg.fillColor,
             fillOpacity = bg.fillOpacity
-          )%>%
-          addLabelOnlyMarkers(
-            group = "Subbasins",
-            data = st_point_on_surface(bg),
-            label = bg[[bg.label.column]],
-            labelOptions = labelOptions(noHide = T, direction = 'auto', textOnly = T)
           )
-      } else{ # Do not plot labels
+      # Plot Labels
+      } else{
+        if (plot.bg.label == "hover"){
+          leafmap <- leafmap %>%
+            addPolygons(
+              group = "Subbasins",
+              data = bg,
+              label = bg[[bg.label.column]],
+              color = "black",
+              weight = bg.weight,
+              opacity = bg.opacity,
+              fillColor = bg.fillColor,
+              fillOpacity = bg.fillOpacity
+            )
+        } else if (plot.bg.label == "static"){
+          leafmap <- leafmap %>%
+            addPolygons(
+              group = "Subbasins",
+              data = bg,
+              color = "black",
+              weight = bg.weight,
+              opacity = bg.opacity,
+              fillColor = bg.fillColor,
+              fillOpacity = bg.fillOpacity
+            )%>%
+            addLabelOnlyMarkers(
+              group = "Subbasins",
+              data = suppressWarnings(st_point_on_surface(bg)),
+              label = bg[[bg.label.column]],
+              labelOptions = labelOptions(noHide = T, direction = 'auto', textOnly = T)
+            )
+        } else{ # Do not plot labels
           leafmap <- leafmap %>%
             addPolygons(
               group = "Subbasins",
@@ -630,6 +662,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
               fillColor = bg.fillColor,
               fillOpacity = bg.fillOpacity
             )
+        }
       }
     }
 
