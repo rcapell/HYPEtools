@@ -63,6 +63,9 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
   # Rename columns to all uppercase except geometry column
   map <- map %>%
     rename_with(.fn = toupper, .cols = !matches(attr(map, "sf_column")))
+  
+  # Get name of map subid column
+  map.subid.name <- colnames(map)[map.subid.column]
 
   # Check if GeoData is required
   if (is.null(gd) & !all(c("SUBID", "MAINDOWN") %in% colnames(map))) {
@@ -103,8 +106,8 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     ds <- map_point$MAINDOWN[X]
 
     # If Downstream SUBID Exists
-    if (ds %in% map_point$SUBID) {
-      st_geometry(map_point[which(map_point$SUBID == ds), attr(map_point, "sf_column")])
+    if (ds %in% unlist(map_point[,map.subid.name]%>%st_drop_geometry())) {
+      st_geometry(map_point[which(unlist(map_point[,map.subid.name]%>%st_drop_geometry()) == ds), attr(map_point, "sf_column")])
     } else {
       st_sfc(st_point(c(0, 0))) # Assign Point 0,0 and remove later
     }
@@ -116,13 +119,13 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     for (i in 1:nrow(bd)) {
 
       # Get row of data for source subbasin and change MAINDOWN to Branch subbasin
-      branch <- map_point[which(map_point$SUBID == bd$SOURCEID[i]), ] %>%
+      branch <- map_point[which(map_point[,map.subid.name] == bd$SOURCEID[i]), ] %>%
         mutate(MAINDOWN = bd$BRANCHID[i])
 
       # Get branch Geometry if branch SUBID Exists
       if(nrow(branch)>0){
-        if (bd$BRANCHID[i] %in% map_point$SUBID) {
-          branch$ds_geometry <- st_sfc(st_geometry(map_point[which(map_point$SUBID == bd$BRANCHID[i]), attr(map, "sf_column")]))
+        if (bd$BRANCHID[i] %in% map_point[,map.subid.name]) {
+          branch$ds_geometry <- st_sfc(st_geometry(map_point[which(map_point[,map.subid.name] == bd$BRANCHID[i]), attr(map, "sf_column")]))
         } else {
           branch$ds_geometry <- st_sfc(st_point(c(0, 0))) # Assign Point 0,0 and remove later
         }
@@ -136,7 +139,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
   # Remove Subbasins where downstream subbasin doesn't exist
   map_point <- map_point %>%
-    dplyr::filter(MAINDOWN %in% .$SUBID)
+    dplyr::filter(MAINDOWN %in% unlist(map_point[,map.subid.name]%>%st_drop_geometry()))
 
   # Create Leaflet Plot
   message("Creating Map")
@@ -156,13 +159,13 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       opacity = opacity,
       fillColor = fillColor,
       fillOpacity = fillOpacity,
-      label = paste(map$SUBID), # Add label so searchbar will work
+      label = paste(map[,map.subid.name]), # Add label so searchbar will work
       labelOptions = labelOptions(noHide = T, textOnly = T, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
     ) %>%
     addLabelOnlyMarkers(
       group = "Subbasins",
       data = suppressWarnings(st_point_on_surface(map)),
-      label = map[["SUBID"]],
+      label = map[[map.subid.name]],
       labelOptions = labelOptions(noHide = T, direction = "auto", textOnly = T, style = list("font-size" = paste0(font.size, "px")))
     )
 
@@ -194,7 +197,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
         group = "Routing",
         lat = c(st_coordinates(map_point[attr(map, "sf_column")])[i, 2], st_coordinates(map_point$ds_geometry)[i, 2]),
         lng = c(st_coordinates(map_point[attr(map, "sf_column")])[i, 1], st_coordinates(map_point$ds_geometry)[i, 1]),
-        label = paste("SUBID", map_point$SUBID[i], "to SUBID", map_point$MAINDOWN[i]),
+        label = paste("SUBID", unlist(map_point[,map.subid.name]%>%st_drop_geometry())[i], "to SUBID", map_point$MAINDOWN[i]),
         color = colors[i],
         weight = line.weight,
         opacity = line.opacity
