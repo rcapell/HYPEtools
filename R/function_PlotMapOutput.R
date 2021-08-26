@@ -49,6 +49,8 @@
 #' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
 #' In standard use cases of this function, plot margins do not need to be changed. Only used for default maps.
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.
+#' @param graphics.off Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when 
+#' adding default maps to a plotting device. See \code{\link{graphics.off}}.
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.
 #' @param weight Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.
 #' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.
@@ -124,13 +126,13 @@
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", map.adj = 0, plot.legend = T,
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), legend.signif = 2,
                           col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = F, plot.scale = T, plot.arrow = T,
-                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, restore.par = FALSE,
+                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, graphics.off = TRUE, restore.par = FALSE,
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           plot.searchbar = F, plot.label = F, file = "", vwidth = 1424,
                           vheight = 1000, html.name = "", selfcontained = FALSE) {
 
-  # Clear plotting devices if add argument is false - prevents R fatal errors caused if PlotMapOutput tries to add default plot to existing Leaflet map
-  if (add == F & !is.null(dev.list())) dev.off()
+  # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
+  if (graphics.off == T & !is.null(dev.list())) graphics.off()
 
   # input argument checks
   stopifnot(is.data.frame(x), dim(x)[2] == 2, is.null(col.breaks) || is.numeric(col.breaks), ("sf" %in% class(map) | "SpatialPolygonsDataFrame" %in% class(map)))

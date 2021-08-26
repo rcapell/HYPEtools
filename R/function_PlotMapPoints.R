@@ -43,6 +43,8 @@
 #' In standard use cases of this function, plot margins do not need to be changed. Only used for default maps.
 #' @param pch,lwd Integer, plotting symbol and line width. See \code{\link{points}}. Only used for default maps.
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.
+#' @param graphics.off Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when 
+#' adding default maps to a plotting device. See \code{\link{graphics.off}}.
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.
 #' @param radius Numeric, radius of markers in Leaflet maps. See \code{\link{addCircleMarkers}}.
 #' @param weight Numeric, weight of marker outlines in Leaflet maps. See \code{\link{addCircleMarkers}}.
@@ -113,15 +115,15 @@
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.column = 1, map.type = "default", map.adj = 0, plot.legend = TRUE,
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = FALSE, legend.inset = c(0, 0), legend.signif = 2,
                           col = NULL, col.breaks = NULL, plot.scale = TRUE, plot.arrow = TRUE, pt.cex = 1,
-                          par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE, restore.par = FALSE,
+                          par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE, graphics.off = TRUE, restore.par = FALSE,
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
                           # plot.searchbar = F, # leaflet.extras searchbar currently doesn't work for CircleMarkers
                           plot.label = FALSE, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL, file = "", vwidth = 1424,
                           vheight = 1000, html.name = "", selfcontained = FALSE) {
 
-  # Clear plotting devices if add argument is false - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
-  if (add == F & !is.null(dev.list())) dev.off()
+  # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
+  if (graphics.off == T & !is.null(dev.list())) graphics.off()
 
   # input argument checks
   stopifnot(

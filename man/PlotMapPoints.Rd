@@ -28,6 +28,7 @@ PlotMapPoints(
   pch = 21,
   lwd = 0.8,
   add = FALSE,
+  graphics.off = TRUE,
   restore.par = FALSE,
   radius = 5,
   weight = 0.15,
@@ -112,6 +113,9 @@ In standard use cases of this function, plot margins do not need to be changed. 
 \item{pch, lwd}{Integer, plotting symbol and line width. See \code{\link{points}}. Only used for default maps.}
 
 \item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.}
+
+\item{graphics.off}{Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when
+adding default maps to a plotting device. See \code{\link{graphics.off}}.}
 
 \item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.}
 
