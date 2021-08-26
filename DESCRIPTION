@@ -1,5 +1,5 @@
 Package: HYPEtools
-Version: 0.5.0.9000
+Version: 0.5.1
 Title: Tools for Processing and Analysing Files from the Conceptual
     Rainfall-Runoff Model HYPE
 Description: This package contains functions to handle and analyse input and
@@ -20,10 +20,12 @@ Imports:
     hydroGOF,
     leaflet,
     leaflet.extras,
+    lubridate,
     mapview,
     ncdf4,
     pbapply,
-    sf
+    sf,
+    stringr
 License: LGPL-3
 LazyData: true
 URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
