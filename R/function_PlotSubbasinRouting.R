@@ -36,7 +36,7 @@
 #' }
 #'
 #' @export
-#' @importFrom dplyr full_join %>% bind_rows
+#' @importFrom dplyr full_join %>% bind_rows filter
 #' @importFrom sf st_read st_sfc st_geometry st_coordinates st_point
 #' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
 #' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addPolygons addPolylines addScaleBar addProviderTiles
@@ -53,6 +53,11 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     map <- st_read(map)
   } else if ("SpatialPolygonsDataFrame" %in% class(map)) {
     map <- st_as_sf(map)
+  }
+  
+  # Reproject if not a lat/long CRS
+  if(st_is_longlat(map)==F){
+    map <- map%>%st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
   }
 
   # Rename columns to all uppercase except geometry column
@@ -77,7 +82,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
   # Format BranchData
   if (!is.null(bd)) {
     bd <- bd %>%
-      filter(!is.na(SOURCEID))
+      dplyr::filter(!is.na(SOURCEID))
   }
 
   # Join GIS & GeoData if GeoData provided
@@ -131,7 +136,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
   # Remove Subbasins where downstream subbasin doesn't exist
   map_point <- map_point %>%
-    filter(MAINDOWN %in% SUBID)
+    dplyr::filter(MAINDOWN %in% .$SUBID)
 
   # Create Leaflet Plot
   message("Creating Map")
