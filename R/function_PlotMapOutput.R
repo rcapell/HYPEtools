@@ -341,6 +341,11 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     map@data <- data.frame(map@data, x[match(map@data[, map.subid.column], x[, 1]), ])
   } else if (map.type == "leaflet") {
     message(paste0('Joining "', colnames(map)[map.subid.column], '" from GIS Data (map) To "', colnames(x)[1], '" from MapOutput (x)'))
+
+    # Check for duplicate SUBIDS
+    if(any(duplicated(map[, map.subid.column]%>%st_drop_geometry()))){warning("Duplicate SUBIDS exist in GIS Data (map)")}
+    if(any(duplicated(x[,1]))){warning("Duplicate SUBIDS exist in MapOutput (x)")}
+    
     x <- right_join(map[, map.subid.column]%>%mutate(across(1,~as.character(.x))), x%>%mutate(across(1,~as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], colnames(x)[1])) # Join GIS Data with MapOutput Data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
   }
 

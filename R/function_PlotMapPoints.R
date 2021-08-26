@@ -268,6 +268,11 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     sts <- sites[!is.na(sites@data[, nc.sites + 1]), ]
   } else if (map.type == "leaflet") {
     message(paste0('Joining "', colnames(sites)[sites.subid.column], '" from GIS Data (sites) To "', colnames(x)[1], '" from subass (x)'))
+    
+    # Check for duplicate SUBIDS
+    if(any(duplicated(sites[, sites.subid.column]%>%st_drop_geometry()))){message(paste(" - Duplicate SUBIDS exist in GIS Data (sites)!"))}
+    if(any(duplicated(x[,1]))){message(" - Duplicate SUBIDS exist in subass (x)!")}
+    
     x <- right_join(sites[, sites.subid.column] %>% mutate(across(1, ~ as.character(.x))), x %>% mutate(across(1, ~ as.character(.x))), by = setNames(nm = colnames(sites)[sites.subid.column], colnames(x)[1])) # Join GIS Data with subass in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
   }
 
