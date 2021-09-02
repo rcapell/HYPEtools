@@ -117,7 +117,7 @@
 #' @importFrom dplyr right_join %>% mutate filter
 #' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
 #' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addPolygons addScaleBar addLegend addProviderTiles
-#' @importFrom sf as_Spatial st_as_sf
+#' @importFrom sf as_Spatial st_as_sf st_drop_geometry
 #' @importFrom mapview mapshot
 #' @importFrom htmlwidgets saveWidget
 # @importFrom sp SpatialPolygonsDataFrame SpatialPolygons

@@ -107,7 +107,7 @@
 #' @importFrom dplyr right_join %>% mutate filter
 #' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
 #' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addCircleMarkers addPolygons addScaleBar addLegend addProviderTiles addLabelOnlyMarkers labelOptions
-#' @importFrom sf as_Spatial st_as_sf st_point_on_surface
+#' @importFrom sf as_Spatial st_as_sf st_point_on_surface st_drop_geometry
 #' @importFrom mapview mapshot
 #' @importFrom htmlwidgets saveWidget
 
