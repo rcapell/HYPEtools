@@ -1,5 +1,5 @@
 Package: HYPEtools
-Version: 0.5.1
+Version: 0.5.1.9000
 Title: Tools for Processing and Analysing Files from the Conceptual
     Rainfall-Runoff Model HYPE
 Description: This package contains functions to handle and analyse input and
@@ -11,7 +11,7 @@ Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email ="rene.capel
     person("David", "Gustafsson", role = "ctb"),
     person("Jude", list("Musuuza", "Lubega"), role = "ctb"))
 Depends:
-    R (>= 3.0.0)
+    R (>= 3.5.0)
 Imports:
     sp,
     data.table (>= 1.9.8),
