@@ -264,8 +264,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     nc.sites <- ncol(sites@data)
     # add x to subid map table (in data slot, indicated by @), merge by SUBID
     sites@data <- data.frame(sites@data, x[match(sites@data[, sites.subid.column], x[, 1]), ])
-    # select sites for which x exists
+    # select sites for which x exists and sort in order of x so that user-supplied vectors of pch, lwd, etc. are assigned to the right map point
     sts <- sites[!is.na(sites@data[, nc.sites + 1]), ]
+    sts <- tete[match(x[, 1], sts@data[, sites.subid.column]), ]
+    
   } else if (map.type == "leaflet") {
     message(paste0('Joining "', colnames(sites)[sites.subid.column], '" from GIS Data (sites) To "', colnames(x)[1], '" from subass (x)'))
     
@@ -568,7 +570,8 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     }
 
     # invisible unless assigned: return map with added data and color codes
-    invisible(sites)
+    # invisible(sites)
+    invisible(sts)
   } else if (map.type == "leaflet") {
     
     # Reproject if not a lat/long CRS
