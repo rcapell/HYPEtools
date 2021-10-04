@@ -970,7 +970,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "%Y-%m")}
 #' 
 #' @importFrom data.table fread is.data.table data.table
-#' @importFrom ncdf4 nc_open nc_close
+#' @importFrom ncdf4 nc_open nc_close ncvar_get
 #' @export
 
 ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, out.reg = NULL, type = c("df", "dt", "hsv"), 
@@ -1017,11 +1017,11 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     nm.var <- names(ncf$var)
     nm.dim <- names(ncf$dim)
     
-    "id" %in% nm.dim
+    # "id" %in% nm.dim
     
     # select and import HYPE variable, other variables (positions) discarded for now
-    hype.var <- toupper(nm.var[!(nm.var %in% paste0("geo_", c("x", "y", "z")))])
-    hdata <- ncvar_get(nc = ncf, hvar)
+    hype.var <- nm.var[!(nm.var %in% paste0("geo_", c("x", "y", "z")))]
+    hdata <- ncvar_get(nc = ncf, hype.var)
     
     # import time dimension
     dim.time <- as.numeric(ncvar_get(nc = ncf, "time"))
@@ -1046,7 +1046,9 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     torigin <- as.POSIXct(tunits[2], tz = "GMT")
     
     # create POSIX vector
-    if (tunits[1] == "minutes") {
+    if (tunits[1] == "seconds") {
+      tsteps <- torigin + (dim.time)
+    } else if (tunits[1] == "minutes") {
       tsteps <- torigin + (dim.time * 60)
     } else if (tunits[1] == "hours") {
       tsteps <- torigin + (dim.time * 3600)
@@ -1297,7 +1299,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
       # add timestep attribute with placeholder value
       attr(x, which = "timestep") <- "unknown"
     }
-    return(x)
+    
     
   } else {
     ## HypeSingleVar formatting
