@@ -117,7 +117,7 @@ ReadPointSourceData(
   ...
 )
 
-ReadAllsim(filename = "allsim.txt")
+ReadAllsim(filename = "allsim.txt", na.strings = "-9999")
 
 ReadForcKey(
   filename = "ForcKey.txt",

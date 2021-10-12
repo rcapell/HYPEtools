@@ -1723,8 +1723,8 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, h
 
 #' @rdname HypeDataImport
 #' @export
-ReadAllsim <- function(filename = "allsim.txt") {
-  read.table(file = filename, header = T, sep = ",")
+ReadAllsim <- function(filename = "allsim.txt", na.strings="-9999") {
+  read.table(file = filename, header = T, sep = ",", na.strings = na.strings)
 }
 
 #' @rdname HypeDataImport
