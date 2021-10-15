@@ -7,7 +7,8 @@
 ReadGeoData(
   filename = "GeoData.txt",
   sep = "\\t",
-  encoding = c("unknown", "UTF-8", "Latin-1")
+  encoding = c("unknown", "UTF-8", "Latin-1"),
+  remove.na.cols = T
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ Paths are separated by '/', not '\\'.}
 \item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when
 importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See
 also argument description in \code{\link[data.table]{fread}}.}
+
+\item{remove.na.cols}{Logical, remove columns which have all NA values.}
 }
 \value{
 If the imported file is a HYPE-conform GeoData file, \code{ReadGeoData} returns an object of S3 class \code{\link{HypeGeoData}}
