@@ -599,7 +599,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       })), "NA")
     } else {
       l.label <- unlist(lapply(1:(length(cbrks) - 1), function(X) {
-        paste(signif(cbrks[X], legend.signif), "-", signif(cbrks[X + 1], legend.signif))
+        paste(signif(cbrks[X], legend.signif), "to", signif(cbrks[X + 1], legend.signif))
       }))
     }
 
