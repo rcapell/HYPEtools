@@ -1497,7 +1497,8 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
   obsid(x) <- sbd
   
   # conditional: timestep attribute identified by difference between first two rows
-  tdff <- as.numeric(difftime(x$DATE[2], x$DATE[1], units = "hours"))
+  tdff <- as.numeric(difftime(x[2,grep("DATE",colnames(x),ignore.case = T,value=T)], x[1,grep("DATE",colnames(x),ignore.case = T,value=T)], units = "hours"))
+
   if (!is.na(tdff)) {
     if (tdff == 24) {
       timestep(x) <- "day"
