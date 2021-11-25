@@ -970,7 +970,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "%Y-%m")}
 #' 
 #' @importFrom data.table fread is.data.table data.table
-#' @importFrom ncdf4 nc_open nc_close ncvar_get
+#' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
 #' @export
 
 ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, out.reg = NULL, type = c("df", "dt", "hsv"), 

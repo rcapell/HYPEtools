@@ -24,6 +24,7 @@ Imports:
     mapview,
     ncdf4,
     pbapply,
+    randomcoloR,
     sf,
     stringr
 License: LGPL-3
