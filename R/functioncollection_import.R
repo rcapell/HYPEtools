@@ -542,6 +542,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
 #' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
 #' also argument description in \code{\link[data.table]{fread}}.
+#' @param remove.na.cols Logical, remove columns which have all NA values.
 
 #' @details
 #' \code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
@@ -557,10 +558,11 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' \dontrun{ReadGeoData("GeoData.txt")}
 #' 
 #' @importFrom data.table fread
+#' @importFrom dplyr select %>%
 #' @export
 
 
-ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unknown", "UTF-8", "Latin-1")) {
+ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unknown", "UTF-8", "Latin-1"), remove.na.cols = T) {
   
   # argument checks
   encoding <- match.arg(encoding)
@@ -570,8 +572,11 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
   cnames <- strsplit(readLines(con = filename, n = 1), split = sep)[[1]]
   cnumeric <- which(toupper(cnames) %in% c("AREA", "RIVLEN"))
   
-  res <- fread(filename, header = T, sep = sep, colClasses = list("numeric" = cnumeric), data.table = F, encoding = encoding)
+  res <- fread(filename, header = T, sep = sep, colClasses = list("numeric" = cnumeric), data.table = F, encoding = encoding, fill = T)
   names(res) <- toupper(names(res))
+  
+  # remove columns with all NA
+  res <- res %>% select(where(function(x){any(!is.na(x))}))
   
   # # NOT USED ATM, REPLACED BY colClasses ARGUMENT IN fread. LEFT FOR REFERENCE
   # # force type numeric for selected columns if they exist. Otherwise there can be problem with integer calculation in other functions..
@@ -1492,7 +1497,8 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
   obsid(x) <- sbd
   
   # conditional: timestep attribute identified by difference between first two rows
-  tdff <- as.numeric(difftime(x$DATE[2], x$DATE[1], units = "hours"))
+  tdff <- as.numeric(difftime(x[2,grep("DATE",colnames(x),ignore.case = T,value=T)], x[1,grep("DATE",colnames(x),ignore.case = T,value=T)], units = "hours"))
+
   if (!is.na(tdff)) {
     if (tdff == 24) {
       timestep(x) <- "day"
@@ -1723,8 +1729,8 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, h
 
 #' @rdname HypeDataImport
 #' @export
-ReadAllsim <- function(filename = "allsim.txt") {
-  read.table(file = filename, header = T, sep = ",")
+ReadAllsim <- function(filename = "allsim.txt", na.strings="-9999") {
+  read.table(file = filename, header = T, sep = ",", na.strings = na.strings)
 }
 
 #' @rdname HypeDataImport
