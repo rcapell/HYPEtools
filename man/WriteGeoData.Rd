@@ -4,7 +4,12 @@
 \alias{WriteGeoData}
 \title{Write a 'GeoData.txt' file}
 \usage{
-WriteGeoData(x, filename = "GeoData.txt", digits = 3)
+WriteGeoData(
+  x,
+  filename = "GeoData.txt",
+  digits = 3,
+  scipen = getOption("scipen", 0L)
+)
 }
 \arguments{
 \item{x}{The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoData}}.
@@ -14,12 +19,16 @@ WriteGeoData(x, filename = "GeoData.txt", digits = 3)
 Paths are separated by '/', not '\\'.}
 
 \item{digits}{Integer, number of significant digits \strong{in SLC class columns} to export. See \code{\link{signif}}.}
+
+\item{scipen}{Integer, scientific notification bias, see documentation in \code{\link[data.table]{fwrite}}.}
 }
 \description{
 This is a convenience wrapper function to export a 'GeoData.txt' file from R.
 }
 \details{
-\code{WriteGeoData} exports a GeoData dataframe using \code{\link[data.table]{fwrite}}.
+\code{WriteGeoData} exports a GeoData dataframe using \code{\link[data.table]{fwrite}}. \code{SUBID} and \code{MAINDOWN}
+columns are forced to non-scientific notation by conversion to text strings prior to exporting. For all other numeric columns,
+use \code{\link[data.table]{fwrite}} argument \code{scipen}.
 HYPE does neither allow empty values in any GeoData column nor any string elements with more than 50 characters. The
 function will return with warnings if \code{NA}s or long strings were exported.
 }

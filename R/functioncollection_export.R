@@ -72,9 +72,12 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param digits Integer, number of significant digits \strong{in SLC class columns} to export. See \code{\link{signif}}.
+#' @param scipen Integer, scientific notification bias, see documentation in \code{\link[data.table]{fwrite}}.
 #'  
 #' @details
-#' \code{WriteGeoData} exports a GeoData dataframe using \code{\link[data.table]{fwrite}}.
+#' \code{WriteGeoData} exports a GeoData dataframe using \code{\link[data.table]{fwrite}}. \code{SUBID} and \code{MAINDOWN} 
+#' columns are forced to non-scientific notation by conversion to text strings prior to exporting. For all other numeric columns, 
+#' use \code{\link[data.table]{fwrite}} argument \code{scipen}.
 #' HYPE does neither allow empty values in any GeoData column nor any string elements with more than 50 characters. The 
 #' function will return with warnings if \code{NA}s or long strings were exported.
 #' 
@@ -85,7 +88,7 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 #' @export
 
 
-WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
+WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3, scipen = getOption('scipen', 0L)) {
   
   # warn if there are NAs, which should not occur in GeoData files for HYPE
   if (!is.null(na.action(na.omit(x)))) {
@@ -102,11 +105,22 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3) {
   x[, tolower(names(x)) == "subid"] <- format(x[, tolower(names(x)) == "subid"], scientific = F, trim = T)
   x[, tolower(names(x)) == "maindown"] <- format(x[, tolower(names(x)) == "maindown"], scientific = F, trim = T)
   
-  # export
-  fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
-  # old version, delete after while
-  # write.table(format(x, digits = digits, nsmall = nsmall, scientific = F, drop0trailing = T, trim = T), file = filename, 
-  #             quote = FALSE, sep = "\t", row.names = FALSE)
+  
+  # ## export, with handling of custom fwrite arguments
+  # 
+  # # arguments provided by user in call
+  # call <- as.list(match.call())[-1]
+  # 
+  # # fwrite arguments with fixed choices for GeoData export
+  # custom.args <- list(file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE)
+  # 
+  # # handle overlap, give priority to fixed choices (ignore user input)
+  # overlap.args <-  names(call) %in% names(custom.args)
+  # if (!any(overlap.args)) call <- c(call, custom_args)
+  # 
+  # do.call(table, call) # exectue table() with the custom settings
+  
+  fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE, scipen = scipen)
 }
 
 
