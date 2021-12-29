@@ -65,9 +65,7 @@
 #' You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
-#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).
-#' @param selfcontained Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
-#' Users should set argument to \code{FALSE} for large Leaflet maps with lots of markers or subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.
+#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}.
 #'
 #' @details
 #' \code{PlotMapPoints} can be used to print point information on a mapped surface. The primary target are model performance
@@ -107,7 +105,7 @@
 #' @importFrom dplyr right_join %>% mutate filter
 #' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
 #' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addCircleMarkers addPolygons addScaleBar addLegend addProviderTiles addLabelOnlyMarkers labelOptions
-#' @importFrom sf as_Spatial st_as_sf st_point_on_surface st_drop_geometry
+#' @importFrom sf as_Spatial st_as_sf st_point_on_surface st_drop_geometry st_is_longlat st_is_empty
 #' @importFrom mapview mapshot
 #' @importFrom htmlwidgets saveWidget
 
@@ -120,7 +118,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
                           # plot.searchbar = F, # leaflet.extras searchbar currently doesn't work for CircleMarkers
                           plot.label = FALSE, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL, file = "", vwidth = 1424,
-                          vheight = 1000, html.name = "", selfcontained = FALSE) {
+                          vheight = 1000, html.name = "") {
 
   # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
   if (graphics.off == T & !is.null(dev.list())) graphics.off()
@@ -754,7 +752,8 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     # Save HTML
     if (!html.name == "") {
       message("Saving HTML")
-      saveWidget(leafmap, file = html.name, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = selfcontained)
+      saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
+      file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
     }
 
     return(leafmap)

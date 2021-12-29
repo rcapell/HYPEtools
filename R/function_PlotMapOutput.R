@@ -62,9 +62,7 @@
 #' You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
-#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).
-#' @param selfcontained Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
-#' Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.
+#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}.
 #'
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map\[variable name\].txt' files, typically imported using \code{\link{ReadMapOutput}}.
@@ -117,7 +115,7 @@
 #' @importFrom dplyr right_join %>% mutate filter
 #' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
 #' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addPolygons addScaleBar addLegend addProviderTiles
-#' @importFrom sf as_Spatial st_as_sf st_drop_geometry
+#' @importFrom sf as_Spatial st_as_sf st_drop_geometry st_is_longlat st_is_empty
 #' @importFrom mapview mapshot
 #' @importFrom htmlwidgets saveWidget
 # @importFrom sp SpatialPolygonsDataFrame SpatialPolygons
@@ -129,7 +127,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, graphics.off = TRUE, restore.par = FALSE,
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           plot.searchbar = F, plot.label = F, file = "", vwidth = 1424,
-                          vheight = 1000, html.name = "", selfcontained = FALSE) {
+                          vheight = 1000, html.name = "") {
 
   # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
   if (graphics.off == T & !is.null(dev.list())) graphics.off()
@@ -763,7 +761,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # Save HTML
     if (!html.name == "") {
       message("Saving HTML")
-      saveWidget(leafmap, file = html.name, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = selfcontained)
+      saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
+      file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
     }
 
     return(leafmap)

@@ -47,8 +47,7 @@ PlotMapPoints(
   file = "",
   vwidth = 1424,
   vheight = 1000,
-  html.name = "",
-  selfcontained = FALSE
+  html.name = ""
 )
 }
 \arguments{
@@ -155,10 +154,7 @@ You may need to run \code{webshot::install_phantomjs()} the first time you save 
 
 \item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
 
-\item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).}
-
-\item{selfcontained}{Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
-Users should set argument to \code{FALSE} for large Leaflet maps with lots of markers or subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.}
+\item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}.}
 }
 \value{
 For default static maps, \code{PlotMapPoints} returns a plot to the currently active plot device, and invisibly an object of class
