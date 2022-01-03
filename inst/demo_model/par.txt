@@ -1,0 +1,60 @@
+!!Parametervärden
+!!
+!!Generella Q
+cevpam	0.25
+cevpph	67.5
+damp	0.5
+epotdist	3
+gldepi	3.6
+grata	0.6
+gratk	0.283
+gratp	2
+lp	0.95
+Qmean	200
+rcgrw	0
+rivvel	1
+rrcs3	0.0002
+sdnsnew	0.09
+sdnsmax	0.5
+sdnsrate	0.015
+sdnsradd	0.026
+tcalt	0.6
+ttpi	3
+pcelevth	500
+pcelevadd	0.04
+pcelevmax	0.04
+!!
+!!Landuses	 1=Water	 2=Coniferous forest	 3=Agricultural land
+cevp	0.175	0.22	0.215
+cmlt	2.8	1.9	3.5
+frost	2	2	2
+srrcs	0.4	0.2	0.3
+ttmp	0.2	0.3	0.2
+!!
+!!Soils	 1=Fine soil	 2=Coarse soil
+mperc1	20	25	
+mperc2	20	25	
+rrcs1	0.6	0.1
+rrcs2	0.04	0.03
+sfrost	1	1
+srrate	0.05	0.025
+trrcs	0.3	0.15
+wcep1	0.01	0.07
+wcep2	0.01	0.0595
+wcep3	0.01	0.049
+wcfc1	0.15	0.15
+wcfc2	0.15	0.15
+wcfc3	0.15	0.15
+wcwp1	0.15	0.05
+wcwp2	0.15	0.05
+wcwp3	0.15	0.05
+!!
+!!PARREG	1
+preccorr	-0.24
+cevpcorr	-0.29
+tempcorr	-0.4
+ratcorr	-0.813
+rrcscorr	-0.79
+
+
+!!

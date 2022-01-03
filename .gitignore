@@ -17,3 +17,6 @@ src/HYPEtools.so
 src-i386
 src-x64
 .gitignore
+inst/doc
+/doc/
+/Meta/

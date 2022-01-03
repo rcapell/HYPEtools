@@ -1,0 +1,9 @@
+!Landuses: 1=Water; 2=Coniferous forest; 3=Agricultural land													
+!Soils: 1=Fine soil; 2=Coarse soil													
+!Combination	Landuse	Soil	Cropid-main	Cropid-2nd	Rotation	Vegetationstyp	Special-class	Tile-depth	Drain-depth	#Soil-layers	Depth1	Depth2	Depth3
+1	1	1	0	0	0	1	1	0	0	1	10		
+2	1	1	0	0	0	1	2	0	0	1	10		
+3	3	1	0	0	0	1	0	0	0.6	3	0.25	0.5	0.75
+4	2	1	0	0	0	1	0	0	1	3	0.25	0.75	1.5
+5	2	2	0	0	0	1	0	0	1	3	0.25	0.75	1.5
+6	3	2	0	0	0	1	0	0	0.75	3	0.25	0.5	1

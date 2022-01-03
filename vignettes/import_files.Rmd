@@ -1,0 +1,63 @@
+---
+title: "Import HYPE Files"
+description: Learn how to import various HYPE files.
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Import HYPE Files}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Load Package & List Files:
+```{r setup}
+# Load HYPEtools Package
+library(HYPEtools)
+
+# Get Path to HYPEtools Model Example Files
+model_path <- system.file("demo_model", package = "HYPEtools")
+
+# List HYPE Model Example Files
+list.files(model_path)
+```
+
+More information on the different types of HYPE model files can be found on the HYPE Wiki: http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference#setup_files
+
+## Import Some Model Setup Files:
+```{r import_setup}
+# Import Files
+gd <- ReadGeoData(file.path(model_path, "GeoData.txt"))
+gc <- ReadGeoClass(file.path(model_path, "GeoClass.txt"))
+
+# Some Import Checks
+summary(gd)
+
+str(gc)
+
+class(gd)
+```
+
+## Import Discharge Observations:
+```{r import_discharge}
+# Import Discharge Observations
+qobs <- ReadObs(file.path(model_path, "Qobs.txt"))
+
+str(qobs)
+
+# Get SUBIDs with observations from attribute
+obsid(qobs)
+```
+
+## Import Parameter File:
+```{r import_par}
+# Import Parameter File
+par <- ReadPar(file.path(model_path, "Par.txt"))
+
+str(par)
+```

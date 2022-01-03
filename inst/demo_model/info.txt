@@ -1,0 +1,24 @@
+!!Calculation settings S-HYPE2016b, HYPE version 5.4.1
+!!
+resultdir		.\results\
+submodel		N
+bdate      		2000-01-01
+cdate      		2001-10-01
+edate      		2021-01-10
+basinoutput variable crun evap upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc
+basinoutput meanperiod 	1
+basinoutput subbasin 	3587
+basinoutput signfigures 4
+mapoutput variable crun evap temp cout rout soim sm13snow
+mapoutput meanperiod 5
+mapoutput signfigures 4
+crit meanperiod	1
+crit datalimit	3
+crit 1 criterion	MR2
+crit 1 cvariable	cout
+crit 1 rvariable	rout
+crit 1 weight		1
+crit 2 criterion	MRE
+crit 2 cvariable	cout
+crit 2 rvariable	rout
+crit 2 weight		1
