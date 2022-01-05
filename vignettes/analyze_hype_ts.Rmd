@@ -1,0 +1,91 @@
+---
+title: "Analyze HYPE Time Series Outputs"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Analyze HYPE Time Series Output}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE
+)
+```
+
+## Setup
+Load HYPEtools package and import HYPE model files.
+```{r setup, message=FALSE}
+# Load HYPEtools Package
+library(HYPEtools)
+
+# Get Path to HYPEtools Model Example Files
+model_path <- system.file("demo_model", package = "HYPEtools")
+
+# Import HYPE Model Files
+gd <- ReadGeoData(file.path(model_path, "GeoData.txt"))
+gcl <- ReadGeoClass(file.path(model_path, "GeoClass.txt"))
+bas <- ReadBasinOutput(file.path(model_path, "results/0003587.txt"))
+```
+
+## Import Checks
+```{r checks}
+# List HYPE Variable Names in Basin Ouptut File
+names(bas)
+
+# List subbasin SUBIDs in Basin Output File
+subid(bas)
+
+# Summarize Basin Output File Structure
+str(bas)
+```
+
+## Plot Time Series with PlotBasinOutput()
+```{r PlotBasinOutput}
+# Plot to screen
+PlotBasinOutput(bas, gd = gd, driver = "screen")
+
+# Select variables
+PlotBasinOutput(bas, gd = gd, driver = "screen", hype.vars = c("cout", "rout"))
+
+# Cut single year from output
+PlotBasinOutput(bas,
+  gd = gd, driver = "screen", hype.vars = c("cout", "rout"),
+  from = "2010-01-01",
+  to = "2010-12-31"
+)
+
+# plot time series in R with a log scale for the flow (log.q = T)
+PlotBasinOutput(bas,
+  driver = "screen", timestep = attr(bas, "timestep"),
+  hype.vars = "all", vol.err = T, log.q = T, start.mon = 10, from = 1,
+  to = nrow(bas), name = paste0("Subid ", attr(bas, "subid")), area = NULL,
+  subid = attr(bas, "subid"), gd = gd, bd = NULL
+)
+```
+
+## Plot Summary Plots with PlotBasinSummary()
+The PlotBasinSummary() function is useful mostly with water quality variables.
+```{r PlotBasinSummary}
+PlotBasinSummary(bas, gd = gd, gcl = gcl, driver = "screen")
+```
+
+## Compute Annual Regime for all variables with AnnualRegime()
+```{r AnnualRegime}
+AnnualRegime(bas,
+  ts.in = attr(bas, "timestep"), ts.out = "month",
+  start.mon = 10
+)
+```
+
+## Plot Annual Flow Regime with PlotAnnualRegime()
+```{r PlotAnnualRegime}
+regime <- AnnualRegime(bas[, c("DATE", "COUT", "ROUT")],
+  ts.in = timestep(bas), ts.out = "month",
+  start.mon = 10
+)
+
+PlotAnnualRegime(regime, band = "p25p75", add.legend = T, col = c(4, 2))
+```

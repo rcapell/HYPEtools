@@ -11,12 +11,13 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE
 )
 ```
 
-## Load Package & List Files:
-```{r setup}
+## Setup
+```{r setup, message=FALSE}
 # Load HYPEtools Package
 library(HYPEtools)
 
@@ -29,7 +30,7 @@ list.files(model_path)
 
 More information on the different types of HYPE model files can be found on the HYPE Wiki: http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference#setup_files
 
-## Import Some Model Setup Files:
+## Import Some Model Setup Files
 ```{r import_setup}
 # Import Files
 gd <- ReadGeoData(file.path(model_path, "GeoData.txt"))
@@ -43,7 +44,7 @@ str(gc)
 class(gd)
 ```
 
-## Import Discharge Observations:
+## Import Discharge Observations
 ```{r import_discharge}
 # Import Discharge Observations
 qobs <- ReadObs(file.path(model_path, "Qobs.txt"))
@@ -54,7 +55,7 @@ str(qobs)
 obsid(qobs)
 ```
 
-## Import Parameter File:
+## Import Parameter File
 ```{r import_par}
 # Import Parameter File
 par <- ReadPar(file.path(model_path, "Par.txt"))

@@ -1,0 +1,3 @@
+!!Subbasin assessment. Criteria is calculated for period DD. Variables: rout, cout  Unit: m3/s  
+SUBID	NSE	CC	RE(%)	RSDE(%)	Sim	Rec	SDSim	SDRec	MAE	RMSE	Bias	SDE	KGE	KGESD	KGEM	NRMSE	NSEW
+3587	0.853	0.925	-4.764	-9.442	1.752	1.839	1.417	1.564	0.401	0.601	-0.088	-0.148	0.871	0.906	0.952	0.051	0.856
