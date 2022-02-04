@@ -1891,6 +1891,7 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 #' 
 #' @param filename Path to and file name of the 'subassX.txt' file to import. 
 #' @param nhour Integer, time step of sub-daily model results in hours. See details. 
+#' @param check.names Logical. If \code{TRUE}, then the names of the variables are check to make sure they are syntactically valid.
 #'  
 #' @details
 #' \code{ReadSubass} imports a sub-basin assessement file into R. Information on model variables evaluated in the 
@@ -1912,7 +1913,7 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 #' @export 
 
 
-ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
+ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FALSE) {
   x <- read.table(file = filename, header = F, sep = "\t", skip = 2)
   te <- readLines(filename, n = 2)
   names(x) <- strsplit(te[2], split = "\t")[[1]]
@@ -1927,6 +1928,10 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL) {
     } else {
       tstep <- paste0(nhour, "hour") 
     }
+  }
+  # Remove symbols from column names
+  if(check.names == TRUE){
+    colnames(x) <- gsub("[(%)]", "", colnames(x))
   }
   attr(x, "timestep") <- tstep
   attr(x, "variables") <- attrsrc[11:12]

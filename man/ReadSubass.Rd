@@ -4,12 +4,14 @@
 \alias{ReadSubass}
 \title{Read a 'subassX.txt' file}
 \usage{
-ReadSubass(filename = "subass1.txt", nhour = NULL)
+ReadSubass(filename = "subass1.txt", nhour = NULL, check.names = FALSE)
 }
 \arguments{
 \item{filename}{Path to and file name of the 'subassX.txt' file to import.}
 
 \item{nhour}{Integer, time step of sub-daily model results in hours. See details.}
+
+\item{check.names}{Logical. If \code{TRUE}, then the names of the variables are check to make sure they are syntactically valid.}
 }
 \value{
 \code{ReadSubass} returns a data frame with two additional attributes: \code{variables} contains a 2-element
