@@ -58,7 +58,7 @@ obsid(qobs)
 ## Import Parameter File
 ```{r import_par}
 # Import Parameter File
-par <- ReadPar(file.path(model_path, "Par.txt"))
+par <- ReadPar(file.path(model_path, "par.txt"))
 
 str(par)
 ```
