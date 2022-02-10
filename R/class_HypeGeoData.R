@@ -82,6 +82,10 @@ HypeGeoData <- function(x) {
     # stop if data type in SLC class columns is wrong
     stop(paste0("SLC column(s) '", paste(names(x)[pos.s[!apply(x[, pos.s], 2, is.numeric)]], collapse = "', '"), "' non-numeric."))
     
+  }  else if (any(duplicated(x$SUBID))) {
+    # stop if any SUBID is duplicated
+    stop(paste0("SUBID(s) '", paste(x$SUBID[duplicated(x$SUBID)], collapse = "', '"), "' duplicated."))
+    
   }  else if (any(dn.s > 1) || any(dn.s == 0)) {
     # warn if there are SLC classes missing or duplicated
     if (any(dn.s > 1)) {
