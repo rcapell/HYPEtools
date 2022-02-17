@@ -18,7 +18,7 @@ Paths are separated by '/', not '\\'.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in column
 headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g.
-'\\%Y'. \strong{Defaults to \code{NULL}, which prevents date-time conversion}, applicable e.g. for files containing just one column of
+\code{"\\\%Y"}. \emph{Defaults to \code{NULL}, which prevents date-time conversion}, applicable e.g. for files containing just one column of
 summary values over the model period.}
 
 \item{hype.var}{Character string, a four-letter keyword to specify HYPE variable ID of file contents. See

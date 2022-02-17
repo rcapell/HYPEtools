@@ -758,7 +758,7 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' Paths are separated by '/', not '\\'.
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}, for conversion of date-time information in column 
 #' headers to POSIX dates, which are returned as attribute. Incomplete format strings for monthly and annual values allowed, e.g. 
-#' '\%Y'. \strong{Defaults to \code{NULL}, which prevents date-time conversion}, applicable e.g. for files containing just one column of 
+#' `"\%Y"`. *Defaults to \code{NULL}, which prevents date-time conversion*, applicable e.g. for files containing just one column of 
 #' summary values over the model period.
 #' @param hype.var Character string, a four-letter keyword to specify HYPE variable ID of file contents. See 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
@@ -921,7 +921,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' files following the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}. 
 #' See also details for netCDF import. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
-#' and annual values allowed, e.g. '\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
+#' and annual values allowed, e.g. `"\%Y"`. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
 #' @param hype.var Character, HYPE variable ID in \code{x}. See 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.

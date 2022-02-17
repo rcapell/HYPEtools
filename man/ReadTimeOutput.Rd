@@ -25,7 +25,7 @@ files following the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_n
 See also details for netCDF import.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly
-and annual values allowed, e.g. '\\%Y'. If set to \code{NULL}, no date-time conversion will be attempted and the column will
+and annual values allowed, e.g. \code{"\\\%Y"}. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.}
 
 \item{hype.var}{Character, HYPE variable ID in \code{x}. See
