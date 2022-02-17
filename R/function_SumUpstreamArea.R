@@ -7,8 +7,9 @@
 #' SUBIDs will be calculated.
 #' @param gd A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file.
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
-#' @param progbar Logical, display a progress bar while calculating upstream areas. Adds overhead to calculation time but useful when \code{subid} 
-#' is \code{NULL} or contains many SUBIDs.
+#' @param cl Integer, number of processes to use for parallel computation. Set to `1` for serial computation.
+#' @param progbar Logical, display a progress bar while calculating upstream areas. Adds overhead to calculation time but useful if you want 
+#' HYPEtools to decide how long your coffee break should take.
 #' 
 #' @details
 #' \code{SumUpstreamArea} sums upstream areas of all connected upstream SUBIDs, including branch connections in case of stream bifurcations 
@@ -25,9 +26,10 @@
 #' \dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
 #' 
 #' @importFrom pbapply pbsapply
+#' @importFrom parallel detectCores makePSOCKcluster stopCluster mclapply
 #' @export
 
-SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, progbar = F) {
+SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, cl = parallel::detectCores() - 2, progbar = F) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
@@ -52,19 +54,45 @@ SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, progbar = F) {
   
   # conditional: use the progress bar version of sapply if user-requested (imported from package pbapply)
   if (progbar) {
-    up.area <- pbsapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area)
+    if (cl > 1) {
+      # parallel computation
+      if (.Platform$OS.type == "unix") {
+        up.area <- pbsapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area, cl = cl)
+      } else if (.Platform$OS.type == "windows") {
+        cl <- makePSOCKcluster(cl)
+        up.area <- pbsapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% HYPEtools::AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area, cl = cl)
+        stopCluster(cl)
+      } else {
+        warning("Unknown OS type, reverting to serial computation.")
+        up.area <- pbsapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area)
+      }
+      
+    } else {
+      # serial computation
+      up.area <- pbsapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area)
+    }
   } else {
-    up.area <- sapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area)
+    if (cl > 1) {
+      # parallel computation
+      if (.Platform$OS.type == "unix") {
+        up.area <- mclapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area, mc.cores = cl)
+        up.area <- unlist(up.area)
+      } else if (.Platform$OS.type == "windows") {
+        cl <- makePSOCKcluster(cl)
+        up.area <- parLapply(cl = cl, X = subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% HYPEtools::AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area)
+        stopCluster(cl)
+        up.area <- unlist(up.area)
+      } else {
+        warning("Unknown OS type, reverting to serial computation.")
+        up.area <- sapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area)
+      }
+    } else {
+      # serial computation
+      up.area <- sapply(subid, function(x, g, b, ps, pa) {sum(g[g[, ps] %in% AllUpstreamSubids(subid = x, g, b), pa])}, g = gd, b = bd, ps = pos.sbd, pa = pos.area)
+    }
   }
   
   # build and return result dataframe
   res <- data.frame(SUBID = subid, UPSTREAMAREA = up.area)
   return(res)
 }
-
-# # DEBUG
-# gd <- ReadGeoData("D:/s-hype/2014_highresworkshop/run_sourceapp_HAROs/GeoData.txt")
-# bd <- ReadBranchData("D:/s-hype/2014_highresworkshop/run_sourceapp_HAROs/BranchData.txt")
-# subid <- NULL
-# subid <- 29
-# subid <- c(29, 99, 118)

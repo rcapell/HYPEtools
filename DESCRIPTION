@@ -13,7 +13,6 @@ Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email ="rene.capel
 Depends:
     R (>= 3.5.0)
 Imports:
-    sp,
     data.table (>= 1.9.8),
     dplyr,
     htmlwidgets,
@@ -23,9 +22,11 @@ Imports:
     lubridate,
     mapview,
     ncdf4,
+    parallel,
     pbapply,
     randomcoloR,
     sf,
+    sp,
     stringr
 License: LGPL-3
 LazyData: true
