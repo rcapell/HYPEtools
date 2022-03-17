@@ -26,7 +26,7 @@
 #' \dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
 #' 
 #' @importFrom pbapply pbsapply
-#' @importFrom parallel detectCores makePSOCKcluster stopCluster mclapply
+#' @importFrom parallel detectCores makePSOCKcluster stopCluster mclapply parLapply
 #' @export
 
 SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, cl = parallel::detectCores() - 2, progbar = F) {
