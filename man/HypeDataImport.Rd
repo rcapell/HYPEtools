@@ -13,6 +13,7 @@
 \alias{ReadPointSourceData}
 \alias{ReadAllsim}
 \alias{ReadForcKey}
+\alias{ReadUpdate}
 \title{Read HYPE data files}
 \usage{
 ReadAquiferData(
@@ -124,6 +125,16 @@ ReadForcKey(
   sep = "\\t",
   encoding = c("unknown", "latin1", "UTF-8")
 )
+
+ReadUpdate(
+  filename = "update.txt",
+  header = T,
+  sep = "\\t",
+  stringsAsFactors = F,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  data.table = F,
+  ...
+)
 }
 \arguments{
 \item{filename}{Path to and file name of HYPE data file file to import. Windows users: Note that
@@ -158,7 +169,6 @@ These are simple convenience wrapper functions to import various HYPE data files
 \details{
 Hype data file imports, simple \code{\link{read.table}} or \code{\link[data.table]{fread}} wrappers with
 formatting arguments set to match HYPE file specifications:
-
 \itemize{
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
@@ -170,6 +180,7 @@ formatting arguments set to match HYPE file specifications:
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:update.txt}{update.txt}
 }
 
 In most files, HYPE requires \code{NA}-free input in required columns, but empty values are

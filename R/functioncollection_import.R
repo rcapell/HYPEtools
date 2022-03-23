@@ -1558,19 +1558,17 @@ ReadPTQobs <- ReadObs
 #' @details
 #' Hype data file imports, simple \code{\link{read.table}} or \code{\link[data.table]{fread}} wrappers with 
 #' formatting arguments set to match HYPE file specifications:
-#' 
-#' \itemize{
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
-#' }
+#' * [LakeData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt)
+#' * [DamData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt)
+#' * [MgmtData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt)
+#' * [AquiferData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt)
+#' * [PointSourceData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt)
+#' * [GlacierData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt)
+#' * [CropData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt)
+#' * [BranchData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt)
+#' * [Outregions.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt)
+#' * [allsim.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt)
+#' * [update.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:update.txt)
 #' 
 #' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
 #' allowed in additional comment columns. Informative warnings will be thrown if \code{NA}s are found during import.
@@ -1749,6 +1747,21 @@ ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t", encoding = c("unkn
   encoding <- match.arg(encoding)
   
   read.table(file = filename, header = T, sep = sep, encoding = encoding)
+}
+
+#' @rdname HypeDataImport
+#' @importFrom data.table fread
+#' @export
+ReadUpdate <- function(filename = "update.txt", header = T, sep = "\t", 
+                                stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), data.table = F, ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
+  res <- fread(file = filename, header = header, sep = sep, stringsAsFactors = stringsAsFactors, encoding = encoding, 
+               data.table = data.table, ...)
+  names(res) <- toupper(names(res))
+  
+  return(res)
 }
 
 
