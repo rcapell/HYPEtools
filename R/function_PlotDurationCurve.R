@@ -201,7 +201,7 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
       lgnd <- paste(lgnd, " (", attr(freq, "n.obs"), " obs.)", sep = "")
     }
     # print legend
-    legend("topright", legend = lgnd, bty = "n", lty = 1, col = col, cex=.9)
+    legend("topright", legend = lgnd, bty = "n", lty = llty, col = col, cex=.9)
   }
   
 }
