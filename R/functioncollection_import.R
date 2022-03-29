@@ -1722,7 +1722,7 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, h
   encoding <- match.arg(encoding)
   
   res <- fread(file = filename, header = header, na.strings = na.strings, sep = sep, 
-               stringsAsFactors = stringsAsFactors, encoding = encoding, data.table = data.table, ...)
+               stringsAsFactors = stringsAsFactors, encoding = if (encoding == "latin1") "Latin-1" else encoding, data.table = data.table, ...)
   names(res) <- toupper(names(res))
   # check for NAs
   if (verbose) {
@@ -1757,7 +1757,7 @@ ReadUpdate <- function(filename = "update.txt", header = T, sep = "\t",
   # argument checks
   encoding <- match.arg(encoding)
   
-  res <- fread(file = filename, header = header, sep = sep, stringsAsFactors = stringsAsFactors, encoding = encoding, 
+  res <- fread(file = filename, header = header, sep = sep, stringsAsFactors = stringsAsFactors, encoding = if (encoding == "latin1") "Latin-1" else encoding, 
                data.table = data.table, ...)
   names(res) <- toupper(names(res))
   
