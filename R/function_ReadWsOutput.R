@@ -110,7 +110,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
       stop("Argument 'id' required with basin output files.")
     }
     # import
-    locs <- list.files(path = path, pattern = glob2rx(paste0("*", id, "_", "*.txt")), full.names = TRUE)
+    locs <- list.files(path = path, pattern = paste0("^[0]{0,6}", id,  "_.*\\.txt$"), full.names = TRUE)
     # break if no files found
     if (length(locs) == 0) {
       stop(paste("No", type, "output files for SUBID/OUTREGID", id, "found in directory specified in argument 'path'."))
