@@ -1350,9 +1350,10 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
 #' @param variable Character string, HYPE variable ID of file contents. If \code{""} (default), the ID is extracted 
-#' from \code{filename}, which only works with file names as required by HYPE or file names including those names 
+#' from \code{filename}, which only works with HYPE input data file names or file names including those names 
 #' (e.g. 'Pobs_old.txt', 'testSFobs.txt'). Some of the observation data files have no corresponding HYPE variable ID. 
-#' In these cases, a dummy ID is used, see table in Details.
+#' In these cases, a dummy ID is used, see table in Details. If automatic extraction fails, attribute `variable` is set 
+#' to `"other"`. Alternatively, any other variable name can be provided.
 #' @param nrows Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
 #' to import.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame or \code{"dt"} to 
@@ -1367,18 +1368,22 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 
 #' attribute \code{obsid} (directly accessible through \code{\link{obsid}}). 
 #' 
-#' Observation file types for which no corresponding HYPE variable ID exists use the following dummy variable IDs:
+#' Observation file types with automatic (dummy) `variable` attribute assignment:
 #' 
-#' | **File**    | **Dummy ID** |
+#' | **File**    | **HYPE variable ID**|
 #' | ----------- |:------------:|
-#' | TMINobs.txt | tmin         |
-#' | TMAXobs.txt | tmax         |
-#' | VWobs.txt   | vwnd         |
-#' | UWobs.txt   | uwnd         |
-#' | SFobs.txt   | snff         |
-#' | SWobs.txt   | swrd         |
-#' | RHobs.txt   | rhum         |
-#' | Uobs.txt    | wind         |
+#' |             |(*: dummy ID) |
+#' | Pobs.txt    | prec         |
+#' | Tobs.txt    | temp         |
+#' | Qobs.txt    | rout         |
+#' | TMINobs.txt | tmin*        |
+#' | TMAXobs.txt | tmax*        |
+#' | VWobs.txt   | vwnd*        |
+#' | UWobs.txt   | uwnd*        |
+#' | SFobs.txt   | snff*        |
+#' | SWobs.txt   | swrd*        |
+#' | RHobs.txt   | rhum*        |
+#' | Uobs.txt    | wind*        |
 #' 
 #' @return
 #' \code{ReadObs} returns a data frame or data table with additional attributes: \code{obsid} with observation IDs, \code{timestep} 
@@ -1401,11 +1406,19 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' @export
 
 
-ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "tmax", "vwnd", "uwnd", "snff", "swrd", "rhum", "wind"), 
-                    dt.format = c("%Y-%m-%d", "%Y%m%d"), nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
+ReadObs <- function(filename, variable = "", 
+                    dt.format = "%Y-%m-%d", nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
   
-  # extract hype variable
-  variable <- match.arg(variable)
+  # input check: variable
+  if (!is.character(variable)) {
+    stop("Argument 'variable' must be a character string.")
+  }
+  if (length(variable) > 1) {
+    variable <- variable[1]
+    warning("Argument 'variable': Only first element used.")
+  }
+  
+  # automatic hype variable (dummy) assignment
   if (variable == "") {
     te <- strsplit(filename, split = c("/"))[[1]]
     te <- tolower(te[length(te)])
@@ -1432,7 +1445,7 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
     } else if (length(grep("uobs", te)) > 0) {
       variable <- "wind"
     } else {
-      stop("Unable to extract HYPE variable name from file name, please provide argument 'variable'.")
+      variable <- "other"
     }
   }
   
@@ -1496,7 +1509,7 @@ ReadObs <- function(filename, variable = c("", "prec", "temp", "rout", "tmin", "
   
   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
   # Force timezone to GMT
-  x[,1] <- force_tz(x[,1],tzone="GMT")
+  x[, 1] <- force_tz(x[, 1], tzone = "GMT")
   x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
   })

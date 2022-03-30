@@ -6,9 +6,8 @@
 \usage{
 ReadObs(
   filename,
-  variable = c("", "prec", "temp", "rout", "tmin", "tmax", "vwnd", "uwnd", "snff",
-    "swrd", "rhum", "wind"),
-  dt.format = c("\%Y-\%m-\%d", "\%Y\%m\%d"),
+  variable = "",
+  dt.format = "\%Y-\%m-\%d",
   nrows = -1,
   type = c("df", "dt"),
   select = NULL,
@@ -20,9 +19,10 @@ ReadObs(
 Paths are separated by '/', not '\\'.}
 
 \item{variable}{Character string, HYPE variable ID of file contents. If \code{""} (default), the ID is extracted
-from \code{filename}, which only works with file names as required by HYPE or file names including those names
+from \code{filename}, which only works with HYPE input data file names or file names including those names
 (e.g. 'Pobs_old.txt', 'testSFobs.txt'). Some of the observation data files have no corresponding HYPE variable ID.
-In these cases, a dummy ID is used, see table in Details.}
+In these cases, a dummy ID is used, see table in Details. If automatic extraction fails, attribute \code{variable} is set
+to \code{"other"}. Alternatively, any other variable name can be provided.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
 
@@ -51,16 +51,20 @@ with conversion of date-time strings to POSIX time representations. Observation 
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer
 attribute \code{obsid} (directly accessible through \code{\link{obsid}}).
 
-Observation file types for which no corresponding HYPE variable ID exists use the following dummy variable IDs:\tabular{lc}{
-   \strong{File} \tab \strong{Dummy ID} \cr
-   TMINobs.txt \tab tmin \cr
-   TMAXobs.txt \tab tmax \cr
-   VWobs.txt \tab vwnd \cr
-   UWobs.txt \tab uwnd \cr
-   SFobs.txt \tab snff \cr
-   SWobs.txt \tab swrd \cr
-   RHobs.txt \tab rhum \cr
-   Uobs.txt \tab wind \cr
+Observation file types with automatic (dummy) \code{variable} attribute assignment:\tabular{lc}{
+   \strong{File} \tab \strong{HYPE variable ID} \cr
+    \tab (*: dummy ID) \cr
+   Pobs.txt \tab prec \cr
+   Tobs.txt \tab temp \cr
+   Qobs.txt \tab rout \cr
+   TMINobs.txt \tab tmin* \cr
+   TMAXobs.txt \tab tmax* \cr
+   VWobs.txt \tab vwnd* \cr
+   UWobs.txt \tab uwnd* \cr
+   SFobs.txt \tab snff* \cr
+   SWobs.txt \tab swrd* \cr
+   RHobs.txt \tab rhum* \cr
+   Uobs.txt \tab wind* \cr
 }
 }
 \note{
