@@ -37,209 +37,218 @@
 #'
 #' @export
 #' @importFrom dplyr full_join %>% bind_rows filter
-#' @importFrom sf st_read st_sfc st_geometry st_coordinates st_point
-#' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
-#' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addPolygons addPolylines addScaleBar addProviderTiles
-#' @importFrom mapview mapshot
-#' @importFrom htmlwidgets saveWidget
-#' @importFrom randomcoloR distinctColorPalette
 
 PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL, plot.scale = TRUE, plot.searchbar = FALSE,
                                 weight = 0.5, opacity = 1, fillColor = "#4d4d4d", fillOpacity = 0.25, line.weight = 5, line.opacity = 1,
                                 font.size = 10, file = "", vwidth = 1424, vheight = 1000, html.name = "", selfcontained = FALSE) {
 
-  # Import GIS Data
-  if ("character" %in% class(map)) {
-    map <- st_read(map)
-  } else if ("SpatialPolygonsDataFrame" %in% class(map)) {
-    map <- st_as_sf(map)
-  }
-  
-  # Reproject if not a lat/long CRS
-  if(st_is_longlat(map)==F){
-    map <- map%>%st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
-  }
+  # Check/Load Dependencies - do this here so that these packages are not required for the base HYPEtools installation
+  if (!all(
+    requireNamespace("sf", quietly = T),
+    requireNamespace("leaflet", quietly = T),
+    requireNamespace("leaflet.extras", quietly = T),
+    requireNamespace("mapview", quietly = T),
+    requireNamespace("htmlwidgets", quietly = T),
+    requireNamespace("randomcoloR", quietly = T)
+  )) {
+    # Warn that a dependency is not installed
+    stop("To use this function, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets, randomcoloR", call.=F)
 
-  # Rename columns to all uppercase except geometry column
-  map <- map %>%
-    rename_with(.fn = toupper, .cols = !matches(attr(map, "sf_column")))
-  
-  # Get name of map subid column
-  map.subid.name <- colnames(map)[map.subid.column]
-
-  # Check if GeoData is required
-  if (is.null(gd) & !all(c("SUBID", "MAINDOWN") %in% colnames(map))) {
-    stop("SUBID and/or MAINDOWN fields are missing in GIS data, so a GeoData.txt file/object must be supplied.")
-  }
-
-  # Read GeoData if supplied a path
-  if (!is.null(gd) & typeof(gd) == "character") {
-    gd <- ReadGeoData(gd)
-  }
-
-  # Read BranchData if supplied a path
-  if (!is.null(bd) & typeof(bd) == "character") {
-    bd <- suppressMessages(ReadBranchData(bd))
-  }
-
-  # Format BranchData
-  if (!is.null(bd)) {
-    bd <- bd %>%
-      dplyr::filter(!is.na(SOURCEID))
-  }
-
-  # Join GIS & GeoData if GeoData provided
-  if (!is.null(gd)) {
-    message(paste0('Joining "', colnames(map)[map.subid.column], '" from GIS Data (map) To "', "SUBID", '" from GeoData (gd)'))
-    map <- full_join(map[, map.subid.column] %>% mutate(across(1, ~ as.character(.x))), gd %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], "SUBID")) # Join GIS Data with GeoData in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
-  }
-
-  # Create Subbasin Points and remove rows where downstream subbasins don't exist
-  map_point <- suppressWarnings(st_point_on_surface(map))
-
-  # Get Downstream Subbasin Point
-  message("Finding Downstream Subbasins")
-
-  map_point$ds_geometry <- st_sfc(unlist(lapply(1:nrow(map_point), function(X) {
-
-    # Get Downstream SUBID
-    ds <- map_point$MAINDOWN[X]
-
-    # If Downstream SUBID Exists
-    if (ds %in% unlist(map_point[,map.subid.name]%>%st_drop_geometry())) {
-      st_geometry(map_point[which(unlist(map_point[,map.subid.name]%>%st_drop_geometry()) == ds), attr(map_point, "sf_column")])
-    } else {
-      st_sfc(st_point(c(0, 0))) # Assign Point 0,0 and remove later
+    # Perform function
+  } else {
+    # Import GIS Data
+    if ("character" %in% class(map)) {
+      map <- sf::st_read(map)
+    } else if ("SpatialPolygonsDataFrame" %in% class(map)) {
+      map <- st_as_sf(map)
     }
-  }), recursive = F))
 
-  # Get Downstream Subbasin Points for Branches
-  if (!is.null(bd)) {
-    message("Finding Branch Subbasins")
-    for (i in 1:nrow(bd)) {
+    # Reproject if not a lat/long CRS
+    if (sf::st_is_longlat(map) == F) {
+      map <- map %>% sf::st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+    }
 
-      # Get row of data for source subbasin and change MAINDOWN to Branch subbasin
-      branch <- map_point[which(map_point[,map.subid.name] == bd$SOURCEID[i]), ] %>%
-        mutate(MAINDOWN = bd$BRANCHID[i])
+    # Rename columns to all uppercase except geometry column
+    map <- map %>%
+      rename_with(.fn = toupper, .cols = !matches(attr(map, "sf_column")))
 
-      # Get branch Geometry if branch SUBID Exists
-      if(nrow(branch)>0){
-        if (bd$BRANCHID[i] %in% map_point[,map.subid.name]) {
-          branch$ds_geometry <- st_sfc(st_geometry(map_point[which(map_point[,map.subid.name] == bd$BRANCHID[i]), attr(map, "sf_column")]))
-        } else {
-          branch$ds_geometry <- st_sfc(st_point(c(0, 0))) # Assign Point 0,0 and remove later
+    # Get name of map subid column
+    map.subid.name <- colnames(map)[map.subid.column]
+
+    # Check if GeoData is required
+    if (is.null(gd) & !all(c("SUBID", "MAINDOWN") %in% colnames(map))) {
+      stop("SUBID and/or MAINDOWN fields are missing in GIS data, so a GeoData.txt file/object must be supplied.")
+    }
+
+    # Read GeoData if supplied a path
+    if (!is.null(gd) & typeof(gd) == "character") {
+      gd <- ReadGeoData(gd)
+    }
+
+    # Read BranchData if supplied a path
+    if (!is.null(bd) & typeof(bd) == "character") {
+      bd <- suppressMessages(ReadBranchData(bd))
+    }
+
+    # Format BranchData
+    if (!is.null(bd)) {
+      bd <- bd %>%
+        dplyr::filter(!is.na(SOURCEID))
+    }
+
+    # Join GIS & GeoData if GeoData provided
+    if (!is.null(gd)) {
+      message(paste0('Joining "', colnames(map)[map.subid.column], '" from GIS Data (map) To "', "SUBID", '" from GeoData (gd)'))
+      map <- full_join(map[, map.subid.column] %>% mutate(across(1, ~ as.character(.x))), gd %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], "SUBID")) # Join GIS Data with GeoData in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
+    }
+
+    # Create Subbasin Points and remove rows where downstream subbasins don't exist
+    map_point <- suppressWarnings(sf::st_point_on_surface(map))
+
+    # Get Downstream Subbasin Point
+    message("Finding Downstream Subbasins")
+
+    map_point$ds_geometry <- sf::st_sfc(unlist(lapply(1:nrow(map_point), function(X) {
+
+      # Get Downstream SUBID
+      ds <- map_point$MAINDOWN[X]
+
+      # If Downstream SUBID Exists
+      if (ds %in% unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry())) {
+        sf::st_geometry(map_point[which(unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry()) == ds), attr(map_point, "sf_column")])
+      } else {
+        sf::st_sfc(sf::st_point(c(0, 0))) # Assign Point 0,0 and remove later
+      }
+    }), recursive = F))
+
+    # Get Downstream Subbasin Points for Branches
+    if (!is.null(bd)) {
+      message("Finding Branch Subbasins")
+      for (i in 1:nrow(bd)) {
+
+        # Get row of data for source subbasin and change MAINDOWN to Branch subbasin
+        branch <- map_point[which(map_point[, map.subid.name] == bd$SOURCEID[i]), ] %>%
+          mutate(MAINDOWN = bd$BRANCHID[i])
+
+        # Get branch Geometry if branch SUBID Exists
+        if (nrow(branch) > 0) {
+          if (bd$BRANCHID[i] %in% map_point[, map.subid.name]) {
+            branch$ds_geometry <- sf::st_sfc(sf::st_geometry(map_point[which(map_point[, map.subid.name] == bd$BRANCHID[i]), attr(map, "sf_column")]))
+          } else {
+            branch$ds_geometry <- sf::st_sfc(sf::st_point(c(0, 0))) # Assign Point 0,0 and remove later
+          }
+
+          # Add row to map_point
+          map_point <- map_point %>%
+            bind_rows(branch)
         }
-        
-        # Add row to map_point
-        map_point <- map_point %>%
-          bind_rows(branch)
       }
     }
-  }
 
-  # Remove Subbasins where downstream subbasin doesn't exist
-  map_point <- map_point %>%
-    dplyr::filter(MAINDOWN %in% unlist(map_point[,map.subid.name]%>%st_drop_geometry()))
+    # Remove Subbasins where downstream subbasin doesn't exist
+    map_point <- map_point %>%
+      dplyr::filter(MAINDOWN %in% unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry()))
 
-  # Create Leaflet Plot
-  message("Creating Map")
-  leafmap <- leaflet(options = leafletOptions(preferCanvas = T)) %>%
-    addTiles() %>%
-    addLayersControl(
-      baseGroups = c("Map", "Street", "Topo", "Satellite"),
-      overlayGroups = c("Routing", "Subbasins"),
-      options = layersControlOptions(collapsed = F, autoIndex = T)
-    ) %>%
-    addResetMapButton() %>%
-    addPolygons(
-      group = "Subbasins",
-      data = map,
-      color = "black",
-      weight = weight,
-      opacity = opacity,
-      fillColor = fillColor,
-      fillOpacity = fillOpacity,
-      label = paste(map[,map.subid.name]), # Add label so searchbar will work
-      labelOptions = labelOptions(noHide = T, textOnly = T, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
-    ) %>%
-    addLabelOnlyMarkers(
-      group = "Subbasins",
-      data = suppressWarnings(st_point_on_surface(map)),
-      label = map[[map.subid.name]],
-      labelOptions = labelOptions(noHide = T, direction = "auto", textOnly = T, style = list("font-size" = paste0(font.size, "px")))
-    )
+    # Create Leaflet Plot
+    message("Creating Map")
+    leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = T)) %>%
+      leaflet::addTiles() %>%
+      leaflet::addLayersControl(
+        baseGroups = c("Map", "Street", "Topo", "Satellite"),
+        overlayGroups = c("Routing", "Subbasins"),
+        options = leaflet::layersControlOptions(collapsed = F, autoIndex = T)
+      ) %>%
+      leaflet.extras::addResetMapButton() %>%
+      leaflet::addPolygons(
+        group = "Subbasins",
+        data = map,
+        color = "black",
+        weight = weight,
+        opacity = opacity,
+        fillColor = fillColor,
+        fillOpacity = fillOpacity,
+        label = paste(map[, map.subid.name]), # Add label so searchbar will work
+        labelOptions = leaflet::labelOptions(noHide = T, textOnly = T, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
+      ) %>%
+      leaflet::addLabelOnlyMarkers(
+        group = "Subbasins",
+        data = suppressWarnings(sf::st_point_on_surface(map)),
+        label = map[[map.subid.name]],
+        labelOptions = leaflet::labelOptions(noHide = T, direction = "auto", textOnly = T, style = list("font-size" = paste0(font.size, "px")))
+      )
 
-  # Create function to get colors for polylines
-  color_pal <- function(X) {
-    tryCatch(distinctColorPalette(X), # Try to get a distinct color for each line
-      error = function(e) {
-        rep_len(distinctColorPalette(100), X) # If there is an error, then repeat palette of 100 colors as necessary
-      }
-    )
-  }
-
-  # Get colors for polylines
-  colors <- color_pal(nrow(map_point))
-
-  # Add Lines
-  message("Adding Routing Lines")
-  progress <- 1
-  for (i in 1:nrow(map_point)) {
-    
-    # Add Progress Message for datasets with >=1000 polylines
-    if(nrow(map_point)>=1000&i==ceiling(nrow(map_point)/10)*progress){
-      message(paste0("Adding Routing Lines: ",progress*10,"%"))
-      progress <- progress+1
+    # Create function to get colors for polylines
+    color_pal <- function(X) {
+      tryCatch(randomcoloR::distinctColorPalette(X), # Try to get a distinct color for each line
+        error = function(e) {
+          rep_len(randomcoloR::distinctColorPalette(100), X) # If there is an error, then repeat palette of 100 colors as necessary
+        }
+      )
     }
-      
+
+    # Get colors for polylines
+    colors <- color_pal(nrow(map_point))
+
+    # Add Lines
+    message("Adding Routing Lines")
+    progress <- 1
+    for (i in 1:nrow(map_point)) {
+
+      # Add Progress Message for datasets with >=1000 polylines
+      if (nrow(map_point) >= 1000 & i == ceiling(nrow(map_point) / 10) * progress) {
+        message(paste0("Adding Routing Lines: ", progress * 10, "%"))
+        progress <- progress + 1
+      }
+
+      leafmap <- leafmap %>%
+        leaflet::addPolylines(
+          group = "Routing",
+          lat = c(sf::st_coordinates(map_point[attr(map, "sf_column")])[i, 2], sf::st_coordinates(map_point$ds_geometry)[i, 2]),
+          lng = c(sf::st_coordinates(map_point[attr(map, "sf_column")])[i, 1], sf::st_coordinates(map_point$ds_geometry)[i, 1]),
+          label = paste("SUBID", unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry())[i], "to SUBID", map_point$MAINDOWN[i]),
+          color = colors[i],
+          weight = line.weight,
+          opacity = line.opacity
+        )
+    }
+
+    # Add searchbar to map
+    if (plot.searchbar == T) {
+      leafmap <- leafmap %>%
+        leaflet.extras::addSearchFeatures(
+          targetGroups = "Subbasins",
+          options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
+        )
+    }
+
+    # Add scalebar to map
+    if (plot.scale == T) {
+      leafmap <- leafmap %>%
+        leaflet::addScaleBar(position = "bottomright")
+    }
+
+    # Add various basemaps
     leafmap <- leafmap %>%
-      addPolylines(
-        group = "Routing",
-        lat = c(st_coordinates(map_point[attr(map, "sf_column")])[i, 2], st_coordinates(map_point$ds_geometry)[i, 2]),
-        lng = c(st_coordinates(map_point[attr(map, "sf_column")])[i, 1], st_coordinates(map_point$ds_geometry)[i, 1]),
-        label = paste("SUBID", unlist(map_point[,map.subid.name]%>%st_drop_geometry())[i], "to SUBID", map_point$MAINDOWN[i]),
-        color = colors[i],
-        weight = line.weight,
-        opacity = line.opacity
-      )
+      leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
+      leaflet::addTiles(group = "Street") %>%
+      leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
+      leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
+      leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
+
+    # Save Image
+    if (!file == "") {
+      message("Saving Image")
+      mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = F)
+    }
+
+    # Save HTML
+    if (!html.name == "") {
+      message("Saving HTML")
+      htmlwidgets::saveWidget(leafmap, file = html.name, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = selfcontained)
+    }
+
+    return(leafmap)
   }
-
-  # Add searchbar to map
-  if (plot.searchbar == T) {
-    leafmap <- leafmap %>%
-      addSearchFeatures(
-        targetGroups = "Subbasins",
-        options = searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
-      )
-  }
-
-  # Add scalebar to map
-  if (plot.scale == T) {
-    leafmap <- leafmap %>%
-      addScaleBar(position = "bottomright")
-  }
-
-  # Add various basemaps
-  leafmap <- leafmap %>%
-    addProviderTiles("CartoDB.Positron", group = "Map") %>%
-    addTiles(group = "Street") %>%
-    addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
-    addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
-    addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
-
-  # Save Image
-  if (!file == "") {
-    message("Saving Image")
-    mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = F)
-  }
-
-  # Save HTML
-  if (!html.name == "") {
-    message("Saving HTML")
-    saveWidget(leafmap, file = html.name, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = selfcontained)
-  }
-
-  return(leafmap)
 }
 
 # DEBUG:

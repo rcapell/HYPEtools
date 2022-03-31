@@ -103,12 +103,6 @@
 #' @export
 #' @import sp
 #' @importFrom dplyr right_join %>% mutate filter
-#' @importFrom leaflet.extras addResetMapButton addSearchFeatures searchFeaturesOptions
-#' @importFrom leaflet addLayersControl layersControlOptions addTiles leaflet leafletOptions addCircleMarkers addPolygons addScaleBar addLegend addProviderTiles addLabelOnlyMarkers labelOptions
-#' @importFrom sf as_Spatial st_as_sf st_point_on_surface st_drop_geometry st_is_longlat st_is_empty
-#' @importFrom mapview mapshot
-#' @importFrom htmlwidgets saveWidget
-
 
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.column = 1, map.type = "default", map.adj = 0, plot.legend = TRUE,
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = FALSE, legend.inset = c(0, 0), legend.signif = 2,
@@ -119,645 +113,660 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
                           # plot.searchbar = F, # leaflet.extras searchbar currently doesn't work for CircleMarkers
                           plot.label = FALSE, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL, file = "", vwidth = 1424,
                           vheight = 1000, html.name = "") {
-
-  # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
-  if (graphics.off == T & !is.null(dev.list())) graphics.off()
-
-  # input argument checks
-  stopifnot(
-    is.data.frame(x), dim(x)[2] == 2,
-    ("sf" %in% class(sites) | "SpatialPointsDataFrame" %in% class(sites)),
-    ("sf" %in% class(bg) | "SpatialPolygonsDataFrame" %in% class(bg) | is.null(bg)),
-    is.null(col.breaks) || is.numeric(col.breaks)
-  )
-  if (map.type == "default") {
-    if ("sf" %in% class(sites)) {
-      sites <- as_Spatial(sites)
-    }
-    if ("sf" %in% class(bg) & !is.null(bg)) {
-      bg <- as_Spatial(bg)
-    }
-  } else if (map.type == "leaflet") {
-    if ("SpatialPointsDataFrame" %in% class(sites)) {
-      sites <- st_as_sf(sites)
-    }
-    if ("SpatialPolygonsDataFrame" %in% class(bg) & !is.null(bg)) {
-      bg <- st_as_sf(bg)
-    }
-  }
-  stopifnot(map.adj %in% c(0, .5, 1))
-  if (map.type == "default") {
-    stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
-  } else if (map.type == "leaflet") {
-    stopifnot(legend.pos %in% c("bottomright", "topright", "topleft", "bottomleft"))
-  }
-  # if (length(col.breaks) == 1) {
-  #   col.breaks <- range(x[, 2], na.rm = T)
-  #   warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
-  # }
-  if (!is.null(col.breaks) && (min(col.breaks, na.rm = T) > min(x[, 2], na.rm = T) || max(col.breaks, na.rm = T) < max(x[, 2], na.rm = T))) {
-    warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2].
-            Areas outside range will be excluded from plot.")
-  }
-
-  # sort col.breaks to make sure breaks are in increasing order
-  if (!is.null(col.breaks)) {
-    col.breaks <- sort(col.breaks, decreasing = FALSE)
-  }
-
-  # add y to legend inset if not provided by user
-  if (length(legend.inset) == 1) {
-    legend.inset[2] <- 0
-  }
-
-  # save current state of par() variables which are altered below, for restoring on function exit
-  # conditional on argument reset.par'
-  if (restore.par) {
-    par.mar0 <- par("mar")
-    par.xaxs <- par("xaxs")
-    par.yaxs <- par("yaxs")
-    par.lend <- par("lend")
-    par.xpd <- par("xpd")
-    par.cex0 <- par("cex")
-    on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex0))
-  }
-
-
-  ## data preparation and conditional assignment of break point vectors and colors to x
-
-  # create color breaks vector from user input or internally
-  if (!is.null(col.breaks)) {
-    cbrks <- col.breaks
-    mnx <- min(cbrks)
-    # special treatment for single-value maps
-    if (length(cbrks) == 1) {
-      cbrks <- range(cbrks) + c(-1, 1)
-    }
-  } else {
-    if (max(x[, 2], na.rm = TRUE) > 1) {
-      warning("Plot values in 'x' outside range of automatic color range. Provide suitable range in 'col.breaks' to plot them.")
-    }
-    mnx <- min(x[, 2], na.rm = TRUE)
-    if (mnx < 0) {
-      cbrks <- c(mnx, seq(0, 1, by = 0.1))
-    } else {
-      cbrks <- seq(0, 1, by = 0.1)
-    }
-  }
-
-  # define colors for classes
-  if (is.function(col) || is.null(col)) {
-    # color definition through color ramp function, either automatic or user-supplied
-    if (is.function(col)) {
-      # user-supplied color ramp function
-      crfun <- col
-      col.class <- crfun(length(cbrks) - 1)
-    } else {
-      # no color ramp function supplied, create default, add purple for negative values if they exist in x
-      crfun <- colorRampPalette(c("#e81515", "#EEEE00", "#2892c7"))
-      if (mnx < 0) {
-        col.class <- c("purple", crfun(length(cbrks) - 2))
-      } else {
-        col.class <- crfun(length(cbrks) - 1)
-      }
-    }
-  } else if (is.vector(col)) {
-    # a vector of colors is supplied
-
-    if (length(col) == length(col.breaks) - 1) {
-      col.class <- col
-    } else {
-      stop("If colors are specified as vector in 'col', the number of colors in 'col' must be one less than the number of breakpoints in 'col.breaks'.")
-    }
-  } else {
-    # Error treatment for all other types of user input
-    stop("Invalid 'col' argument.")
-  }
-
-  # discretise the modeled values in x into classed groups, add to x as new column (of type factor)
-  x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = T)
-
-  # For leaflet mapping add NA Factor Level if any MapOutput data is NA
-  if (map.type == "leaflet" & any(is.na(x[[2]]))) {
-    x[, 3] <- addNA(x[, 3])
-  }
-
-  # replace the factor levels with color codes using the color ramp function assigned above
-  if (map.type == "leaflet" & any(is.na(x[[2]]))) {
-    levels(x[, 3]) <- c(col.class, na.color) # Add extra color for NA in leaflet maps
-  } else {
-    levels(x[, 3]) <- col.class
-  }
-
-  # Leaflet Legend Colors
-  lcol <- levels(x[, 3])
-
-  # convert to character to make it conform to plotting requirements below
-  x[, 3] <- as.character(x[, 3])
-  # give it a name
-  names(x)[3] <- "color"
-
-  if (map.type == "default") {
-    # number of columns in original sites map
-    nc.sites <- ncol(sites@data)
-    # add x to subid map table (in data slot, indicated by @), merge by SUBID
-    sites@data <- data.frame(sites@data, x[match(sites@data[, sites.subid.column], x[, 1]), ])
-    # select sites for which x exists and sort in order of x so that user-supplied vectors of pch, lwd, etc. are assigned to the right map point
-    sts <- sites[!is.na(sites@data[, nc.sites + 1]), ]
-    sts <- sts[match(x[, 1], sts@data[, sites.subid.column]), ]
+  
+  # Check/Load Dependencies for interactive mapping features - do this here so that these packages are not required for the base HYPEtools installation
+  if (map.type == "leaflet" & !all(
+    requireNamespace("sf", quietly = T),
+    requireNamespace("leaflet", quietly = T),
+    requireNamespace("leaflet.extras", quietly = T),
+    requireNamespace("mapview", quietly = T),
+    requireNamespace("htmlwidgets", quietly = T)
+  )) {
+    # Warn that a dependency is not installed
+    stop("To use the interactive mapping features, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets", call.=F)
     
-  } else if (map.type == "leaflet") {
-    message(paste0('Joining "', colnames(sites)[sites.subid.column], '" from GIS Data (sites) To "', colnames(x)[1], '" from subass (x)'))
+    # Perform function
+  } else {
+    # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
+    if (graphics.off == T & !is.null(dev.list())) graphics.off()
     
-    # Check for duplicate SUBIDS
-    if(any(duplicated(sites[, sites.subid.column]%>%st_drop_geometry()))){message(paste(" - Duplicate SUBIDS exist in GIS Data (sites)!"))}
-    if(any(duplicated(x[,1]))){message(" - Duplicate SUBIDS exist in subass (x)!")}
-    
-    x <- right_join(sites[, sites.subid.column] %>% mutate(across(1, ~ as.character(.x))), x %>% mutate(across(1, ~ as.character(.x))), by = setNames(nm = colnames(sites)[sites.subid.column], colnames(x)[1])) # Join GIS Data with subass in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
-  }
-
-  # update legend title if none was provided by user or "auto" selection
-  if (is.null(legend.title)) {
-    legend.title <- toupper(names(x)[2])
-  }
-
-  if (map.type == "default") {
-    ## plot settings
-    if (!add) {
-      plot.new()
-      par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
-      frame()
-    } else {
-      par(xpd = T, cex = par.cex, lend = 1)
-    }
-
-
-    ## the positioning of all plot elements works with three scales for the device's plot region:
-    ## inches, fraction, and map coordinates
-
-    # plot width (inches)
-    p.in.wd <- par("pin")[1]
-
-    # legend position (fraction if 'add' is FALSE, otherwise already in map coordinates)
-    leg.fr.pos <- legend(legend.pos,
-      legend = rep(NA, length(cbrks) - 1),
-      col = col.class, lty = 1, lwd = 14, bty = "n", title = legend.title, plot = F
+    # input argument checks
+    stopifnot(
+      is.data.frame(x), dim(x)[2] == 2,
+      ("sf" %in% class(sites) | "SpatialPointsDataFrame" %in% class(sites)),
+      ("sf" %in% class(bg) | "SpatialPolygonsDataFrame" %in% class(bg) | is.null(bg)),
+      is.null(col.breaks) || is.numeric(col.breaks)
     )
-    # legend width (fraction if 'add' is FALSE, otherwise already in map coordinates)
-    leg.fr.wd <- leg.fr.pos$rect$w
-    # legend box element height (fraction), with workaround for single-class maps
-    if (length(leg.fr.pos$text$y) == 1) {
-      te <- legend(legend.pos,
-        legend = rep(NA, length(cbrks)),
-        col = crfun(length(cbrks)), lty = 1, lwd = 14, bty = "n", title = legend.title, plot = F
-      )
-      legbx.fr.ht <- diff(c(te$text$y[length(cbrks)], te$text$y[length(cbrks) - 1]))
-    } else {
-      legbx.fr.ht <- diff(c(leg.fr.pos$text$y[length(cbrks) - 1], leg.fr.pos$text$y[length(cbrks) - 2]))
-    }
-
-
-    ## prepare legend annotation
-
-    # formatted annotation text (to be placed between legend boxes which is not possible with legend() directly)
-    ann.txt <- signif(cbrks, digits = legend.signif)
-    # conditional: remove outer break points
-    if (!legend.outer) {
-      ann.txt[c(1, length(ann.txt))] <- ""
-    }
-    # annotation width (inches)
-    ann.in.wd <- max(strwidth(ann.txt, "inches"))
-    # legend inset required to accomodate text annotation, and scalebar (always below legend)
-    leg.inset <- c(ann.in.wd / p.in.wd, if (legend.pos %in% c("bottomright", "bottomleft")) {
-      0.1
-    } else {
-      0
-    })
-
-    # conditional on legend placement side (legend annotation always right of color boxes)
-    if (legend.pos %in% c("bottomright", "right", "topright")) {
-
-      # update legend inset
-      legend.inset <- legend.inset + leg.inset
-      ## annotation positions (fraction if 'add' is FALSE, otherwise already in map coordinates)
-      # inset scaling factor, used if 'add' is TRUE, otherwise 1 (explicitly because usr does not get updated directly when set)
-      if (add) {
-        f.inset.x <- par("usr")[2] - par("usr")[1]
-        f.inset.y <- par("usr")[4] - par("usr")[3]
-      } else {
-        f.inset.x <- 1
-        f.inset.y <- 1
+    if (map.type == "default") {
+      if ("sf" %in% class(sites)) {
+        sites <- sf::as_Spatial(sites)
       }
-      ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) - legend.inset[1] * f.inset.x - 0.01
-      if (legend.pos == "bottomright") {
-        ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2] * f.inset.y
-      } else if (legend.pos == "right") {
-        ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks)))
-      } else {
-        ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2] * f.inset.y
+      if ("sf" %in% class(bg) & !is.null(bg)) {
+        bg <- sf::as_Spatial(bg)
       }
-    } else {
-      # left side legend
-      # update legend inset
-      legend.inset[2] <- legend.inset[2] + leg.inset[2]
-      ## annotation positions (fraction if 'add' is FALSE, otherwise already in map coordinates)
-      # inset scaling factor, used if 'add' is TRUE, otherwise 1 (explicitly because usr does not get updated directly when set)
-      if (add) {
-        f.inset.x <- par("usr")[2] - par("usr")[1]
-        f.inset.y <- par("usr")[4] - par("usr")[3]
-      } else {
-        f.inset.x <- 1
-        f.inset.y <- 1
+    } else if (map.type == "leaflet") {
+      if ("SpatialPointsDataFrame" %in% class(sites)) {
+        sites <- sf::st_as_sf(sites)
       }
-      ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) + legend.inset[1] * f.inset.x - 0.01
-      if (legend.pos == "bottomleft") {
-        ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2] * f.inset.y
-      } else if (legend.pos == "left") {
-        ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks)))
-      } else {
-        ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2] * f.inset.y
+      if ("SpatialPolygonsDataFrame" %in% class(bg) & !is.null(bg)) {
+        bg <- sf::st_as_sf(bg)
       }
     }
-
-
-    ## calculate coordinates for map positioning
-
-    # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
-    if (!is.null(bg)) {
-      if (is.projected(bg)) {
-        bbx <- bbox(bg)
-        # map side ratio (h/w)
-        msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
-        # plot area side ratio (h/w)
-        psr <- par("pin")[2] / par("pin")[1]
-      } else {
-        bbx <- bbox(bg)
-        # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
-        par(new = T)
-        plot(sites, col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
-        # create a map side ratio based on the device region in user coordinates and the map bounding box
-        p.range.x <- diff(par("usr")[1:2])
-        p.range.y <- diff(par("usr")[3:4])
-        m.range.x <- diff(bbx[1, ])
-        m.range.y <- diff(bbx[2, ])
-        # map side ratio (h/w)
-        msr <- m.range.y / m.range.x
-        # plot area side ratio (h/w)
-        psr <- p.range.y / p.range.x
-      }
-    } else {
-      if (is.projected(sites)) {
-        bbx <- bbox(sites)
-        # map side ratio (h/w)
-        msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
-        # plot area side ratio (h/w)
-        psr <- par("pin")[2] / par("pin")[1]
-      } else {
-        bbx <- bbox(sites)
-        # set user coordinates using a dummy plot
-        par(new = T)
-        plot(sites, col = NULL, add = add)
-        # create a map side ratio based on the device region in user coordinates and the map bounding box
-        p.range.x <- diff(par("usr")[1:2])
-        p.range.y <- diff(par("usr")[3:4])
-        m.range.x <- diff(bbx[1, ])
-        m.range.y <- diff(bbx[2, ])
-        # map side ratio (h/w)
-        msr <- m.range.y / m.range.x
-        # plot area side ratio (h/w)
-        psr <- p.range.y / p.range.x
-      }
+    stopifnot(map.adj %in% c(0, .5, 1))
+    if (map.type == "default") {
+      stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
+    } else if (map.type == "leaflet") {
+      stopifnot(legend.pos %in% c("bottomright", "topright", "topleft", "bottomleft"))
     }
-
-
-    # define plot limits, depending on (a) map and plot ratios (plot will be centered if left to automatic) and (b) user choice
-    if (msr > psr) {
-      # map is smaller than plot window in x direction, map can be moved left or right
-      if (map.adj == 0) {
-        pylim <- as.numeric(bbx[2, ])
-        pxlim <- c(bbx[1, 1], bbx[1, 1] + diff(pylim) / psr)
-      } else if (map.adj == .5) {
-        pylim <- as.numeric(bbx[2, ])
-        pxlim <- c(mean(as.numeric(bbx[1, ])) - diff(pylim) / psr / 2, mean(as.numeric(bbx[1, ])) + diff(pylim) / psr / 2)
-      } else {
-        pylim <- as.numeric(bbx[2, ])
-        pxlim <- c(bbx[1, 2] - diff(pylim) / psr, bbx[1, 2])
-      }
-    } else {
-      # map is smaller than plot window in y direction, map can be moved up or down
-      if (map.adj == 0) {
-        pxlim <- as.numeric(bbx[1, ])
-        pylim <- c(bbx[2, 1], bbx[2, 1] + diff(pxlim) * psr)
-      } else if (map.adj == .5) {
-        pxlim <- as.numeric(bbx[1, ])
-        pylim <- c(mean(as.numeric(bbx[2, ])) - diff(pxlim) * psr / 2, mean(as.numeric(bbx[2, ])) + diff(pxlim) * psr / 2)
-      } else {
-        pxlim <- as.numeric(bbx[1, ])
-        pylim <- c(bbx[2, 2] - diff(pxlim) * psr, bbx[2, 2])
-      }
-    }
-
-
-    ## plot the map and add legend using the positioning information derived above
-
-    # map
-    if (!is.null(bg)) {
-      # plot(bg, col = "grey90", border = "grey70", ylim = pylim, xlim = pxlim, add = add)
-      plot(bg, col = bg.fillColor, border = "grey70", ylim = pylim, xlim = pxlim, add = add)
-      plot(sts, bg = sts$color, border = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, add = T)
-    } else {
-      plot(sts, bg = sts$color, col = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
-    }
-    # legend
-    if (plot.legend) {
-      legend(legend.pos,
-        legend = rep(NA, length(cbrks) - 1), inset = legend.inset,
-        col = rev(col.class), lty = 1, lwd = 14, bty = "n", title = legend.title, pt.cex = pt.cex
-      )
-      # convert annotation positioning to map coordinates, only if 'add' is FALSE
-      # then plot annotation text
-      if (!add) {
-        ann.mc.x <- ann.fr.x * diff(pxlim) + pxlim[1]
-        ann.mc.y <- ann.fr.y * diff(pylim) + pylim[1]
-        text(x = ann.mc.x, y = ann.mc.y, labels = rev(ann.txt), adj = c(0, .5), cex = 0.8)
-      } else {
-        text(x = ann.fr.x, y = ann.fr.y, labels = rev(ann.txt), adj = c(0, .5), cex = 0.8)
-      }
-    }
-
-    ## scale position (reference point: lower left corner), also used as reference point for north arrow
-    ## conditional on 'add'
-
-    if (add) {
-
-      # x position conditional on legend placement side
-      if (legend.pos %in% c("bottomright", "right", "topright")) {
-        lx <- par("usr")[2] - signif(diff(par("usr")[1:2]) / 4, 0) - legend.inset[1] * diff(par("usr")[1:2])
-      } else {
-        lx <- par("usr")[1] + (legend.inset[1] + 0.02) * diff(par("usr")[1:2])
-      }
-
-      # y position conditional legend placement position (leg.fr.pos here is already in map coordinates)
-      if (legend.pos %in% c("bottomright", "bottomleft")) {
-        ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2] * f.inset.y / 2)
-      } else if (legend.pos %in% c("right", "left")) {
-        ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + (legend.inset[2] / 2 - .1) * f.inset.y)
-      } else {
-        ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h - (legend.inset[2] / 2 - .1) * f.inset.y)
-      }
-    } else {
-
-      # x position conditional on legend placement side
-      if (legend.pos %in% c("bottomright", "right", "topright")) {
-        lx <- pxlim[2] - signif(diff(bbx[1, ]) / 4, 0) - legend.inset[1] * diff(pxlim)
-      } else {
-        lx <- pxlim[1] + (legend.inset[1] + 0.02) * diff(pxlim)
-      }
-
-      # y position conditional legend placement position
-      if (legend.pos %in% c("bottomright", "bottomleft")) {
-        ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2] / 2) * diff(pylim) + pylim[1]
-      } else if (legend.pos %in% c("right", "left")) {
-        ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2] / 2 - .1) * diff(pylim) + pylim[1]
-      } else {
-        ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h - legend.inset[2] / 2 - .1) * diff(pylim) + pylim[1]
-      }
-    }
-
-    if (plot.scale) {
-      if (!is.projected(sites)) {
-        warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = F' to remove it.")
-      }
-      if (!add) {
-        ldistance <- signif(diff(bbx[1, ]) / 4, 0)
-      } else {
-        ldistance <- signif(diff(par("usr")[1:2]) / 4, 0)
-      }
-      .Scalebar(
-        x = lx,
-        y = ly,
-        distance = ldistance,
-        scale = 0.001, t.cex = 0.8
-      )
-    }
-
-    if (plot.arrow) {
-      if (add) {
-        nlen <- diff(par("usr")[1:2]) / 70
-        # north arrow x position conditional on side where legend is plotted
-        if (legend.pos %in% c("bottomright", "right", "topright")) {
-          nx <- lx - 0.02 * diff(par("usr")[1:2])
-        } else {
-          nx <- lx + signif(diff(par("usr")[1:2]) / 4, 0) + 0.055 * diff(par("usr")[1:2])
-        }
-      } else {
-        nlen <- diff(bbx[1, ]) / 70
-        # north arrow x position conditional on side where legend is plotted
-        if (legend.pos %in% c("bottomright", "right", "topright")) {
-          nx <- lx - 0.02 * diff(pxlim)
-        } else {
-          nx <- lx + signif(diff(bbx[1, ]) / 4, 0) + 0.055 * diff(pxlim)
-        }
-      }
-
-      .NorthArrow(
-        xb = nx,
-        yb = ly,
-        len = nlen, cex.lab = .8
-      )
-    }
-
-    # invisible unless assigned: return map with added data and color codes
-    # invisible(sites)
-    invisible(sts)
-  } else if (map.type == "leaflet") {
-    
-    # Reproject if not a lat/long CRS
-    if(st_is_longlat(x)==F){
-      x <- x%>%st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
-    }
-    if(!is.null(bg)){
-      if(st_is_longlat(bg)==F){
-        bg <- bg%>%st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
-      }
-    }
-    
-    # Remove any empty geometries (these prevent labels from working)
-    x <- x %>%
-      dplyr::filter(!st_is_empty(.))
-    if(!is.null(bg)){
-      bg <- bg %>%
-        dplyr::filter(!st_is_empty(.))
-    }
-
-    # Create legend labels, change NA color to selected NA color
-    if (any(is.na(x[[2]]))) {
-      l.label <- c(unlist(lapply(1:(length(cbrks) - 1), function(X) {
-        paste(signif(cbrks[X], legend.signif), "to", signif(cbrks[X + 1], legend.signif))
-      })), "NA")
-    } else {
-      l.label <- unlist(lapply(1:(length(cbrks) - 1), function(X) {
-        paste(signif(cbrks[X], legend.signif), "to", signif(cbrks[X + 1], legend.signif))
-      }))
-    }
-
-    # Create Leaflet Map
-    message("Generating Map")
-    leafmap <- leaflet(options = leafletOptions(preferCanvas = T)) %>%
-      addTiles() %>%
-      addLayersControl(
-        baseGroups = c("Map", "Street", "Topo", "Satellite"),
-        overlayGroups = c("Points", "Subbasins"),
-        options = layersControlOptions(collapsed = F, autoIndex = T)
-      ) %>%
-      addResetMapButton()
-
-    # Add Subbasins
-    if (!is.null(bg)) {
-      # Do Not Plot Labels
-      if(is.null(plot.bg.label)){
-        leafmap <- leafmap %>%
-          addPolygons(
-            group = "Subbasins",
-            data = bg,
-            color = "black",
-            weight = bg.weight,
-            opacity = bg.opacity,
-            fillColor = bg.fillColor,
-            fillOpacity = bg.fillOpacity
-          )
-      # Plot Labels
-      } else{
-        if (plot.bg.label == "hover"){
-          leafmap <- leafmap %>%
-            addPolygons(
-              group = "Subbasins",
-              data = bg,
-              label = bg[[bg.label.column]],
-              color = "black",
-              weight = bg.weight,
-              opacity = bg.opacity,
-              fillColor = bg.fillColor,
-              fillOpacity = bg.fillOpacity
-            )
-        } else if (plot.bg.label == "static"){
-          leafmap <- leafmap %>%
-            addPolygons(
-              group = "Subbasins",
-              data = bg,
-              color = "black",
-              weight = bg.weight,
-              opacity = bg.opacity,
-              fillColor = bg.fillColor,
-              fillOpacity = bg.fillOpacity
-            )%>%
-            addLabelOnlyMarkers(
-              group = "Subbasins",
-              data = suppressWarnings(st_point_on_surface(bg)),
-              label = bg[[bg.label.column]],
-              labelOptions = labelOptions(noHide = T, direction = 'auto', textOnly = T)
-            )
-        } else{ # Do not plot labels
-          leafmap <- leafmap %>%
-            addPolygons(
-              group = "Subbasins",
-              data = bg,
-              color = "black",
-              weight = bg.weight,
-              opacity = bg.opacity,
-              fillColor = bg.fillColor,
-              fillOpacity = bg.fillOpacity
-            )
-        }
-      }
-    }
-
-    if (plot.label == T) { # Create points with labels
-
-      # Create labels
-      x <- x %>%
-        mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
-
-      leafmap <- leafmap %>%
-        addCircleMarkers(
-          group = "Points",
-          data = x,
-          color = "black",
-          radius = radius,
-          weight = weight,
-          opacity = opacity,
-          fillColor = x$color,
-          fillOpacity = fillOpacity,
-          label = ~label,
-          labelOptions = labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
-        )
-    }
-    else { # Create points without labels
-      leafmap <- leafmap %>%
-        addCircleMarkers(
-          group = "Points",
-          data = x,
-          color = "black",
-          radius = radius,
-          weight = weight,
-          opacity = opacity,
-          fillColor = x$color,
-          fillOpacity = fillOpacity
-        )
-    }
-
-    # # Add searchbar to map
-    # if (plot.searchbar == T) {
-    #   leafmap <- leafmap %>%
-    #     addSearchFeatures(
-    #       targetGroups = c("Points"),
-    #       options = searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
-    #     )
+    # if (length(col.breaks) == 1) {
+    #   col.breaks <- range(x[, 2], na.rm = T)
+    #   warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
     # }
-
-    # Add scalebar to map
-    if (plot.scale == T) {
-      leafmap <- leafmap %>%
-        addScaleBar(position = "bottomright")
+    if (!is.null(col.breaks) && (min(col.breaks, na.rm = T) > min(x[, 2], na.rm = T) || max(col.breaks, na.rm = T) < max(x[, 2], na.rm = T))) {
+      warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2].
+            Areas outside range will be excluded from plot.")
     }
-
-    # Add legend to map
-    if (plot.legend == T) {
-      leafmap <- leafmap %>%
-        addLegend(
-          group = "Points",
-          position = legend.pos,
-          title = ifelse(legend.title == "", "Legend", legend.title),
-          colors = lcol,
-          labels = l.label,
-          values = x[[2]],
-          opacity = 1
+    
+    # sort col.breaks to make sure breaks are in increasing order
+    if (!is.null(col.breaks)) {
+      col.breaks <- sort(col.breaks, decreasing = FALSE)
+    }
+    
+    # add y to legend inset if not provided by user
+    if (length(legend.inset) == 1) {
+      legend.inset[2] <- 0
+    }
+    
+    # save current state of par() variables which are altered below, for restoring on function exit
+    # conditional on argument reset.par'
+    if (restore.par) {
+      par.mar0 <- par("mar")
+      par.xaxs <- par("xaxs")
+      par.yaxs <- par("yaxs")
+      par.lend <- par("lend")
+      par.xpd <- par("xpd")
+      par.cex0 <- par("cex")
+      on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex0))
+    }
+    
+    
+    ## data preparation and conditional assignment of break point vectors and colors to x
+    
+    # create color breaks vector from user input or internally
+    if (!is.null(col.breaks)) {
+      cbrks <- col.breaks
+      mnx <- min(cbrks)
+      # special treatment for single-value maps
+      if (length(cbrks) == 1) {
+        cbrks <- range(cbrks) + c(-1, 1)
+      }
+    } else {
+      if (max(x[, 2], na.rm = TRUE) > 1) {
+        warning("Plot values in 'x' outside range of automatic color range. Provide suitable range in 'col.breaks' to plot them.")
+      }
+      mnx <- min(x[, 2], na.rm = TRUE)
+      if (mnx < 0) {
+        cbrks <- c(mnx, seq(0, 1, by = 0.1))
+      } else {
+        cbrks <- seq(0, 1, by = 0.1)
+      }
+    }
+    
+    # define colors for classes
+    if (is.function(col) || is.null(col)) {
+      # color definition through color ramp function, either automatic or user-supplied
+      if (is.function(col)) {
+        # user-supplied color ramp function
+        crfun <- col
+        col.class <- crfun(length(cbrks) - 1)
+      } else {
+        # no color ramp function supplied, create default, add purple for negative values if they exist in x
+        crfun <- colorRampPalette(c("#e81515", "#EEEE00", "#2892c7"))
+        if (mnx < 0) {
+          col.class <- c("purple", crfun(length(cbrks) - 2))
+        } else {
+          col.class <- crfun(length(cbrks) - 1)
+        }
+      }
+    } else if (is.vector(col)) {
+      # a vector of colors is supplied
+      
+      if (length(col) == length(col.breaks) - 1) {
+        col.class <- col
+      } else {
+        stop("If colors are specified as vector in 'col', the number of colors in 'col' must be one less than the number of breakpoints in 'col.breaks'.")
+      }
+    } else {
+      # Error treatment for all other types of user input
+      stop("Invalid 'col' argument.")
+    }
+    
+    # discretise the modeled values in x into classed groups, add to x as new column (of type factor)
+    x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = T)
+    
+    # For leaflet mapping add NA Factor Level if any MapOutput data is NA
+    if (map.type == "leaflet" & any(is.na(x[[2]]))) {
+      x[, 3] <- addNA(x[, 3])
+    }
+    
+    # replace the factor levels with color codes using the color ramp function assigned above
+    if (map.type == "leaflet" & any(is.na(x[[2]]))) {
+      levels(x[, 3]) <- c(col.class, na.color) # Add extra color for NA in leaflet maps
+    } else {
+      levels(x[, 3]) <- col.class
+    }
+    
+    # Leaflet Legend Colors
+    lcol <- levels(x[, 3])
+    
+    # convert to character to make it conform to plotting requirements below
+    x[, 3] <- as.character(x[, 3])
+    # give it a name
+    names(x)[3] <- "color"
+    
+    if (map.type == "default") {
+      # number of columns in original sites map
+      nc.sites <- ncol(sites@data)
+      # add x to subid map table (in data slot, indicated by @), merge by SUBID
+      sites@data <- data.frame(sites@data, x[match(sites@data[, sites.subid.column], x[, 1]), ])
+      # select sites for which x exists and sort in order of x so that user-supplied vectors of pch, lwd, etc. are assigned to the right map point
+      sts <- sites[!is.na(sites@data[, nc.sites + 1]), ]
+      sts <- sts[match(x[, 1], sts@data[, sites.subid.column]), ]
+      
+    } else if (map.type == "leaflet") {
+      message(paste0('Joining "', colnames(sites)[sites.subid.column], '" from GIS Data (sites) To "', colnames(x)[1], '" from subass (x)'))
+      
+      # Check for duplicate SUBIDS
+      if(any(duplicated(sites[, sites.subid.column]%>%sf::st_drop_geometry()))){message(paste(" - Duplicate SUBIDS exist in GIS Data (sites)!"))}
+      if(any(duplicated(x[,1]))){message(" - Duplicate SUBIDS exist in subass (x)!")}
+      
+      x <- right_join(sites[, sites.subid.column] %>% mutate(across(1, ~ as.character(.x))), x %>% mutate(across(1, ~ as.character(.x))), by = setNames(nm = colnames(sites)[sites.subid.column], colnames(x)[1])) # Join GIS Data with subass in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
+    }
+    
+    # update legend title if none was provided by user or "auto" selection
+    if (is.null(legend.title)) {
+      legend.title <- toupper(names(x)[2])
+    }
+    
+    if (map.type == "default") {
+      ## plot settings
+      if (!add) {
+        plot.new()
+        par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
+        frame()
+      } else {
+        par(xpd = T, cex = par.cex, lend = 1)
+      }
+      
+      
+      ## the positioning of all plot elements works with three scales for the device's plot region:
+      ## inches, fraction, and map coordinates
+      
+      # plot width (inches)
+      p.in.wd <- par("pin")[1]
+      
+      # legend position (fraction if 'add' is FALSE, otherwise already in map coordinates)
+      leg.fr.pos <- legend(legend.pos,
+                           legend = rep(NA, length(cbrks) - 1),
+                           col = col.class, lty = 1, lwd = 14, bty = "n", title = legend.title, plot = F
+      )
+      # legend width (fraction if 'add' is FALSE, otherwise already in map coordinates)
+      leg.fr.wd <- leg.fr.pos$rect$w
+      # legend box element height (fraction), with workaround for single-class maps
+      if (length(leg.fr.pos$text$y) == 1) {
+        te <- legend(legend.pos,
+                     legend = rep(NA, length(cbrks)),
+                     col = crfun(length(cbrks)), lty = 1, lwd = 14, bty = "n", title = legend.title, plot = F
         )
+        legbx.fr.ht <- diff(c(te$text$y[length(cbrks)], te$text$y[length(cbrks) - 1]))
+      } else {
+        legbx.fr.ht <- diff(c(leg.fr.pos$text$y[length(cbrks) - 1], leg.fr.pos$text$y[length(cbrks) - 2]))
+      }
+      
+      
+      ## prepare legend annotation
+      
+      # formatted annotation text (to be placed between legend boxes which is not possible with legend() directly)
+      ann.txt <- signif(cbrks, digits = legend.signif)
+      # conditional: remove outer break points
+      if (!legend.outer) {
+        ann.txt[c(1, length(ann.txt))] <- ""
+      }
+      # annotation width (inches)
+      ann.in.wd <- max(strwidth(ann.txt, "inches"))
+      # legend inset required to accomodate text annotation, and scalebar (always below legend)
+      leg.inset <- c(ann.in.wd / p.in.wd, if (legend.pos %in% c("bottomright", "bottomleft")) {
+        0.1
+      } else {
+        0
+      })
+      
+      # conditional on legend placement side (legend annotation always right of color boxes)
+      if (legend.pos %in% c("bottomright", "right", "topright")) {
+        
+        # update legend inset
+        legend.inset <- legend.inset + leg.inset
+        ## annotation positions (fraction if 'add' is FALSE, otherwise already in map coordinates)
+        # inset scaling factor, used if 'add' is TRUE, otherwise 1 (explicitly because usr does not get updated directly when set)
+        if (add) {
+          f.inset.x <- par("usr")[2] - par("usr")[1]
+          f.inset.y <- par("usr")[4] - par("usr")[3]
+        } else {
+          f.inset.x <- 1
+          f.inset.y <- 1
+        }
+        ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) - legend.inset[1] * f.inset.x - 0.01
+        if (legend.pos == "bottomright") {
+          ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2] * f.inset.y
+        } else if (legend.pos == "right") {
+          ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks)))
+        } else {
+          ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2] * f.inset.y
+        }
+      } else {
+        # left side legend
+        # update legend inset
+        legend.inset[2] <- legend.inset[2] + leg.inset[2]
+        ## annotation positions (fraction if 'add' is FALSE, otherwise already in map coordinates)
+        # inset scaling factor, used if 'add' is TRUE, otherwise 1 (explicitly because usr does not get updated directly when set)
+        if (add) {
+          f.inset.x <- par("usr")[2] - par("usr")[1]
+          f.inset.y <- par("usr")[4] - par("usr")[3]
+        } else {
+          f.inset.x <- 1
+          f.inset.y <- 1
+        }
+        ann.fr.x <- rep(leg.fr.pos$text$x[1], length(ann.txt)) + legend.inset[1] * f.inset.x - 0.01
+        if (legend.pos == "bottomleft") {
+          ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) + legend.inset[2] * f.inset.y
+        } else if (legend.pos == "left") {
+          ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks)))
+        } else {
+          ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2] * f.inset.y
+        }
+      }
+      
+      
+      ## calculate coordinates for map positioning
+      
+      # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
+      if (!is.null(bg)) {
+        if (is.projected(bg)) {
+          bbx <- bbox(bg)
+          # map side ratio (h/w)
+          msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
+          # plot area side ratio (h/w)
+          psr <- par("pin")[2] / par("pin")[1]
+        } else {
+          bbx <- bbox(bg)
+          # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
+          par(new = T)
+          plot(sites, col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
+          # create a map side ratio based on the device region in user coordinates and the map bounding box
+          p.range.x <- diff(par("usr")[1:2])
+          p.range.y <- diff(par("usr")[3:4])
+          m.range.x <- diff(bbx[1, ])
+          m.range.y <- diff(bbx[2, ])
+          # map side ratio (h/w)
+          msr <- m.range.y / m.range.x
+          # plot area side ratio (h/w)
+          psr <- p.range.y / p.range.x
+        }
+      } else {
+        if (is.projected(sites)) {
+          bbx <- bbox(sites)
+          # map side ratio (h/w)
+          msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
+          # plot area side ratio (h/w)
+          psr <- par("pin")[2] / par("pin")[1]
+        } else {
+          bbx <- bbox(sites)
+          # set user coordinates using a dummy plot
+          par(new = T)
+          plot(sites, col = NULL, add = add)
+          # create a map side ratio based on the device region in user coordinates and the map bounding box
+          p.range.x <- diff(par("usr")[1:2])
+          p.range.y <- diff(par("usr")[3:4])
+          m.range.x <- diff(bbx[1, ])
+          m.range.y <- diff(bbx[2, ])
+          # map side ratio (h/w)
+          msr <- m.range.y / m.range.x
+          # plot area side ratio (h/w)
+          psr <- p.range.y / p.range.x
+        }
+      }
+      
+      
+      # define plot limits, depending on (a) map and plot ratios (plot will be centered if left to automatic) and (b) user choice
+      if (msr > psr) {
+        # map is smaller than plot window in x direction, map can be moved left or right
+        if (map.adj == 0) {
+          pylim <- as.numeric(bbx[2, ])
+          pxlim <- c(bbx[1, 1], bbx[1, 1] + diff(pylim) / psr)
+        } else if (map.adj == .5) {
+          pylim <- as.numeric(bbx[2, ])
+          pxlim <- c(mean(as.numeric(bbx[1, ])) - diff(pylim) / psr / 2, mean(as.numeric(bbx[1, ])) + diff(pylim) / psr / 2)
+        } else {
+          pylim <- as.numeric(bbx[2, ])
+          pxlim <- c(bbx[1, 2] - diff(pylim) / psr, bbx[1, 2])
+        }
+      } else {
+        # map is smaller than plot window in y direction, map can be moved up or down
+        if (map.adj == 0) {
+          pxlim <- as.numeric(bbx[1, ])
+          pylim <- c(bbx[2, 1], bbx[2, 1] + diff(pxlim) * psr)
+        } else if (map.adj == .5) {
+          pxlim <- as.numeric(bbx[1, ])
+          pylim <- c(mean(as.numeric(bbx[2, ])) - diff(pxlim) * psr / 2, mean(as.numeric(bbx[2, ])) + diff(pxlim) * psr / 2)
+        } else {
+          pxlim <- as.numeric(bbx[1, ])
+          pylim <- c(bbx[2, 2] - diff(pxlim) * psr, bbx[2, 2])
+        }
+      }
+      
+      
+      ## plot the map and add legend using the positioning information derived above
+      
+      # map
+      if (!is.null(bg)) {
+        # plot(bg, col = "grey90", border = "grey70", ylim = pylim, xlim = pxlim, add = add)
+        plot(bg, col = bg.fillColor, border = "grey70", ylim = pylim, xlim = pxlim, add = add)
+        plot(sts, bg = sts$color, border = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, add = T)
+      } else {
+        plot(sts, bg = sts$color, col = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
+      }
+      # legend
+      if (plot.legend) {
+        legend(legend.pos,
+               legend = rep(NA, length(cbrks) - 1), inset = legend.inset,
+               col = rev(col.class), lty = 1, lwd = 14, bty = "n", title = legend.title, pt.cex = pt.cex
+        )
+        # convert annotation positioning to map coordinates, only if 'add' is FALSE
+        # then plot annotation text
+        if (!add) {
+          ann.mc.x <- ann.fr.x * diff(pxlim) + pxlim[1]
+          ann.mc.y <- ann.fr.y * diff(pylim) + pylim[1]
+          text(x = ann.mc.x, y = ann.mc.y, labels = rev(ann.txt), adj = c(0, .5), cex = 0.8)
+        } else {
+          text(x = ann.fr.x, y = ann.fr.y, labels = rev(ann.txt), adj = c(0, .5), cex = 0.8)
+        }
+      }
+      
+      ## scale position (reference point: lower left corner), also used as reference point for north arrow
+      ## conditional on 'add'
+      
+      if (add) {
+        
+        # x position conditional on legend placement side
+        if (legend.pos %in% c("bottomright", "right", "topright")) {
+          lx <- par("usr")[2] - signif(diff(par("usr")[1:2]) / 4, 0) - legend.inset[1] * diff(par("usr")[1:2])
+        } else {
+          lx <- par("usr")[1] + (legend.inset[1] + 0.02) * diff(par("usr")[1:2])
+        }
+        
+        # y position conditional legend placement position (leg.fr.pos here is already in map coordinates)
+        if (legend.pos %in% c("bottomright", "bottomleft")) {
+          ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2] * f.inset.y / 2)
+        } else if (legend.pos %in% c("right", "left")) {
+          ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + (legend.inset[2] / 2 - .1) * f.inset.y)
+        } else {
+          ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h - (legend.inset[2] / 2 - .1) * f.inset.y)
+        }
+      } else {
+        
+        # x position conditional on legend placement side
+        if (legend.pos %in% c("bottomright", "right", "topright")) {
+          lx <- pxlim[2] - signif(diff(bbx[1, ]) / 4, 0) - legend.inset[1] * diff(pxlim)
+        } else {
+          lx <- pxlim[1] + (legend.inset[1] + 0.02) * diff(pxlim)
+        }
+        
+        # y position conditional legend placement position
+        if (legend.pos %in% c("bottomright", "bottomleft")) {
+          ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2] / 2) * diff(pylim) + pylim[1]
+        } else if (legend.pos %in% c("right", "left")) {
+          ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h + legend.inset[2] / 2 - .1) * diff(pylim) + pylim[1]
+        } else {
+          ly <- (leg.fr.pos$rect$top - leg.fr.pos$rect$h - legend.inset[2] / 2 - .1) * diff(pylim) + pylim[1]
+        }
+      }
+      
+      if (plot.scale) {
+        if (!is.projected(sites)) {
+          warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = F' to remove it.")
+        }
+        if (!add) {
+          ldistance <- signif(diff(bbx[1, ]) / 4, 0)
+        } else {
+          ldistance <- signif(diff(par("usr")[1:2]) / 4, 0)
+        }
+        .Scalebar(
+          x = lx,
+          y = ly,
+          distance = ldistance,
+          scale = 0.001, t.cex = 0.8
+        )
+      }
+      
+      if (plot.arrow) {
+        if (add) {
+          nlen <- diff(par("usr")[1:2]) / 70
+          # north arrow x position conditional on side where legend is plotted
+          if (legend.pos %in% c("bottomright", "right", "topright")) {
+            nx <- lx - 0.02 * diff(par("usr")[1:2])
+          } else {
+            nx <- lx + signif(diff(par("usr")[1:2]) / 4, 0) + 0.055 * diff(par("usr")[1:2])
+          }
+        } else {
+          nlen <- diff(bbx[1, ]) / 70
+          # north arrow x position conditional on side where legend is plotted
+          if (legend.pos %in% c("bottomright", "right", "topright")) {
+            nx <- lx - 0.02 * diff(pxlim)
+          } else {
+            nx <- lx + signif(diff(bbx[1, ]) / 4, 0) + 0.055 * diff(pxlim)
+          }
+        }
+        
+        .NorthArrow(
+          xb = nx,
+          yb = ly,
+          len = nlen, cex.lab = .8
+        )
+      }
+      
+      # invisible unless assigned: return map with added data and color codes
+      # invisible(sites)
+      invisible(sts)
+    } else if (map.type == "leaflet") {
+      
+      # Reproject if not a lat/long CRS
+      if(sf::st_is_longlat(x)==F){
+        x <- x%>%sf::st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+      }
+      if(!is.null(bg)){
+        if(sf::st_is_longlat(bg)==F){
+          bg <- bg%>%sf::st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+        }
+      }
+      
+      # Remove any empty geometries (these prevent labels from working)
+      x <- x %>%
+        dplyr::filter(!sf::st_is_empty(.))
+      if(!is.null(bg)){
+        bg <- bg %>%
+          dplyr::filter(!sf::st_is_empty(.))
+      }
+      
+      # Create legend labels, change NA color to selected NA color
+      if (any(is.na(x[[2]]))) {
+        l.label <- c(unlist(lapply(1:(length(cbrks) - 1), function(X) {
+          paste(signif(cbrks[X], legend.signif), "to", signif(cbrks[X + 1], legend.signif))
+        })), "NA")
+      } else {
+        l.label <- unlist(lapply(1:(length(cbrks) - 1), function(X) {
+          paste(signif(cbrks[X], legend.signif), "to", signif(cbrks[X + 1], legend.signif))
+        }))
+      }
+      
+      # Create Leaflet Map
+      message("Generating Map")
+      leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = T)) %>%
+        leaflet::addTiles() %>%
+        leaflet::addLayersControl(
+          baseGroups = c("Map", "Street", "Topo", "Satellite"),
+          overlayGroups = c("Points", "Subbasins"),
+          options = leaflet::layersControlOptions(collapsed = F, autoIndex = T)
+        ) %>%
+        leaflet.extras::addResetMapButton()
+      
+      # Add Subbasins
+      if (!is.null(bg)) {
+        # Do Not Plot Labels
+        if(is.null(plot.bg.label)){
+          leafmap <- leafmap %>%
+            leaflet::addPolygons(
+              group = "Subbasins",
+              data = bg,
+              color = "black",
+              weight = bg.weight,
+              opacity = bg.opacity,
+              fillColor = bg.fillColor,
+              fillOpacity = bg.fillOpacity
+            )
+          # Plot Labels
+        } else{
+          if (plot.bg.label == "hover"){
+            leafmap <- leafmap %>%
+              leaflet::addPolygons(
+                group = "Subbasins",
+                data = bg,
+                label = bg[[bg.label.column]],
+                color = "black",
+                weight = bg.weight,
+                opacity = bg.opacity,
+                fillColor = bg.fillColor,
+                fillOpacity = bg.fillOpacity
+              )
+          } else if (plot.bg.label == "static"){
+            leafmap <- leafmap %>%
+              leaflet::addPolygons(
+                group = "Subbasins",
+                data = bg,
+                color = "black",
+                weight = bg.weight,
+                opacity = bg.opacity,
+                fillColor = bg.fillColor,
+                fillOpacity = bg.fillOpacity
+              )%>%
+              leaflet::addLabelOnlyMarkers(
+                group = "Subbasins",
+                data = suppressWarnings(sf::st_point_on_surface(bg)),
+                label = bg[[bg.label.column]],
+                labelOptions = leaflet::labelOptions(noHide = T, direction = 'auto', textOnly = T)
+              )
+          } else{ # Do not plot labels
+            leafmap <- leafmap %>%
+              leaflet::addPolygons(
+                group = "Subbasins",
+                data = bg,
+                color = "black",
+                weight = bg.weight,
+                opacity = bg.opacity,
+                fillColor = bg.fillColor,
+                fillOpacity = bg.fillOpacity
+              )
+          }
+        }
+      }
+      
+      if (plot.label == T) { # Create points with labels
+        
+        # Create labels
+        x <- x %>%
+          mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
+        
+        leafmap <- leafmap %>%
+          leaflet::addCircleMarkers(
+            group = "Points",
+            data = x,
+            color = "black",
+            radius = radius,
+            weight = weight,
+            opacity = opacity,
+            fillColor = x$color,
+            fillOpacity = fillOpacity,
+            label = ~label,
+            labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
+          )
+      }
+      else { # Create points without labels
+        leafmap <- leafmap %>%
+          leaflet::addCircleMarkers(
+            group = "Points",
+            data = x,
+            color = "black",
+            radius = radius,
+            weight = weight,
+            opacity = opacity,
+            fillColor = x$color,
+            fillOpacity = fillOpacity
+          )
+      }
+      
+      # # Add searchbar to map
+      # if (plot.searchbar == T) {
+      #   leafmap <- leafmap %>%
+      #     leaflet.extras::addSearchFeatures(
+      #       targetGroups = c("Points"),
+      #       options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
+      #     )
+      # }
+      
+      # Add scalebar to map
+      if (plot.scale == T) {
+        leafmap <- leafmap %>%
+          leaflet::addScaleBar(position = "bottomright")
+      }
+      
+      # Add legend to map
+      if (plot.legend == T) {
+        leafmap <- leafmap %>%
+          leaflet::addLegend(
+            group = "Points",
+            position = legend.pos,
+            title = ifelse(legend.title == "", "Legend", legend.title),
+            colors = lcol,
+            labels = l.label,
+            values = x[[2]],
+            opacity = 1
+          )
+      }
+      
+      # Add various basemaps
+      leafmap <- leafmap %>%
+        leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
+        leaflet::addTiles(group = "Street") %>%
+        leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
+        leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
+        leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
+      
+      # Save Image
+      if (!file == "") {
+        message("Saving Image")
+        mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = F)
+      }
+      
+      # Save HTML
+      if (!html.name == "") {
+        message("Saving HTML")
+        htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
+        file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
+      }
+      
+      return(leafmap)
     }
-
-    # Add various basemaps
-    leafmap <- leafmap %>%
-      addProviderTiles("CartoDB.Positron", group = "Map") %>%
-      addTiles(group = "Street") %>%
-      addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
-      addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
-      addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
-
-    # Save Image
-    if (!file == "") {
-      message("Saving Image")
-      mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = F)
-    }
-
-    # Save HTML
-    if (!html.name == "") {
-      message("Saving HTML")
-      saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
-      file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
-    }
-
-    return(leafmap)
   }
+
 }
 
 # # DEBUG

@@ -15,17 +15,10 @@ Depends:
 Imports:
     data.table (>= 1.9.8),
     dplyr,
-    htmlwidgets,
     hydroGOF,
-    leaflet,
-    leaflet.extras,
-    lubridate,
-    mapview,
     ncdf4,
     parallel,
     pbapply,
-    randomcoloR,
-    sf,
     sp,
     stringr
 License: LGPL-3
@@ -37,5 +30,11 @@ Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Suggests: 
     rmarkdown,
-    knitr
+    knitr,
+    htmlwidgets,
+    leaflet,
+    leaflet.extras,
+    mapview,
+    randomcoloR,
+    sf
 VignetteBuilder: knitr
