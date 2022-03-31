@@ -74,13 +74,13 @@ ExtractStats <- function(x, start.mon = 1, aggperiod = c("year", "season1", "sea
   smon <- formatC(start.mon, width = 2, format = "d", flag = "0")
   
   if (aggperiod %in% c("year", "month")) {
-    breaks <- seq(as.POSIXct(paste(syear - 1, smon, "01", sep = "-"), tz = "GMT"), as.POSIXct(paste(eyear + 1, smon, "01", sep = "-"), tz = "GMT"), by = aggperiod)
+    breaks <- seq(as.POSIXct(paste(syear - 1, smon, "01", sep = "-"), tz = "UTC"), as.POSIXct(paste(eyear + 1, smon, "01", sep = "-"), tz = "UTC"), by = aggperiod)
     
   } else if (aggperiod == "season1") {
-    breaks <- seq(as.POSIXct(paste(syear - 1, smon, "01", sep = "-"), tz = "GMT"), as.POSIXct(paste(eyear + 1, smon, "01", sep = "-"), tz = "GMT"), by = "6 months")
+    breaks <- seq(as.POSIXct(paste(syear - 1, smon, "01", sep = "-"), tz = "UTC"), as.POSIXct(paste(eyear + 1, smon, "01", sep = "-"), tz = "UTC"), by = "6 months")
     
   } else if (aggperiod == "season2") {
-    breaks <- seq(as.POSIXct(paste(syear - 1, smon, "01", sep = "-"), tz = "GMT"), as.POSIXct(paste(eyear + 1, smon, "01", sep = "-"), tz = "GMT"), by = "3 months")
+    breaks <- seq(as.POSIXct(paste(syear - 1, smon, "01", sep = "-"), tz = "UTC"), as.POSIXct(paste(eyear + 1, smon, "01", sep = "-"), tz = "UTC"), by = "3 months")
     
   }
   
@@ -91,7 +91,7 @@ ExtractStats <- function(x, start.mon = 1, aggperiod = c("year", "season1", "sea
   res <- aggregate(x[, -1], by = list(group), FUN = FUN, ..., simplify = TRUE)
   
   # format date and add aggregation period string
-  res <- data.frame(DATE = as.POSIXct(res[, 1], tz = "GMT"), res)
+  res <- data.frame(DATE = as.POSIXct(res[, 1], tz = "UTC"), res)
   if (aggperiod == "year") {
     res[, 2] <- format(res[, 1], format = "%Y")
   } else if (aggperiod == "season1") {

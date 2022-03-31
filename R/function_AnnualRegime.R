@@ -195,31 +195,31 @@ AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL
       # construct reference datetimes, conditional on hydrological year starting month
       # so that a leap day is always included in the results
       if (start.mon == 2) {
-        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F %H", tz = "GMT"))
+        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F %H", tz = "UTC"))
       } else {
-        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F %H", tz = "GMT"))
+        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F %H", tz = "UTC"))
       }
     } else if (ts.out == "day") {
       # construct reference days
-      # te <- as.POSIXct(strptime(paste(c(rep(1900, times = ind.nrow - ind.sm + 1), rep(1901, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F", tz = "GMT"))
+      # te <- as.POSIXct(strptime(paste(c(rep(1900, times = ind.nrow - ind.sm + 1), rep(1901, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F", tz = "UTC"))
       if (start.mon == 2) {
-        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F", tz = "GMT"))
+        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F", tz = "UTC"))
       } else {
-        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F", tz = "GMT"))
+        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res[, 1], sep = ""), format = "%F", tz = "UTC"))
       }
     } else if (ts.out == "week") {
       # construct reference dates for each week, Wednesdays chosen
       if (start.mon == 2) {
-        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), res[, 1], "3", sep = ""), format = "%Y%W%u", tz = "GMT"))
+        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), res[, 1], "3", sep = ""), format = "%Y%W%u", tz = "UTC"))
       } else {
-        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), res[, 1], "3", sep = ""), format = "%Y%W%u", tz = "GMT"))
+        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), res[, 1], "3", sep = ""), format = "%Y%W%u", tz = "UTC"))
       }
     } else if (ts.out == "month") {
       # construct reference dates for each month, 15th chosen
       if (start.mon == 2) {
-        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res[, 1], "-15", sep = ""), format = "%F", tz = "GMT"))
+        te <- as.POSIXct(strptime(paste(c(rep(1912, times = ind.nrow - ind.sm + 1), rep(1913, times = ind.sm - 1)), "-", res[, 1], "-15", sep = ""), format = "%F", tz = "UTC"))
       } else {
-        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res[, 1], "-15", sep = ""), format = "%F", tz = "GMT"))
+        te <- as.POSIXct(strptime(paste(c(rep(1911, times = ind.nrow - ind.sm + 1), rep(1912, times = ind.sm - 1)), "-", res[, 1], "-15", sep = ""), format = "%F", tz = "UTC"))
       }
     }
     
@@ -227,16 +227,16 @@ AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL
     # no start month adjustment necessary, just add a reference date column
     if (length(grep("hour", ts.out)) == 1) {
       # construct reference datetimes
-      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res)), "-", res[, 1], sep = ""), format = "%F %H", tz = "GMT"))
+      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res)), "-", res[, 1], sep = ""), format = "%F %H", tz = "UTC"))
     } else if (ts.out == "day") {
       # construct reference days
-      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res)), "-", res[, 1], sep = ""), format = "%F", tz = "GMT"))
+      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res)), "-", res[, 1], sep = ""), format = "%F", tz = "UTC"))
     } else if (ts.out == "week") {
       # construct reference dates for each week, Wednesdays chosen, 1901 because 1900 has no week "00"
-      te <- as.POSIXct(strptime(paste(rep(1913, times = nrow(res)), res[, 1], "3", sep = ""), format = "%Y%W%u", tz = "GMT"))
+      te <- as.POSIXct(strptime(paste(rep(1913, times = nrow(res)), res[, 1], "3", sep = ""), format = "%Y%W%u", tz = "UTC"))
     } else if (ts.out == "month") {
       # construct reference dates for each month, 15th chosen
-      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res)), "-", res[, 1], "-15", sep = ""), format = "%F", tz = "GMT"))
+      te <- as.POSIXct(strptime(paste(rep(1912, times = nrow(res)), "-", res[, 1], "-15", sep = ""), format = "%F", tz = "UTC"))
     }
   }
   
@@ -272,6 +272,6 @@ AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL
   
   # add period and timestep attributes
   attr(res, "timestep") <- ts.out
-  attr(res, "period") <- as.POSIXct(c(x[1, 1], x[nrow(x), 1]), tz="GMT")
+  attr(res, "period") <- as.POSIXct(c(x[1, 1], x[nrow(x), 1]), tz="UTC")
   return(res)
 }

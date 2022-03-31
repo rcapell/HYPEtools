@@ -158,7 +158,7 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
       date.plot <- seq(x[1, 1], by = "day", length.out = tw)
     }
   } else if (is.character(to)) {
-    tw.d <- strptime(to, format = "%F", tz = "GMT")
+    tw.d <- strptime(to, format = "%F", tz = "UTC")
     if (tw.d > x[nrow(x), 1]) {
       date.plot <- seq(x[1, 1], tw.d, by = "day")
       tw <- length(date.plot)

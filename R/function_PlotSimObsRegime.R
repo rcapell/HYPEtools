@@ -182,10 +182,10 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   # dates for reg.obs box plot positioning, conditional on if reg.sim exists
   # also used for plot grid positioning
   if (exists("reg.sim")) {
-    reg.obs.date <- seq(from = as.POSIXct(strptime(paste(format(reg.sim[[1]][1, 1], "%Y"), start.mon, 15, sep = "-"), "%F", tz = "GMT")), 
+    reg.obs.date <- seq(from = as.POSIXct(strptime(paste(format(reg.sim[[1]][1, 1], "%Y"), start.mon, 15, sep = "-"), "%F", tz = "UTC")), 
                         by = "month", length.out = 12)
   } else {
-    reg.obs.date <- seq(from = as.POSIXct(strptime(paste("1910", start.mon, 15, sep = "-"), "%F", tz = "GMT")), 
+    reg.obs.date <- seq(from = as.POSIXct(strptime(paste("1910", start.mon, 15, sep = "-"), "%F", tz = "UTC")), 
                         by = "month", length.out = 12)
   }
   

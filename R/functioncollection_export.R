@@ -390,9 +390,9 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
       if (is.null(last.date)) {
         te <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, 
                     colClasses = "NA", select = 1)
-        last.date <- as.POSIXct(strptime(te[nrow(te), ], format = "%Y-%m-%d %H:%M", tz = "GMT"))
+        last.date <- as.POSIXct(strptime(te[nrow(te), ], format = "%Y-%m-%d %H:%M", tz = "UTC"))
       } else {
-        last.date <- as.POSIXct(strptime(last.date, format = "%Y-%m-%d %H:%M", tz = "GMT"))
+        last.date <- as.POSIXct(strptime(last.date, format = "%Y-%m-%d %H:%M", tz = "UTC"))
         stop(paste0("Conversion of user-provided argument 'last.date' to POSIXct failed. Check formatting requirements."))
       }
       # calculate gap between existing and new file
@@ -417,9 +417,9 @@ WriteXobs <- function(x, filename = "Xobs.txt", append = F, comment = NULL, vari
       if (is.null(last.date)) {
         te <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, 
                     colClasses = "NA", select = 1)
-        last.date <- as.POSIXct(strptime(te[nrow(te), ], format = "%Y-%m-%d", tz = "GMT"))
+        last.date <- as.POSIXct(strptime(te[nrow(te), ], format = "%Y-%m-%d", tz = "UTC"))
       } else {
-        last.date <- as.POSIXct(strptime(last.date, format = "%Y-%m-%d %H:%M", tz = "GMT"))
+        last.date <- as.POSIXct(strptime(last.date, format = "%Y-%m-%d %H:%M", tz = "UTC"))
         stop(paste0("Conversion of user-provided argument 'last.date' to POSIXct failed. Check formatting requirements."))
       }
       # calculate gap between existing and new file

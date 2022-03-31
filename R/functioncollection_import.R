@@ -187,7 +187,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 
 
 #' @note
-#' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+#' For the conversion of date/time strings, time zone "UTC" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and possibly converting to string representations during the process).
 #' 
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
@@ -256,19 +256,19 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     if (is.data.table(x)) {
       
       if (dt.format == "%Y-%m") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
         x[, DATE := tryCatch(na.fail(xd), error = function(e) {
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
       } else if (dt.format == "%Y%m") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")
         x[, DATE := tryCatch(na.fail(xd), error = function(e) {
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
       } else if (dt.format == "%Y") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
         x[, DATE := tryCatch(na.fail(xd), error = function(e) {
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
       } else {
-        xd <- as.POSIXct(strptime(x[, DATE], format = dt.format), tz = "GMT")
+        xd <- as.POSIXct(strptime(x[, DATE], format = dt.format), tz = "UTC")
         x[, DATE := tryCatch(na.fail(xd), error = function(e) {
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
       }
@@ -276,19 +276,19 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     } else {
       
       if (dt.format == "%Y-%m") {
-        xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+        xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
         x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
       } else if (dt.format == "%Y%m") {
-        xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+        xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")
         x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
       } else if (dt.format == "%Y") {
-        xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+        xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
         x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
       } else {
-        xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+        xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "UTC")
         x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
           print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
       }
@@ -418,7 +418,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
 #' (i.e. no class \code{HypeXobs}).
 #' 
 #' @note
-#' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+#' For the conversion of date/time strings, time zone "UTC" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and e.g. converting to string representations during the process).
 #' 
 #' @examples
@@ -491,7 +491,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
   }
   
   # date conversion 
-  xd <- as.POSIXct(strptime(xobs[, 1], format = dt.format), tz = "GMT")
+  xd <- as.POSIXct(strptime(xobs[, 1], format = dt.format), tz = "UTC")
   xobs[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object.\n"); return(xobs[, 1])})
   
@@ -836,16 +836,16 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
     te <- xd
     # convert to posix string if possible, catch failed attempts with error condition and return string unchanged
     if (dt.format == "%Y-%m") {
-      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     } else if (dt.format == "%Y%m") {
-      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     } else if (dt.format == "%Y") {
-      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(paste(xd, "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     } else {
-      xd <- tryCatch(na.fail(as.POSIXct(strptime(xd, format = dt.format, tz = "GMT"))), error = function(e) {
+      xd <- tryCatch(na.fail(as.POSIXct(strptime(xd, format = dt.format, tz = "UTC"))), error = function(e) {
         print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(te)})
     }
   }
@@ -963,7 +963,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' \code{warn.nan}.
 #' 
 #' @note
-#' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+#' For the conversion of date/time strings, time zone "UTC" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and possibly converting to string representations during the process).
 #' 
 #' HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of 
@@ -1049,7 +1049,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     tunits <- strsplit(x = tunits, split = " since ")[[1]]
     
     # convert origin string to POSIX
-    torigin <- as.POSIXct(tunits[2], tz = "GMT")
+    torigin <- as.POSIXct(tunits[2], tz = "UTC")
     
     # create POSIX vector
     if (tunits[1] == "seconds") {
@@ -1215,19 +1215,19 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
       if (is.data.table(x)) {
         
         if (dt.format == "%Y-%m") {
-          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
           x[, DATE := tryCatch(na.fail(xd), error = function(e) {
             print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
         } else if (dt.format == "%Y%m") {
-          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")
           x[, DATE := tryCatch(na.fail(xd), error = function(e) {
             print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
         } else if (dt.format == "%Y") {
-          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
           x[, DATE := tryCatch(na.fail(xd), error = function(e) {
             print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
         } else {
-          xd <- as.POSIXct(strptime(x[, DATE], format = dt.format), tz = "GMT")
+          xd <- as.POSIXct(strptime(x[, DATE], format = dt.format), tz = "UTC")
           x[, DATE := tryCatch(na.fail(xd), error = function(e) {
             print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
         }
@@ -1235,19 +1235,19 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
       } else {
         
         if (dt.format == "%Y-%m") {
-          xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+          xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
           x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
             print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
         } else if (dt.format == "%Y%m") {
-          xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "GMT")
+          xd <- as.POSIXct(strptime(paste(x[, 1], "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")
           x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
             print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
         } else if (dt.format == "%Y") {
-          xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "GMT")
+          xd <- as.POSIXct(strptime(paste(x[, 1], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
           x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
             print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
         } else {
-          xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
+          xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "UTC")
           x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
             print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])})
         }
@@ -1391,7 +1391,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' with a HYPE variable ID string.
 #' 
 #' @note
-#' For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time 
+#' For the conversion of date/time strings, time zone "UTC" is assumed. This is done to avoid potential daylight saving time 
 #' side effects when working with the imported data (and e.g. converting to string representations during the process).
 #' 
 #' @seealso 
@@ -1509,8 +1509,8 @@ ReadObs <- function(filename, variable = "",
     print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
   })
   
-  # # Force timezone to GMT
-  # x[,1] <- force_tz(x[,1],tzone="GMT")
+  # # Force timezone to UTC
+  # x[,1] <- force_tz(x[,1],tzone="UTC")
   
   
   ## add attributes

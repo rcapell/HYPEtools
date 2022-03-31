@@ -193,8 +193,8 @@ UpstreamObs <- function(filename, subid, gd, bd = NULL, nr.obs = NULL, dry.run =
     te2 <- substr(te2, start = 1 + lclen, stop = ifelse(tslen > 0, dslen + tslen + 1 + lclen, dslen + lclen))
     
     # attempt to convert to date-time values
-    xd1 <- as.POSIXct(strptime(te1, dt.fmt, tz = "GMT"))
-    xd2 <- as.POSIXct(strptime(te2, dt.fmt, tz = "GMT"))
+    xd1 <- as.POSIXct(strptime(te1, dt.fmt, tz = "UTC"))
+    xd2 <- as.POSIXct(strptime(te2, dt.fmt, tz = "UTC"))
     
     # handle conversion errors
     check <- list(xd1, xd2, TRUE)
