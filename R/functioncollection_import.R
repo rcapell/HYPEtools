@@ -1402,12 +1402,15 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' \dontrun{ReadObs("Tobs.txt")}
 #' 
 #' @importFrom data.table fread
-#' @importFrom lubridate force_tz
+# #' @importFrom lubridate force_tz
 #' @export
 
 
 ReadObs <- function(filename, variable = "", 
-                    dt.format = "%Y-%m-%d", nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
+                    dt.format = c("%F", "%F %R", "%Y-%m-%d", "%Y-%m-%d %H:%M", "%Y%m%d", "%Y%m%d%H%M"), nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
+  
+  # input check: date format
+  dt.format <- match.arg(dt.format)
   
   # input check: variable
   if (!is.character(variable)) {
@@ -1492,27 +1495,23 @@ ReadObs <- function(filename, variable = "",
   # } else {
   #   cC <- list("POSIXct" = 1)
   # }
-  cC <- NULL
+  # Do date-time conversion outside fread for now
+  cC <- list("character" = 1)
+  
+  # import file
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, tz = "UTC", colClasses = cC)
-  # # manual date conversion with matlab-like date strings
-  # if (all(dt.format == "%Y%m%d")) {
-  #   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
-  #   x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-  #     print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
-  #     })
-  # }
+             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, colClasses = cC)
+  
+  # date(time) conversion
+  xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "UTC")
+  x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
+    print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
+  })
   
   # # Force timezone to GMT
   # x[,1] <- force_tz(x[,1],tzone="GMT")
   
-  xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "GMT")
-  # Force timezone to GMT
-  x[, 1] <- force_tz(x[, 1], tzone = "GMT")
-  x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
-    print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
-  })
   
   ## add attributes
   obsid(x) <- sbd

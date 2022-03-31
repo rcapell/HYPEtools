@@ -7,7 +7,8 @@
 ReadObs(
   filename,
   variable = "",
-  dt.format = "\%Y-\%m-\%d",
+  dt.format = c("\%F", "\%F \%R", "\%Y-\%m-\%d", "\%Y-\%m-\%d \%H:\%M", "\%Y\%m\%d",
+    "\%Y\%m\%d\%H\%M"),
   nrows = -1,
   type = c("df", "dt"),
   select = NULL,
