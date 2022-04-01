@@ -26,7 +26,7 @@ observations.
 \details{
 \code{EquallySpacedObs} will preserve additional attributes present in \code{x}. If datetime column is of class
 \code{\link{Date}}, there may occur problems with daylight saving time shifts. To avoid problems, use class
-\code{\link{POSIXct}} and set time zone to \code{"GMT"}.
+\code{\link{POSIXct}} and set time zone to \code{"UTC"}.
 }
 \examples{
 \dontrun{

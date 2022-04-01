@@ -79,7 +79,7 @@ dimensions as defined in the \href{http://www.smhi.net/hype/wiki/doku.php?id=sta
 are currently not supported.
 }
 \note{
-For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time
+For the conversion of date/time strings, time zone "UTC" is assumed. This is done to avoid potential daylight saving time
 side effects when working with the imported data (and possibly converting to string representations during the process).
 
 HYPE results are printed to files using a user-specified accuracy. This accuracy is specified in 'info.txt' as a number of

@@ -48,7 +48,7 @@ attributes (see \code{\link{attr}} on how to access these).
 Duplicated variable-SUBID combinations are not allowed in HYPE Xobs files, and the function will throw a warning if any are found.
 }
 \note{
-For the conversion of date/time strings, time zone "GMT" is assumed. This is done to avoid potential daylight saving time
+For the conversion of date/time strings, time zone "UTC" is assumed. This is done to avoid potential daylight saving time
 side effects when working with the imported data (and e.g. converting to string representations during the process).
 }
 \examples{
