@@ -11,7 +11,8 @@ AnnualRegime(
   ts.out = NULL,
   start.mon = 1,
   incl.leap = FALSE,
-  na.rm = TRUE
+  na.rm = TRUE,
+  format = c("list", "long")
 )
 }
 \arguments{
@@ -33,9 +34,11 @@ Otherwise one of \code{"month"}, \code{"week"}, \code{"day"}, or \code{"nhour"} 
 to daily and shorter time steps only.}
 
 \item{na.rm}{Logical, indicating if \code{NA} values should be stripped before averages are calculated.}
+
+\item{format}{Character string. Output format, \code{list} (default) or \code{long}. See Value.}
 }
 \value{
-\code{AnnualRegime} returns a list with 8 elements and two additional \code{\link{attributes}}. Each list element contains a
+If argument \code{format} is \code{list}, \code{AnnualRegime} returns a list with 8 elements and two additional \code{\link[=attributes]{attributes()}}. Each list element contains a
 named data frame with aggregated annual regime data: arithmetic means, medians, minima, maxima, and 5\\%, 25\\%, 75\\%, and 95\\%
 percentiles.
 
@@ -46,6 +49,10 @@ Reference dates are given as dates in either 1911, 1912, or 1913 (just because a
 these years) and can be used for plots starting at the beginning of the hydrological year (with axis annotations set to months only).
 Daily and hourly time steps are given as is, weekly time steps are given as mid-week dates (Wednesday), monthly time steps as
 mid month dates (15th).
+
+If argument \code{format} is \code{long}, \code{AnnualRegime} returns a four-column data frame with one value per row, and all variable information aligned
+with the values. Columns in the data frame: \code{id} with SUBIDs or HYPE variable IDs, \code{month/week/day} with aggregation time steps, \code{name} with
+short names of regime data (means, medians, minima, maxima, percentiles), and \code{value} with the variable value.
 
 Attribute \code{period} contains a two-element POSIXct vector containing start and end dates of the
 source data. Attribute \code{timestep} contains a timestep keyword corresponding to function argument \code{ts.out}.
@@ -76,6 +83,7 @@ of the year as day 1 of week 1 (see conversion code \code{\%W} in \code{\link{st
 }
 \examples{
 \dontrun{AnnualRegime(x = mybasinoutput)}
+
 }
 \seealso{
 \code{\link{PlotAnnualRegime}}

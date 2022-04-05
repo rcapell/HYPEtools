@@ -15,6 +15,7 @@
 #' @param incl.leap Logical, leap days (Feb 29) are removed from results per default, set to \code{TRUE} to keep them. Applies 
 #' to daily and shorter time steps only.
 #' @param na.rm Logical, indicating if \code{NA} values should be stripped before averages are calculated.
+#' @param format Character string. Output format, `list` (default) or `long`. See Value.
 #' 
 #' @details
 #' \code{AnnualRegime} uses \code{\link{aggregate}} to calculate long-term average regimes for all data columns provided in \code{x}, 
@@ -38,7 +39,7 @@
 #' \code{'53'} are merged to week \code{'00'} prior to average computations.
 #' 
 #' @return 
-#' \code{AnnualRegime} returns a list with 8 elements and two additional \code{\link{attributes}}. Each list element contains a 
+#' If argument `format` is `list`, `AnnualRegime` returns a list with 8 elements and two additional [attributes()]. Each list element contains a 
 #' named data frame with aggregated annual regime data: arithmetic means, medians, minima, maxima, and 5\%, 25\%, 75\%, and 95\% 
 #' percentiles.
 #' 
@@ -50,6 +51,10 @@
 #' Daily and hourly time steps are given as is, weekly time steps are given as mid-week dates (Wednesday), monthly time steps as 
 #' mid month dates (15th). 
 #' 
+#' If argument `format` is `long`, `AnnualRegime` returns a four-column data frame with one value per row, and all variable information aligned 
+#' with the values. Columns in the data frame: `id` with SUBIDs or HYPE variable IDs, `month/week/day` with aggregation time steps, `name` with 
+#' short names of regime data (means, medians, minima, maxima, percentiles), and `value` with the variable value. 
+#' 
 #' Attribute \code{period} contains a two-element POSIXct vector containing start and end dates of the 
 #' source data. Attribute \code{timestep} contains a timestep keyword corresponding to function argument \code{ts.out}.
 #' 
@@ -59,12 +64,16 @@
 #'
 #' @examples
 #' \dontrun{AnnualRegime(x = mybasinoutput)}
+#' 
+#' @importFrom tidyr pivot_longer
 #' @export
 
-AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL, start.mon = 1, incl.leap = FALSE, na.rm = TRUE) {
+AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL, start.mon = 1, incl.leap = FALSE, na.rm = TRUE, 
+                         format = c("list", "long")) {
   
   # catch user input errors
   stat <- match.arg(stat)
+  format <- match.arg(format)
   
   if (start.mon > 12 || start.mon < 1) {
     stop("'start.mon' not valid.")
@@ -243,31 +252,54 @@ AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL
   # add reference dates to results
   res <- data.frame(refdate = te, res)
   
-  # combine to result list with data frame elements for each statistical moment
-  # one-variable case treated differently because aggregate returns a simple dataframe instead of a "dataframe of dataframes"
-  # as in the multi-variable case
-  if (ncol(x) == 2) {
-    res <- list(mean = data.frame(res[, 1:2], res[, -c(1:2)][, 1]), 
-                median = data.frame(res[, 1:2], res[, -c(1:2)][, 5]), 
-                minimum = data.frame(res[, 1:2], res[, -c(1:2)][, 2]), 
-                p05 = data.frame(res[, 1:2], res[, -c(1:2)][, 3]), 
-                p25 = data.frame(res[, 1:2], res[, -c(1:2)][, 4]), 
-                p75 = data.frame(res[, 1:2], res[, -c(1:2)][, 6]), 
-                p95 = data.frame(res[, 1:2], res[, -c(1:2)][, 7]), 
-                maximum = data.frame(res[, 1:2], res[, -c(1:2)][, 8])
-    )
-    res <- lapply(res, function(x, z) {names(x)[3] <- z; x}, z = names(x)[2])
-  } else {
-    res <- list(mean = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 1]})), 
-                median = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 5]})), 
-                minimum = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 2]})), 
-                p05 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 3]})), 
-                p25 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 4]})), 
-                p75 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 6]})), 
-                p95 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 7]})), 
-                maximum = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 8]}))
-    )
+  
+  
+  if (format == "list") {
     
+    # combine to result list with data frame elements for each statistical moment
+    # one-variable case treated differently because aggregate returns a simple dataframe instead of a "dataframe of dataframes"
+    # as in the multi-variable case
+    if (ncol(x) == 2) {
+      res <- list(mean = data.frame(res[, 1:2], res[, -c(1:2)][, 1]), 
+                  median = data.frame(res[, 1:2], res[, -c(1:2)][, 5]), 
+                  minimum = data.frame(res[, 1:2], res[, -c(1:2)][, 2]), 
+                  p05 = data.frame(res[, 1:2], res[, -c(1:2)][, 3]), 
+                  p25 = data.frame(res[, 1:2], res[, -c(1:2)][, 4]), 
+                  p75 = data.frame(res[, 1:2], res[, -c(1:2)][, 6]), 
+                  p95 = data.frame(res[, 1:2], res[, -c(1:2)][, 7]), 
+                  maximum = data.frame(res[, 1:2], res[, -c(1:2)][, 8])
+      )
+      res <- lapply(res, function(x, z) {names(x)[3] <- z; x}, z = names(x)[2])
+    } else {
+      res <- list(mean = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 1]})), 
+                  median = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 5]})), 
+                  minimum = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 2]})), 
+                  p05 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 3]})), 
+                  p25 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 4]})), 
+                  p75 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 6]})), 
+                  p95 = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 7]})), 
+                  maximum = data.frame(res[, 1:2], sapply(res[, -c(1:2)], function(x){x[, 8]}))
+      )
+    }
+    
+  } else if (format == "long") {
+    
+    # repeat factor for IDs
+    rlen <- nrow(res) * 8
+    
+    # format into 'long' data frame with single value column
+    res <- lapply(as.list(res)[-c(1:2)], function(x, y) {r <- data.frame(cbind(period = as.factor(y), data.frame(x)) %>% pivot_longer(!"period")); r$name <- factor(r$name); r}, y = res[, 2])
+    res <- do.call(rbind, res)
+    
+    # create id column, with SUBIDs or variable IDs
+    rid <- suppressWarnings(tryCatch(na.fail(as.numeric(gsub("^X", "", names(x)[-1]))), error = function(e) {names(x)[-1]}))
+    rid <- rep(rid, each = rlen)
+    res <- cbind(id = rid, res)
+    
+    # formatting
+    names(res)[2] <- ts.out
+    rownames(res) <- 1:nrow(res)
+    levels(res$name) <- c("mean", "min", "max", "p25", "p5", "median", "p75", "p95")
   }
   
   # add period and timestep attributes
