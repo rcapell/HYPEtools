@@ -55,6 +55,7 @@
 #' @examples
 #' \dontrun{ReadGeoClass("Geoclass.txt")}
 #' 
+#' @importFrom data.table fread
 #' @export
 
 ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF-8", "Latin-1"), verbose = TRUE) { 
@@ -1501,7 +1502,7 @@ ReadObs <- function(filename, variable = "",
   # import file
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, colClasses = cC)
+             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, colClasses = cC, check.names = T)
   
   # date(time) conversion
   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "UTC")
