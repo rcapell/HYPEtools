@@ -1287,9 +1287,9 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     } else {
       comment(x) <- xattr[1]
     }
-    
+
     # conditional: timestep attribute identified by difference between first two entries
-    tdff <- as.numeric(difftime(x[2, 1], x[1, 1], units = "hours"))
+    tdff <- as.numeric(difftime(x[[2, 1]], x[[1, 1]], units = "hours")) # Datatable needs two brackets to extract column to vector
     if (!is.na(tdff)) {
       if (tdff == 24) {
         attr(x, which = "timestep") <- "day"
