@@ -478,7 +478,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
   
   # read the data, skip header and comment rows, force numeric data (automatic column classes can be integer)
   xobs <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, nrows = nrows, 
-                colClasses = c("character", rep("numeric", ncl)), select = sel)
+                colClasses = list(character = 1, numeric = 2:ncl), select = sel, fill = T)
   
   # update header, composite of variable and subid
   names(xobs) <- c("DATE", paste(hype.var, sbd, sep = "_"))
