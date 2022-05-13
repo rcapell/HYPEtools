@@ -20,7 +20,8 @@ Imports:
     parallel,
     pbapply,
     sp,
-    stringr
+    stringr, 
+    tidyr
 License: LGPL-3
 LazyData: true
 URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
