@@ -1818,8 +1818,8 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
       
       
       ## panel 2: Conc-Q plots, depending on variable availability
-      if (exi.t["cout"] && (exi.t["rets"] || exi.t["ccts"])) {
-        if (exi.t["rets"] && exi.t["ccts"]) {
+      if ((exi.t["rout"] && exi.t["rets"]) || (exi.t["cout"] && exi.t["ccts"])) {
+        if ((exi.t["rout"] && exi.t["rets"]) && (exi.t["cout"] && exi.t["ccts"])) {
           
           # calculate y axis limits
           lim.ts <- range(c(rets, ccts), na.rm = T)
@@ -1842,7 +1842,7 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
           
-        }  else if (exi.t["rets"]) {
+        }  else if (exi.t["rout"] && exi.t["rets"]) {
           
           # calculate y axis limits
           lim.ts <- range(rets, na.rm = T)
@@ -1862,7 +1862,7 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
           
-        } else if (exi.t["ccts"]) {
+        } else if (exi.t["cout"] && exi.t["ccts"]) {
           
           # calculate y axis limits
           lim.ts <- range(ccts, na.rm = T)
