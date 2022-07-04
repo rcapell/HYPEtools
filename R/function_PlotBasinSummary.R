@@ -1774,15 +1774,18 @@ PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "scree
       if (exi.t["ress"] && exi.t["ccss"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccss", obs = "ress", start.mon = start.mon, 
-                                     log = log.r, l.legend = c("sim. SS", "obs. SS"), mar = c(3.1, 3.1, .5, .5))')
+                                     log = log.r, l.legend = c("sim. SS", "obs. SS"), mar = c(3.1, 3.1, .5, .5),
+                                     ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ress"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "ress", start.mon = start.mon, 
-                                     log = log.r, l.legend = c("obs. SS"), mar = c(3.1, 3.1, .5, .5))')
+                                     log = log.r, l.legend = c("obs. SS"), mar = c(3.1, 3.1, .5, .5),
+                                     ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccss"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccss", obs = NULL, start.mon = start.mon, 
-                                     log = log.r, l.legend = c("sim. SS"), mar = c(3.1, 3.1, .5, .5))')
+                                     log = log.r, l.legend = c("sim. SS"), mar = c(3.1, 3.1, .5, .5),
+                                     ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       }
     }
     
