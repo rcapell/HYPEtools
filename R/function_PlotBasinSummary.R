@@ -95,7 +95,7 @@
 #' @export
 
 
-PlotBasinSummary <- function(x, filename = NULL, driver = c("pdf", "png", "screen"), panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
+PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "png", "screen"), panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
                              subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
                              from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = "", ylab.t1 = "Conc.") {
   
