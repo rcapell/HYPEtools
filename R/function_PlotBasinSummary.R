@@ -127,14 +127,14 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
   if (log) {
     # for duration curve plots
     yscale = "log"
-    # for conc-q plots
+    # for conc-q and sim-obs dotty plots
     log.cq <- "xy"
     # for regime plots
     log.r <- log
   } else {
     # for duration curve plots
     yscale = "lin"
-    # for conc-q plots
+    # for conc-q and sim-obs dotty pplots
     log.cq <- ""
     # for regime plots
     log.r <- log
@@ -232,7 +232,6 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
   }
   
   
-  
   ## calculate upstream info for bar charts and sub-basin info, conditional on panels
   
   if (panels %in% c(1, 3)) {
@@ -305,7 +304,12 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
   }
  
   
-  ## Q axis limits for conc-Q plots
+  
+  #--------------------------------------------------------------------------------------------------------------------------------------
+  # Axis limits
+  #--------------------------------------------------------------------------------------------------------------------------------------
+  
+  # Q axis limits for conc-Q plots
   if(exi.t["cout"]) {
     lim.q <- range(cout, na.rm = T)
     # change lower limit to >0 if log-scale
@@ -314,8 +318,13 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     }
   }
   
-  ## parse plot commands based on existing or requested HYPE variables to a list
-  ## create layout() arguments based on existinng HYPE variables
+
+  
+  
+  #--------------------------------------------------------------------------------------------------------------------------------------
+  # Parse plot commands based on existing or requested HYPE variables to a list
+  # Create layout() arguments based on existing HYPE variables
+  #--------------------------------------------------------------------------------------------------------------------------------------
   
   # create list to hold all plot commands, and plot counter
   list.plotexpr <- list(NULL)
@@ -394,7 +403,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
   
   if(panels %in% 1:2) {
     
-    #### Q row: 5 panels (one unused atm) with GOFs, sim-obs, FDC, and regime for Q, conditional on if Q is requested
+    
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Q row: 5 panels (one unused atm) with GOFs, sim-obs, FDC, and regime for Q, conditional on if Q is requested
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if (exi.t["rout"] || exi.t["cout"]) {
       
@@ -472,7 +484,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-    #### TN row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for TN, conditional on if TN is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # TN row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for TN, conditional on if TN is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if (exi.t["retn"] || exi.t["cctn"]) {
       
@@ -614,7 +628,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-    #### IN row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for IN, conditional on if IN is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # IN row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for IN, conditional on if IN is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if (exi.t["rein"] || exi.t["ccin"]) {
       
@@ -756,7 +772,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-    #### ON row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for ON, conditional on if ON is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # ON row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for ON, conditional on if ON is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if (exi.t["reon"] || exi.t["ccon"]) {
       
@@ -898,7 +916,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-    #### IN/TN row: 5 panels (first unused) with Conc-Q relationships, sim-obs, FDC, and regime for IN/TN ratio
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # IN/TN row: 5 panels (first unused) with Conc-Q relationships, sim-obs, FDC, and regime for IN/TN ratio
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if ((exi.t["rein"] && exi.t["retn"]) || (exi.t["ccin"] && exi.t["cctn"])) {
       
@@ -1047,7 +1067,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-    #### TP row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for TP, conditional on if TP is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # TP row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for TP, conditional on if TP is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if (exi.t["retp"] || exi.t["cctp"]) {
       
@@ -1189,7 +1211,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-    #### SP row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for SP, conditional on if SP is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # SP row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for SP, conditional on if SP is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if (exi.t["resp"] || exi.t["ccsp"]) {
       
@@ -1332,7 +1356,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-    #### PP row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for PP, conditional on if PP is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # PP row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for PP, conditional on if PP is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if (exi.t["repp"] || exi.t["ccpp"]) {
       
@@ -1475,7 +1501,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-    #### SP/TP row: 5 panels (first unused) with Conc-Q relationships, sim-obs, FDC, and regime for SP/TP ratio
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # SP/TP row: 5 panels (first unused) with Conc-Q relationships, sim-obs, FDC, and regime for SP/TP ratio
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if ((exi.t["resp"] && exi.t["retp"]) || (exi.t["ccsp"] && exi.t["cctp"])) {
       
@@ -1623,8 +1651,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     
     
     
-
-    #### SS row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for SS, conditional on if SS is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # SS row: 5 panels with GOFs, Conc-Q relationships, sim-obs, FDC, and regime for SS, conditional on if SS is requested/available
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
     if (exi.t["ress"] || exi.t["ccss"]) {
       
@@ -1756,12 +1785,14 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ress), xscale = xscale, yscale = yscale, 
                                      add.legend = T, l.legend = "obs. SS", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
+                                     ylim = lim.ss, 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccss"]) {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccss), xscale = xscale, yscale = yscale, 
                                      add.legend = T, l.legend = "sim. SS", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
+                                     ylim = lim.ss, 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else {
@@ -1784,7 +1815,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
       } else if (exi.t["ccss"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccss", obs = NULL, start.mon = start.mon, 
-                                     log = log.r, l.legend = c("sim. SS"), mar = c(3.1, 3.1, .5, .5),
+                                     log = log.r, l.legend = c("sim. SS"), mar = c(3.1, 3.1, .5, .5), ylim = lim.ss, 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       }
     }
@@ -1897,10 +1928,23 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
       
       ## panel 3: sim-obs comparison dotty plot for TS
       if (exi.t["ccts"] && exi.t["rets"]){
+        
+        # calculate axis limits (used on both axes)
+        lim.ts <- range(c(ccts, rets), na.rm = T)
+        # change lower limit to half the observed !0-minimum if log-scale
+        if (log && lim.ts[1] <= 0) {
+          lim.ts[1] <- min(c(ccts, rets)[c(ccts, rets) > 0], na.rm = T) * .5
+          # treat case where there are no non-0 values, and Inf values are created
+          if (any(is.infinite(lim.ts))) {
+            lim.ts <- rep(0, 2)
+          }
+        }
+        
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'plot(rets, ccts, col = "#7FAD8EE6", pch = 16, log = log.cq, 
+                                     ylim = lim.ts, xlim = lim.ts, 
                                      xlab = expression(paste("observed TS (mg l"^"-1", ")")), 
                                      ylab = expression(paste("simulated TS (mg l"^"-1", ")")))')
         cp <- cp + 1
@@ -1909,7 +1953,6 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
       }
-      
       
       
       ## panel 4: CDC for TS

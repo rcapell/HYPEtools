@@ -120,25 +120,34 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   if (is.null(ylim)) {
     ylim <- range(c(x.sim[, 2], x.obs[, 2]), na.rm = TRUE)
   }
-  # add a bit of footspace for obs counts, conditional on log scaling
-  if (log) {
-    ylim[1] <- ylim[1] - log10((diff(ylim)/50))
-  } else {
-    ylim[1] <- ylim[1] - (diff(ylim)/50)
-  }
   
-  # log scaling for y axis, with treatment for negative lower limit in combination with log scaling
+  # log-scaled y-axis
   if (log) {
     lg <- "y"
-    if (ylim[1] <= 0) {
-      ylim[1] <- min(c(x.sim[, 2], x.obs[, 2])[c(x.sim[, 2], x.obs[, 2]) > 0], na.rm = TRUE)
-#      if (ylim[1] <= 0) {
-#        warning("Negative or 0 values not allowed with log scaling. Reverting to linear scaling.")
-#        lg <- ""
-#      }
-    }
   } else {
-    lg = ""
+    lg <- ""
+  }
+  
+  # handle exceptions with log-scaled y axis
+  if (log && ylim[1] <= 0 && ylim[2] <= 0) {
+    
+    # all values are 0 or negative
+    warning("No positive values in data. Reverting to linear scaling.")
+    lg <- ""
+    
+  } else if (log && ylim[1] <= 0) {
+    
+    # minimum value 0 or negative, raise axis minimum to smalles positive value
+    warning("Zero or negative values in 'sim'/'obs', not shown in log-scaled plot.")
+    ylim[1] <- min(c(x.sim[, 2], x.obs[, 2])[c(x.sim[, 2], x.obs[, 2]) > 0], na.rm = TRUE)
+    
+  }
+  
+  # add a bit of footspace for obs counts, conditional on log scaling
+  if (log) {
+    ylim[1] <- ylim[1] * .9
+  } else {
+    ylim[1] <- ylim[1] - (diff(ylim) / 50)
   }
                
   # prepare simulation regime, conditional on if sim is provided by user
