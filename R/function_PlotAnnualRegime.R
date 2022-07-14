@@ -153,6 +153,8 @@ PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p0
     # expand to daily dates and pick the 15th of each month
     te <- seq(from = x$mean[1, 1], to = x$mean[nrow(x$mean), 1], by = "day")
     vline <- te[which(format(te, format = "%d") == "15")]
+  } else if (length(grep("hour", attr(x, "timestep"))) == 1) {
+    vline <- x$mean[which(format(x$mean[, 1], format = "%d %H") == "15 12"), 1]
   }
   abline(v = vline, col = "lightgray", lty = "dotted", lwd = par("lwd"))
   
