@@ -1,4 +1,3 @@
-
 #' Plot duration curves
 #'
 #' Convenience wrapper function for a (multiple) line \code{\link{plot}}, with pretty defaults for axis annotation and a Gaussian scaling option for the x-axis.
@@ -38,6 +37,8 @@
 #' @examples
 #' \dontrun{PlotDurationCurve(freq = myfreq, print.n.obs = T)}
 #' 
+#' @importFrom graphics par grid axis box lines abline axTicks legend
+#' @importFrom stats qnorm
 #' @export
 
 

@@ -2,9 +2,21 @@
 % Please edit documentation in R/functioncollection_import.R
 \name{ReadObs}
 \alias{ReadObs}
+\alias{ReadPTQobs}
 \title{Read HYPE observation data files}
 \usage{
 ReadObs(
+  filename,
+  variable = "",
+  dt.format = c("\%F", "\%F \%R", "\%Y-\%m-\%d", "\%Y-\%m-\%d \%H:\%M", "\%Y\%m\%d",
+    "\%Y\%m\%d\%H\%M"),
+  nrows = -1,
+  type = c("df", "dt"),
+  select = NULL,
+  obsid = NULL
+)
+
+ReadPTQobs(
   filename,
   variable = "",
   dt.format = c("\%F", "\%F \%R", "\%Y-\%m-\%d", "\%Y-\%m-\%d \%H:\%M", "\%Y\%m\%d",

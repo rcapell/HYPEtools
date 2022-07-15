@@ -1,43 +1,28 @@
-#' @export
-#' @importFrom pbapply pbapply
-#' 
-#' @title
 #' Clean Soil-Landuse classes (SLCs) from small fractions
 #'
-#' @description
 #' \code{CleanSLCClasses} attempts to clean small SLC fractions within each SUBID (sub-catchment) from an imported GeoData file using user-provided
 #' area thresholds. Cleaning can be performed along class similarity rules or along SLC area alone. 
 #' 
 #' @param gd Data frame containing columns with SUBIDs, SUBID areas in m^2, and SLC fractions, typically a 'GeoData.txt' file 
 #' imported with \code{\link{ReadGeoData}}.
-#' 
 #' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}.
-#' 
 #' @param m1.file Character string, path and file name of the soil or landuse class transfer table, a tab-separated text file. Format see details. 
 #' A value of \code{NULL} (default) prevents method 1 cleaning.
-#' 
 #' @param m1.class Character string, either "soil" or "landuse", can be abbreviated. Gives the type of transfer class table for method 1 cleaning. 
 #' See Details.
-#' 
 #' @param m1.clean A logical vector of length 2 which indicates if cleaning should be performed for area fraction thresholds (position 1) and/or 
 #' absolute area thresholds (position 2).
-#' 
 #' @param m1.precedence A logical vector of length 2 which indicates if areas below cleaning threshold should be moved to similar areas according to 
 #' precedence in the transfer table given in \code{m1.file} (\code{TRUE}) or to the largest area of available transfer classes (\code{FALSE}). Area 
 #' fraction thresholds (position 1) and absolute area thresholds (position 2).
-#' 
 #' @param m2.frac Numeric, area fraction threshold for method 2 cleaning, i.e. moving of small SLC areas to largest SLC in each SUBID without considering
 #' similarity between classes. Either a single value or a vector of the same length as the number of SLC classes in \code{gd}, giving area fraction 
 #' thresholds for each SLC seperately, with a value \code{0} for SLCs to omit from cleaning. A value of \code{NULL} (default) prevents method 2 area 
 #' fraction cleaning.
-#' 
 #' @param m2.abs Numeric, see \code{m2.frac}. Threshold(s) for absolute areas in \eqn{m^{2}}{m^2}.
-#' 
 #' @param signif.digits Integer, number of significant digits to round cleaned SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
-#' 
 #' @param verbose Logical, print some information during runtime.
-
 #' @param progbar Logical, display a progress bar while calculating SLC class fractions. Adds overhead to calculation time but useful when \code{subid} 
 #' is \code{NULL} or contains many SUBIDs.
 #' 
@@ -84,9 +69,6 @@
 #' the transfer table). Cleaning thresholds for method 2 area fractions and absolute areas are given in arguments \code{m2.frac} and \code{m2.abs}. 
 #' SLC areas below the given thresholds will be moved to the largest SLC in the given SUBID without considering any similarity between classes. 
 #' 
-#' 
-#' 
-#' 
 #' @return
 #' \code{CleanSLCClasses} returns the GeoData data frame passed to the function in argument \code{gd} with cleaned SLC class columns. 
 #' 
@@ -101,6 +83,10 @@
 #' CleanSLCClasses(gd = my.gd, gcl = my.gcl, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))
 #' }
 #' 
+#' @importFrom pbapply pbapply
+#' @importFrom utils read.table
+#' @importFrom stats na.omit
+#' @export
 
 CleanSLCClasses <- function (gd, gcl, m1.file = NULL, m1.class = "s", m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), 
                             m2.frac = NULL, m2.abs = NULL, signif.digits = 3, verbose = T, progbar = T) {

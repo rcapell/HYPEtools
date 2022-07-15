@@ -127,6 +127,9 @@
 # scale:    the scaling factor to rescale the distance to a different unit.
 #           e.g., if your map is in m and want the scalebar to be in km, use a scale of 0.01
 #t.cex:     the scaling of the font size to be used for the scalebar
+
+#' @importFrom graphics rect text segments
+
 .Scalebar <- function (x, y, distance, unit = "km", scale = 1, t.cex = 0.8) {
   xvals <- distance * c(0, 0.25, 0.5, 0.75, 1) + x
   yvals <- c(0, distance/c(30, 20, 10)) + y
@@ -155,11 +158,14 @@
 # cex.lab: Scale factor for the label for the arrow.
 # tcol:    The colour of the label text.
 # ...:     Other graphical parameters passed to the drawing of the arrow.
+
+#' @importFrom graphics polygon text strheight
+
 .NorthArrow <- function (xb, yb, len, lab = "N", cex.lab = 1, tcol = "black", ...) {
   sx <- len * .5
   sy <- len
-  arrow.x = c(-1, 1, 1, 2, 0, -2, -1, -1)
-  arrow.y = c(0, 0, 2, 2, 4, 2, 2, 0)
+  arrow.x <- c(-1, 1, 1, 2, 0, -2, -1, -1)
+  arrow.y <- c(0, 0, 2, 2, 4, 2, 2, 0)
   polygon(xb + arrow.x * sx, yb + arrow.y * sy, ...)
   text(xb, yb - strheight(lab, cex = cex.lab) * .9, lab, cex = cex.lab, adj = 0.4, 
        col = tcol)
@@ -197,6 +203,9 @@
 
 # internal function to calculate transparent colors for variation polygon
 # from: http://stackoverflow.com/questions/8047668/transparent-equivalent-of-given-color
+
+#' @importFrom grDevices col2rgb rgb
+
 .makeTransparent <- function(someColor, alpha=60) {
   newColor <- col2rgb(someColor)
   apply(newColor, 2, function(curcoldata){rgb(red = curcoldata[1], green = curcoldata[2], blue = curcoldata[3], alpha = alpha, maxColorValue = 255)})

@@ -85,6 +85,7 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 #' \dontrun{WriteGeoData(x = mygeodata)}
 #' 
 #' @importFrom data.table fwrite
+#' @importFrom stats na.action na.omit
 #' @export
 
 
@@ -731,7 +732,7 @@ WritePmsf <- function(x, filename = "../pmsf.txt") {
 #' @examples
 #' \dontrun{WritePTQobs(mytops, "Tobs.txt")}
 #' 
-#' @importFrom data.table fwrite
+#' @importFrom data.table fwrite .SD
 #' @export
 
 
@@ -765,7 +766,7 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, sign
   # round to user-specified number of decimals and significant digits
   if (!is.null(round)) {
     if ("data.table" %in% class(x)) {
-      x[, 2:ncol(x)] <- x[, round(.SD, round), .SDcols=2:ncol(x)]
+      x[, 2:ncol(x)] <- x[, round(.SD, round), .SDcols = 2:ncol(x)]
     } else {
       x[, -1] <- round(x[, -1], digits = round)
     }

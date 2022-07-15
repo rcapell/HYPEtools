@@ -8,7 +8,7 @@ ReadMapOutput(
   filename,
   dt.format = NULL,
   hype.var = NULL,
-  type = "df",
+  type = c("df", "dt", "hsv"),
   warn.nan = FALSE
 )
 }

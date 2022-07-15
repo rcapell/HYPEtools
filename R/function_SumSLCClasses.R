@@ -21,6 +21,7 @@
 #' my.gd[SumSLCClasses(gd = my.gd, plot.box = F, silent = T) < .5, ]
 #' }
 #' 
+#' @importFrom graphics boxplot
 #' @export
 
 

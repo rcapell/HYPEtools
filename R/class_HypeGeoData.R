@@ -177,25 +177,42 @@ HypeGeoData <- function(x) {
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------
+# summaryHypeGeoData constructor (internal access only), used for printing summaries
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+summaryHypeGeoData <- function(x) {
+  
+  # expects a list with elements n.subid, pos.slc, n.slc, pos.scr, n.scr, pos.dhslc, n.dhslc, subbasin.area, unit.river.length, 
+  # icatch, outlet.ids, columns
+  
+  class(x) <- "summaryHypeGeoData"
+  x
+  
+}
+
+
+
+#--------------------------------------------------------------------------------------------------------------------------------------
 # Summary method
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 #' @method summary HypeGeoData
+#' @importFrom stats median
 #' @export
 
-summary.HypeGeoData <- function(x, ...) {
+summary.HypeGeoData <- function(object, ...) {
   
   # initialise result list
   res <- list()
   
   # number of subbasins
-  res$n.subid <- nrow(x)
+  res$n.subid <- nrow(object)
   
   ## number of SLC, SCR, and DHSLC classes
   # SLC positions and their SLC numbers
-  pos.s <- which(substr(names(x), 1, 4) == "SLC_")
+  pos.s <- which(substr(names(object), 1, 4) == "SLC_")
   # extract numbers
-  suppressWarnings(n.s <- as.numeric(substr(names(x)[pos.s], 5, 99)))
+  suppressWarnings(n.s <- as.numeric(substr(names(object)[pos.s], 5, 99)))
   # remove comment columns which happen to look like SLC columns, e.g. "SLC_98old"
   pos.s <- pos.s[!is.na(n.s)]
   n.s <- n.s[!is.na(n.s)]
@@ -203,9 +220,9 @@ summary.HypeGeoData <- function(x, ...) {
   res$pos.slc <- pos.s
   res$n.slc <- length(n.s)
   # SCR positions and their SCR numbers
-  pos.r <- which(substr(names(x), 1, 4) == "SCR_")
+  pos.r <- which(substr(names(object), 1, 4) == "SCR_")
   # extract numbers
-  suppressWarnings(n.r <- as.numeric(substr(names(x)[pos.r], 5, 99)))
+  suppressWarnings(n.r <- as.numeric(substr(names(object)[pos.r], 5, 99)))
   # remove comment columns which happen to look like SCR columns, e.g. "SCR_98old"
   pos.r <- pos.r[!is.na(n.r)]
   n.r <- n.r[!is.na(n.r)]
@@ -213,9 +230,9 @@ summary.HypeGeoData <- function(x, ...) {
   res$pos.scr <- pos.r
   res$n.scr <- length(n.r)
   # DHSLC positions and their DHSLC numbers
-  pos.d <- which(substr(names(x), 1, 6) == "DHSLC_")
+  pos.d <- which(substr(names(object), 1, 6) == "DHSLC_")
   # extract numbers
-  suppressWarnings(n.d <- as.numeric(substr(names(x)[pos.d], 7, 99)))
+  suppressWarnings(n.d <- as.numeric(substr(names(object)[pos.d], 7, 99)))
   # remove comment columns which happen to look like SCR columns, e.g. "SCR_98old"
   pos.d <- pos.d[!is.na(n.d)]
   n.d <- n.d[!is.na(n.d)]
@@ -224,30 +241,31 @@ summary.HypeGeoData <- function(x, ...) {
   res$n.dhslc <- length(n.d)
   
   # subbasin area range in km2
-  res$subbasin.area <- signif(c(mean(x$AREA), median(x$AREA), min(x$AREA), max(x$AREA)) * 10^-6, digits = 3)
+  res$subbasin.area <- signif(c(mean(object$AREA), median(object$AREA), min(object$AREA), max(object$AREA)) * 10^-6, digits = 3)
   
   # unit river length range in km/km2
-  rlu <- tryCatch(x$RIVLEN / x$AREA * 10^3, error = function(e) numeric(0))
+  rlu <- tryCatch(object$RIVLEN / object$AREA * 10^3, error = function(e) numeric(0))
   res$unit.river.length <- suppressWarnings(tryCatch(signif(c(mean(rlu), median(rlu), min(rlu), max(rlu)), digits = 3), error = function (e) return(NULL)))
   
   # internal lake catchment fraction
-  if ("ICATCH" %in% toupper(names(x))) {
-    res$icatch <- suppressWarnings(tryCatch(signif(c(mean(x$ICATCH), median(x$ICATCH), min(x$ICATCH), max(x$ICATCH)), digits = 3), error = function (e) return(rep("-", 4))))
+  if ("ICATCH" %in% toupper(names(object))) {
+    res$icatch <- suppressWarnings(tryCatch(signif(c(mean(object$ICATCH), median(object$ICATCH), min(object$ICATCH), max(object$ICATCH)), digits = 3), 
+                                            error = function (e) return(rep("-", 4))))
   } else {
     res$icatch <- rep("-", 4)
   }
   
   
   # outlet id(s)
-  res$outlet.ids <- OutletIds(x)
+  res$outlet.ids <- OutletIds(object)
   
   # column names and classes except SLC and SCR classes
   # get classes of all columns except SLC, SCR, and DHSLC
-  col.cls <- sapply(x[, -c(pos.s, pos.r, pos.d)], class)
+  col.cls <- sapply(object[, -c(pos.s, pos.r, pos.d)], class)
   # create dataframe with column numbers, names and classes
-  res$columns <- data.frame(column = as.character((1:ncol(x))[-c(pos.s, pos.r, pos.d)]), name = names(col.cls), class = as.character(col.cls))
+  res$columns <- data.frame(column = as.character((1:ncol(object))[-c(pos.s, pos.r, pos.d)]), name = names(col.cls), class = as.character(col.cls))
   
-  class(res) <- c("summaryHypeGeoData", "list")
+  res <- summaryHypeGeoData(x = res)
   print(res)
   invisible(res)
 }
@@ -257,6 +275,7 @@ summary.HypeGeoData <- function(x, ...) {
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 # print method for summary list object
+#' @importFrom stats na.omit
 #' @export
 print.summaryHypeGeoData <- function(x, ...) {
   
@@ -408,6 +427,7 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' 
 #' @seealso \code{\link[base]{merge}}, the S3 generic function.
 #' 
+#' @importFrom stats na.omit
 #' @export
 
 merge.HypeGeoData <- function(x, y, all.x = TRUE, sort = NA, ...) {

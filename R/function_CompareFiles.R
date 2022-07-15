@@ -10,7 +10,7 @@
 #' \code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{GeoClass},
 #' \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointsourceData}, \code{PTQobs},
 #' \code{TimeOutput}, or \code{Xobs}.
-#' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See \code{\link{full_join}}.
+#' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See [dplyr::full_join()].
 #' @param compare.order Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
 #' will also be joined by row number. See \code{\link{full_join}}.
 #'
@@ -29,8 +29,10 @@
 #' CompareFiles(x = GeoData.x, y = GeoData.y, type = "GeoData", by = "SUBID")
 #' }
 #'
-#' @export
 #' @importFrom dplyr distinct filter full_join if_any relocate rename_with select syms %>%
+#' @importFrom tidyselect matches all_of
+#' @importFrom rlang .data
+#' @export
 
 CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
 

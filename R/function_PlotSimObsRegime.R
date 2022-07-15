@@ -50,6 +50,9 @@
 #' @examples
 #' \dontrun{PlotSimObsRegime(x = mybasinoutput, sim = "ccin", obs = "rein", start.mon = 10)}
 #' 
+#' @importFrom graphics par grid abline axis axis.POSIXct box polygon lines boxplot text legend
+#' @importFrom stats na.omit median
+#' @importFrom utils modifyList
 #' @export
 
 

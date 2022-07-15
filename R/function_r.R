@@ -29,8 +29,9 @@ r <- function(sim, obs, ...) {
 
 
 #' @rdname r
-#' @export
 #' @importFrom pbapply pblapply pbsapply
+#' @importFrom stats cor
+#' @export
 
 
 r.HypeSingleVar <- function(sim, obs, progbar = TRUE, ...){ 

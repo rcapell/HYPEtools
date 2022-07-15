@@ -6,6 +6,7 @@
 #
 #     - HypeSingleVar (constructor function)
 #     - [.HypeSingleVar (indexing method)
+#     - summaryHypeSingleVar (constructor function for internal class used for summary print method)
 #     - summary method
 #     - print method for summary list
 #     - 
@@ -172,9 +173,9 @@ summaryHypeSingleVar <- function(x) {
 #' @method summary HypeSingleVar
 #' @export
 
-summary.HypeSingleVar <- function(x, ...) {
-  vari <- attr(x, "variable")
-  dat <- attr(x, "datetime")
+summary.HypeSingleVar <- function(object, ...) {
+  vari <- attr(object, "variable")
+  dat <- attr(object, "datetime")
   ldat <- length(dat)
   ans <- list(hypevar = vari, tslen = ldat)
   if (ldat > 1) {
@@ -186,8 +187,8 @@ summary.HypeSingleVar <- function(x, ...) {
     ans$edate <- NA
     ans$period <- dat
   }
-  ans$nsbd <- if (length(subid(x) == 1) && is.na(subid(x))) length(attr(x, "outregid")) else length(subid(x))
-  ans$niter <- dim(x)[3]
+  ans$nsbd <- if (length(subid(object) == 1) && is.na(subid(object))) length(attr(object, "outregid")) else length(subid(object))
+  ans$niter <- dim(object)[3]
   ans <- summaryHypeSingleVar(x = ans)
   print(ans)
   invisible(ans)

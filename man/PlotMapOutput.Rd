@@ -82,6 +82,8 @@ available in \code{HYPEtools}, see \code{\link{CustomColors}}
 \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 }}
 
+\item{col.ramp.fun}{DEPRECATED, for backwards compatibility only.}
+
 \item{col.breaks}{A numeric vector, specifying break points for discretisation of model result values into classes. Used if a color palette is specified with \code{col} argument.
 Class boundaries will be interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
 Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
@@ -108,26 +110,27 @@ adding default maps to a plotting device. See \code{\link{graphics.off}}.}
 
 \item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.}
 
-\item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.}
+\item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.}
+\item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.}
+\item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
 \item{na.color}{Character string of color to use to symbolize subbasin polygons in Leaflet maps which correspond to \code{NA} values.}
 
-\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \code{\link{addSearchFeatures}}.}
+\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \code{\link[leaflet.extras:search-features]{leaflet.extras::addSearchFeatures()}}.}
 
-\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See \code{\link{addPolygons}}.}
+\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
-You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.}
+\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.
+You may need to run \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}} the first time you save a Leaflet map to an image file. See \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}}.}
 
-\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
+\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.}
 
-\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
+\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.}
 
-\item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}.}
+\item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument.
+File extension must be specified. See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}.}
 }
 \value{
 For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}}

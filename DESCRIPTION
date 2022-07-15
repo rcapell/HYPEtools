@@ -15,14 +15,21 @@ Depends:
 Imports:
     data.table (>= 1.9.8),
     dplyr,
+    grDevices,
+    graphics,
     hydroGOF,
     ncdf4,
     parallel,
     pbapply,
+    rlang,
+    sf,
     sp,
-    stringr, 
-    tidyr
-License: LGPL-3
+    stats,
+    stringr,
+    tidyr,
+    tidyselect,
+    utils
+License: LGPL-3 + file LICENSE
 LazyData: true
 URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
 BugReports: https://github.com/rcapell/HYPEtools/issues
@@ -36,6 +43,5 @@ Suggests:
     leaflet,
     leaflet.extras,
     mapview,
-    randomcoloR,
-    sf
+    randomcoloR
 VignetteBuilder: knitr

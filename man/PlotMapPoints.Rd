@@ -118,43 +118,44 @@ adding default maps to a plotting device. See \code{\link{graphics.off}}.}
 
 \item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.}
 
-\item{radius}{Numeric, radius of markers in Leaflet maps. See \code{\link{addCircleMarkers}}.}
+\item{radius}{Numeric, radius of markers in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}}.}
 
-\item{weight}{Numeric, weight of marker outlines in Leaflet maps. See \code{\link{addCircleMarkers}}.}
+\item{weight}{Numeric, weight of marker outlines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}}.}
 
-\item{opacity}{Numeric, opacity of marker outlines in Leaflet maps. See \code{\link{addCircleMarkers}}.}
+\item{opacity}{Numeric, opacity of marker outlines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}}.}
 
-\item{fillOpacity}{Numeric, opacity of markers in Leaflet maps. See \code{\link{addCircleMarkers}}.}
+\item{fillOpacity}{Numeric, opacity of markers in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}}.}
 
 \item{na.color}{Character string of color to use to symbolize markers in Leaflet maps which correspond to \code{NA} values.}
 
-\item{bg.weight}{Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{addPolygons}}.}
+\item{bg.weight}{Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{bg.opacity}{Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{addPolygons}}.}
+\item{bg.opacity}{Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{bg.fillColor}{Character string of color to use to symbolize \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.}
+\item{bg.fillColor}{Character string of color to use to symbolize \code{bg} subbasin polygons in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{bg.fillOpacity}{Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.}
+\item{bg.fillOpacity}{Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See \code{\link{addCircleMarkers}}.}
+\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}}.}
 
-\item{noHide}{Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \code{\link{labelOptions}}.}
+\item{noHide}{Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \code{\link[leaflet:map-options]{leaflet::labelOptions()}}.}
 
-\item{textOnly}{Logial, set to \code{TRUE} to hide marker label background in Leaflet maps. See \code{\link{labelOptions}}.}
+\item{textOnly}{Logial, set to \code{TRUE} to hide marker label background in Leaflet maps. See \code{\link[leaflet:map-options]{leaflet::labelOptions()}}.}
 
 \item{font.size}{Numeric, font size (px) for marker labels in Leaflet maps.}
 
 \item{plot.bg.label}{String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
 labels for \code{bg} will be dislayed in Leaflet maps.}
 
-\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
-You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.}
+\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.
+You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}}.}
 
-\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
+\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link[webshot:webshot]{webshot::webshot()}}.}
 
-\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.}
+\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link[webshot:webshot]{webshot::webshot()}}.}
 
-\item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}.}
+\item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified.
+See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}.}
 }
 \value{
 For default static maps, \code{PlotMapPoints} returns a plot to the currently active plot device, and invisibly an object of class

@@ -78,7 +78,7 @@ UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, typ
   
   # create grouped slc classes using existing function, just for upstream subids
   gd.sel <- gd[gd[, pos.sbd] %in% unlist(up.sbd), ]
-  grclass <- GroupSLCClasses(gd = gd.sel, gc = gcl, type = type, group = group, abs.area = FALSE, verbose = progbar)
+  grclass <- GroupSLCClasses(gd = gd.sel, gcl = gcl, type = type, group = group, abs.area = FALSE, verbose = progbar)
   
   
   ## calculate upstream average groups

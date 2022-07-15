@@ -51,8 +51,9 @@
 #' OutletNearObs(file.xobs = "./Xobs.txt", gd = gd, variable = "retn")
 #' }
 #' 
-#' @export
 #' @importFrom pbapply pbsapply
+#' @importFrom utils txtProgressBar setTxtProgressBar
+#' @export
 
 OutletNearObs <- function(gd, file.qobs = NULL, file.xobs = NULL, variable = NULL, outlets = NULL, frac.drain = 0.8, 
                           nearest.only = TRUE, verbose = TRUE) {

@@ -54,6 +54,8 @@
 #' BoxplotSLCClasses(gd = my.gd, gcl = my.gcl)
 #' }
 #' 
+#' @importFrom grDevices rainbow
+#' @importFrom graphics par boxplot mtext points legend
 #' @export
 
 BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 

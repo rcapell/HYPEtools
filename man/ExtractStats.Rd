@@ -59,4 +59,5 @@ ExtractStats(x = mytimeoutput, start.mon = 10, FUN = max)
 te <- ExtractStats(x = mytimeoutput, start.mon = 10, FUN = function(x) {c(min(x), mean(x), max())})
 # extract mean from resulting nested dataframe:
 data.frame(te[, 1:2], sapply(te[, -c(1:2)], function(x){x[, 2]}))}
+
 }

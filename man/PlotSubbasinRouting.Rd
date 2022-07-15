@@ -26,9 +26,11 @@ PlotSubbasinRouting(
 )
 }
 \arguments{
-\item{map}{Path to file containing subbasin polygon GIS data (e.g. shapefile or geopackage) or a \code{SpatialPolygonsDataFrame} or \code{sf} object. For large maps, a small/simplified polygon file should be used as larger files can take an excessive amount of time to render.}
+\item{map}{Path to file containing subbasin polygon GIS data (e.g. shapefile or geopackage) or a \code{SpatialPolygonsDataFrame}
+or \code{sf} object. For large maps, a small/simplified polygon file should be used as larger files can take an excessive amount of time to render.}
 
-\item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs). Only required if providing GeoData information with \code{gd}.}
+\item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
+Only required if providing GeoData information with \code{gd}.}
 
 \item{gd}{Path to model GeoData.txt or a GeoData object from \code{\link{ReadGeoData}}. Only required if \code{map} does not contain SUBID and/or MAINDOWN fields.}
 
@@ -36,33 +38,37 @@ PlotSubbasinRouting(
 
 \item{plot.scale}{Logical, include a scale bar on the map.}
 
-\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included. See \code{\link{addSearchFeatures}}.}
+\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included. See \code{\link[leaflet.extras:search-features]{leaflet.extras::addSearchFeatures()}}.}
 
-\item{weight}{Numeric, weight of subbasin boundary lines. See \code{\link{addPolygons}}.}
+\item{weight}{Numeric, weight of subbasin boundary lines. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{opacity}{Numeric, opacity of subbasin boundary lines. See \code{\link{addPolygons}}.}
+\item{opacity}{Numeric, opacity of subbasin boundary lines. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{fillColor}{String, color of subbasin polygons. See \code{\link{addPolygons}}.}
+\item{fillColor}{String, color of subbasin polygons. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{fillOpacity}{Numeric, opacity of subbasin polygons. See \code{\link{addPolygons}}.}
+\item{fillOpacity}{Numeric, opacity of subbasin polygons. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{line.weight}{Numeric, weight of routing lines. See \code{\link{addPolylines}}.}
+\item{line.weight}{Numeric, weight of routing lines. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
 
-\item{line.opacity}{Numeric, opacity of routing lines. See \code{\link{addPolylines}}.}
+\item{line.opacity}{Numeric, opacity of routing lines. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
 
 \item{font.size}{Numeric, font size (px) for map subbasin labels.}
 
-\item{file}{Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
-You may need to run \code{webshot::install_phantomjs()} the first time you save a map to an image file. See \code{\link{install_phantomjs}}.}
+\item{file}{Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified.
+See \code{\link[mapview:mapshot]{mapview::mapshot()}}.
+You may need to run \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}} the first time you save a map to an image file.}
 
-\item{vwidth}{Numeric, width of the exported map image in pixels. See \code{\link{webshot}}.}
+\item{vwidth}{Numeric, width of the exported map image in pixels. See \code{\link[webshot:webshot]{webshot::webshot()}}.}
 
-\item{vheight}{Numeric, height of the exported map image in pixels. See \code{\link{webshot}}.}
+\item{vheight}{Numeric, height of the exported map image in pixels. See \code{\link[webshot:webshot]{webshot::webshot()}}.}
 
-\item{html.name}{Save map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device (i.e. not a network location).}
+\item{html.name}{Save map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified.
+See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device
+(i.e. not a network location).}
 
-\item{selfcontained}{Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external resources placed in an adjacent directory. See \code{\link{saveWidget}}.
-Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins, when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.}
+\item{selfcontained}{Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external
+resources placed in an adjacent directory. See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}. Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins,
+when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.}
 }
 \value{
 Returns an interactive Leaflet map.
@@ -71,8 +77,9 @@ Returns an interactive Leaflet map.
 Plot routing of subbasins for a HYPE model on an interactive map.
 }
 \details{
-\code{PlotSubbasinRouting} generates an interactive Leaflet map with lines indicating the routing of flow between subbasins. GeoData information only needs to be provided if the \code{map} GIS
-data does not include SUBID and/or MAINDOWN fields. BranchData information only needs to be provided if model has a BranchData.txt file. Subbasin routing lines are randomly assigned a color using \code{\link{distinctColorPalette}}.
+\code{PlotSubbasinRouting} generates an interactive Leaflet map with lines indicating the routing of flow between subbasins. GeoData information only needs
+to be provided if the \code{map} GIS data does not include SUBID and/or MAINDOWN fields. BranchData information only needs to be provided if model has a
+BranchData.txt file. Subbasin routing lines are randomly assigned a color using \code{\link[randomcoloR:distinctColorPalette]{randomcoloR::distinctColorPalette()}}.
 }
 \examples{
 \dontrun{

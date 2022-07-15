@@ -35,6 +35,7 @@
 #' \item A vector of colors. This can be a character vector of R's built-in color names or hexadecimal strings as returned by
 #' \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 #' }
+#' @param col.ramp.fun DEPRECATED, for backwards compatibility only.
 #' @param col.breaks A numeric vector, specifying break points for discretisation of model result values into classes. Used if a color palette is specified with \code{col} argument.
 #' Class boundaries will be interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
 #' Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
@@ -52,17 +53,18 @@
 #' @param graphics.off Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when 
 #' adding default maps to a plotting device. See \code{\link{graphics.off}}.
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.
-#' @param weight Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.
-#' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link{addPolygons}}.
-#' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.
+#' @param weight Numeric, weight of subbasin boundary lines in Leaflet maps. See [leaflet::addPolygons()].
+#' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See [leaflet::addPolygons()].
+#' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
 #' @param na.color Character string of color to use to symbolize subbasin polygons in Leaflet maps which correspond to \code{NA} values.
-#' @param plot.searchbar Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \code{\link{addSearchFeatures}}.
-#' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See \code{\link{addPolygons}}.
-#' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
-#' You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.
-#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
-#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
-#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}.
+#' @param plot.searchbar Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See [leaflet.extras::addSearchFeatures()].
+#' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See [leaflet::addPolygons()].
+#' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See [mapview::mapshot()].
+#' You may need to run [webshot::install_phantomjs()] the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs()].
+#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [mapview::mapshot()].
+#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [mapview::mapshot()].
+#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. 
+#' File extension must be specified. See [htmlwidgets::saveWidget()].
 #'
 #' @details
 #' \code{PlotMapOutput} plots HYPE results from 'map\[variable name\].txt' files, typically imported using \code{\link{ReadMapOutput}}.
@@ -110,10 +112,14 @@
 #' PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")
 #' }
 #'
-#' @export
 #' @import sp
-#' @importFrom dplyr right_join %>% mutate filter
+#' @importFrom dplyr right_join %>% mutate filter across
+#' @importFrom grDevices dev.list
+#' @importFrom graphics par frame legend strwidth text
+#' @importFrom stats quantile setNames
+#' @importFrom rlang .data
 # @importFrom sp SpatialPolygonsDataFrame SpatialPolygons
+#' @export
 
 
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", map.adj = 0, plot.legend = T,

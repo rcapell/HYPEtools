@@ -18,7 +18,7 @@ File contents are compared to those of \code{x}.}
 \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointsourceData}, \code{PTQobs},
 \code{TimeOutput}, or \code{Xobs}.}
 
-\item{by}{Character vector, names of columns in \code{x} and \code{y} to use to join data. See \code{\link{full_join}}.}
+\item{by}{Character vector, names of columns in \code{x} and \code{y} to use to join data. See \code{\link[dplyr:mutate-joins]{dplyr::full_join()}}.}
 
 \item{compare.order}{Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
 will also be joined by row number. See \code{\link{full_join}}.}

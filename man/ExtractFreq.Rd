@@ -31,6 +31,7 @@ e.g. HYPE basin output files.
 }
 \examples{
 ExtractFreq(rnorm(1000))
+
 }
 \seealso{
 \code{\link{PlotDurationCurve}}

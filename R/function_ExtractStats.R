@@ -1,4 +1,3 @@
-
 #' Extract statistics from time series
 #'
 #' Calculate aggregated statistics from long-term time series, typically imported HYPE time output files.
@@ -38,6 +37,8 @@
 #' te <- ExtractStats(x = mytimeoutput, start.mon = 10, FUN = function(x) {c(min(x), mean(x), max())})
 #' # extract mean from resulting nested dataframe:
 #' data.frame(te[, 1:2], sapply(te[, -c(1:2)], function(x){x[, 2]}))}
+#' 
+#' @importFrom stats aggregate
 #' @export
 
 

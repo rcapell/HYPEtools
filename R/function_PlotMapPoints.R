@@ -46,26 +46,27 @@
 #' @param graphics.off Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when 
 #' adding default maps to a plotting device. See \code{\link{graphics.off}}.
 #' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.
-#' @param radius Numeric, radius of markers in Leaflet maps. See \code{\link{addCircleMarkers}}.
-#' @param weight Numeric, weight of marker outlines in Leaflet maps. See \code{\link{addCircleMarkers}}.
-#' @param opacity Numeric, opacity of marker outlines in Leaflet maps. See \code{\link{addCircleMarkers}}.
-#' @param fillOpacity Numeric, opacity of markers in Leaflet maps. See \code{\link{addCircleMarkers}}.
+#' @param radius Numeric, radius of markers in Leaflet maps. See [leaflet::addCircleMarkers()].
+#' @param weight Numeric, weight of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
+#' @param opacity Numeric, opacity of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
+#' @param fillOpacity Numeric, opacity of markers in Leaflet maps. See [leaflet::addCircleMarkers()].
 #' @param na.color Character string of color to use to symbolize markers in Leaflet maps which correspond to \code{NA} values.
-#' @param bg.weight Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{addPolygons}}.
-#' @param bg.opacity Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{addPolygons}}.
-#' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.
-#' @param bg.fillOpacity Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See \code{\link{addPolygons}}.
-#' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See \code{\link{addCircleMarkers}}.
-#' @param noHide Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \code{\link{labelOptions}}.
-#' @param textOnly Logial, set to \code{TRUE} to hide marker label background in Leaflet maps. See \code{\link{labelOptions}}.
+#' @param bg.weight Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See [leaflet::addPolygons()].
+#' @param bg.opacity Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See [leaflet::addPolygons()].
+#' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
+#' @param bg.fillOpacity Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
+#' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See [leaflet::addCircleMarkers()].
+#' @param noHide Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See [leaflet::labelOptions()].
+#' @param textOnly Logial, set to \code{TRUE} to hide marker label background in Leaflet maps. See [leaflet::labelOptions()].
 #' @param font.size Numeric, font size (px) for marker labels in Leaflet maps.
 #' @param plot.bg.label String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
 #' labels for \code{bg} will be dislayed in Leaflet maps.
-#' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{mapshot}}.
-#' You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link{install_phantomjs}}.
-#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
-#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See \code{\link{webshot}}.
-#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{saveWidget}}.
+#' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See [mapview::mapshot()].
+#' You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs()].
+#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [webshot::webshot()].
+#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [webshot::webshot()].
+#' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. 
+#' See [htmlwidgets::saveWidget()].
 #'
 #' @details
 #' \code{PlotMapPoints} can be used to print point information on a mapped surface. The primary target are model performance
@@ -102,7 +103,12 @@
 #'
 #' @export
 #' @import sp
-#' @importFrom dplyr right_join %>% mutate filter
+#' @importFrom dplyr right_join %>% mutate filter across
+#' @importFrom grDevices dev.list colorRampPalette
+#' @importFrom graphics par frame legend strwidth text plot.new
+#' @importFrom stats setNames
+#' @importFrom rlang .data
+
 
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.column = 1, map.type = "default", map.adj = 0, plot.legend = TRUE,
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = FALSE, legend.inset = c(0, 0), legend.signif = 2,

@@ -1,13 +1,7 @@
-
-#' @export
-
-#' @title
 #' Extract quantiles for use in a frequency distribution plot, e.g. a flow duration curve
 #'
-#' @description
 #' This function calculates quantiles suitable for duration curves of environmental time series data.
 #' 
-#'
 #' @param data either a numeric vector or an all-numeric dataframe (\code{NA}s allowed) which holds the variables for which
 #' quantiles are computed.
 #' @param probs numeric, vector of probabilities as in \code{\link{quantile}} with default suitable for flow duration curves.
@@ -27,8 +21,9 @@
 #' 
 #' @examples
 #' ExtractFreq(rnorm(1000))
-
-
+#' 
+#' @importFrom stats quantile na.omit
+#' @export
 
 ExtractFreq <- function(data, probs = c(0, 0.00001, 0.0001, 0.001, seq(0.01,0.99,by = .01), 0.999, 0.9999, 0.99999, 1)){
   # condition: several variables in data

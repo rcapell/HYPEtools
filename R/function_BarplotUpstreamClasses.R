@@ -51,6 +51,8 @@
 #' \dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "soil")}
 #' \dontrun{BarplotUpstreamClasses(x = res, type = "s", desc = mydescription)}
 #' 
+#' @importFrom stats aggregate na.fail
+#' @importFrom graphics par barplot mtext abline legend box
 #' @export
 
 BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "crop"), desc = NULL, class.names = NULL, xlab = NULL, 

@@ -50,6 +50,8 @@
 #' @examples
 #' \dontrun{PlotAnnualRegime(x = myregime)}
 #' 
+#' @importFrom graphics par grid abline axis axis.POSIXct box polygon lines legend
+#' @importFrom stats na.omit
 #' @export
 
 

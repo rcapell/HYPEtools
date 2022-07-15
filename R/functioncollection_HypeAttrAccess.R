@@ -7,9 +7,11 @@
 
 #' Quickly query and set HYPE-specific attributes
 #' 
-#' These are simple convenience wrapper functions to quickly query attributes which are added to HYPE files on import.
+#' These are simple convenience wrapper functions to quickly query and assign values of attributes which are added to HYPE data  
+#' on import. 
 #' 
-#' @param x an object whose attribute is to be accessed
+#' @param x Object whose attribute is to be accessed
+#' @param value Value to be assigned
 #' 
 #' @details 
 #' These functions are just shortcuts for \code{\link{attr}}.

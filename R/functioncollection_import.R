@@ -202,6 +202,8 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' \dontrun{ReadBasinOutput("0000001.txt")}
 #' 
 #' @importFrom data.table fread
+#' @importFrom stats na.fail
+#' @importFrom rlang .data
 #' @export
 
 
@@ -257,21 +259,21 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     if (is.data.table(x)) {
       
       if (dt.format == "%Y-%m") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
-        x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+        xd <- as.POSIXct(strptime(paste(x[["DATE"]], "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
+        x[, .data$DATE := tryCatch(na.fail(xd), error = function(e) {
+          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[["DATE"]])})]
       } else if (dt.format == "%Y%m") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")
-        x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+        xd <- as.POSIXct(strptime(paste(x[["DATE"]], "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")
+        x[, .data$DATE := tryCatch(na.fail(xd), error = function(e) {
+          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[["DATE"]])})]
       } else if (dt.format == "%Y") {
-        xd <- as.POSIXct(strptime(paste(x[, DATE], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
-        x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+        xd <- as.POSIXct(strptime(paste(x[["DATE"]], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
+        x[, .data$DATE := tryCatch(na.fail(xd), error = function(e) {
+          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[["DATE"]])})]
       } else {
-        xd <- as.POSIXct(strptime(x[, DATE], format = dt.format), tz = "UTC")
-        x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+        xd <- as.POSIXct(strptime(x[["DATE"]], format = dt.format), tz = "UTC")
+        x[, .data$DATE := tryCatch(na.fail(xd), error = function(e) {
+          print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[["DATE"]])})]
       }
       
     } else {
@@ -426,6 +428,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
 #' \dontrun{ReadXobs("Xobs.txt")}
 #' 
 #' @importFrom data.table fread
+#' @importFrom stats na.fail
 #' @export
 
 
@@ -561,6 +564,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' 
 #' @importFrom data.table fread
 #' @importFrom dplyr select %>%
+# #' @importFrom tidyselect where
 #' @export
 
 
@@ -685,6 +689,7 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
 #' @examples
 #' \dontrun{ReadPar("par.txt")}
 #' 
+#' @importFrom stats na.fail
 #' @export
 
 ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "latin1")) {
@@ -796,20 +801,19 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
 #' 
 #' @importFrom data.table fread transpose :=
+#' @importFrom stats na.fail
 #' @export
 
-ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "df", warn.nan = FALSE) {
+ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c("df", "dt", "hsv"), warn.nan = FALSE) {
   
-  # handling output type user choice
+  # input argument checks
+  type <- match.arg(type)
   if (type == "df") {
     d.t <- F
-  } else if (type %in% c("dt", "hsv")) {
-    d.t <- T
   } else {
-    stop(paste("Unknown type", type, "."))
+    d.t <- T
   }
   
-  #x <- read.table(filename, header = T, sep = ",", na.strings = "-9999", skip = 1)      
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
              skip = 2, sep = ",", header = F, data.table = d.t)
@@ -889,7 +893,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
   } else {
     ## HypeSingleVar formatting
     # copy and remove subids
-    sbd <- x[, SUBID]
+    sbd <- x[["SUBID"]]
     x <- x[, !"SUBID", with = F]
     # transpose and convert to array (straigtht conversion to array gives error, therefore intermediate matrix)
     x <- transpose(x)
@@ -978,6 +982,8 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = "d
 #' 
 #' @importFrom data.table fread is.data.table data.table
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
+#' @importFrom stats na.fail
+#' @importFrom rlang .data
 #' @export
 
 ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, out.reg = NULL, type = c("df", "dt", "hsv"), 
@@ -1216,21 +1222,21 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
       if (is.data.table(x)) {
         
         if (dt.format == "%Y-%m") {
-          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
-          x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+          xd <- as.POSIXct(strptime(paste(x[["DATE"]], "-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
+          x[, .data$DATE := tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[["DATE"]])})]
         } else if (dt.format == "%Y%m") {
-          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")
-          x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+          xd <- as.POSIXct(strptime(paste(x[["DATE"]], "-01", sep = ""), format = "%Y%m-%d"), tz = "UTC")
+          x[, .data$DATE := tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[["DATE"]])})]
         } else if (dt.format == "%Y") {
-          xd <- as.POSIXct(strptime(paste(x[, DATE], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
-          x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+          xd <- as.POSIXct(strptime(paste(x[["DATE"]], "-01-01", sep = ""), format = "%Y-%m-%d"), tz = "UTC")
+          x[, .data$DATE := tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[["DATE"]])})]
         } else {
-          xd <- as.POSIXct(strptime(x[, DATE], format = dt.format), tz = "UTC")
-          x[, DATE := tryCatch(na.fail(xd), error = function(e) {
-            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, DATE])})]
+          xd <- as.POSIXct(strptime(x[["DATE"]], format = dt.format), tz = "UTC")
+          x[, .data$DATE := tryCatch(na.fail(xd), error = function(e) {
+            print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[["DATE"]])})]
         }
         
       } else {
@@ -1403,6 +1409,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' \dontrun{ReadObs("Tobs.txt")}
 #' 
 #' @importFrom data.table fread
+#' @importFrom stats na.fail
 # #' @importFrom lubridate force_tz
 #' @export
 
@@ -1536,6 +1543,8 @@ ReadObs <- function(filename, variable = "",
 }
 
 # alias, for backwards compatibility
+#' @rdname ReadObs
+#' @importFrom stats na.fail
 #' @export
 ReadPTQobs <- ReadObs
 
@@ -1599,6 +1608,7 @@ ReadPTQobs <- ReadObs
 NULL
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadAquiferData <- function(filename = "AquiferData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
                             stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
@@ -1616,6 +1626,7 @@ ReadAquiferData <- function(filename = "AquiferData.txt", verbose = T, header = 
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadOutregions <- function(filename = "Outregions.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
                             stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
@@ -1630,6 +1641,7 @@ ReadOutregions <- function(filename = "Outregions.txt", verbose = T, header = T,
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadBranchData <- function(filename = "BranchData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
                            stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
@@ -1646,6 +1658,7 @@ ReadBranchData <- function(filename = "BranchData.txt", verbose = T, header = T,
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadCropData <- function(filename = "CropData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
                          stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
@@ -1662,6 +1675,7 @@ ReadCropData <- function(filename = "CropData.txt", verbose = T, header = T, na.
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadDamData <- function(filename = "DamData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
                         quote = "", stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
@@ -1678,6 +1692,7 @@ ReadDamData <- function(filename = "DamData.txt", verbose = T, header = T, na.st
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadGlacierData <- function(filename = "GlacierData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
                             stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
@@ -1694,6 +1709,7 @@ ReadGlacierData <- function(filename = "GlacierData.txt", verbose = T, header = 
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadLakeData <- function(filename = "LakeData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
                          quote = "", stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
@@ -1710,6 +1726,7 @@ ReadLakeData <- function(filename = "LakeData.txt", verbose = T, header = T, na.
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
                          stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
@@ -1747,12 +1764,14 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, h
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadAllsim <- function(filename = "allsim.txt", na.strings="-9999") {
   read.table(file = filename, header = T, sep = ",", na.strings = na.strings)
 }
 
 #' @rdname HypeDataImport
+#' @importFrom utils read.table
 #' @export
 ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t", encoding = c("unknown", "latin1", "UTF-8")) {
   
@@ -1809,6 +1828,7 @@ ReadUpdate <- function(filename = "update.txt", header = T, sep = "\t",
 #' @examples
 #' \dontrun{ReadPmsf("pmsf.txt")}
 #' 
+#' @importFrom utils read.table
 #' @export
 
 ReadPmsf <- function(filename = "pmsf.txt") {
@@ -1937,6 +1957,7 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 #' @examples
 #' \dontrun{ReadSubass("subass1.txt")}
 #'
+#' @importFrom utils read.table
 #' @export 
 
 
@@ -2147,6 +2168,7 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 #' @examples
 #' \dontrun{ReadSimass("simass.txt")}
 #'
+#' @importFrom stats na.omit
 #' @export 
 
 

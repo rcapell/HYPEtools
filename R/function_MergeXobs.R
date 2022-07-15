@@ -1,16 +1,11 @@
-#' @export
-
-#' @title
 #' Merge two Xobs data frames
 #'
-#' @description
 #' Function to merge two Xobs data frames, with handling of overlapping time periods and time periods gaps 
 #' as well as merging of common columns.
 #'
 #' @param x,y Data frames of class \code{\link{HypeXobs}}, including additional attributes \code{comment}, 
 #' \code{variable}, \code{subid}, and \code{timestep}, typically imported using \code{\link{ReadXobs}}. 
 #' For details on attribute format, see the class description. Class attribute not formally necessary.
-#' 
 #' @param comment Character string, will be added to the result as attribute \code{comment}. If empty, 
 #' comment attributes from \code{x} and \code{y} will be merged to new comment string.
 #' 
@@ -29,6 +24,9 @@
 #' 
 #' @examples
 #' \dontrun{MergeXobs(x = myxobs1, y = myxobs2)}
+#' 
+#' @importFrom stats na.omit
+#' @export
 
 
 MergeXobs <- function(x, y, comment = "") {

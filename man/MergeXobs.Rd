@@ -32,4 +32,5 @@ values from columns in \code{x} will take precedence, and values from \code{y} w
 }
 \examples{
 \dontrun{MergeXobs(x = myxobs1, y = myxobs2)}
+
 }

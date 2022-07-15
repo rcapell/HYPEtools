@@ -66,6 +66,7 @@
 #' \dontrun{AnnualRegime(x = mybasinoutput)}
 #' 
 #' @importFrom tidyr pivot_longer
+#' @importFrom stats quantile aggregate na.fail
 #' @export
 
 AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL, start.mon = 1, incl.leap = FALSE, na.rm = TRUE, 

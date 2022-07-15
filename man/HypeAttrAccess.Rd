@@ -47,10 +47,13 @@ variable(x)
 variable(x) <- value
 }
 \arguments{
-\item{x}{an object whose attribute is to be accessed}
+\item{x}{Object whose attribute is to be accessed}
+
+\item{value}{Value to be assigned}
 }
 \description{
-These are simple convenience wrapper functions to quickly query attributes which are added to HYPE files on import.
+These are simple convenience wrapper functions to quickly query and assign values of attributes which are added to HYPE data
+on import.
 }
 \details{
 These functions are just shortcuts for \code{\link{attr}}.

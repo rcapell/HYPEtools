@@ -92,6 +92,8 @@
 #' \dontrun{PlotBasinSummary(x = mybasin, gd = mygd, gcl = mygcl, psd = mypsd, desc = mydesc)}
 #' 
 #' @importFrom hydroGOF gof gof.default
+#' @importFrom stats weighted.mean
+#' @importFrom grDevices X11 quartz png dev.off cairo_pdf 
 #' @export
 
 
@@ -100,6 +102,12 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
                              from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = "", ylab.t1 = "Conc.") {
   
   ## Preliminaries
+  
+  # Assign NULL value to all potential data variables extracted from 'x' further below
+  # This to get rid of 'no visible binding for global variable'-notes with 'Check Package'
+  # See Option Two here: https://www.r-bloggers.com/2019/08/no-visible-binding-for-global-variable/
+  date <- cout <- rout <- ccin <- rein <- ccon <- reon <- cctn <- retn <- ccsp <- resp <- 
+    ccpp <- repp <- cctp <- retp <- ctnl <- ctpl <- ccss <- ress <- ccts <- rets <- cct1 <- ret1 <- NULL
   
   # check and choose device driver
   driver <- match.arg(driver)
@@ -2205,7 +2213,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     # close the file device on exit
     on.exit(dev.off())
   } else {
-    cairo_pdf(file = filename, width = wdth, height = hght, pointsize = 12)
+    cairo_pdf(filename = filename, width = wdth, height = hght, pointsize = 12)
     # close the file device on exit
     on.exit(dev.off())
   }

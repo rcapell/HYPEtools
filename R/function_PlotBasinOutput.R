@@ -85,6 +85,7 @@
 #' \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
 #' 
 #' @importFrom hydroGOF gof gof.default
+#' @importFrom grDevices X11 dev.control quartz dev.off cairo_pdf png
 #' @export
 
 PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "png", "screen"), timestep = attr(x, "timestep"), 
@@ -1149,7 +1150,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     # close the file device on exit
     on.exit(dev.off())
   } else {
-    cairo_pdf(file = filename, width = wdth, height = hght, pointsize = 12)
+    cairo_pdf(filename = filename, width = wdth, height = hght, pointsize = 12)
     # close the file device on exit
     on.exit(dev.off())
   }

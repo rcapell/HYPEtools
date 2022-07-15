@@ -70,6 +70,8 @@
 #' 
 #' @importFrom pbapply pblapply
 #' @importFrom data.table fread is.data.table transpose
+#' @importFrom utils glob2rx
+#' @importFrom rlang .data
 #' @export
 
 
@@ -133,7 +135,7 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     }
     # add attributes with information
     attr(res, "variable") <- toupper(hype.var)
-    attr(res, "datetime") <- te[, DATE]
+    attr(res, "datetime") <- te[["DATE"]]
     attr(res, "subid") <- attr(te, "subid")
     attr(res, "outregid") <- attr(te, "outregid")
     class(res) <- c("HypeSingleVar", "array")
@@ -154,9 +156,9 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     # add attributes with information
     attr(res, "variable") <- toupper(hype.var)
     attr(res, "datetime") <- attr(te, "datetime")
-    attr(res, "subid") <- te[, SUBID]
+    attr(res, "subid") <- te[["SUBID"]]
     attr(res, "outregid") <- attr(te, "outregid")
-    dimnames(res)[[2]] <- paste0("X", te[, SUBID])
+    dimnames(res)[[2]] <- paste0("X", te[["SUBID"]])
     class(res) <- c("HypeSingleVar", "array")
     
   } else {
@@ -196,15 +198,3 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
   return(res)
   
 }
-
-# DEBUG
-# library(pbapply)
-# path <- "d:/Rpackage_dev/r302/testdata/taskWS"
-# hype.var <- "ccin"
-# dt.format <- NULL
-# progbar <- T
-# type <- "map"
-# subid <- 51
-# from <- NULL
-# to <- NULL
-# select <- 1:3

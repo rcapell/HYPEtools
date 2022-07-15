@@ -43,8 +43,9 @@
 #' @examples
 #' \dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, olake.slc = 1)}
 #' 
-#' @export
 #' @importFrom pbapply pblapply pbsapply
+#' @importFrom stats weighted.mean
+#' @export
 
 UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.weight = FALSE, signif.digits = 5, progbar = TRUE) {
   
