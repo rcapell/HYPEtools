@@ -45,7 +45,6 @@
 #' @importFrom dplyr full_join %>% bind_rows filter across
 #' @importFrom tidyselect matches
 #' @importFrom rlang .data
-#' @importFrom sf st_as_sf
 #' @importFrom stats setNames
 #' @export
 
@@ -71,12 +70,12 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     if ("character" %in% class(map)) {
       map <- sf::st_read(map)
     } else if ("SpatialPolygonsDataFrame" %in% class(map)) {
-      map <- st_as_sf(map)
+      map <- sf::st_as_sf(map)
     }
 
     # Reproject if not a lat/long CRS
     if (sf::st_is_longlat(map) == F) {
-      map <- map %>% sf::st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+      map <- map %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
     }
 
     # Rename columns to all uppercase except geometry column

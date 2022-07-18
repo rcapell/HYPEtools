@@ -102,7 +102,6 @@
 #' }
 #'
 #' @export
-#' @import sp
 #' @importFrom dplyr right_join %>% mutate filter across
 #' @importFrom grDevices dev.list colorRampPalette
 #' @importFrom graphics par frame legend strwidth text plot.new
@@ -397,14 +396,14 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       
       # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
       if (!is.null(bg)) {
-        if (is.projected(bg)) {
-          bbx <- bbox(bg)
+        if (sf::st_is_longlat(bg) == F) {
+          bbx <- matrix(sf::st_bbox(bg),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # map side ratio (h/w)
           msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
           # plot area side ratio (h/w)
           psr <- par("pin")[2] / par("pin")[1]
         } else {
-          bbx <- bbox(bg)
+          bbx <- matrix(sf::st_bbox(bg),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
           par(new = T)
           plot(sites, col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
@@ -419,14 +418,14 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
           psr <- p.range.y / p.range.x
         }
       } else {
-        if (is.projected(sites)) {
-          bbx <- bbox(sites)
+        if (sf::st_is_longlat(sites) == F) {
+          bbx <- matrix(sf::st_bbox(sites),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # map side ratio (h/w)
           msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
           # plot area side ratio (h/w)
           psr <- par("pin")[2] / par("pin")[1]
         } else {
-          bbx <- bbox(sites)
+          bbx <- matrix(sf::st_bbox(sites),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # set user coordinates using a dummy plot
           par(new = T)
           plot(sites, col = NULL, add = add)
@@ -538,7 +537,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       }
       
       if (plot.scale) {
-        if (!is.projected(sites)) {
+        if (sf::st_is_longlat(sites)) {
           warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = F' to remove it.")
         }
         if (!add) {
@@ -587,11 +586,11 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       
       # Reproject if not a lat/long CRS
       if(sf::st_is_longlat(x)==F){
-        x <- x%>%sf::st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+        x <- x %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
       }
       if(!is.null(bg)){
         if(sf::st_is_longlat(bg)==F){
-          bg <- bg%>%sf::st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+          bg <- bg %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
         }
       }
       

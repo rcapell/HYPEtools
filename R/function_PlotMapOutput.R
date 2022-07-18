@@ -506,22 +506,23 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       ## calculate coordinates for map positioning
       
       # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
-      if (is.projected(map)) {
-        bbx <- bbox(map)
+      if(sf::st_is_longlat(map) == F){
+        bbx <- matrix(sf::st_bbox(map),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
         # map side ratio (h/w)
         msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
         # plot area side ratio (h/w)
         psr <- par("pin")[2] / par("pin")[1]
       } else {
-        bbx <- bbox(map)
+        bbx <- matrix(sf::st_bbox(map),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
         # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
         par(new = T)
-        plot(SpatialPoints(coordinates(map), proj4string = CRS(proj4string(map))), col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
+        # plot(SpatialPoints(coordinates(map), proj4string = CRS(proj4string(map))), col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
+        plot(map, xlim = bbx[1, ], ylim = bbx[2, ])
         # create a map side ratio based on the device region in user coordinates and the map bounding box
         p.range.x <- diff(par("usr")[1:2])
         p.range.y <- diff(par("usr")[3:4])
-        m.range.x <- diff(bbox(map)[1, ])
-        m.range.y <- diff(bbox(map)[2, ])
+        m.range.x <- diff(bbx[1, ])
+        m.range.y <- diff(bbx[2, ])
         # map side ratio (h/w)
         msr <- m.range.y / m.range.x
         # plot area side ratio (h/w)
@@ -619,7 +620,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       }
       
       if (plot.scale) {
-        if (!is.projected(map)) {
+        if (sf::st_is_longlat(map)) {
           warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = F' to remove it.")
         }
         if (!add) {
@@ -667,7 +668,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       
       # Reproject if not a lat/long CRS
       if(sf::st_is_longlat(x)==F){
-        x <- x%>%sf::st_transform(CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+        x <- x %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
       }
       
       # Remove any empty geometries (these prevent labels from working)
