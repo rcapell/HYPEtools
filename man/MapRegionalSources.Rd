@@ -4,33 +4,42 @@
 \alias{MapRegionalSources}
 \title{Map regional irrigation source connection as spatial lines}
 \usage{
-MapRegionalSources(data, map, map.subid.column = 1, digits = 3, progbar = T)
+MapRegionalSources(
+  data,
+  map,
+  map.subid.column = 1,
+  digits = 3,
+  progbar = T,
+  map.type = "default"
+)
 }
 \arguments{
 \item{data}{Dataframe, containing a column \code{SUBID} and a column \code{REGSRCID} (not case-sensitive), which identify
 irrigation target and source sub-catchments, respectively. Typically a HYPE 'MgmtData.txt' file, imported with \code{\link{ReadMgmtData}}.}
 
-\item{map}{A \code{SpatialPointsDataFrame} object providing sub-catchment locations as points. Typically an imported SUBID
-centre-point shape file, shape file import requires additional packages, e.g. \code{rgdal}.}
+\item{map}{A \code{SpatialPointsDataFrame}, \code{SpatialPolygonsDataFrame}, or \code{sf} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
+centre-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link{st_centroid}}). Spatial data import requires additional packages, e.g. \code{sf}.}
 
-\item{map.subid.column}{Integer, index of the column in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
+\item{map.subid.column}{Integer, index of the column in the \code{map} column holding SUBIDs (sub-catchment IDs).}
 
 \item{digits}{Integer, number of digits to which irrigation connection lengths are rounded to.}
 
 \item{progbar}{Logical, display a progress bar while calculating.}
+
+\item{map.type}{Map type keyword string. Choose \code{"default"} for the default static plots.}
 }
 \value{
-\code{MapRegionalSources} returns a \code{SpatialLinesDataFrame} with a data slot containing columns \code{SUBID} (irrigation target
+\code{MapRegionalSources} returns an \code{sf} object containing columns \code{SUBID} (irrigation target
 sub-catchment),  \code{REGSRCID} (irrigation source sub-catchment), and  \code{Length_[unit]} (distance between sub-catchments) where
-'\link{unit}' is the actual length unit of the distances. The projection of the returned object is always identical to the projection of
+'unit' is the actual length unit of the distances. The projection of the returned object is always identical to the projection of
 argument \code{map}.
 }
 \description{
-This function creates a \code{SpatialLinesDataFrame} object which contains regional irrigation connections between
+This function creates an \code{sf} object which contains regional irrigation connections between
 source and target HYPE sub-catchments.
 }
 \details{
-\code{MapRegionalSources} creates a \code{SpatialLinesDataFrame} object from HYPE SUBID centerpoints using a table of SUBID pairs. Regional
+\code{MapRegionalSources} creates an \code{sf} object from HYPE SUBID centerpoints using a table of SUBID pairs. Regional
 irrigation sources in HYPE are transfers from outlet lakes or rivers in a source sub-catchment to the soil storage of irrigated SLC classes
 (Soil, Land use, Crop) in a targed sub-catchment.
 }
