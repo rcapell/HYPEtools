@@ -93,7 +93,7 @@
 #' 
 #' @importFrom hydroGOF gof gof.default
 #' @importFrom stats weighted.mean
-#' @importFrom grDevices X11 quartz png dev.off cairo_pdf 
+#' @importFrom grDevices X11 png dev.off cairo_pdf 
 #' @export
 
 
@@ -2199,7 +2199,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
       # suppress slow redraw on automatic screen device rezising
       dev.control("inhibit")
     } else if (Sys.info()['sysname'] == "Darwin") {
-      quartz(width = wdth, height = hght)
+      grDevices::quartz(width = wdth, height = hght)
       # suppress slow redraw on automatic screen device rezising
       dev.control("inhibit")
     } else {

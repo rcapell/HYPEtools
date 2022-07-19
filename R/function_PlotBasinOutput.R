@@ -85,7 +85,7 @@
 #' \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
 #' 
 #' @importFrom hydroGOF gof gof.default
-#' @importFrom grDevices X11 dev.control quartz dev.off cairo_pdf png
+#' @importFrom grDevices X11 dev.control dev.off cairo_pdf png
 #' @export
 
 PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "png", "screen"), timestep = attr(x, "timestep"), 
@@ -1136,7 +1136,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
       # suppress slow redraw on automatic screen device rezising
       dev.control("inhibit")
     } else if (Sys.info()['sysname'] == "Darwin") {
-      quartz(width = wdth, height = hght)
+      grDevices::quartz(width = wdth, height = hght)
       # suppress slow redraw on automatic screen device rezising
       dev.control("inhibit")
     } else {
