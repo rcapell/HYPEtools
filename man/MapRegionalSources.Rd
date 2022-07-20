@@ -9,8 +9,21 @@ MapRegionalSources(
   map,
   map.subid.column = 1,
   digits = 3,
-  progbar = T,
-  map.type = "default"
+  progbar = F,
+  map.type = "default",
+  plot.scale = TRUE,
+  plot.searchbar = FALSE,
+  weight = 0.5,
+  opacity = 1,
+  fillColor = "#4d4d4d",
+  fillOpacity = 0.25,
+  line.weight = 5,
+  line.opacity = 1,
+  font.size = 10,
+  file = "",
+  vwidth = 1424,
+  vheight = 1000,
+  html.name = ""
 )
 }
 \arguments{
@@ -26,23 +39,57 @@ centre-point shape file or geopackage. If provided polygon data, then the polygo
 
 \item{progbar}{Logical, display a progress bar while calculating.}
 
-\item{map.type}{Map type keyword string. Choose \code{"default"} for the default static plots.}
+\item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
+
+\item{plot.scale}{Logical, include a scale bar on Leaflet maps.}
+
+\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included on Leaflet maps. See \code{\link[leaflet.extras:search-features]{leaflet.extras::addSearchFeatures()}}.}
+
+\item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+
+\item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+
+\item{fillColor}{String, color of subbasin polygons in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+
+\item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+
+\item{line.weight}{Numeric, weight of connection lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
+
+\item{line.opacity}{Numeric, opacity of connection lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
+
+\item{font.size}{Numeric, font size (px) for subbasin labels in Leaflet maps.}
+
+\item{file}{Save a Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified.
+See \code{\link[mapview:mapshot]{mapview::mapshot()}}.
+You may need to run \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}} the first time you save a map to an image file.}
+
+\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link[webshot:webshot]{webshot::webshot()}}.}
+
+\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link[webshot:webshot]{webshot::webshot()}}.}
+
+\item{html.name}{Save a Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified.
+See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}.}
 }
 \value{
-\code{MapRegionalSources} returns an \code{sf} object containing columns \code{SUBID} (irrigation target
+For default static maps, \code{MapRegionalSources} returns an \code{sf} object containing columns \code{SUBID} (irrigation target
 sub-catchment),  \code{REGSRCID} (irrigation source sub-catchment), and  \code{Length_[unit]} (distance between sub-catchments) where
 'unit' is the actual length unit of the distances. The projection of the returned object is always identical to the projection of
-argument \code{map}.
+argument \code{map}. For interactive Leaflet maps, \code{PlotMapOutput} returns an object of class \code{leaflet}. If \code{map} contains
+polygon data, then the interactive map will include the polygons as a background layer.
 }
 \description{
-This function creates an \code{sf} object which contains regional irrigation connections between
-source and target HYPE sub-catchments.
+By default, this function creates an \code{sf} object which contains regional irrigation connections between
+source and target HYPE sub-catchments. However, this function can also be used to create interactive Leaflet maps.
 }
 \details{
-\code{MapRegionalSources} creates an \code{sf} object from HYPE SUBID centerpoints using a table of SUBID pairs. Regional
+\code{MapRegionalSources} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}.
+By default, \code{MapRegionalSources} creates an \code{sf} object from HYPE SUBID centerpoints using a table of SUBID pairs. Regional
 irrigation sources in HYPE are transfers from outlet lakes or rivers in a source sub-catchment to the soil storage of irrigated SLC classes
-(Soil, Land use, Crop) in a targed sub-catchment.
+(Soil, Land use, Crop) in a targed sub-catchment. If \code{map.type} is set to "leaflet", then  \code{MapRegionalSources} returns an object of class \code{leaflet}.
 }
 \examples{
-\dontrun{MapRegionalSources(data = myMgmtData, map = mySUBIDCentrePoints)}
+\dontrun{
+MapRegionalSources(data = myMgmtData, map = mySUBIDCentrePoints)
+}
+
 }
