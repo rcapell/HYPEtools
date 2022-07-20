@@ -23,11 +23,7 @@
 #' @param vwidth Numeric, width of the exported map image in pixels. See [webshot::webshot()].
 #' @param vheight Numeric, height of the exported map image in pixels. See [webshot::webshot()].
 #' @param html.name Save map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. 
-#' See [htmlwidgets::saveWidget()]. If using \code{selfcontained = TRUE}, then the output file path must be within in the working directory and on a local device 
-#' (i.e. not a network location).
-#' @param selfcontained Logical, whether to save the HTML as a single self-contained file (with external resources base64 encoded) or a file with external 
-#' resources placed in an adjacent directory. See [htmlwidgets::saveWidget()]. Users should set argument to \code{FALSE} for large Leaflet maps with lots of subbasins, 
-#' when using a subbasin vector polygon files with unsimplified geometry, and/or when working on a network directory.
+#' See [htmlwidgets::saveWidget()].
 #'
 #' @details
 #' \code{PlotSubbasinRouting} generates an interactive Leaflet map with lines indicating the routing of flow between subbasins. GeoData information only needs 
@@ -50,7 +46,7 @@
 
 PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL, plot.scale = TRUE, plot.searchbar = FALSE,
                                 weight = 0.5, opacity = 1, fillColor = "#4d4d4d", fillOpacity = 0.25, line.weight = 5, line.opacity = 1,
-                                font.size = 10, file = "", vwidth = 1424, vheight = 1000, html.name = "", selfcontained = FALSE) {
+                                font.size = 10, file = "", vwidth = 1424, vheight = 1000, html.name = "") {
 
   # Check/Load Dependencies - do this here so that these packages are not required for the base HYPEtools installation
   if (!all(
@@ -254,7 +250,8 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     # Save HTML
     if (!html.name == "") {
       message("Saving HTML")
-      htmlwidgets::saveWidget(leafmap, file = html.name, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = selfcontained)
+      htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
+      file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
     }
 
     return(leafmap)
