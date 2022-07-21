@@ -1,11 +1,5 @@
-#' @export
-#' @importFrom dplyr all_of left_join mutate rename_with select sym %>%
-#' @importFrom pbapply pblapply
-#'
-#' @title
 #' Map regional irrigation source connection as spatial lines
 #'
-#' @description
 #' By default, this function creates an \code{sf} object which contains regional irrigation connections between
 #' source and target HYPE sub-catchments. However, this function can also be used to create interactive Leaflet maps.
 #'
@@ -52,6 +46,11 @@
 #' MapRegionalSources(data = myMgmtData, map = mySUBIDCentrePoints)
 #' }
 #'
+#' @importFrom dplyr all_of left_join mutate rename_with select sym %>%
+#' @importFrom pbapply pblapply
+#' @importFrom rlang .data
+#' @export
+
 MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, progbar = F, map.type = "default",
                                plot.scale = TRUE, plot.searchbar = FALSE, weight = 0.5, opacity = 1, fillColor = "#4d4d4d",
                                fillOpacity = 0.25, line.weight = 5, line.opacity = 1, font.size = 10, file = "",
@@ -130,8 +129,8 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
       sf::st_drop_geometry()
 
     # Create dataframe of target-source connections
-    condata <- left_join(rcb, geometry %>% select(SUBID, SUBID_GEO), by = "SUBID") %>% # Add coordinates for SUBID
-      left_join(geometry %>% select(SUBID, REGSRC_GEO), by = c("REGSRCID" = "SUBID")) %>% # Add corrdinates for REGSRCID
+    condata <- left_join(rcb, geometry %>% select(.data$SUBID, .data$SUBID_GEO), by = "SUBID") %>% # Add coordinates for SUBID
+      left_join(geometry %>% select(.data$SUBID, .data$REGSRC_GEO), by = c("REGSRCID" = "SUBID")) %>% # Add coordinates for REGSRCID
       mutate(id = as.character(1:nrow(.)), .before = 1) # Add character ID
 
     # Apply function over all source-target connections to create line objects between connections
@@ -159,7 +158,7 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
 
       # Plot map and Return a subset of data frame columns invisibly
       plot(condata$LINE)
-      invisible(condata %>% select(SUBID, REGSRCID, all_of(length_column)))
+      invisible(condata %>% select(.data$SUBID, .data$REGSRCID, all_of(length_column)))
     } else if (map.type == "leaflet") {
 
       # Create Leaflet Plot
