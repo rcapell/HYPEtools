@@ -42,6 +42,7 @@ and multiple model runs, typically imported time and map output results.
 S3 class constructor function for array objects which can hold (multiple) HYPE time or map output results.
 }
 \examples{
-\dontrun{HypeSingleVar(mytimeoutput, datetime = mydates, subid = c(23, 45, 56), hype.var = "cctn")}
+\dontrun{HypeSingleVar(mytimeoutput, datetime = mydates,
+subid = c(23, 45, 56), hype.var = "cctn")}
 
 }

@@ -37,7 +37,8 @@
 #' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "landuse")}
+#' \dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata,
+#' gcl = mygeoclass, bd = mybranchdata, type = "landuse")}
 #' 
 #' @export
 #' @importFrom pbapply pblapply pbsapply

@@ -47,8 +47,9 @@
 #' \code{\link{UpstreamGroupSLCClasses}}
 #' \code{\link{barplot}}
 #' 
-#' @examples 
-#' \dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "soil")}
+#' @examples
+#' \dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass,
+#' bd = mybranchdata, type = "soil")}
 #' \dontrun{BarplotUpstreamClasses(x = res, type = "s", desc = mydescription)}
 #' 
 #' @importFrom stats aggregate na.fail

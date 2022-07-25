@@ -45,7 +45,8 @@
 #' }
 #' 
 #' @examples
-#' \dontrun{HypeMultiVar(mybasinoutput, datetime = mydates, hype.var = c("cctn", "ccin", "ccon"), , subid = 23, tstep = "day"}
+#' \dontrun{HypeMultiVar(mybasinoutput, datetime = mydates,
+#' hype.var = c("cctn", "ccin", "ccon"), subid = 23, tstep = "day"}
 #' 
 #' @export
 

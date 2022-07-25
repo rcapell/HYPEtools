@@ -82,7 +82,8 @@ If manual names are provided in \code{class.names}, the column name endings must
 in \code{class.names}.
 }
 \examples{
-\dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "soil")}
+\dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass,
+bd = mybranchdata, type = "soil")}
 \dontrun{BarplotUpstreamClasses(x = res, type = "s", desc = mydescription)}
 
 }

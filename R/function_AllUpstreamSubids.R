@@ -39,6 +39,8 @@
 #' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
 #' 
 #' @export
+#' 
+#' @importFrom utils writeClipboard
 
 
 AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = FALSE, write.arcgis = FALSE) {

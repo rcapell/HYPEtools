@@ -53,7 +53,8 @@ The function builds on \code{\link{GroupSLCClasses}}, which provides grouped sum
 \code{UpstreamGroupSLCClasses} expects SLC class columns in argument \code{gd} to be ordered in ascending order.
 }
 \examples{
-\dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass, bd = mybranchdata, type = "landuse")}
+\dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata,
+gcl = mygeoclass, bd = mybranchdata, type = "landuse")}
 
 }
 \seealso{

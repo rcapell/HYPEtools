@@ -52,7 +52,8 @@
 #' }
 #' 
 #' @examples
-#' \dontrun{HypeSingleVar(mytimeoutput, datetime = mydates, subid = c(23, 45, 56), hype.var = "cctn")}
+#' \dontrun{HypeSingleVar(mytimeoutput, datetime = mydates,
+#' subid = c(23, 45, 56), hype.var = "cctn")}
 #' 
 #' @export
 

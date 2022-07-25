@@ -42,5 +42,6 @@ files contain three header rows, see the
 These headers are stored as additional attributes in  objects.
 }
 \examples{
-\dontrun{HypeXobs(mydata, comment = "Water quality data", variable = c("cctn", "cctp", "cctp"), subid = c(23, 45, 56))}
+\dontrun{HypeXobs(mydata, comment = "Water quality data",
+variable = c("cctn", "cctp", "cctp"), subid = c(23, 45, 56))}
 }

@@ -85,7 +85,7 @@
 #' \dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
 #' 
 #' @importFrom hydroGOF gof gof.default
-#' @importFrom grDevices X11 dev.control dev.off cairo_pdf png
+#' @importFrom grDevices dev.new dev.control dev.off cairo_pdf png
 #' @export
 
 PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "png", "screen"), timestep = attr(x, "timestep"), 
@@ -1130,21 +1130,21 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
               Change argument 'driver' to plot to file or use argument 'hype.vars' to reduce number of variables to plot.")
     }
     
-    #dev.new(width=wdth, height = hght, noRStudioGD = T)
-    if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
-      X11(width = wdth, height = hght)
-      # suppress slow redraw on automatic screen device rezising
-      dev.control("inhibit")
-    } else if (Sys.info()['sysname'] == "Darwin") {
-      grDevices::quartz(width = wdth, height = hght)
-      # suppress slow redraw on automatic screen device rezising
-      dev.control("inhibit")
-    } else {
-      # try x11, not very likely to occur..
-      X11(width = wdth, height = hght)
-      # suppress slow redraw on automatic screen device rezising
-      dev.control("inhibit")
-    }
+    dev.new(width=wdth, height = hght, noRStudioGD = T)
+    # if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
+    #   X11(width = wdth, height = hght)
+    #   # suppress slow redraw on automatic screen device rezising
+    #   dev.control("inhibit")
+    # } else if (Sys.info()['sysname'] == "Darwin") {
+    #   grDevices::quartz(width = wdth, height = hght)
+    #   # suppress slow redraw on automatic screen device rezising
+    #   dev.control("inhibit")
+    # } else {
+    #   # try x11, not very likely to occur..
+    #   X11(width = wdth, height = hght)
+    #   # suppress slow redraw on automatic screen device rezising
+    #   dev.control("inhibit")
+    # }
   } else if (driver == "png") {
     png(filename = filename, width = wdth, height = hght, units = "in", res = 450, pointsize = 12)
     # close the file device on exit

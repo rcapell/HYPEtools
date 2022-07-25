@@ -53,6 +53,7 @@ multiple model runs, typically imported HYPE basin output results.
 S3 class constructor function for array objects which can hold (multiple) HYPE basin output results.
 }
 \examples{
-\dontrun{HypeMultiVar(mybasinoutput, datetime = mydates, hype.var = c("cctn", "ccin", "ccon"), , subid = 23, tstep = "day"}
+\dontrun{HypeMultiVar(mybasinoutput, datetime = mydates,
+hype.var = c("cctn", "ccin", "ccon"), subid = 23, tstep = "day"}
 
 }

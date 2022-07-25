@@ -107,9 +107,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' require(rgdal)
-#' x11(width = 5, height = 8)
-#' PlotMapOutput(x = mymapresult, map = readOGR(dsn = "../gisdata", layer = "myHYPEsubids"), map.subid.column = 2, var.name = "CCTN")
+#' PlotMapOutput(x = mymapresult, map = myGISdata, map.subid.column = 2, var.name = "CCTN")
 #' }
 #'
 #' @import sp

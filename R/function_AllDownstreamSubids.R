@@ -29,6 +29,8 @@
 #' 
 #' @examples
 #' \dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
+#' 
+#' @importFrom utils writeClipboard
 
 AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   

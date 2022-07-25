@@ -45,7 +45,8 @@
 #' }
 #' 
 #' @examples
-#' \dontrun{HypeXobs(mydata, comment = "Water quality data", variable = c("cctn", "cctp", "cctp"), subid = c(23, 45, 56))}
+#' \dontrun{HypeXobs(mydata, comment = "Water quality data",
+#' variable = c("cctn", "cctp", "cctp"), subid = c(23, 45, 56))}
 
 HypeXobs <- function(x, comment, variable, subid, verbose = TRUE) {
   
