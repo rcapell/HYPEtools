@@ -145,6 +145,10 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
     
     # prepare result vector
     ff <- c(us.gd, us.bd)
+    
+    # remove any NA values (no upstream subbasins) from result vector
+    ff <- ff[!is.na(ff)]
+    
     return(ff)
     }
   
