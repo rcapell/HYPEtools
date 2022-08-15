@@ -1,5 +1,5 @@
-This is a file with rec outflow olake in m3/s for GIS mapping
-SUBID,2001-2021
+!! model=5.18.0; variable=rout; timestep=unknown; unit=m3/s; comment=Table with rec outflow subbasin in m3/s for map drawing;
+SUBID,2001-2001
 3344,-9.999E+03
 3396,-9.999E+03
 3407,-9.999E+03
@@ -24,4 +24,4 @@ SUBID,2001-2021
 63938,-9.999E+03
 63937,-9.999E+03
 3532,-9.999E+03
-3587,1.839E+00
+3587,2.452E+00

@@ -50,13 +50,6 @@ PlotBasinOutput(bas, gd = gd, driver = "screen")
 # Select variables
 PlotBasinOutput(bas, gd = gd, driver = "screen", hype.vars = c("cout", "rout"))
 
-# Cut single year from output
-PlotBasinOutput(bas,
-  gd = gd, driver = "screen", hype.vars = c("cout", "rout"),
-  from = "2010-01-01",
-  to = "2010-12-31"
-)
-
 # plot time series in R with a log scale for the flow (log.q = T)
 PlotBasinOutput(bas,
   driver = "screen", timestep = attr(bas, "timestep"),
