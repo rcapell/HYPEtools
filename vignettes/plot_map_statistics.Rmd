@@ -68,10 +68,10 @@ PlotMapPoints(x = stats.cout[, c(1,stat.col.plot)],
 ## Plot Model Performance on an Interactive Leaflet Map
 ```{r plotperformance-leaflet, message=FALSE}
 # Generate Plot - There is only one observation station, so only one point appears on the map
-PlotMapPoints(map.type = "leaflet",
-              x = stats.cout[, c(1,stat.col.plot)],
-              sites = map.Qobs, sites.subid.column = 4, bg = map.subid,
-              plot.scale = F, plot.arrow = F, plot.label=T, bg.label.column = 25, plot.bg.label="static")
+# PlotMapPoints(map.type = "leaflet",
+#               x = stats.cout[, c(1,stat.col.plot)],
+#               sites = map.Qobs, sites.subid.column = 4, bg = map.subid,
+#               plot.scale = F, plot.arrow = F, plot.label=T, bg.label.column = 25, plot.bg.label="static")
 
 ```
 
@@ -89,37 +89,37 @@ PlotMapOutput(mcrun, map = map.subid, map.subid.column = 21, var.name = "CRUN", 
 ## Plot Simulated Runoff on an Interactive Leaflet Map
 ```{r plotrunoff-leaflet, message=FALSE}
 # Generate Plot
-PlotMapOutput(mcrun, map.type = "leaflet", map = map.subid, map.subid.column = 25, var.name = "CRUN", legend.title = "Runoff (mm/d)", 
-              col = ColQ, col.breaks = NULL, legend.pos = "bottomright", map.adj = 0, plot.scale = F, plot.arrow = F)
+# PlotMapOutput(mcrun, map.type = "leaflet", map = map.subid, map.subid.column = 25, var.name = "CRUN", legend.title = "Runoff (mm/d)", 
+#               col = ColQ, col.breaks = NULL, legend.pos = "bottomright", map.adj = 0, plot.scale = F, plot.arrow = F)
 
 ```
 
 ## Create Leaflet Map with Additional Bling
 ```{r bling, message=FALSE}
 # Generate leaflet map with additional bling
-leafmap <- PlotMapOutput(mcrun, map.type = "leaflet", map = map.subid, map.subid.column = 25, var.name = "CRUN", legend.title = "Runoff (mm/d)", 
-              col = ColQ, col.breaks = NULL, legend.pos = "bottomright", map.adj = 0, plot.scale = T, plot.arrow = F, plot.label = T, plot.searchbar = T)
-
-# Add Additional Basemap and Marker for SMHI Location
-leafmap <- leafmap %>%
-  
-  # Update Layers Control to include the new Basemap and SMHI Marker
-  addLayersControl(
-    baseGroups=c("Map","Street","Topo","Satellite","Stamen Toner"),
-    overlayGroups=c("Subbasins","SMHI"),
-    options=layersControlOptions(collapsed = FALSE, autoIndex = TRUE)) %>%
-  
-  # Add Basemap
-  addProviderTiles(provider = providers$Stamen.Toner, group = "Stamen Toner") %>%
-  
-  # Add Marker on Map for SMHI Location
-  addMarkers(group = "SMHI",
-             lng = 16.151890,
-             lat = 58.578950,
-             popup = "SMHI")
-
-# View Updated Map
-leafmap
+# leafmap <- PlotMapOutput(mcrun, map.type = "leaflet", map = map.subid, map.subid.column = 25, var.name = "CRUN", legend.title = "Runoff (mm/d)", 
+#               col = ColQ, col.breaks = NULL, legend.pos = "bottomright", map.adj = 0, plot.scale = T, plot.arrow = F, plot.label = T, plot.searchbar = T)
+# 
+# # Add Additional Basemap and Marker for SMHI Location
+# leafmap <- leafmap %>%
+#   
+#   # Update Layers Control to include the new Basemap and SMHI Marker
+#   addLayersControl(
+#     baseGroups=c("Map","Street","Topo","Satellite","Stamen Toner"),
+#     overlayGroups=c("Subbasins","SMHI"),
+#     options=layersControlOptions(collapsed = FALSE, autoIndex = TRUE)) %>%
+#   
+#   # Add Basemap
+#   addProviderTiles(provider = providers$Stamen.Toner, group = "Stamen Toner") %>%
+#   
+#   # Add Marker on Map for SMHI Location
+#   addMarkers(group = "SMHI",
+#              lng = 16.151890,
+#              lat = 58.578950,
+#              popup = "SMHI")
+# 
+# # View Updated Map
+# leafmap
 
 ```
 
