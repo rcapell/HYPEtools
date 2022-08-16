@@ -12,7 +12,7 @@
 #' downstream order for a working GeoData table.
 #' @param get.weights Logical. If \code{TRUE}, flow weights are computed along the upstream SUBID sequence. See details.
 #' @param write.arcgis Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
-#' 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.
+#' 'Select By Attributes' feature will be written to the clipboard.
 #' 
 #' @details
 #' \code{AllUpstreamSubids} finds all upstream SUBIDs of a given SUBID (including itself but not 
@@ -40,7 +40,7 @@
 #' 
 #' @export
 #' 
-#' @importFrom utils writeClipboard
+#' @importFrom clipr write_clip clipr_available
 
 
 AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = FALSE, write.arcgis = FALSE) {
@@ -234,14 +234,20 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
   # try to write arcgis select string to clipboard, with error recovery
   if (write.arcgis == T && !get.weights) {
     to.arc <- paste0("\"SUBID\" IN (", paste(us, collapse = ","), ")")
-    tryCatch(writeClipboard(to.arc), error = function(e) {
-      print("Writing to clipboard failed, this is probably not a Windows environment")})
+    if (clipr_available() == T) {
+      write_clip(to.arc)
+    } else {
+      message("Writing to clipboard failed. Try installing command line tool 'xclip' if you run Linux.")
+    }
   }
   
   if (write.arcgis == T && get.weights) {
     to.arc <- paste0("\"SUBID\" IN (", paste(us[, 1], collapse = ","), ")")
-    tryCatch(writeClipboard(to.arc), error = function(e) {
-      print("Writing to clipboard failed, this is probably not a Windows environment")})
+    if (clipr_available() == T) {
+      write_clip(to.arc)
+    } else {
+      message("Writing to clipboard failed. Try installing command line tool 'xclip' if you run Linux.")
+    }
   }
   
   return(us)

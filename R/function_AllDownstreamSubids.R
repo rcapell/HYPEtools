@@ -12,7 +12,7 @@
 #' @param gd Dataframe, an imported 'GeoData.txt' file. Mandatory argument. See 'Details'.
 #' @param bd Dataframe, an imported 'BranchData.txt' file. Optional argument. See 'Details'.
 #' @param write.arcgis Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's 
-#' 'Select By Attributes' feature will be written to the clipboard. Works just for Windows.
+#' 'Select By Attributes' feature will be written to the clipboard.
 #' 
 #' @details
 #' \code{AllDownstreamSubids} finds all downstream SUBIDs of a given SUBID along the main stem (including itself but not 
@@ -30,7 +30,7 @@
 #' @examples
 #' \dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
 #' 
-#' @importFrom utils writeClipboard
+#' @importFrom clipr write_clip clipr_available
 
 AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   
@@ -79,8 +79,11 @@ AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   if (write.arcgis == T) {
     to.arc <- paste(paste("\"SUBID\" =", ds, 'OR'), collapse=" ")
     to.arc <- substr(to.arc, 1, nchar(to.arc) - 3)
-    tryCatch(writeClipboard(to.arc), error = function(e) {
-      print("Writing to clipboard failed, this is probably not a Windows environment")})
+    if (clipr_available() == T) {
+      write_clip(to.arc)
+    } else {
+      message("Writing to clipboard failed. Try installing command line tool 'xclip' if you run Linux.")
+    }
   }
   
   # conditional: add logical vector with TRUE for branched catchments if branchdata exists

@@ -27,7 +27,7 @@ downstream order for a working GeoData table.}
 \item{get.weights}{Logical. If \code{TRUE}, flow weights are computed along the upstream SUBID sequence. See details.}
 
 \item{write.arcgis}{Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's
-'Select By Attributes' feature will be written to the clipboard. Works just for Windows.}
+'Select By Attributes' feature will be written to the clipboard.}
 }
 \value{
 If \code{get.weights} is \code{FALSE}, \code{AllUpstreamSubids} returns a vector of SUBIDs, otherwise a two-column data frame with SUBIDs in
