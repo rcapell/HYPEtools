@@ -1,12 +1,12 @@
 Package: HYPEtools
-Version: 0.5.1.9000
+Version: 1.0.0
 Title: Tools for Processing and Analysing Files from the Conceptual
     Rainfall-Runoff Model HYPE
 Description: This package contains functions to handle and analyse input and
     output files from the conceptual rainfall-runoff model HYPE (HYdrological
     Predictions for the Environment).
 Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email ="rene.capell@smhi.se"), 
-    person("Conrad", "Brendel", role = "aut"),
+    person("Conrad", "Brendel", role = "aut", email ="conrad.brendel@smhi.se"),
     person("Jafet", "Andersson", role = "ctb"),
     person("David", "Gustafsson", role = "ctb"),
     person("Jude", list("Musuuza", "Lubega"), role = "ctb"))
