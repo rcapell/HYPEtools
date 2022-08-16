@@ -23,7 +23,6 @@ Imports:
     pbapply,
     rlang,
     sf,
-    sp,
     stats,
     stringr,
     tidyr,

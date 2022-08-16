@@ -4,6 +4,7 @@
 * Initial CRAN Submission
 * Added a `NEWS.md` file to track changes to the package
 * Added vignettes to package
+* Updated functions to use sf package instead of sp package for spatial processing
 
 ## HYPEtools 0.5.1 (2021-08-27)
 *New functions and bug fixes*
