@@ -22,6 +22,9 @@ Hydrological Institute (SMHI)](http://www.smhi.se/en).
 ## License
 HYPEtools is licensed under the [LGPL-3.0](LICENSE) license.
 
+## Changelog
+See the HYPEtools changelog [here](NEWS.md).
+
 ## Installation
 
 You can install the development version of HYPEtools from
