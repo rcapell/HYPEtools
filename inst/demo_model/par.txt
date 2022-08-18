@@ -1,6 +1,6 @@
-!!Parametervärden
+!!Parameter Values
 !!
-!!Generella Q
+!!General
 cevpam	0.25
 cevpph	67.5
 damp	0.5
@@ -55,6 +55,3 @@ cevpcorr	-0.29
 tempcorr	-0.4
 ratcorr	-0.813
 rrcscorr	-0.79
-
-
-!!
