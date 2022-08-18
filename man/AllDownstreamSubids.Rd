@@ -14,7 +14,7 @@ AllDownstreamSubids(subid, gd, bd = NULL, write.arcgis = FALSE)
 \item{bd}{Dataframe, an imported 'BranchData.txt' file. Optional argument. See 'Details'.}
 
 \item{write.arcgis}{Logical. If \code{TRUE}, a string containing an SQL expression suitable for ArcGIS's
-'Select By Attributes' feature will be written to the clipboard. Works just for Windows.}
+'Select By Attributes' feature will be written to the clipboard.}
 }
 \value{
 \code{AllDownstreamSubids} returns a vector of downstream SUBIDs to the outlet if no BranchData is provided, otherwise a data frame with
