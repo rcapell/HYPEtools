@@ -98,7 +98,7 @@
 #' specification see \code{inset} in \code{\link{legend}}.
 #'
 #' @return
-#' For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}}
+#' For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{SpatialPolygonsDataFrame}
 #' as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
 #' an object of class \code{leaflet}.
 #'
@@ -110,13 +110,11 @@
 #' PlotMapOutput(x = mymapresult, map = myGISdata, map.subid.column = 2, var.name = "CCTN")
 #' }
 #'
-#' @import sp
 #' @importFrom dplyr right_join %>% mutate filter across
 #' @importFrom grDevices dev.list
 #' @importFrom graphics par frame legend strwidth text
 #' @importFrom stats quantile setNames
 #' @importFrom rlang .data
-# @importFrom sp SpatialPolygonsDataFrame SpatialPolygons
 #' @export
 
 
@@ -515,7 +513,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
         par(new = T)
         # plot(SpatialPoints(coordinates(map), proj4string = CRS(proj4string(map))), col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
-        plot(map, xlim = bbx[1, ], ylim = bbx[2, ])
+        plot(sf::st_geometry(sf::st_as_sf(map)), xlim = bbx[1, ], ylim = bbx[2, ])
         # create a map side ratio based on the device region in user coordinates and the map bounding box
         p.range.x <- diff(par("usr")[1:2])
         p.range.y <- diff(par("usr")[3:4])
@@ -560,7 +558,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       if (!add) {
         par(new = TRUE)
       }
-      plot(map, col = map$color, border = NA, ylim = pylim, xlim = pxlim, add = add)
+      plot(sf::st_geometry(sf::st_as_sf(map)), col = map$color, border = NA, ylim = pylim, xlim = pxlim, add = add)
       # legend
       if (plot.legend) {
         legend(legend.pos,

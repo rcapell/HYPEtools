@@ -13,6 +13,7 @@ Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email ="rene.capel
 Depends:
     R (>= 3.5.0)
 Imports:
+    clipr,
     data.table (>= 1.9.8),
     dplyr,
     grDevices,

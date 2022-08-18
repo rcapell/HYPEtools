@@ -159,7 +159,7 @@ See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}.}
 }
 \value{
 For default static maps, \code{PlotMapPoints} returns a plot to the currently active plot device, and invisibly an object of class
-\code{\link{SpatialPointsDataFrame}} as provided in argument \code{sites}, with plotted values and color codes added as columns
+\code{SpatialPointsDataFrame} as provided in argument \code{sites}, with plotted values and color codes added as columns
 in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
 an object of class \code{leaflet}.
 }
