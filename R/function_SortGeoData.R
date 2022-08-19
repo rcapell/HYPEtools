@@ -59,30 +59,33 @@ SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {
   if (!is.null(bd)) {
     
     ## find outlet subids for all subids in bd
-    te <- ibd
+    
+    # initialise dataframe
+    bd.outlets <- data.frame(osbd.main = rep(NA, nrow(ibd)), osbd.branch = rep(NA, nrow(ibd)))
     # get outlets for main stream in branchings
-    te[, 1] <- sapply(te[, 1], function(x, y) {rev(AllDownstreamSubids(subid = x, gd = y))[2]}, y = igd)
+    bd.outlets$osbd.main <- sapply(ibd$SOURCEID, function(x, y) {rev(AllDownstreamSubids(subid = x, gd = y))[1]}, y = igd)
     # get outlets for branches, conditional on that they exist in gd (they can go out of the domain)
-    te[, 2] <- sapply(te[, 2], function(x, y) {ifelse(x %in% y[, 1], rev(AllDownstreamSubids(subid = x, gd = y))[2], 0)}, y = igd)
+    bd.outlets$osbd.branch <- sapply(ibd$BRANCHID, function(x, y) {ifelse(x %in% y[, 1], rev(AllDownstreamSubids(subid = x, gd = y))[1], 0)}, y = igd)
     
     # identify and remove rows where maindown and branch outlets are the same (which means that the branch is a "shortcut" within a basin)
-    te <- te[ifelse(te[, 1] == te[, 2], F, T), ]
+    bd.outlets <- bd.outlets[ifelse(bd.outlets$osbd.main == bd.outlets$osbd.branch, F, T), ]
     
     # identify and remove rows with branches to outside domain (e.g. karstic sinks)
-    te <- te[which(te[, 2] != 0), ]
+    bd.outlets <- bd.outlets[which(bd.outlets$osbd.branch != 0), ]
     
     # identify and remove row duplicates (in case of several branch connections between different basins)
-    te <- te[!duplicated(te), ]
+    bd.outlets <- bd.outlets[!duplicated(bd.outlets), ]
     
-    # conditional on any cases being left (meaning there are inter-basin connections)
-    if (nrow(te) > 0) {
+    # Find unique inter-basin connections, conditional on any cases being left (meaning there are inter-basin connections)
+    if (nrow(bd.outlets) > 0) {
+      
       
       # convert outlet data frame to list, which is then iteratively regrouped below if necessary
-      le <- split(te, 1:nrow(te))
+      le <- split(bd.outlets, 1:nrow(bd.outlets))
       
       # conditional on existence of duplicated outlet SUBIDs in branch-connected basins:
       # find and group all branch-connected outlets (this can theoretically be several in a chain)
-      ve <- unlist(te)
+      ve <- unlist(bd.outlets)
       if (length(ve[duplicated(ve)]) > 0) {
         ve <- unique(ve[duplicated(ve)])
         
@@ -121,6 +124,7 @@ SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {
   if (progbar) {
     cat("Calculating SUBID order.\n")
     ssbd <- unlist(pblapply(osbd, function(x, y, z) {rev(AllUpstreamSubids(subid = x, gd = y, bd = z))}, y = igd, z = bd))
+    # ssbd <- pblapply(osbd, function(x, y, z) {rev(AllUpstreamSubids(subid = x, gd = y, bd = z))}, y = igd, z = bd)
   } else {
     ssbd <- unlist(lapply(osbd, function(x, gd, bd) {rev(AllUpstreamSubids(subid = x, gd, bd))}, gd = igd, bd = bd))
   }
