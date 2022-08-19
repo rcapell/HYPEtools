@@ -2,7 +2,7 @@
 # HYPEtools
 
 <!-- badges: start -->
-
+[![CRAN status](https://www.r-pkg.org/badges/version/HYPEtools)](https://CRAN.R-project.org/package=HYPEtools)
 [![R-CMD-check](https://github.com/rcapell/HYPEtools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rcapell/HYPEtools/actions/workflows/R-CMD-check.yaml)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 <!-- badges: end -->
