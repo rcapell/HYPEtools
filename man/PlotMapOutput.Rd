@@ -133,7 +133,7 @@ You may need to run \code{\link[webshot:install_phantomjs]{webshot::install_phan
 File extension must be specified. See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}.}
 }
 \value{
-For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{\link{SpatialPolygonsDataFrame}}
+For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{SpatialPolygonsDataFrame}
 as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
 an object of class \code{leaflet}.
 }

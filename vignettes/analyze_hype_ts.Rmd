@@ -2,7 +2,7 @@
 title: "Analyze HYPE Time Series Outputs"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Analyze HYPE Time Series Output}
+  %\VignetteIndexEntry{Analyze HYPE Time Series Outputs}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

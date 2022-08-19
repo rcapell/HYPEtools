@@ -85,7 +85,7 @@
 #'
 #' @return
 #' For default static maps, \code{PlotMapPoints} returns a plot to the currently active plot device, and invisibly an object of class
-#' \code{\link{SpatialPointsDataFrame}} as provided in argument \code{sites}, with plotted values and color codes added as columns
+#' \code{SpatialPointsDataFrame} as provided in argument \code{sites}, with plotted values and color codes added as columns
 #' in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
 #' an object of class \code{leaflet}.
 #'
@@ -475,10 +475,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       # map
       if (!is.null(bg)) {
         # plot(bg, col = "grey90", border = "grey70", ylim = pylim, xlim = pxlim, add = add)
-        plot(bg, col = bg.fillColor, border = "grey70", ylim = pylim, xlim = pxlim, add = add)
-        plot(sts, bg = sts$color, border = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, add = T)
+        plot(sf::st_geometry(sf::st_as_sf(bg)), col = bg.fillColor, border = "grey70", ylim = pylim, xlim = pxlim, add = add)
+        plot(sf::st_geometry(sf::st_as_sf(sts)), bg = sts$color, border = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, add = T)
       } else {
-        plot(sts, bg = sts$color, col = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
+        plot(sf::st_geometry(sf::st_as_sf(sts)), bg = sts$color, col = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
       }
       # legend
       if (plot.legend) {
@@ -703,8 +703,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
             label = ~label,
             labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
           )
-      }
-      else { # Create points without labels
+      } else { # Create points without labels
         leafmap <- leafmap %>%
           leaflet::addCircleMarkers(
             group = "Points",
