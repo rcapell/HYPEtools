@@ -1,10 +1,18 @@
-## HYPEtools 1.0.0 (2022-08-16)
+## HYPEtools 1.0.0 (2022-08-22)
+*New functions and bug fixes*
 
 #### Highlights
 * Initial CRAN Submission
-* Added a `NEWS.md` file to track changes to the package
 * Added vignettes to package
 * Updated functions to use sf package instead of sp package for spatial processing
+* Fixed bug in SortGeoData()
+
+#### New Functions
+* IsHeadwater: Quickly query vectors of HYPE SUBIDs to identify if they are headwater subbasins
+* IsOutlet: Quickly query vectors of HYPE SUBIDs to identify if they are outlet subbasins
+* IsRegulated: Quickly query vectors of HYPE SUBIDs to identify if subbasins are regulated subbasins
+* ReadInfo: Import a HYPE model settings information file as list into R
+* ReadUpdate: Import HYPE "update.txt" files as data frames into R
 
 ## HYPEtools 0.5.1 (2021-08-27)
 *New functions and bug fixes*
