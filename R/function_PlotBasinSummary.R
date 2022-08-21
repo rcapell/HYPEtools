@@ -8,7 +8,8 @@
 #' See details for HYPE output variables required for plotting.
 #' @param filename String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting 
 #' to screen device. \emph{Device dimensions are currently hard-coded, see Details.}
-#' @param driver String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.
+#' @param driver String, device driver name, one of \code{default}, \code{pdf}, \code{png}, or \code{screen}.
+#' Defaults to \code{default}, which plots using default plotting device \code{getOption("device")}.
 #' @param panels Integer, either \code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.
 #' @param gd A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file. 
 #' Only needed with bar chart panels, see Details. 
@@ -97,7 +98,7 @@
 #' @export
 
 
-PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "png", "screen"), panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
+PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default", "pdf", "png", "screen"), panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
                              subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
                              from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = "", ylab.t1 = "Conc.") {
   
@@ -2193,21 +2194,34 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
               Change argument 'driver' to plot to file or use argument 'hype.vars' to reduce number of variables to plot.")
     }
     
-    dev.new(width=wdth, height = hght, noRStudioGD = T)
-    # if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
-    #   X11(width=wdth, height = hght)
-    #   # suppress slow redraw on automatic screen device rezising
-    #   dev.control("inhibit")
-    # } else if (Sys.info()['sysname'] == "Darwin") {
-    #   grDevices::quartz(width = wdth, height = hght)
-    #   # suppress slow redraw on automatic screen device rezising
-    #   dev.control("inhibit")
-    # } else {
-    #   # try x11, not very likely to occur..
-    #   X11(width = wdth, height = hght)
-    #   # suppress slow redraw on automatic screen device rezising
-    #   dev.control("inhibit")
-    # }
+    # dev.new(width=wdth, height = hght, noRStudioGD = T)
+    
+    default.dev <- getOption("device") # Get default plotting device
+    
+    if(driver == "default"){
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+    } else if (Sys.info()['sysname'] == "Windows") {
+      options(device = "windows")
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
+    } else if (Sys.info()['sysname'] == "Linux") {
+      options(device = "X11")
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
+    } else if (Sys.info()['sysname'] == "Darwin") {
+      options(device = "quartz")
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
+    } else {
+      # try x11, not very likely to occur..
+      options(device = "X11")
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
+    }
   } else if (driver == "png") {
     png(filename = filename, width=wdth, height = hght, units = "in", res = 450, pointsize = 12)
     # close the file device on exit
@@ -2217,6 +2231,9 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("pdf", "pn
     # close the file device on exit
     on.exit(dev.off())
   }
+  
+  # restore default plotting device
+  options(device = default.dev)
   
   # layout definition
   nf <- graphics::layout(mat = lay.mat[-1, , drop = FALSE], widths = lay.widths, heights = lay.heights)

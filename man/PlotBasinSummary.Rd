@@ -7,7 +7,7 @@
 PlotBasinSummary(
   x,
   filename = "BasinSummary",
-  driver = c("pdf", "png", "screen"),
+  driver = c("default", "pdf", "png", "screen"),
   panels = 1,
   gd = NULL,
   bd = NULL,
@@ -34,7 +34,8 @@ See details for HYPE output variables required for plotting.}
 \item{filename}{String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting
 to screen device. \emph{Device dimensions are currently hard-coded, see Details.}}
 
-\item{driver}{String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.}
+\item{driver}{String, device driver name, one of \code{default}, \code{pdf}, \code{png}, or \code{screen}.
+Defaults to \code{default}, which plots using default plotting device \code{getOption("device")}.}
 
 \item{panels}{Integer, either \code{1}, \code{2}, or \code{3}, indicating which panels to plot. See Details.}
 

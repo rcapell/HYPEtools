@@ -8,7 +8,8 @@
 #' See details for HYPE output variables required for plotting.
 #' @param filename String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting 
 #' to screen device. \emph{Device dimensions are currently hard-coded, see Details.}
-#' @param driver String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.
+#' @param driver String, device driver name, one of \code{default}, \code{pdf}, \code{png}, or \code{screen}.
+#' Defaults to \code{default}, which plots using default plotting device \code{getOption("device")}.
 #' @param timestep  Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or 
 #' \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.
 #' @param hype.vars Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables 
@@ -88,7 +89,7 @@
 #' @importFrom grDevices dev.new dev.control dev.off cairo_pdf png
 #' @export
 
-PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "png", "screen"), timestep = attr(x, "timestep"), 
+PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default", "pdf", "png", "screen"), timestep = attr(x, "timestep"), 
                             hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, 
                             subid = attr(x, "subid"), gd = NULL, bd = NULL, ylab.t1 = "Conc.") {
   
@@ -1132,7 +1133,16 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     
     # dev.new(width=wdth, height = hght, noRStudioGD = T)
     
-    if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
+    default.dev <- getOption("device") # Get default plotting device
+    
+    if(driver == "default"){
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+    } else if (Sys.info()['sysname'] == "Windows") {
+      options(device = "windows")
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
+    } else if (Sys.info()['sysname'] == "Linux") {
       options(device = "X11")
       dev.new(width=wdth, height = hght, noRStudioGD = T)
       # suppress slow redraw on automatic screen device rezising
@@ -1159,6 +1169,9 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
     # close the file device on exit
     on.exit(dev.off())
   }
+  
+  # restore default plotting device
+  options(device = default.dev)
   
   # layout definition
   nf <- graphics::layout(mat = lay.mat, widths = lay.widths, heights = lay.heights)

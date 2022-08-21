@@ -7,7 +7,7 @@
 PlotBasinOutput(
   x,
   filename = "PlotBasinOutput",
-  driver = c("pdf", "png", "screen"),
+  driver = c("default", "pdf", "png", "screen"),
   timestep = attr(x, "timestep"),
   hype.vars = "all",
   vol.err = T,
@@ -31,7 +31,8 @@ See details for HYPE output variables required for plotting.}
 \item{filename}{String, file name for plotting to file device, see argument \code{driver}. \emph{No file extension!} Ignored with plotting
 to screen device. \emph{Device dimensions are currently hard-coded, see Details.}}
 
-\item{driver}{String, device driver name, one of \code{pdf}, \code{png}, or \code{screen}. Defaults to \code{pdf}.}
+\item{driver}{String, device driver name, one of \code{default}, \code{pdf}, \code{png}, or \code{screen}.
+Defaults to \code{default}, which plots using default plotting device \code{getOption("device")}.}
 
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}

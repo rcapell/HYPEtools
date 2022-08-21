@@ -45,14 +45,13 @@ str(bas)
 ## Plot Time Series with PlotBasinOutput()
 ```{r PlotBasinOutput}
 # Plot to screen
-PlotBasinOutput(bas, gd = gd, driver = "screen")
+PlotBasinOutput(bas, gd = gd, driver = "default")
 
 # Select variables
-PlotBasinOutput(bas, gd = gd, driver = "screen", hype.vars = c("cout", "rout"))
+PlotBasinOutput(bas, gd = gd, hype.vars = c("cout", "rout"))
 
-# plot time series in R with a log scale for the flow (log.q = T)
-PlotBasinOutput(bas,
-  driver = "screen", timestep = attr(bas, "timestep"),
+# Plot time series in R with a log scale for the flow (log.q = T)
+PlotBasinOutput(bas, timestep = attr(bas, "timestep"),
   hype.vars = "all", vol.err = T, log.q = T, start.mon = 10, from = 1,
   to = nrow(bas), name = paste0("Subid ", attr(bas, "subid")), area = NULL,
   subid = attr(bas, "subid"), gd = gd, bd = NULL
@@ -62,7 +61,7 @@ PlotBasinOutput(bas,
 ## Plot Summary Plots with PlotBasinSummary()
 The PlotBasinSummary() function is useful mostly with water quality variables.
 ```{r PlotBasinSummary}
-PlotBasinSummary(bas, gd = gd, gcl = gcl, driver = "screen")
+PlotBasinSummary(bas, gd = gd, gcl = gcl)
 ```
 
 ## Compute Annual Regime for all variables with AnnualRegime()
