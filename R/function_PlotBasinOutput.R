@@ -1130,21 +1130,26 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("pdf", "
               Change argument 'driver' to plot to file or use argument 'hype.vars' to reduce number of variables to plot.")
     }
     
-    dev.new(width=wdth, height = hght, noRStudioGD = T)
-    # if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
-    #   X11(width = wdth, height = hght)
-    #   # suppress slow redraw on automatic screen device rezising
-    #   dev.control("inhibit")
-    # } else if (Sys.info()['sysname'] == "Darwin") {
-    #   grDevices::quartz(width = wdth, height = hght)
-    #   # suppress slow redraw on automatic screen device rezising
-    #   dev.control("inhibit")
-    # } else {
-    #   # try x11, not very likely to occur..
-    #   X11(width = wdth, height = hght)
-    #   # suppress slow redraw on automatic screen device rezising
-    #   dev.control("inhibit")
-    # }
+    # dev.new(width=wdth, height = hght, noRStudioGD = T)
+    
+    if (Sys.info()['sysname'] %in% c("Linux", "Windows")) {
+      options(device = "X11")
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
+    } else if (Sys.info()['sysname'] == "Darwin") {
+      options(device = "quartz")
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
+    } else {
+      # try x11, not very likely to occur..
+      options(device = "X11")
+      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      # suppress slow redraw on automatic screen device rezising
+      dev.control("inhibit")
+    }
+    
   } else if (driver == "png") {
     png(filename = filename, width = wdth, height = hght, units = "in", res = 450, pointsize = 12)
     # close the file device on exit
