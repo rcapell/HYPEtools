@@ -6,7 +6,7 @@
 #' @param x HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and
 #' second column containing model results to plot. See details.
 #' @param map A \code{SpatialPolygonsDataFrame} or \code{sf} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
-#' requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}. For interactive Leaflet maps a small/simplified polygon file should be used as larger
+#' requires additional packages, e.g. \code{\link[sf::st_read]{sf}}. For interactive Leaflet maps a small/simplified polygon file should be used as larger
 #' files can take an excessive amount of time to render.
 #' @param map.subid.column Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined

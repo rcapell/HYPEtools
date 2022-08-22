@@ -45,7 +45,7 @@ PlotMapOutput(
 second column containing model results to plot. See details.}
 
 \item{map}{A \code{SpatialPolygonsDataFrame} or \code{sf} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
-requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}. For interactive Leaflet maps a small/simplified polygon file should be used as larger
+requires additional packages, e.g. \code{\link[sf::st_read]{sf}}. For interactive Leaflet maps a small/simplified polygon file should be used as larger
 files can take an excessive amount of time to render.}
 
 \item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}

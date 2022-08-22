@@ -55,7 +55,7 @@ PlotMapPoints(
 with two columns, first column containing SUBIDs and second column containing model results to plot. See details.}
 
 \item{sites}{A \code{SpatialPointsDataFrame} or \code{sf} object. Typically an imported outlet point vector point file. Import of vector points
-requires additional packages, e.g. \code{\link[rgdal:readOGR]{rgdal}}.}
+requires additional packages, e.g. \code{\link[sf::st_read]{sf}}.}
 
 \item{sites.subid.column}{Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
@@ -183,10 +183,10 @@ specification for the default maps, see \code{inset} in \code{\link{legend}}.
 }
 \examples{
 \dontrun{
-require(rgdal)
+require(sf)
 x11(width = 5, height = 8)
-mysites <- readOGR(dsn = "../gisdata", layer = "myHYPEoutlets")
-mybg <- readOGR(dsn = "../gisdata", layer = "myHYPEsubids")
+mysites <- st_read(dsn = "../gisdata", layer = "myHYPEoutlets")
+mybg <- st_read(dsn = "../gisdata", layer = "myHYPEsubids")
 PlotMappoints(x = mysubass, sites = mysites, map.subid.column = 2, bg = mybg)
 }
 

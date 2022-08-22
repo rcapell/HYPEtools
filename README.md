@@ -13,11 +13,10 @@ model HYPE.
 
 ## Summary
 
-HYPEtools is an add-on package to the [R software
-environment](http://www.r-project.org/), providing functions to work
-with the hydrological model [HYPE](http://hype.sourceforge.net/). HYPE
+HYPEtools provides functions to work
+with the hydrological model [HYPE](https://hypeweb.smhi.se/model-water/). HYPE
 and HYPEtools are projects developed by the [Swedish Meteorological and
-Hydrological Institute (SMHI)](http://www.smhi.se/en).
+Hydrological Institute (SMHI)](https://www.smhi.se/en).
 
 ## License
 HYPEtools is licensed under the [LGPL-3.0](LICENSE) license.
