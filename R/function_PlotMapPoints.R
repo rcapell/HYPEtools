@@ -6,7 +6,7 @@
 #' @param x Information to plot, typically model performances from imported HYPE 'subassX.txt' files. Data frame object
 #' with two columns, first column containing SUBIDs and second column containing model results to plot. See details.
 #' @param sites A \code{SpatialPointsDataFrame} or \code{sf} object. Typically an imported outlet point vector point file. Import of vector points
-#' requires additional packages, e.g. \code{\link[sf::st_read]{sf}}.
+#' requires additional packages, e.g. [sf::st_read()].
 #' @param sites.subid.column Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param bg A \code{SpatialPolygonsDataFrame} or \code{sf} object to plot in the background. Typically an imported sub-basin vector polygon file.
 #' For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.

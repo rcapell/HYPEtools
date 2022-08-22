@@ -55,7 +55,7 @@ PlotMapPoints(
 with two columns, first column containing SUBIDs and second column containing model results to plot. See details.}
 
 \item{sites}{A \code{SpatialPointsDataFrame} or \code{sf} object. Typically an imported outlet point vector point file. Import of vector points
-requires additional packages, e.g. \code{\link[sf::st_read]{sf}}.}
+requires additional packages, e.g. \code{\link[sf:st_read]{sf::st_read()}}.}
 
 \item{sites.subid.column}{Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
