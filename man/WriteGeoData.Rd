@@ -7,7 +7,7 @@
 WriteGeoData(
   x,
   filename = "GeoData.txt",
-  digits = 3,
+  digits = 6,
   scipen = getOption("scipen", 0L)
 )
 }

@@ -89,7 +89,7 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 #' @export
 
 
-WriteGeoData <- function(x, filename = "GeoData.txt", digits = 3, scipen = getOption('scipen', 0L)) {
+WriteGeoData <- function(x, filename = "GeoData.txt", digits = 6, scipen = getOption('scipen', 0L)) {
   
   # warn if there are NAs, which should not occur in GeoData files for HYPE
   if (!is.null(na.action(na.omit(x)))) {
