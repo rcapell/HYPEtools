@@ -6,6 +6,7 @@
 * Added vignettes to package
 * Updated functions to use sf package instead of sp package for spatial processing
 * Fixed bug in SortGeoData()
+* Various bug fixes and small improvements
 
 #### New Functions
 * IsHeadwater: Quickly query vectors of HYPE SUBIDs to identify if they are headwater subbasins
