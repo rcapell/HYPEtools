@@ -1,11 +1,11 @@
-#' Rescale SLC classes in a GeoData data frame
+#' Re-scale SLC classes in a GeoData data frame
 #' 
-#' \code{RescaleSLCClasses} rescales several or all SLC classes for each SUBID in a GeoData data frame 
+#' \code{RescaleSLCClasses} re-scales several or all SLC classes for each SUBID in a GeoData data frame 
 #' to a new target sum for all classes.
 #' 
 #' @param gd A data frame containing columns 'SLC_n' (\eqn{n \ge 1}), typically an imported 'GeoData.txt' file.
 #' @param slc.exclude Integer, SLC class numbers. Area fractions of classes listed here are kept fixed 
-#' during rescaling. If \code{NULL} (default), all classes are rescaled.
+#' during re-scaling. If \code{NULL} (default), all classes are re-scaled.
 #' @param target Numeric, target sum for SLC class fractions in each subbasin after re-scaling. Either a single 
 #' number or a vector with one value for each row in \code{gd}. 
 #' @param plot.box Logical, if \code{TRUE}, a box plot of SLC area sums is returned.
@@ -17,7 +17,7 @@
 #' are greater than sums provided in \code{target}, but not if they are smaller.
 #' 
 #' @return 
-#' \code{RescaleSLCClasses} returns the data frame provided in \code{gd}, with rescaled SLC class fractions.
+#' \code{RescaleSLCClasses} returns the data frame provided in \code{gd}, with re-scaled SLC class fractions.
 #' 
 #' @seealso 
 #' \code{\link{SumSLCClasses}} for inspection of SLC class fraction sums in each subbasin
@@ -68,7 +68,7 @@ RescaleSLCClasses <- function(gd, slc.exclude = NULL, target = 1, plot.box = T) 
       # check if any fixed fractions exceed the target sum
       if (any(fa > target)) {
         warning(paste0("Excluded SLC fractions in 'gd' rows ", paste0(which(fa > target), collapse = ", "), 
-                       " exceed 'target' area sum. Offending values replaced with 'target' values for rescaling but returned unchanged."))
+                       " exceed 'target' area sum. Offending values replaced with 'target' values for re-scaling but returned unchanged."))
         fa[fa > target] <- target[fa > target]
       }
       

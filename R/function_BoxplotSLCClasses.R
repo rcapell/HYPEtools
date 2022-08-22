@@ -4,7 +4,7 @@
 #' of area fractions
 #' 
 #' @param gd Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.
-#' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+#' @param gcl Data frame containing columns with SLCs and corresponding land use and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}.
 #' @param col.landuse Specification of colors for box outlines, to represent land use classes. Either a keyword character string, or a vector of 
 #' colors with one element for each land use class as given in argument \code{gcl} in ascending order. Possible keywords are \code{'rainbow'} (default) 

@@ -11,7 +11,7 @@
 
 #' Nash-Sutcliffe Efficiency
 #'
-#' Nash-sutcliffe Efficiency calculation for imported HYPE outputs with single variables for several catchments, i.e. time and
+#' Nash-Sutcliffe Efficiency calculation for imported HYPE outputs with single variables for several catchments, i.e. time and
 #' map files, optionally multiple model run iterations combined.
 #'
 #' @param sim \code{\link{HypeSingleVar}} array with simulated variable (one or several iterations).

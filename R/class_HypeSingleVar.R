@@ -21,7 +21,7 @@
 
 #' HypeSingleVar arrays
 #' 
-#' Constructor function for arrays which hold equi-distant time series of a single HYPE variable for multiple sub-basins 
+#' Constructor function for arrays which hold equidistant time series of a single HYPE variable for multiple sub-basins 
 #' and multiple model runs, typically imported time and map output results.
 #' 
 #' @param x numeric \code{\link{array}} with three dimensions, which holds HYPE results for one variable as (in order)

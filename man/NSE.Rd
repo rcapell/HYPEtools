@@ -25,7 +25,7 @@ argument \code{sim}, with values in the same order
 as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 }
 \description{
-Nash-sutcliffe Efficiency calculation for imported HYPE outputs with single variables for several catchments, i.e. time and
+Nash-Sutcliffe Efficiency calculation for imported HYPE outputs with single variables for several catchments, i.e. time and
 map files, optionally multiple model run iterations combined.
 }
 \seealso{

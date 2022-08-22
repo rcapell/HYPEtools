@@ -32,7 +32,7 @@
 #' \code{MapRegionalSources} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}.
 #' By default, \code{MapRegionalSources} creates an \code{sf} object from HYPE SUBID centerpoints using a table of SUBID pairs. Regional
 #' irrigation sources in HYPE are transfers from outlet lakes or rivers in a source sub-catchment to the soil storage of irrigated SLC classes
-#' (Soil, Land use, Crop) in a targed sub-catchment. If \code{map.type} is set to "leaflet", then  \code{MapRegionalSources} returns an object of class \code{leaflet}.
+#' (Soil, Land use, Crop) in a target sub-catchment. If \code{map.type} is set to "leaflet", then  \code{MapRegionalSources} returns an object of class \code{leaflet}.
 #'
 #' @return
 #' For default static maps, \code{MapRegionalSources} returns an \code{sf} object containing columns \code{SUBID} (irrigation target

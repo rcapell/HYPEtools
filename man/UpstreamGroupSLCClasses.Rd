@@ -23,7 +23,7 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 
 \item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
-\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt'
+\item{gcl}{Data frame containing columns with SLCs and corresponding land use and soil class IDs, typically a 'GeoClass.txt'
 file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.}
 
 \item{type}{Keyword character string for use with \code{gcl}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"},

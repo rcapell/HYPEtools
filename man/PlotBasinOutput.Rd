@@ -37,7 +37,7 @@ Defaults to \code{default}, which plots using default plotting device \code{getO
 \item{timestep}{Character string, timestep of \code{x}, one of \code{"month"}, \code{"week"}, \code{"day"}, or
 \code{"nhour"} (n = number of hours). If not provided, an attribute \code{timestep} is required in \code{x}.}
 
-\item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-scpecified selection of HYPE variables
+\item{hype.vars}{Either a keyword string or a character vector of HYPE output variables. User-specified selection of HYPE variables
 to plot. Default (\code{"all"}) is to plot all variables which the function knows and which are available in \code{x}. See details
 for a list of known variables. Other possible keywords are \code{"hydro"} and \code{"wq"} (water quality), for which a pre-selected range of
 (available) result variables is plotted. Alternatively, a character vector holding HYPE output variables to be plotted. Variables unknown

@@ -56,7 +56,7 @@ a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds n
 \value{
 \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array.
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID,
-\code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onwards) to which the time
+\code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onward) to which the time
 series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a
 time step attribute, and \code{comment} with first row comment of imported text file as character string or global attributes of imported
 netCDF file as character string of collated key-value pairs. An additional attribute \code{id.nan} might be returned, see argument

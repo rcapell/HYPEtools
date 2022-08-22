@@ -24,7 +24,7 @@ Sub-basins assessment files contain performance criteria results, as defined in 
 sub-basins with observations.
 }
 \details{
-\code{ReadSubass} imports a sub-basin assessement file into R. Information on model variables evaluated in the
+\code{ReadSubass} imports a sub-basin assessment file into R. Information on model variables evaluated in the
 file is imported as additional \code{\link{attributes}} \code{variables}, the evaluation time step in an attribute
 \code{timestep}.
 

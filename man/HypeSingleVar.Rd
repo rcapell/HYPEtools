@@ -35,7 +35,7 @@ Returns a 3-dimensional array with
 }
 }
 \description{
-Constructor function for arrays which hold equi-distant time series of a single HYPE variable for multiple sub-basins
+Constructor function for arrays which hold equidistant time series of a single HYPE variable for multiple sub-basins
 and multiple model runs, typically imported time and map output results.
 }
 \details{

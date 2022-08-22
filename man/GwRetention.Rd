@@ -32,7 +32,7 @@ case-sensitive. \emph{Currently, only \code{tn} {total nitrogen} is implemented.
 .
 }
 \description{
-Function to calculate nutrient load retention fractions in groundwater parts of HYPE, i.e. after rootzone retention. See Details for
+Function to calculate nutrient load retention fractions in groundwater parts of HYPE, i.e. after root zone retention. See Details for
 exact definition.
 }
 \details{
@@ -49,7 +49,7 @@ The retention fraction \emph{R} is calculated as (see also the
 
 \eqn{lr = LOC_VOL * LOC_TN * 0.365} [kg/y]
 
-, where \emph{li} is incoming load to groundwater (leaching rates), \emph{lr} is rural load (total from geodata converted to kg/yr; \emph{locsoil} in the formula converts it to rural load into soil layer 3), and
+, where \emph{li} is incoming load to groundwater (leaching rates), \emph{lr} is rural load (total from GeoData converted to kg/yr; \emph{locsoil} in the formula converts it to rural load into soil layer 3), and
 \emph{nfrz}, \emph{gts3}, \emph{nfs3} are soil loads as in function arguments described above. See Examples for HYPE variable names for \code{TN} loads.
 
 Columns \code{SUBID}, \code{LOC_VOL}, and code{LOC_TN} must be present in \code{gd}, for a description of column contents see the

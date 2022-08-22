@@ -2,7 +2,7 @@
 % Please edit documentation in R/function_RescaleSLCClasses.R
 \name{RescaleSLCClasses}
 \alias{RescaleSLCClasses}
-\title{Rescale SLC classes in a GeoData data frame}
+\title{Re-scale SLC classes in a GeoData data frame}
 \usage{
 RescaleSLCClasses(gd, slc.exclude = NULL, target = 1, plot.box = T)
 }
@@ -10,7 +10,7 @@ RescaleSLCClasses(gd, slc.exclude = NULL, target = 1, plot.box = T)
 \item{gd}{A data frame containing columns 'SLC_n' (\eqn{n \ge 1}), typically an imported 'GeoData.txt' file.}
 
 \item{slc.exclude}{Integer, SLC class numbers. Area fractions of classes listed here are kept fixed
-during rescaling. If \code{NULL} (default), all classes are rescaled.}
+during re-scaling. If \code{NULL} (default), all classes are re-scaled.}
 
 \item{target}{Numeric, target sum for SLC class fractions in each subbasin after re-scaling. Either a single
 number or a vector with one value for each row in \code{gd}.}
@@ -18,10 +18,10 @@ number or a vector with one value for each row in \code{gd}.}
 \item{plot.box}{Logical, if \code{TRUE}, a box plot of SLC area sums is returned.}
 }
 \value{
-\code{RescaleSLCClasses} returns the data frame provided in \code{gd}, with rescaled SLC class fractions.
+\code{RescaleSLCClasses} returns the data frame provided in \code{gd}, with re-scaled SLC class fractions.
 }
 \description{
-\code{RescaleSLCClasses} rescales several or all SLC classes for each SUBID in a GeoData data frame
+\code{RescaleSLCClasses} re-scales several or all SLC classes for each SUBID in a GeoData data frame
 to a new target sum for all classes.
 }
 \details{

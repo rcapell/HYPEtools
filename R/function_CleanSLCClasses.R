@@ -5,9 +5,9 @@
 #' 
 #' @param gd Data frame containing columns with SUBIDs, SUBID areas in m^2, and SLC fractions, typically a 'GeoData.txt' file 
 #' imported with \code{\link{ReadGeoData}}.
-#' @param gcl Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt' 
+#' @param gcl Data frame containing columns with SLCs and corresponding land use and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}.
-#' @param m1.file Character string, path and file name of the soil or landuse class transfer table, a tab-separated text file. Format see details. 
+#' @param m1.file Character string, path and file name of the soil or land use class transfer table, a tab-separated text file. Format see details. 
 #' A value of \code{NULL} (default) prevents method 1 cleaning.
 #' @param m1.class Character string, either "soil" or "landuse", can be abbreviated. Gives the type of transfer class table for method 1 cleaning. 
 #' See Details.
@@ -18,7 +18,7 @@
 #' fraction thresholds (position 1) and absolute area thresholds (position 2).
 #' @param m2.frac Numeric, area fraction threshold for method 2 cleaning, i.e. moving of small SLC areas to largest SLC in each SUBID without considering
 #' similarity between classes. Either a single value or a vector of the same length as the number of SLC classes in \code{gd}, giving area fraction 
-#' thresholds for each SLC seperately, with a value \code{0} for SLCs to omit from cleaning. A value of \code{NULL} (default) prevents method 2 area 
+#' thresholds for each SLC separately, with a value \code{0} for SLCs to omit from cleaning. A value of \code{NULL} (default) prevents method 2 area 
 #' fraction cleaning.
 #' @param m2.abs Numeric, see \code{m2.frac}. Threshold(s) for absolute areas in \eqn{m^{2}}{m^2}.
 #' @param signif.digits Integer, number of significant digits to round cleaned SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
@@ -73,7 +73,7 @@
 #' \code{CleanSLCClasses} returns the GeoData data frame passed to the function in argument \code{gd} with cleaned SLC class columns. 
 #' 
 #' @seealso 
-#' \code{\link{RescaleSLCClasses}} for rescaling of SLC area fraction sums.
+#' \code{\link{RescaleSLCClasses}} for re-scaling of SLC area fraction sums.
 #' 
 #' @examples
 #' \dontrun{

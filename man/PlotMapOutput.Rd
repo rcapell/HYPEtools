@@ -55,7 +55,7 @@ HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.}
 
 \item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
 
-\item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified
+\item{map.adj}{Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
 or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.}
 
 \item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}} for default maps.}
@@ -142,7 +142,7 @@ Draw HYPE map results, with pretty scale discretisations and color ramp defaults
 }
 \details{
 \code{PlotMapOutput} plots HYPE results from 'map[variable name].txt' files, typically imported using \code{\link{ReadMapOutput}}.
-\code{x} arguments \strong{must} contain the variable of interest in the second column. For multicolumn map results, i.e. with
+\code{x} arguments \strong{must} contain the variable of interest in the second column. For map results with multiple columns, i.e.
 several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}.
 
 \code{PlotMapOutput} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}.

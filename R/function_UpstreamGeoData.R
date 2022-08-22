@@ -22,7 +22,7 @@
 #' and 'loc_tp'. Outlet lake depths are weighted by outlet lake area and the GeoData column with 
 #' SLC class fractions for outlet lakes must be provided in function argument \code{col.olake.slc}. Rural household emissions are weighted by 
 #' emission volume as provided in column 'loc_vol'. Elevation and slope standard deviations are 
-#' averaged if the corresponding mean values exist (sample means are required to calculate overall means of std. devs.).
+#' averaged if the corresponding mean values exist (sample means are required to calculate overall means of standard deviations).
 #' 
 #' Currently, the following variables are considered:
 #' \describe{

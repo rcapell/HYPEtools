@@ -14,7 +14,7 @@ ReadSimass(filename = "simass.txt")
 performance measure values of evaluated variable pairs. Aggregation periods are coded as in info.txt files, i.e. 1 = daily,
 2 = weekly, 3 = monthly, 4 = annual. Metadata is added to the data frame as additional \code{\link{attributes}}:
 \itemize{
-\item{\code{names.long}, \code{character} vector with long names, corresponding to abbreviations uses as actural column names}
+\item{\code{names.long}, \code{character} vector with long names, corresponding to abbreviations uses as actual column names}
 \item{\code{n.simulation}, \code{integer}, simulation number (e.g. with Monte Carlo simulations)}
 \item{\code{crit.total}, \code{numeric}, total criteria value}
 \item{\code{crit.conditional}, \code{numeric}, conditional criteria value}

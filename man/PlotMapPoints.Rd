@@ -66,7 +66,7 @@ For default maps with several background layers, use \code{add = TRUE} and plot 
 
 \item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
 
-\item{map.adj}{Numeric, map adjustion in direction where it is smaller than the plot window. A value of \code{0} means left-justified
+\item{map.adj}{Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
 or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.}
 
 \item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}} for default maps.}
@@ -140,12 +140,12 @@ adding default maps to a plotting device. See \code{\link{graphics.off}}.}
 
 \item{noHide}{Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \code{\link[leaflet:map-options]{leaflet::labelOptions()}}.}
 
-\item{textOnly}{Logial, set to \code{TRUE} to hide marker label background in Leaflet maps. See \code{\link[leaflet:map-options]{leaflet::labelOptions()}}.}
+\item{textOnly}{Logical, set to \code{TRUE} to hide marker label background in Leaflet maps. See \code{\link[leaflet:map-options]{leaflet::labelOptions()}}.}
 
 \item{font.size}{Numeric, font size (px) for marker labels in Leaflet maps.}
 
 \item{plot.bg.label}{String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
-labels for \code{bg} will be dislayed in Leaflet maps.}
+labels for \code{bg} will be displayed in Leaflet maps.}
 
 \item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.
 You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}}.}

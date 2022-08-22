@@ -32,7 +32,7 @@ Function to calculate SLC class fractions over all upstream areas of a vector of
 but not including potential irrigation links or groundwater flows.
 }
 \note{
-This function is now superseeded by \code{\link{UpstreamGeoData}}, which returns more upstream variables.
+This function is now superseded by \code{\link{UpstreamGeoData}}, which returns more upstream variables.
 }
 \examples{
 \dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}

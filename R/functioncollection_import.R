@@ -961,7 +961,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' @return
 #' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
-#' \code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onwards) to which the time 
+#' \code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onward) to which the time 
 #' series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a 
 #' time step attribute, and \code{comment} with first row comment of imported text file as character string or global attributes of imported 
 #' netCDF file as character string of collated key-value pairs. An additional attribute \code{id.nan} might be returned, see argument 
@@ -1941,7 +1941,7 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 #' @param check.names Logical. If \code{TRUE}, then the names of the variables are check to make sure they are syntactically valid.
 #'  
 #' @details
-#' \code{ReadSubass} imports a sub-basin assessement file into R. Information on model variables evaluated in the 
+#' \code{ReadSubass} imports a sub-basin assessment file into R. Information on model variables evaluated in the 
 #' file is imported as additional \code{\link{attributes}} \code{variables}, the evaluation time step in an attribute 
 #' \code{timestep}.
 #' 
@@ -2155,7 +2155,7 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 #' performance measure values of evaluated variable pairs. Aggregation periods are coded as in info.txt files, i.e. 1 = daily, 
 #' 2 = weekly, 3 = monthly, 4 = annual. Metadata is added to the data frame as additional \code{\link{attributes}}: 
 #' \itemize{
-#' \item{\code{names.long}, \code{character} vector with long names, corresponding to abbreviations uses as actural column names}
+#' \item{\code{names.long}, \code{character} vector with long names, corresponding to abbreviations uses as actual column names}
 #' \item{\code{n.simulation}, \code{integer}, simulation number (e.g. with Monte Carlo simulations)}
 #' \item{\code{crit.total}, \code{numeric}, total criteria value}
 #' \item{\code{crit.conditional}, \code{numeric}, conditional criteria value}
@@ -2328,8 +2328,8 @@ ReadSimass <- function(filename = "simass.txt") {
 #' @return
 #' \code{ReadInfo} returns a named list. List names are settings codes 
 #' (see [info.txt documentation](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt)). Settings with two 
-#' codes are placed in nested lists, e.g. `myinfo$basinoutput$variable`. Multi-line subbasin definitions for basinoutputs and classoutputs 
-#' are merged to single vectors on import. 
+#' codes are placed in nested lists, e.g. `myinfo$basinoutput$variable`. Multi-line subbasin definitions for basin outputs and class 
+#' outputs are merged to single vectors on import. 
 #' 
 #' @examples
 #' \dontrun{ReadInfo("info.txt")}

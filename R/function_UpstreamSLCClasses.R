@@ -32,7 +32,7 @@
 #' class fractions for upstream areas.
 #' 
 #' @note
-#' This function is now superseeded by \code{\link{UpstreamGeoData}}, which returns more upstream variables.
+#' This function is now superseded by \code{\link{UpstreamGeoData}}, which returns more upstream variables.
 #' 
 #' @seealso
 #' \code{\link{SumUpstreamArea}}, \code{\link{UpstreamGeoData}}, \code{\link{UpstreamGroupSLCClasses}}

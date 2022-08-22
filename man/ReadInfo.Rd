@@ -16,8 +16,8 @@ also argument description in \code{\link{scan}}.}
 \value{
 \code{ReadInfo} returns a named list. List names are settings codes
 (see \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt}{info.txt documentation}). Settings with two
-codes are placed in nested lists, e.g. \code{myinfo$basinoutput$variable}. Multi-line subbasin definitions for basinoutputs and classoutputs
-are merged to single vectors on import.
+codes are placed in nested lists, e.g. \code{myinfo$basinoutput$variable}. Multi-line subbasin definitions for basin outputs and class
+outputs are merged to single vectors on import.
 }
 \description{
 Import a HYPE model settings information file as list into R.

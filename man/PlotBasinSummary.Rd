@@ -45,7 +45,7 @@ Only needed with bar chart panels, see Details.}
 \item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file.
 Optional argument. Only needed with bar chart panels, see Details.}
 
-\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt'
+\item{gcl}{Data frame containing columns with SLCs and corresponding land use and soil class IDs, typically a 'GeoClass.txt'
 file imported with \code{\link{ReadGeoClass}}. Only needed with bar chart panels, see Details.}
 
 \item{psd}{A data frame with HYPE point source specifications, typically a 'PointSourceData.txt' file imported with

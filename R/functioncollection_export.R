@@ -228,7 +228,7 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt", use.comment = FALSE) {
 #' \code{\link{ReadXobs}} per default have the correct class for the date-time column. When appending to existing file, the 
 #' function adds new rows with '-9999' values in all data columns to fill any time gaps between existing and new data. If time 
 #' periods overlap, the export will stop with an error message. Argument \code{last.date} can be provided to speed up appending exports, 
-#' but per dafault, \code{WriteXobs} extracts the last observation in the existing file automatically. 
+#' but per default, \code{WriteXobs} extracts the last observation in the existing file automatically. 
 #' 
 #' 
 #' @note

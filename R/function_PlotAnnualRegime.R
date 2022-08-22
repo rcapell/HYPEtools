@@ -20,7 +20,7 @@
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label, with a default for discharge regimes.
 #' @param col Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
-#' @param alpha Numeric, alpha transparancy value for variation bands. Value between \code{0} (transparent) and \code{255} (opaque), see 
+#' @param alpha Numeric, alpha transparency value for variation bands. Value between \code{0} (transparent) and \code{255} (opaque), see 
 #' also \code{\link{rgb}}
 #' @param lty Line type specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.

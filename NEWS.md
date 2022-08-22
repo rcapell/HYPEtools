@@ -78,7 +78,7 @@
 * Bug fixes
 
 #### New Functions
-* WriteMapOutput: Export a HYPE "mapoutput" file
+* WriteMapOutput: Export a HYPE map output file
 
 ## HYPEtools 0.4.3 (2016-11-10)
 *New functions and bug fixes*
@@ -203,7 +203,7 @@
 
 #### Highlights
 * New attribute "timestep" in ReadBasinOutput()
-* Extended funtionality of ConvertDischarge()
+* Extended functionality of ConvertDischarge()
 * Bug fixes
 
 #### New Functions

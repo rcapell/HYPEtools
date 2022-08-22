@@ -37,6 +37,7 @@ BugReports: https://github.com/rcapell/HYPEtools/issues
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
+Language: en-GB,en-US
 Suggests: 
     rmarkdown,
     knitr,

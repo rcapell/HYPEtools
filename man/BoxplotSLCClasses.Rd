@@ -25,7 +25,7 @@ BoxplotSLCClasses(
 \arguments{
 \item{gd}{Data frame containing columns with SLC fractions, typically a 'GeoData.txt' file imported with \code{\link{ReadGeoData}}.}
 
-\item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt'
+\item{gcl}{Data frame containing columns with SLCs and corresponding land use and soil class IDs, typically a 'GeoClass.txt'
 file imported with \code{\link{ReadGeoClass}}.}
 
 \item{col.landuse}{Specification of colors for box outlines, to represent land use classes. Either a keyword character string, or a vector of
