@@ -782,24 +782,3 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
   
 }
 
-# # DEBUG
-# library(rgdal)
-# x <- ReadMapOutput("/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean/model_helgean_shype/res_test/mapCOUT.txt")[, 1:2]
-# map <- readOGR(dsn = "/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/gis/helgean/subbasin", layer = "helgean_shype_aro_y")
-# map.subid.column <- 3
-# var.name <- "COUT"
-# plot.scale <- F
-# map.adj <- 0
-# plot.legend <- T
-# legend.pos <- "bottomleft"
-# legend.title <- "rhrhshfhfhs"
-# #col <- ColQ
-# col <- colorRampPalette(c("yellow", "green"))
-# col.breaks <- NULL
-# par.mar <- rep(0, 4) + .1
-# legend.inset <- c(0,0)
-# par.cex <- 1
-# plot.arrow <- F
-# plot.legend <- T
-# add <- F
-# rm(list = ls(all.names = T))
