@@ -11,6 +11,6 @@
 # Questions to ask when running devtools::release()
 release_questions <- function() {
   c(
-    "Have you updated the internal package data for the VariableLookup() function? Use the code at bottom of function_VariableLookup.R"
+    "Have you updated the internal package data for the VariableLookup() function? Use the code at the bottom of function_VariableLookup.R"
   )
 }
