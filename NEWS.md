@@ -9,7 +9,7 @@
 * Various bug fixes and small improvements
 
 #### Notable Shortcomings
-* See issue tracker on HYPEtools' [github development page](https://github.com/rcapell/HYPEtools/issues)
+* See issue tracker on HYPEtools' [GitHub development page](https://github.com/rcapell/HYPEtools/issues)
 
 #### New Functions
 * IsHeadwater: Quickly query vectors of HYPE SUBIDs to identify if they are headwater subbasins
