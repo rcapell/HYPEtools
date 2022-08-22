@@ -8,10 +8,12 @@
 * Fixed bug in SortGeoData()
 * Various bug fixes and small improvements
 
+#### Notable Shortcomings
+* See issue tracker on HYPEtools' [github development page](https://github.com/rcapell/HYPEtools/issues)
+
 #### New Functions
 * IsHeadwater: Quickly query vectors of HYPE SUBIDs to identify if they are headwater subbasins
 * IsOutlet: Quickly query vectors of HYPE SUBIDs to identify if they are outlet subbasins
-* IsRegulated: Quickly query vectors of HYPE SUBIDs to identify if subbasins are regulated subbasins
 * ReadInfo: Import a HYPE model settings information file as list into R
 * ReadUpdate: Import HYPE "update.txt" files as data frames into R
 
