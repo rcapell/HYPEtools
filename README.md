@@ -3,6 +3,7 @@
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/HYPEtools)](https://CRAN.R-project.org/package=HYPEtools)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/r-hypetools.svg)](https://anaconda.org/conda-forge/r-hypetools)
 [![R-CMD-check](https://github.com/rcapell/HYPEtools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rcapell/HYPEtools/actions/workflows/R-CMD-check.yaml)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 <!-- badges: end -->
@@ -15,7 +16,7 @@ model HYPE.
 
 HYPEtools provides functions to work
 with the hydrological model [HYPE](https://hypeweb.smhi.se/model-water/). HYPE
-and HYPEtools are projects developed by the 
+and HYPEtools are projects developed by the
 [Swedish Meteorological and Hydrological Institute (SMHI)](https://www.smhi.se/en).
 
 ## License
