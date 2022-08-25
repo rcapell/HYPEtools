@@ -7,10 +7,6 @@
 .Rprofile
 HYPEtools.Rproj
 CRAN-SUBMISSION
-src/*
-!src/*.f90
-src-i386
-src-x64
 inst/doc
 /doc/
 /Meta/
