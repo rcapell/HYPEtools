@@ -6,7 +6,6 @@
 .RData
 .Rprofile
 HYPEtools.Rproj
-.Rbuildignore
 CRAN-SUBMISSION
 src/*
 !src/*.f90
