@@ -20,7 +20,7 @@ and HYPEtools are projects developed by the
 [Swedish Meteorological and Hydrological Institute (SMHI)](https://www.smhi.se/en).
 
 ## License
-HYPEtools is licensed under the [LGPL-3.0](LICENSE) license.
+HYPEtools is licensed under the [LGPL-3.0](https://www.gnu.org/licenses/lgpl-3.0) license.
 
 ## Changelog
 See the HYPEtools changelog [here](NEWS.md).
