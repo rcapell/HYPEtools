@@ -1,3 +1,10 @@
+## Resubmission
+This is a resubmission. In this version we have made the following requested changes:
+
+* Removed the LICENSE file; The DESCRIPTION file now reads "License: LGPL-3"
+
+* Removed cran-comments.md from the tarball by adding it to .Rbuildignore
+
 ## R CMD check results
 There were no ERRORs, WARNINGs, or NOTEs.
 
