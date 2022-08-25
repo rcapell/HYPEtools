@@ -30,7 +30,7 @@ Imports:
     tidyr,
     tidyselect,
     utils
-License: LGPL-3 + file LICENSE
+License: LGPL-3
 LazyData: true
 URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
 BugReports: https://github.com/rcapell/HYPEtools/issues
