@@ -45,8 +45,9 @@
 #' }
 #' 
 #' @examples
-#' \dontrun{HypeMultiVar(mybasinoutput, datetime = mydates,
-#' hype.var = c("cctn", "ccin", "ccon"), subid = 23, tstep = "day"}
+#' pth <- file.path(system.file("demo_model", package = "HYPEtools"), "results/0003587.txt")
+#' te <- ReadBasinOutput(pth)
+#' HypeMultiVar(pth, datetime = mydates, hype.var = c("cctn", "ccin", "ccon"), subid = 23, tstep = "day")
 #' 
 #' @export
 
@@ -123,7 +124,7 @@ HypeMultiVar <- function(x, datetime, hype.var, hype.unit, subid = NULL, outregi
 # indexing method
 #' @export
 `[.HypeMultiVar` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], ...) {
-  y <- NextMethod("[", drop = F)
+  y <- NextMethod("[", drop = FALSE)
   attr(y, "date") <- attr(x, "date")[i]
   attr(y, "variable") <- attr(x, "variable")[j]
   attr(y, "hypeunit") <- attr(x, "hypeunit")[j]
