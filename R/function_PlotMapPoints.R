@@ -45,7 +45,6 @@
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.
 #' @param graphics.off Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when 
 #' adding default maps to a plotting device. See \code{\link{graphics.off}}.
-#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.
 #' @param radius Numeric, radius of markers in Leaflet maps. See [leaflet::addCircleMarkers()].
 #' @param weight Numeric, weight of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
 #' @param opacity Numeric, opacity of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
@@ -112,12 +111,16 @@
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.column = 1, map.type = "default", map.adj = 0, plot.legend = TRUE,
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = FALSE, legend.inset = c(0, 0), legend.signif = 2,
                           col = NULL, col.breaks = NULL, plot.scale = TRUE, plot.arrow = TRUE, pt.cex = 1,
-                          par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE, graphics.off = TRUE, restore.par = FALSE,
+                          par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE, graphics.off = TRUE,
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
                           # plot.searchbar = F, # leaflet.extras searchbar currently doesn't work for CircleMarkers
                           plot.label = FALSE, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL, file = "", vwidth = 1424,
                           vheight = 1000, html.name = "") {
+  
+  # Backup par and restore on function exit
+  userpar <- par(no.readonly = TRUE) # Backup par
+  on.exit(par(userpar)) # Restore par on function exit
   
   # Check/Load Dependencies for interactive mapping features - do this here so that these packages are not required for the base HYPEtools installation
   if (map.type == "leaflet" & !all(
@@ -181,19 +184,6 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     if (length(legend.inset) == 1) {
       legend.inset[2] <- 0
     }
-    
-    # save current state of par() variables which are altered below, for restoring on function exit
-    # conditional on argument reset.par'
-    if (restore.par) {
-      par.mar0 <- par("mar")
-      par.xaxs <- par("xaxs")
-      par.yaxs <- par("yaxs")
-      par.lend <- par("lend")
-      par.xpd <- par("xpd")
-      par.cex0 <- par("cex")
-      on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex0))
-    }
-    
     
     ## data preparation and conditional assignment of break point vectors and colors to x
     

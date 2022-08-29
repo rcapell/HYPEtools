@@ -93,6 +93,9 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
                             hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, 
                             subid = attr(x, "subid"), gd = NULL, bd = NULL, ylab.t1 = "Conc.") {
   
+  # Backup par and restore on function exit
+  userpar <- par(no.readonly = TRUE) # Backup par
+  on.exit(par(userpar)) # Restore par on function exit
   
   ## Preliminaries
   

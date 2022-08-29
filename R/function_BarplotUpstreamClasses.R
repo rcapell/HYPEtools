@@ -61,6 +61,10 @@ BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "cr
                                     cex.axis = 1, cex.names = .9, col = NULL, border = NA, legend.text = NULL, legend.pos = "left", 
                                     pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")) {
   
+  # Backup par and restore on function exit
+  userpar <- par(no.readonly = TRUE) # Backup par
+  on.exit(par(userpar)) # Restore par on function exit
+  
   # input argument checks
   type <- match.arg(type)
   

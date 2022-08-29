@@ -25,8 +25,7 @@
 #' time period on which the regime is based.
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label. Defaults to a HYPE variable unit string taken from 
 #' \code{x} \code{\link{attributes}} \code{'hypeunit'}.
-#' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
-#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit.
+#' @param mar Numeric vector of length 4, margin specification passed to \code{\link{par}}.
 #' 
 #' @details 
 #' \code{PlotSimObsRegime} combines ribbons and box plot elements. Box plot elements are composed as defaults from \code{\link{boxplot}}, 
@@ -57,22 +56,17 @@
 
 
 PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.mon = 1, add.legend = TRUE, pos.legend = "topright", inset = 0, 
-                             l.legend = NULL, log = FALSE, ylim = NULL, xlab = NULL, ylab = NULL, mar = c(3, 3, 1, 1) + .1, restore.par = FALSE) {
+                             l.legend = NULL, log = FALSE, ylim = NULL, xlab = NULL, ylab = NULL, mar = c(3, 3, 1, 1) + .1) {
+  
+  # Backup par and restore on function exit
+  userpar <- par(no.readonly = TRUE) # Backup par
+  on.exit(par(userpar)) # Restore par on function exit
   
   ## check arguments and prepare data
   
   if (is.null(sim) && is.null(obs)) {
     stop("Provide at least one of 'sim' and 'obs'.")
   }
-  
-  # save current state of par() variables which are altered below, for restoring on function exit
-  par.mar <- par("mar")
-  par.mgp <- par("mgp")
-  par.tcl <- par("tcl")
-  if (restore.par) {
-    on.exit(par(mar = par.mar, mgp = par.mgp, tcl = par.tcl))
-  }
-  
   
   # make data frames of obs and sim variables if they exist in x _and_ contain data
   if (!is.null(sim)) {

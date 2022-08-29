@@ -69,7 +69,7 @@ PlotMapPoints(x = stats.cout[, c(1,stat.col.plot)],
 
 ## Plot Model Performance on an Interactive Leaflet Map
 ```{r plotperformance-leaflet, message=FALSE}
-# # Generate Plot - There is only one observation station, so only one point appears on the map
+# Generate Plot - There is only one observation station, so only one point appears on the map
 # PlotMapPoints(map.type = "leaflet",
 #               x = stats.cout[, c(1,stat.col.plot)],
 #               sites = map.Qobs, sites.subid.column = 3, bg = map.subid,

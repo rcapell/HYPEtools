@@ -58,7 +58,7 @@ Both following class IDs as given in \code{gcl} in ascending order.}
 
 \item{range}{Argument to \code{\link{boxplot}} with changed default. See documentation in there.}
 
-\item{mar, mgp, tcl, xaxs, xpd}{Arguments to \code{\link{par}} with changed defaults. See documentation in there.}
+\item{mar, mgp, tcl, xaxs, xpd}{Arguments passed to \code{\link{par}}. See documentation in there.}
 }
 \value{
 \code{BoxplotSLCClasses} returns a plot to the currently active plot device, and invisibly a data frame of SLC class fractions with \code{0}

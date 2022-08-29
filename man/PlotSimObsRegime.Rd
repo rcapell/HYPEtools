@@ -19,8 +19,7 @@ PlotSimObsRegime(
   ylim = NULL,
   xlab = NULL,
   ylab = NULL,
-  mar = c(3, 3, 1, 1) + 0.1,
-  restore.par = FALSE
+  mar = c(3, 3, 1, 1) + 0.1
 )
 }
 \arguments{
@@ -58,9 +57,7 @@ time period on which the regime is based.}
 \item{ylab}{Character or \code{\link{plotmath}} expression string. Y-axis label. Defaults to a HYPE variable unit string taken from
 \code{x} \code{\link{attributes}} \code{'hypeunit'}.}
 
-\item{mar}{Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.}
-
-\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
+\item{mar}{Numeric vector of length 4, margin specification passed to \code{\link{par}}.}
 }
 \value{
 \code{PlotSimObsRegime} returns a plot to the currently active plot device, and invisibly a \code{\link{list}} object containing three

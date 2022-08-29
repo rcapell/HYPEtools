@@ -28,7 +28,7 @@
 #' (particularly in combination with \code{abs.area = TRUE}).
 #' @param ylim Numeric vector of length 2, y-axis minimum and maximum. Set automatically if not specified.
 #' @param range Argument to \code{\link{boxplot}} with changed default. See documentation in there.
-#' @param mar,mgp,tcl,xaxs,xpd Arguments to \code{\link{par}} with changed defaults. See documentation in there.
+#' @param mar,mgp,tcl,xaxs,xpd Arguments passed to \code{\link{par}}. See documentation in there.
 #' 
 #' @details
 #' \code{BoxplotSLCClasses} allows to analyse the occurrence of individual SLCs in a given model set-up. both in terms of area fractions (SLC values) 
@@ -60,6 +60,10 @@
 
 BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 
                              range = 0, mar = c(3,3,1,7)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = T) {
+  
+  # Backup par and restore on function exit
+  userpar <- par(no.readonly = TRUE) # Backup par
+  on.exit(par(userpar)) # Restore par on function exit
   
   # if lab.legend was specified, check for consistency with number of land use and soil classes
   if (!is.null(lab.legend) && length(lab.legend) != length(c(unique(gcl[, 2]), unique(gcl[,3])))) {

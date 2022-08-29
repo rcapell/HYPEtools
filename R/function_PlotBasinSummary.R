@@ -102,6 +102,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
                              subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
                              from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = "", ylab.t1 = "Conc.") {
   
+  # Backup par and restore on function exit
+  userpar <- par(no.readonly = TRUE) # Backup par
+  on.exit(par(userpar)) # Restore par on function exit
+  
   ## Preliminaries
   
   # Assign NULL value to all potential data variables extracted from 'x' further below

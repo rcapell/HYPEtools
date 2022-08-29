@@ -52,7 +52,6 @@
 #' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.
 #' @param graphics.off Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when 
 #' adding default maps to a plotting device. See \code{\link{graphics.off}}.
-#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.
 #' @param weight Numeric, weight of subbasin boundary lines in Leaflet maps. See [leaflet::addPolygons()].
 #' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See [leaflet::addPolygons()].
 #' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
@@ -121,10 +120,14 @@
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", map.adj = 0, plot.legend = T,
                           legend.pos = "bottomright", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), legend.signif = 2,
                           col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = F, plot.scale = T, plot.arrow = T,
-                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, graphics.off = TRUE, restore.par = FALSE,
+                          par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, graphics.off = TRUE,
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           plot.searchbar = F, plot.label = F, file = "", vwidth = 1424,
                           vheight = 1000, html.name = "") {
+  
+  # Backup par and restore on function exit
+  userpar <- par(no.readonly = TRUE) # Backup par
+  on.exit(par(userpar)) # Restore par on function exit
 
   # Check/Load Dependencies for interactive mapping features - do this here so that these packages are not required for the base HYPEtools installation
   if (map.type == "leaflet" & !all(
@@ -182,17 +185,6 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # sort col.breaks to make sure breaks are in increasing order
     if (!is.null(col.breaks)) {
       col.breaks <- sort(col.breaks, decreasing = FALSE)
-    }
-    
-    # save current state of par() variables which are altered below, for restoring on function exit
-    par.mar0 <- par("mar")
-    par.xaxs <- par("xaxs")
-    par.yaxs <- par("yaxs")
-    par.lend <- par("lend")
-    par.xpd <- par("xpd")
-    par.cex0 <- par("cex")
-    if (restore.par) {
-      on.exit(par(mar = par.mar0, xaxs = par.xaxs, yaxs = par.yaxs, lend = par.lend, xpd = par.xpd, cex = par.cex0))
     }
     
     # data preparation and conditional assignment of color ramp functions and break point vectors

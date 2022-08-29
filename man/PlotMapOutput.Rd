@@ -27,7 +27,6 @@ PlotMapOutput(
   par.mar = rep(0, 4) + 0.1,
   add = FALSE,
   graphics.off = TRUE,
-  restore.par = FALSE,
   weight = 0.15,
   opacity = 0.75,
   fillOpacity = 0.5,
@@ -107,8 +106,6 @@ In standard use cases of this function, plot margins do not need to be changed. 
 
 \item{graphics.off}{Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when
 adding default maps to a plotting device. See \code{\link{graphics.off}}.}
-
-\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit. Only used for default maps.}
 
 \item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
