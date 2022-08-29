@@ -1,3 +1,7 @@
+## Resubmission 2
+This is a resubmission. In this version we have made the following requested changes:
+* Updated ReadPar(), PlotBasinOutput(), and PlotBasinSummary() functions so that they do not change user options
+
 ## Resubmission
 This is a resubmission. In this version we have made the following requested changes:
 * Removed the LICENSE file; The DESCRIPTION file now reads "License: LGPL-3"

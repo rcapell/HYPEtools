@@ -1131,31 +1131,23 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
               Change argument 'driver' to plot to file or use argument 'hype.vars' to reduce number of variables to plot.")
     }
     
-    # dev.new(width=wdth, height = hght, noRStudioGD = T)
-    
-    default.dev <- getOption("device") # Get default plotting device
-    
     if(driver == "default"){
       dev.new(width=wdth, height = hght, noRStudioGD = T)
     } else if (Sys.info()['sysname'] == "Windows") {
-      options(device = "windows")
-      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      grDevices::windows(width=wdth, height = hght)
       # suppress slow redraw on automatic screen device rezising
       dev.control("inhibit")
     } else if (Sys.info()['sysname'] == "Linux") {
-      options(device = "X11")
-      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      grDevices::X11(width=wdth, height = hght)
       # suppress slow redraw on automatic screen device rezising
       dev.control("inhibit")
     } else if (Sys.info()['sysname'] == "Darwin") {
-      options(device = "quartz")
-      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      grDevices::quartz(width=wdth, height = hght)
       # suppress slow redraw on automatic screen device rezising
       dev.control("inhibit")
     } else {
       # try x11, not very likely to occur..
-      options(device = "X11")
-      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      grDevices::X11(width=wdth, height = hght)
       # suppress slow redraw on automatic screen device rezising
       dev.control("inhibit")
     }
@@ -1169,9 +1161,6 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
     # close the file device on exit
     on.exit(dev.off())
   }
-  
-  # restore default plotting device
-  options(device = default.dev)
   
   # layout definition
   nf <- graphics::layout(mat = lay.mat, widths = lay.widths, heights = lay.heights)

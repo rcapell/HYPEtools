@@ -45,12 +45,12 @@ str(bas)
 ## Plot Time Series with PlotBasinOutput()
 ```{r PlotBasinOutput}
 # Plot to screen
-# PlotBasinOutput(bas, gd = gd, driver = "default")
+# PlotBasinOutput(bas, gd = gd, driver = "screen")
 
-# Select variables
+# Plot to default device - select variables
 # PlotBasinOutput(bas, gd = gd, hype.vars = c("cout", "rout"))
 
-# Plot time series in R with a log scale for the flow (log.q = T)
+# Plot to default device - time series in R with a log scale for the flow (log.q = T)
 # PlotBasinOutput(bas, timestep = attr(bas, "timestep"),
 #   hype.vars = "all", vol.err = T, log.q = T, start.mon = 10, from = 1,
 #   to = nrow(bas), name = paste0("Subid ", attr(bas, "subid")), area = NULL,
