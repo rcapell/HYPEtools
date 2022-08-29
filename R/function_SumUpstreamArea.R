@@ -7,7 +7,7 @@
 #' SUBIDs will be calculated.
 #' @param gd A data frame, containing 'SUBID', 'MAINDOWN', and 'AREA' columns, e.g. an imported 'GeoData.txt' file.
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
-#' @param cl Integer, number of processes to use for parallel computation. Set to `1` for serial computation.
+#' @param cl Integer, number of processes to use for parallel computation. Set to `1` for serial computation. See [parallel::detectCores()].
 #' @param progbar Logical, display a progress bar while calculating upstream areas. Adds overhead to calculation time but useful if you want 
 #' HYPEtools to decide how long your coffee break should take.
 #' 
@@ -26,10 +26,10 @@
 #' \dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
 #' 
 #' @importFrom pbapply pbsapply
-#' @importFrom parallel detectCores makePSOCKcluster stopCluster mclapply parLapply
+#' @importFrom parallel makePSOCKcluster stopCluster mclapply parLapply
 #' @export
 
-SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, cl = parallel::detectCores() - 2, progbar = F) {
+SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, cl = 2, progbar = F) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")

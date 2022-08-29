@@ -4,13 +4,7 @@
 \alias{SumUpstreamArea}
 \title{Calculate upstream area sums}
 \usage{
-SumUpstreamArea(
-  subid = NULL,
-  gd,
-  bd = NULL,
-  cl = parallel::detectCores() - 2,
-  progbar = F
-)
+SumUpstreamArea(subid = NULL, gd, bd = NULL, cl = 2, progbar = F)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs to calculate upstream areas for (must exist in \code{gd}). If \code{NULL}, upstream areas for all
@@ -20,7 +14,7 @@ SUBIDs will be calculated.}
 
 \item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
-\item{cl}{Integer, number of processes to use for parallel computation. Set to \code{1} for serial computation.}
+\item{cl}{Integer, number of processes to use for parallel computation. Set to \code{1} for serial computation. See \code{\link[parallel:detectCores]{parallel::detectCores()}}.}
 
 \item{progbar}{Logical, display a progress bar while calculating upstream areas. Adds overhead to calculation time but useful if you want
 HYPEtools to decide how long your coffee break should take.}

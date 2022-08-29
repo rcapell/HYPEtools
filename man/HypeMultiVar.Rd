@@ -53,7 +53,8 @@ multiple model runs, typically imported HYPE basin output results.
 S3 class constructor function for array objects which can hold (multiple) HYPE basin output results.
 }
 \examples{
-\dontrun{HypeMultiVar(mybasinoutput, datetime = mydates,
-hype.var = c("cctn", "ccin", "ccon"), subid = 23, tstep = "day"}
+pth <- file.path(system.file("demo_model", package = "HYPEtools"), "results/0003587.txt")
+te <- ReadBasinOutput(pth)
+HypeMultiVar(pth, datetime = mydates, hype.var = c("cctn", "ccin", "ccon"), subid = 23, tstep = "day")
 
 }
