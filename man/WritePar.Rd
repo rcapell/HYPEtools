@@ -4,7 +4,7 @@
 \alias{WritePar}
 \title{Write a 'par.txt' File}
 \usage{
-WritePar(x, filename = "par.txt", digits = 10, nsmall = 1)
+WritePar(x, filename, digits = 10, nsmall = 1)
 }
 \arguments{
 \item{x}{The object to be written, a list with named vector elements, as an object returned from \code{\link{ReadPar}}.}

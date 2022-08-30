@@ -6,7 +6,7 @@
 \usage{
 WriteXobs(
   x,
-  filename = "Xobs.txt",
+  filename,
   append = FALSE,
   comment = NULL,
   variable = NULL,

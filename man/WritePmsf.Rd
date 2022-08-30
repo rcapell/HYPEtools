@@ -4,7 +4,7 @@
 \alias{WritePmsf}
 \title{Write a 'pmsf.txt' file}
 \usage{
-WritePmsf(x, filename = "../pmsf.txt")
+WritePmsf(x, filename)
 }
 \arguments{
 \item{x}{The object to be written, an \code{integer} vector containing SUBIDs.}

@@ -13,23 +13,23 @@
 \alias{WriteForcKey}
 \title{Write HYPE data files}
 \usage{
-WriteAquiferData(x, filename = "AquiferData.txt", verbose = TRUE)
+WriteAquiferData(x, filename, verbose = TRUE)
 
-WriteOutregions(x, filename = "Outregions.txt", verbose = TRUE)
+WriteOutregions(x, filename, verbose = TRUE)
 
-WriteBranchData(x, filename = "BranchData.txt", verbose = TRUE)
+WriteBranchData(x, filename, verbose = TRUE)
 
-WriteCropData(x, filename = "CropData.txt", verbose = TRUE)
+WriteCropData(x, filename, verbose = TRUE)
 
-WriteDamData(x, filename = "DamData.txt", verbose = TRUE)
+WriteDamData(x, filename, verbose = TRUE)
 
-WriteLakeData(x, filename = "LakeData.txt", verbose = TRUE)
+WriteLakeData(x, filename, verbose = TRUE)
 
-WriteMgmtData(x, filename = "MgmtData.txt", verbose = TRUE)
+WriteMgmtData(x, filename, verbose = TRUE)
 
-WritePointSourceData(x, filename = "PointSourceData.txt", verbose = TRUE)
+WritePointSourceData(x, filename, verbose = TRUE)
 
-WriteForcKey(x, filename = "ForcKey.txt")
+WriteForcKey(x, filename)
 }
 \arguments{
 \item{x}{The object to be written, a dataframe as returned from the \code{\link{HypeDataImport}} functions.}

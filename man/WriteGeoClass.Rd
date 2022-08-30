@@ -4,7 +4,7 @@
 \alias{WriteGeoClass}
 \title{Write a 'GeoClass.txt' file}
 \usage{
-WriteGeoClass(x, filename = "GeoClass.txt", use.comment = FALSE)
+WriteGeoClass(x, filename, use.comment = FALSE)
 }
 \arguments{
 \item{x}{The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoClass}}.}

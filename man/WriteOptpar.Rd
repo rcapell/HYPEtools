@@ -4,7 +4,7 @@
 \alias{WriteOptpar}
 \title{Write an 'optpar.txt' File}
 \usage{
-WriteOptpar(x, filename = "optpar.txt", digits = 10, nsmall = 1)
+WriteOptpar(x, filename, digits = 10, nsmall = 1)
 }
 \arguments{
 \item{x}{The object to be written, a list with named elements, as an object returned from \code{\link{ReadOptpar}}.}

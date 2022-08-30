@@ -44,7 +44,7 @@
 #' @export
 
 
-WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
+WritePar <- function (x, filename, digits = 10, nsmall = 1) {
   
   # format par list contents to avoid scientific format in output
   fx <- lapply(x, format, digits = digits, nsmall = nsmall, scientific = FALSE, drop0trailing = TRUE, trim = TRUE, justify = "none")
@@ -89,7 +89,7 @@ WritePar <- function (x, filename = "par.txt", digits = 10, nsmall = 1) {
 #' @export
 
 
-WriteGeoData <- function(x, filename = "GeoData.txt", digits = 6, scipen = getOption('scipen', 0L)) {
+WriteGeoData <- function(x, filename, digits = 6, scipen = getOption('scipen', 0L)) {
   
   # warn if there are NAs, which should not occur in GeoData files for HYPE
   if (!is.null(na.action(na.omit(x)))) {
@@ -157,7 +157,7 @@ WriteGeoData <- function(x, filename = "GeoData.txt", digits = 6, scipen = getOp
 #' @export
 
 
-WriteGeoClass <- function(x, filename = "GeoClass.txt", use.comment = FALSE) {
+WriteGeoClass <- function(x, filename, use.comment = FALSE) {
 
   # conditional: export with comment attribute or with column names
   if (use.comment) {
@@ -243,7 +243,7 @@ WriteGeoClass <- function(x, filename = "GeoClass.txt", use.comment = FALSE) {
 #' @export
 
 
-WriteXobs <- function(x, filename = "Xobs.txt", append = FALSE, comment = NULL, variable = NULL, subid = NULL, 
+WriteXobs <- function(x, filename, append = FALSE, comment = NULL, variable = NULL, subid = NULL, 
                       last.date = NULL, timestep = "d") {
   
   if (!append) {
@@ -682,7 +682,7 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' @importFrom data.table fwrite
 #' @export
 
-WritePmsf <- function(x, filename = "../pmsf.txt") {
+WritePmsf <- function(x, filename) {
   # concatenate number of subids and vector of subids and export
   fwrite(data.frame(c(length(x), x)), file = filename, append = FALSE, quote = FALSE, row.names = FALSE, col.names = FALSE)
   # old version, can be deleted after a while
@@ -849,7 +849,7 @@ NULL
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WriteAquiferData <- function(x, filename = "AquiferData.txt", verbose = TRUE) {
+WriteAquiferData <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -871,7 +871,7 @@ WriteAquiferData <- function(x, filename = "AquiferData.txt", verbose = TRUE) {
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WriteOutregions <- function(x, filename = "Outregions.txt", verbose = TRUE) {
+WriteOutregions <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -893,7 +893,7 @@ WriteOutregions <- function(x, filename = "Outregions.txt", verbose = TRUE) {
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WriteBranchData <- function(x, filename = "BranchData.txt", verbose = TRUE) {
+WriteBranchData <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -911,7 +911,7 @@ WriteBranchData <- function(x, filename = "BranchData.txt", verbose = TRUE) {
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WriteCropData <- function(x, filename = "CropData.txt", verbose = TRUE) {
+WriteCropData <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -928,7 +928,7 @@ WriteCropData <- function(x, filename = "CropData.txt", verbose = TRUE) {
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WriteDamData <- function(x, filename = "DamData.txt", verbose = TRUE) {
+WriteDamData <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -945,7 +945,7 @@ WriteDamData <- function(x, filename = "DamData.txt", verbose = TRUE) {
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WriteLakeData <- function(x, filename = "LakeData.txt", verbose = TRUE) {
+WriteLakeData <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -957,7 +957,7 @@ WriteLakeData <- function(x, filename = "LakeData.txt", verbose = TRUE) {
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WriteMgmtData <- function(x, filename = "MgmtData.txt", verbose = TRUE) {
+WriteMgmtData <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -972,7 +972,7 @@ WriteMgmtData <- function(x, filename = "MgmtData.txt", verbose = TRUE) {
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WritePointSourceData <- function(x, filename = "PointSourceData.txt", verbose = TRUE) {
+WritePointSourceData <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {
     .CheckCharLengthDf(x, maxChar = 100)
@@ -987,7 +987,7 @@ WritePointSourceData <- function(x, filename = "PointSourceData.txt", verbose = 
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
-WriteForcKey <- function(x, filename = "ForcKey.txt") {
+WriteForcKey <- function(x, filename) {
   fwrite(x, file = filename, sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 }
 
@@ -1022,7 +1022,7 @@ WriteForcKey <- function(x, filename = "ForcKey.txt") {
 #' @export
 
 
-WriteOptpar <- function (x, filename = "optpar.txt", digits = 10, nsmall = 1) {
+WriteOptpar <- function (x, filename, digits = 10, nsmall = 1) {
   
   # convert all data frames in x$pars to lists of vectors and then flatten list of lists to list with vector elements
   px <- unlist(lapply(x$pars, as.list), recursive = FALSE)

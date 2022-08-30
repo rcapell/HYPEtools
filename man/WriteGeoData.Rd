@@ -4,12 +4,7 @@
 \alias{WriteGeoData}
 \title{Write a 'GeoData.txt' file}
 \usage{
-WriteGeoData(
-  x,
-  filename = "GeoData.txt",
-  digits = 6,
-  scipen = getOption("scipen", 0L)
-)
+WriteGeoData(x, filename, digits = 6, scipen = getOption("scipen", 0L))
 }
 \arguments{
 \item{x}{The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoData}}.
