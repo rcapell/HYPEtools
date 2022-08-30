@@ -6,7 +6,7 @@
 \usage{
 PlotBasinSummary(
   x,
-  filename = "BasinSummary",
+  filename,
   driver = c("default", "pdf", "png", "screen"),
   panels = 1,
   gd = NULL,

@@ -6,7 +6,7 @@
 \usage{
 PlotBasinOutput(
   x,
-  filename = "PlotBasinOutput",
+  filename,
   driver = c("default", "pdf", "png", "screen"),
   timestep = attr(x, "timestep"),
   hype.vars = "all",

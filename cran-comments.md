@@ -2,7 +2,7 @@
 This is a resubmission. In this version we have made the following requested changes:
 * Removed redundant "Functions to" from the beginning of DESCRIPTION
 * Updated code to use TRUE and FALSE instead of T and F
-* Remove default write path from functions in functioncollection_export.R
+* Remove default write path from PlotBasinOutput(), PlotBasinSummary(), and functions in functioncollection_export.R
 * Updated MapRegionalSources(), PlotSubbasinRouting(), PlotMapPoints(), PlotMapOutput() functions to ensure that they do not write by default to the user's home filespace
 * Updated ReadPar(), PlotBasinOutput(), and PlotBasinSummary() functions so that they do not change user options
 * Updated BarplotUpstreamClases(), BoxplotSLCClasses(), PlotBasinOutput(), PlotBasinSummary(), PlotDurationCurve(), PlotMapOutput(), PlotMapPoints(), PlotAnnualRegime(), and PlotSimObsRegime() functions to restore par on exit of function

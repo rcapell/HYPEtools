@@ -98,7 +98,7 @@
 #' @export
 
 
-PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default", "pdf", "png", "screen"), panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
+PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "screen"), panels = 1, gd = NULL, bd = NULL, gcl = NULL, psd = NULL, 
                              subid = NULL, desc = NULL, timestep = attr(x, "timestep"), hype.vars = "all", 
                              from = 1, to = nrow(x), log = FALSE, xscale = "gauss", start.mon = 10, name = "", ylab.t1 = "Conc.") {
   
@@ -2200,33 +2200,35 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
     
     if(driver == "default"){
       dev.new(width=wdth, height = hght, noRStudioGD = TRUE)
-    } else if (Sys.info()['sysname'] == "Windows") {
-      grDevices::windows(width=wdth, height = hght)
-      # suppress slow redraw on automatic screen device rezising
-      dev.control("inhibit")
-    } else if (Sys.info()['sysname'] == "Linux") {
-      grDevices::X11(width=wdth, height = hght)
-      # suppress slow redraw on automatic screen device rezising
-      dev.control("inhibit")
-    } else if (Sys.info()['sysname'] == "Darwin") {
-      grDevices::quartz(width=wdth, height = hght)
-      # suppress slow redraw on automatic screen device rezising
-      dev.control("inhibit")
-    } else {
-      # try x11, not very likely to occur..
-      grDevices::X11(width=wdth, height = hght)
-      # suppress slow redraw on automatic screen device rezising
-      dev.control("inhibit")
+    } else if(driver == "screen"){
+      if (Sys.info()['sysname'] == "Windows") {
+        grDevices::windows(width=wdth, height = hght)
+        # suppress slow redraw on automatic screen device rezising
+        dev.control("inhibit")
+      } else if (Sys.info()['sysname'] == "Linux") {
+        grDevices::X11(width=wdth, height = hght)
+        # suppress slow redraw on automatic screen device rezising
+        dev.control("inhibit")
+      } else if (Sys.info()['sysname'] == "Darwin") {
+        grDevices::quartz(width=wdth, height = hght)
+        # suppress slow redraw on automatic screen device rezising
+        dev.control("inhibit")
+      } else {
+        # try x11, not very likely to occur..
+        grDevices::X11(width=wdth, height = hght)
+        # suppress slow redraw on automatic screen device rezising
+        dev.control("inhibit")
+      }
     }
     
   } else if (driver == "png") {
     png(filename = filename, width=wdth, height = hght, units = "in", res = 450, pointsize = 12)
     # close the file device on exit
-    on.exit(dev.off())
+    on.exit(dev.off(), add = TRUE)
   } else {
     cairo_pdf(filename = filename, width = wdth, height = hght, pointsize = 12)
     # close the file device on exit
-    on.exit(dev.off())
+    on.exit(dev.off(), add = TRUE)
   }
   
   # layout definition
