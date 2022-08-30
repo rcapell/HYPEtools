@@ -191,7 +191,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
   # select time window from indata for plotting
   xw <- x[fw:tw, ]
   # save data extent for regime plot label
-  xlab.regime <- paste(format(range(xw[, 1], na.rm = T), "%Y"), collapse = " to ")
+  xlab.regime <- paste(format(range(xw[, 1], na.rm = TRUE), "%Y"), collapse = " to ")
   # if selected time window is longer than time series in x, extend date column
   if (exists("date.plot")) {
     xw[, 1] <- date.plot[fw:length(date.plot)]
@@ -264,7 +264,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
     
     ## calculate upstream point sources if psd supplied
     if (!is.null(psd)) {
-      upsd <- UpstreamPointSources(subid = sbd, gd = gd, psd = psd, bd = bd, progbar = F)
+      upsd <- UpstreamPointSources(subid = sbd, gd = gd, psd = psd, bd = bd, progbar = FALSE)
       # calculate load in ton/year, proceed only if upstream point sources exist
       if (nrow(upsd) > 0) {
         # conc mg/l * vol m3/d * 10^3 l/m3 * 365.25 d/y * 10^-9 ton/mg
@@ -282,7 +282,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
     ## calculate upstream rural household emissions if possible
     # calculate upstream loads in ton/year, proceed only if all necessary variables exist in gd
     if (all(c("loc_vol", "loc_tn", "loc_tp") %in% tolower(names(gd)))) {
-      ugd <- suppressWarnings(UpstreamGeoData(subid = sbd, gd = gd, bd = bd, progbar = F))
+      ugd <- suppressWarnings(UpstreamGeoData(subid = sbd, gd = gd, bd = bd, progbar = FALSE))
       pos.lvol <- which(tolower(names(ugd)) == "up_loc_vol")
       pos.ltn <- which(tolower(names(ugd)) == "up_loc_tn")
       pos.ltp <- which(tolower(names(ugd)) == "up_loc_tp")
@@ -324,7 +324,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
   
   # Q axis limits for conc-Q plots
   if(exi.t["cout"]) {
-    lim.q <- range(cout, na.rm = T)
+    lim.q <- range(cout, na.rm = TRUE)
     # change lower limit to >0 if log-scale
     if (log && lim.q[1] <= 0) {
       lim.q[1] <- min(cout[cout > 0])
@@ -437,7 +437,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["rout"] && exi.t["cout"]){
-        gof.q <- tryCatch(gof(sim = get("cout"), obs = get("rout"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.q <- tryCatch(gof(sim = get("cout"), obs = get("rout"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                           error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.q), gof.q, sep = ": "),"",paste0("(", length(na.omit(rout)), " obs.)")), bty = "n", title = "Q, goodness\nof fit", cex = 1)')
@@ -517,7 +517,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["retn"] && exi.t["cctn"]){
-        gof.tn <- tryCatch(gof(sim = get("cctn"), obs = get("retn"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.tn <- tryCatch(gof(sim = get("cctn"), obs = get("retn"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",paste0("(", length(na.omit(retn)), " obs.)")), bty = "n", title = "TN, goodness\nof fit", cex = 1)')
@@ -529,10 +529,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exi.t["retn"] && exi.t["cctn"]) {
           
           # calculate y axis limits
-          lim.tn <- range(c(retn, cctn), na.rm = T)
+          lim.tn <- range(c(retn, cctn), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.tn[1] <= 0) {
-            lim.tn[1] <- min(c(retn, cctn)[c(retn, cctn) > 0], na.rm = T)
+            lim.tn[1] <- min(c(retn, cctn)[c(retn, cctn) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.tn))) {
               lim.tn <- rep(0, 2)
@@ -551,10 +551,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["retn"]) {
           
           # calculate y axis limits
-          lim.tn <- range(retn, na.rm = T)
+          lim.tn <- range(retn, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.tn[1] <= 0) {
-            lim.tn[1] <- min(retn[retn > 0], na.rm = T)
+            lim.tn[1] <- min(retn[retn > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.tn))) {
               lim.tn <- rep(0, 2)
@@ -571,10 +571,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["cctn"]) {
           
           # calculate y axis limits
-          lim.tn <- range(cctn, na.rm = T)
+          lim.tn <- range(cctn, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.tn[1] <= 0) {
-            lim.tn[1] <- min(cctn[cctn > 0], na.rm = T)
+            lim.tn[1] <- min(cctn[cctn > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.tn))) {
               lim.tn <- rep(0, 2)
@@ -661,7 +661,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["rein"] && exi.t["ccin"]){
-        gof.in <- tryCatch(gof(sim = get("ccin"), obs = get("rein"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.in <- tryCatch(gof(sim = get("ccin"), obs = get("rein"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.in), gof.in, sep = ": "),"",paste0("(", length(na.omit(rein)), " obs.)")), bty = "n", title = "IN, goodness\nof fit", cex = 1)')
@@ -673,10 +673,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exi.t["rein"] && exi.t["ccin"]) {
           
           # calculate y axis limits
-          lim.in <- range(c(rein, ccin), na.rm = T)
+          lim.in <- range(c(rein, ccin), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.in[1] <= 0) {
-            lim.in[1] <- min(c(rein, ccin)[c(rein, ccin) > 0], na.rm = T)
+            lim.in[1] <- min(c(rein, ccin)[c(rein, ccin) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.in))) {
               lim.in <- rep(0, 2)
@@ -695,10 +695,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["rein"]) {
           
           # calculate y axis limits
-          lim.in <- range(rein, na.rm = T)
+          lim.in <- range(rein, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.in[1] <= 0) {
-            lim.in[1] <- min(rein[rein > 0], na.rm = T)
+            lim.in[1] <- min(rein[rein > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.in))) {
               lim.in <- rep(0, 2)
@@ -715,10 +715,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["ccin"]) {
           
           # calculate y axis limits
-          lim.in <- range(ccin, na.rm = T)
+          lim.in <- range(ccin, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.in[1] <= 0) {
-            lim.in[1] <- min(ccin[ccin > 0], na.rm = T)
+            lim.in[1] <- min(ccin[ccin > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.in))) {
               lim.in <- rep(0, 2)
@@ -805,7 +805,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["reon"] && exi.t["ccon"]){
-        gof.on <- tryCatch(gof(sim = get("ccon"), obs = get("reon"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.on <- tryCatch(gof(sim = get("ccon"), obs = get("reon"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.on), gof.on, sep = ": "),"",paste0("(", length(na.omit(reon)), " obs.)")), bty = "n", title = "ON, goodness\nof fit", cex = 1)')
@@ -817,10 +817,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exi.t["reon"] && exi.t["ccon"]) {
           
           # calculate y axis limits
-          lim.on <- range(c(reon, ccon), na.rm = T)
+          lim.on <- range(c(reon, ccon), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.on[1] <= 0) {
-            lim.on[1] <- min(c(reon, ccon)[c(reon, ccon) > 0], na.rm = T)
+            lim.on[1] <- min(c(reon, ccon)[c(reon, ccon) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.on))) {
               lim.on <- rep(0, 2)
@@ -839,10 +839,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["reon"]) {
           
           # calculate y axis limits
-          lim.on <- range(reon, na.rm = T)
+          lim.on <- range(reon, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.on[1] <= 0) {
-            lim.on[1] <- min(reon[reon > 0], na.rm = T)
+            lim.on[1] <- min(reon[reon > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.on))) {
               lim.on <- rep(0, 2)
@@ -859,10 +859,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["ccon"]) {
           
           # calculate y axis limits
-          lim.on <- range(ccon, na.rm = T)
+          lim.on <- range(ccon, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.on[1] <= 0) {
-            lim.on[1] <- min(ccon[ccon > 0], na.rm = T)
+            lim.on[1] <- min(ccon[ccon > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.on))) {
               lim.on <- rep(0, 2)
@@ -968,10 +968,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exists("reintn") && exists("ccintn")) {
           
           # calculate y axis limits
-          lim.intn <- range(c(reintn, ccintn), na.rm = T)
+          lim.intn <- range(c(reintn, ccintn), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.intn[1] <= 0) {
-            lim.intn[1] <- min(c(reintn, ccintn)[c(reintn, ccintn) > 0], na.rm = T)
+            lim.intn[1] <- min(c(reintn, ccintn)[c(reintn, ccintn) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.intn))) {
               lim.intn <- rep(0, 2)
@@ -990,10 +990,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exists("reintn")) {
           
           # calculate y axis limits
-          lim.intn <- range(reintn, na.rm = T)
+          lim.intn <- range(reintn, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.intn[1] <= 0) {
-            lim.intn[1] <- min(reintn[reintn > 0], na.rm = T)
+            lim.intn[1] <- min(reintn[reintn > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.intn))) {
               lim.intn <- rep(0, 2)
@@ -1010,10 +1010,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["ccon"]) {
           
           # calculate y axis limits
-          lim.intn <- range(ccintn, na.rm = T)
+          lim.intn <- range(ccintn, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.intn[1] <= 0) {
-            lim.intn[1] <- min(ccintn[ccintn > 0], na.rm = T)
+            lim.intn[1] <- min(ccintn[ccintn > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.intn))) {
               lim.intn <- rep(0, 2)
@@ -1100,7 +1100,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["retp"] && exi.t["cctp"]){
-        gof.tp <- tryCatch(gof(sim = get("cctp"), obs = get("retp"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.tp <- tryCatch(gof(sim = get("cctp"), obs = get("retp"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.tp), gof.tp, sep = ": "),"",paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness\nof fit", cex = 1)')
@@ -1112,10 +1112,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exi.t["retp"] && exi.t["cctp"]) {
           
           # calculate y axis limits
-          lim.tp <- range(c(retp, cctp), na.rm = T)
+          lim.tp <- range(c(retp, cctp), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.tp[1] <= 0) {
-            lim.tp[1] <- min(c(retp, cctp)[c(retp, cctp) > 0], na.rm = T)
+            lim.tp[1] <- min(c(retp, cctp)[c(retp, cctp) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.tp))) {
               lim.tp <- rep(0, 2)
@@ -1134,10 +1134,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["retp"]) {
           
           # calculate y axis limits
-          lim.tp <- range(retp, na.rm = T)
+          lim.tp <- range(retp, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.tp[1] <= 0) {
-            lim.tp[1] <- min(retp[retp > 0], na.rm = T)
+            lim.tp[1] <- min(retp[retp > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.tp))) {
               lim.tp <- rep(0, 2)
@@ -1154,10 +1154,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["cctp"]) {
           
           # calculate y axis limits
-          lim.tp <- range(cctp, na.rm = T)
+          lim.tp <- range(cctp, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.tp[1] <= 0) {
-            lim.tp[1] <- min(cctp[cctp > 0], na.rm = T)
+            lim.tp[1] <- min(cctp[cctp > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.tp))) {
               lim.tp <- rep(0, 2)
@@ -1244,7 +1244,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["resp"] && exi.t["ccsp"]){
-        gof.sp <- tryCatch(gof(sim = get("ccsp"), obs = get("resp"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.sp <- tryCatch(gof(sim = get("ccsp"), obs = get("resp"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.sp), gof.sp, sep = ": "),"",paste0("(", length(na.omit(resp)), " obs.)")), bty = "n", title = "SP, goodness\nof fit", cex = 1)')
@@ -1256,10 +1256,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exi.t["resp"] && exi.t["ccsp"]) {
           
           # calculate y axis limits
-          lim.sp <- range(c(resp, ccsp), na.rm = T)
+          lim.sp <- range(c(resp, ccsp), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.sp[1] <= 0) {
-            lim.sp[1] <- min(c(resp, ccsp)[c(resp, ccsp) > 0], na.rm = T)
+            lim.sp[1] <- min(c(resp, ccsp)[c(resp, ccsp) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.sp))) {
               lim.sp <- rep(0, 2)
@@ -1278,10 +1278,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["resp"]) {
           
           # calculate y axis limits
-          lim.sp <- range(resp, na.rm = T)
+          lim.sp <- range(resp, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.sp[1] <= 0) {
-            lim.sp[1] <- min(resp[resp > 0], na.rm = T)
+            lim.sp[1] <- min(resp[resp > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.sp))) {
               lim.sp <- rep(0, 2)
@@ -1298,10 +1298,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["ccsp"]) {
           
           # calculate y axis limits
-          lim.sp <- range(ccsp, na.rm = T)
+          lim.sp <- range(ccsp, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.sp[1] <= 0) {
-            lim.sp[1] <- min(ccsp[ccsp > 0], na.rm = T)
+            lim.sp[1] <- min(ccsp[ccsp > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.sp))) {
               lim.sp <- rep(0, 2)
@@ -1389,7 +1389,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["repp"] && exi.t["ccpp"]){
-        gof.pp <- tryCatch(gof(sim = get("ccpp"), obs = get("repp"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.pp <- tryCatch(gof(sim = get("ccpp"), obs = get("repp"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, legend = c(paste(names(gof.pp), gof.pp, sep = ": "),"",paste0("(", length(na.omit(repp)), " obs.)")), bty = "n", title = "PP, goodness\nof fit", cex = 1)')
@@ -1401,10 +1401,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exi.t["repp"] && exi.t["ccpp"]) {
           
           # calculate y axis limits
-          lim.pp <- range(c(repp, ccpp), na.rm = T)
+          lim.pp <- range(c(repp, ccpp), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- min(c(repp, ccpp)[c(repp, ccpp) > 0], na.rm = T)
+            lim.pp[1] <- min(c(repp, ccpp)[c(repp, ccpp) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.pp))) {
               lim.pp <- rep(0, 2)
@@ -1424,10 +1424,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["repp"]) {
           
           # calculate y axis limits
-          lim.pp <- range(repp, na.rm = T)
+          lim.pp <- range(repp, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- min(repp[repp > 0], na.rm = T)
+            lim.pp[1] <- min(repp[repp > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.pp))) {
               lim.pp <- rep(0, 2)
@@ -1444,10 +1444,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["ccpp"]) {
           
           # calculate y axis limits
-          lim.pp <- range(ccpp, na.rm = T)
+          lim.pp <- range(ccpp, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.pp[1] <= 0) {
-            lim.pp[1] <- min(ccpp[ccpp > 0], na.rm = T)
+            lim.pp[1] <- min(ccpp[ccpp > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.pp))) {
               lim.pp <- rep(0, 2)
@@ -1552,10 +1552,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exists("resptp") && exists("ccsptp")) {
           
           # calculate y axis limits
-          lim.sptp <- range(c(resptp, ccsptp), na.rm = T)
+          lim.sptp <- range(c(resptp, ccsptp), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.sptp[1] <= 0) {
-            lim.sptp[1] <- min(c(resptp, ccsptp)[c(resptp, ccsptp) > 0], na.rm = T)
+            lim.sptp[1] <- min(c(resptp, ccsptp)[c(resptp, ccsptp) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.sptp))) {
               lim.sptp <- rep(0, 2)
@@ -1574,10 +1574,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exists("resptp")) {
           
           # calculate y axis limits
-          lim.sptp <- range(resptp, na.rm = T)
+          lim.sptp <- range(resptp, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.sptp[1] <= 0) {
-            lim.sptp[1] <- min(resptp[resptp > 0], na.rm = T)
+            lim.sptp[1] <- min(resptp[resptp > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.sptp))) {
               lim.sptp <- rep(0, 2)
@@ -1594,10 +1594,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["ccpp"]) {
           
           # calculate y axis limits
-          lim.sptp <- range(ccsptp, na.rm = T)
+          lim.sptp <- range(ccsptp, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.sptp[1] <= 0) {
-            lim.sptp[1] <- min(ccsptp[ccsptp > 0], na.rm = T)
+            lim.sptp[1] <- min(ccsptp[ccsptp > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.sptp))) {
               lim.sptp <- rep(0, 2)
@@ -1636,13 +1636,13 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       ## panel 4: CDC for SP/TP ratio
       if (exists("resptp") && exists("ccsptp")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(resptp, ccsptp)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. SP/TP", "sim. SP/TP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(resptp, ccsptp)), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. SP/TP", "sim. SP/TP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
       } else if (exi.t["repp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = repp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. SP/TP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = repp), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = "obs. SP/TP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
       } else if (exi.t["ccpp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccpp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. SP/TP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccpp), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = "sim. SP/TP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -1684,7 +1684,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["ress"] && exi.t["ccss"]){
-        gof.ss <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.ss <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, 
@@ -1699,10 +1699,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exi.t["ress"] && exi.t["ccss"]) {
           
           # calculate y axis limits
-          lim.ss <- range(c(ress, ccss), na.rm = T)
+          lim.ss <- range(c(ress, ccss), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.ss[1] <= 0) {
-            lim.ss[1] <- min(c(ress, ccss)[c(ress, ccss) > 0], na.rm = T)
+            lim.ss[1] <- min(c(ress, ccss)[c(ress, ccss) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.ss))) {
               lim.ss <- rep(0, 2)
@@ -1722,10 +1722,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["ress"]) {
           
           # calculate y axis limits
-          lim.ss <- range(ress, na.rm = T)
+          lim.ss <- range(ress, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.ss[1] <= 0) {
-            lim.ss[1] <- min(ress[ress > 0], na.rm = T)
+            lim.ss[1] <- min(ress[ress > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.ss))) {
               lim.ss <- rep(0, 2)
@@ -1742,10 +1742,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["ccss"]) {
           
           # calculate y axis limits
-          lim.ss <- range(ccss, na.rm = T)
+          lim.ss <- range(ccss, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.ss[1] <= 0) {
-            lim.ss[1] <- min(ccss[ccss > 0], na.rm = T)
+            lim.ss[1] <- min(ccss[ccss > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.ss))) {
               lim.ss <- rep(0, 2)
@@ -1790,21 +1790,21 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       if (exi.t["ress"] && exi.t["ccss"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(ress, ccss)), 
-                                     xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. SS", "sim. SS"), 
+                                     xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. SS", "sim. SS"), 
                                      col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ress"]) {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ress), xscale = xscale, yscale = yscale, 
-                                     add.legend = T, l.legend = "obs. SS", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
+                                     add.legend = TRUE, l.legend = "obs. SS", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
                                      ylim = lim.ss, 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccss"]) {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccss), xscale = xscale, yscale = yscale, 
-                                     add.legend = T, l.legend = "sim. SS", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
+                                     add.legend = TRUE, l.legend = "sim. SS", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
                                      ylim = lim.ss, 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
@@ -1854,7 +1854,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["rets"] && exi.t["ccts"]){
-        gof.ts <- tryCatch(gof(sim = get("ccts"), obs = get("rets"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.ts <- tryCatch(gof(sim = get("ccts"), obs = get("rets"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, 
@@ -1869,10 +1869,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if ((exi.t["rout"] && exi.t["rets"]) && (exi.t["cout"] && exi.t["ccts"])) {
           
           # calculate y axis limits
-          lim.ts <- range(c(rets, ccts), na.rm = T)
+          lim.ts <- range(c(rets, ccts), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.ts[1] <= 0) {
-            lim.ts[1] <- min(c(rets, ccts)[c(rets, ccts) > 0], na.rm = T)
+            lim.ts[1] <- min(c(rets, ccts)[c(rets, ccts) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.ts))) {
               lim.ts <- rep(0, 2)
@@ -1892,10 +1892,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["rout"] && exi.t["rets"]) {
           
           # calculate y axis limits
-          lim.ts <- range(rets, na.rm = T)
+          lim.ts <- range(rets, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.ts[1] <= 0) {
-            lim.ts[1] <- min(rets[rets > 0], na.rm = T)
+            lim.ts[1] <- min(rets[rets > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.ts))) {
               lim.ts <- rep(0, 2)
@@ -1912,10 +1912,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["cout"] && exi.t["ccts"]) {
           
           # calculate y axis limits
-          lim.ts <- range(ccts, na.rm = T)
+          lim.ts <- range(ccts, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.ts[1] <= 0) {
-            lim.ts[1] <- min(ccts[ccts > 0], na.rm = T)
+            lim.ts[1] <- min(ccts[ccts > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.ts))) {
               lim.ts <- rep(0, 2)
@@ -1943,10 +1943,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       if (exi.t["ccts"] && exi.t["rets"]){
         
         # calculate axis limits (used on both axes)
-        lim.ts <- range(c(ccts, rets), na.rm = T)
+        lim.ts <- range(c(ccts, rets), na.rm = TRUE)
         # change lower limit to half the observed !0-minimum if log-scale
         if (log && lim.ts[1] <= 0) {
-          lim.ts[1] <- min(c(ccts, rets)[c(ccts, rets) > 0], na.rm = T) * .5
+          lim.ts[1] <- min(c(ccts, rets)[c(ccts, rets) > 0], na.rm = TRUE) * .5
           # treat case where there are no non-0 values, and Inf values are created
           if (any(is.infinite(lim.ts))) {
             lim.ts <- rep(0, 2)
@@ -1972,20 +1972,20 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       if (exi.t["rets"] && exi.t["ccts"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rets, ccts)), 
-                                     xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. TS", "sim. TS"), 
+                                     xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. TS", "sim. TS"), 
                                      col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["rets"]) {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rets), xscale = xscale, yscale = yscale, 
-                                     add.legend = T, l.legend = "obs. TS", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
+                                     add.legend = TRUE, l.legend = "obs. TS", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccts"]) {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccts), xscale = xscale, yscale = yscale, 
-                                     add.legend = T, l.legend = "sim. TS", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
+                                     add.legend = TRUE, l.legend = "sim. TS", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else {
@@ -2034,7 +2034,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       list.plotexpr[[cp]] <- parse(text = 'frame()')
       
       if (exi.t["ret1"] && exi.t["cct1"]){
-        gof.t1 <- tryCatch(gof(sim = get("cct1"), obs = get("ret1"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+        gof.t1 <- tryCatch(gof(sim = get("cct1"), obs = get("ret1"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                            error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, 
@@ -2049,10 +2049,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         if (exi.t["ret1"] && exi.t["cct1"]) {
           
           # calculate y axis limits
-          lim.t1 <- range(c(ret1, cct1), na.rm = T)
+          lim.t1 <- range(c(ret1, cct1), na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.t1[1] <= 0) {
-            lim.t1[1] <- min(c(ret1, cct1)[c(ret1, cct1) > 0], na.rm = T)
+            lim.t1[1] <- min(c(ret1, cct1)[c(ret1, cct1) > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.t1))) {
               lim.t1 <- rep(0, 2)
@@ -2072,10 +2072,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         }  else if (exi.t["ret1"]) {
           
           # calculate y axis limits
-          lim.t1 <- range(ret1, na.rm = T)
+          lim.t1 <- range(ret1, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.t1[1] <= 0) {
-            lim.t1[1] <- min(ret1[ret1 > 0], na.rm = T)
+            lim.t1[1] <- min(ret1[ret1 > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.t1))) {
               lim.t1 <- rep(0, 2)
@@ -2092,10 +2092,10 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
         } else if (exi.t["cct1"]) {
           
           # calculate y axis limits
-          lim.t1 <- range(cct1, na.rm = T)
+          lim.t1 <- range(cct1, na.rm = TRUE)
           # change lower limit to >0 if log-scale
           if (log && lim.t1[1] <= 0) {
-            lim.t1[1] <- min(cct1[cct1 > 0], na.rm = T)
+            lim.t1[1] <- min(cct1[cct1 > 0], na.rm = TRUE)
             # treat case where there are no non-0 values, and Inf values are created
             if (any(is.infinite(lim.t1))) {
               lim.t1 <- rep(0, 2)
@@ -2140,20 +2140,20 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
       if (exi.t["ret1"] && exi.t["cct1"]){
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(ret1, cct1)), 
-                                     xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. T1", "sim. T1"), 
+                                     xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. T1", "sim. T1"), 
                                      col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = ylab.t1)')
       } else if (exi.t["ret1"]) {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ret1), xscale = xscale, yscale = yscale, 
-                                     add.legend = T, l.legend = "obs. T1", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
+                                     add.legend = TRUE, l.legend = "obs. T1", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = ylab.t1)')
       } else if (exi.t["cct1"]) {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cct1), xscale = xscale, yscale = yscale, 
-                                     add.legend = T, l.legend = "sim. T1", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
+                                     add.legend = TRUE, l.legend = "sim. T1", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = ylab.t1)')
       } else {
@@ -2199,7 +2199,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
     }
     
     if(driver == "default"){
-      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      dev.new(width=wdth, height = hght, noRStudioGD = TRUE)
     } else if (Sys.info()['sysname'] == "Windows") {
       grDevices::windows(width=wdth, height = hght)
       # suppress slow redraw on automatic screen device rezising

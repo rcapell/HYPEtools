@@ -76,7 +76,7 @@ PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p0
   
   # input check for type specification arguments
   line <- match.arg(line)
-  band <- match.arg(band, several.ok = T)
+  band <- match.arg(band, several.ok = TRUE)
   # default is "none"
   if (any(band == "none")) {
     band <- "none"
@@ -143,7 +143,7 @@ PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p0
   par(mar = mar, tcl = -0.2, mgp = c(1.8, 0.3, 0), tcl = .2, lend = 1)
   
   # set up the plot region, but do not plot yet. Background grid will be plotted first
-  plot(x$mean[, c(1, 3)], axes = F, type = "n", ylab = ylab, xlab = xlab, ylim = ylim, log = lg)
+  plot(x$mean[, c(1, 3)], axes = FALSE, type = "n", ylab = ylab, xlab = xlab, ylim = ylim, log = lg)
   
   # plot background grid
   grid(nx = NA, ny = NULL)

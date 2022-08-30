@@ -10,7 +10,7 @@ GroupSLCClasses(
   type = c("landuse", "soil", "crop"),
   group = NULL,
   abs.area = FALSE,
-  verbose = T
+  verbose = TRUE
 )
 }
 \arguments{

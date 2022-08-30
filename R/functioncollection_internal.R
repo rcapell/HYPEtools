@@ -36,7 +36,7 @@
   if (lf > 0) {
     facmat <- apply(as.matrix(x[, facts]), 2, as.character)
     # test if the longest string in any column is longer than maxChar characters, return with warning
-    if (max(apply(facmat, 2, function (z) max(nchar(encodeString(z), allowNA = T)))) > maxChar) {
+    if (max(apply(facmat, 2, function (z) max(nchar(encodeString(z), allowNA = TRUE)))) > maxChar) {
       warning(paste("String with more than", maxChar, "characters in exported data detected. This will lead to an error in HYPE."))
     }
   }
@@ -44,7 +44,7 @@
   if (lc > 0) {
     chamat <- as.matrix(x[, chars])
     # test if the longest string in any column is longer than maxChar characters, return with warning
-    te <- apply(chamat, 2, function (z) {max(nchar(encodeString(z), allowNA = T), na.rm = T)})
+    te <- apply(chamat, 2, function (z) {max(nchar(encodeString(z), allowNA = TRUE), na.rm = TRUE)})
     if (any(te > maxChar)) {
       warning(paste0("String with more than ", maxChar, " characters in detected in column(s): ", paste(names(te[te > maxChar]), collapse = ","), ". This is not HYPE-comform."))
     }  

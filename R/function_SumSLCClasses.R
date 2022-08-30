@@ -17,15 +17,15 @@
 #' @examples
 #' \dontrun{
 #' my.gd <- ReadGeoData("GeoData.txt")
-#' SumSLCClasses(gd = my.gd, plot.box = F)
-#' my.gd[SumSLCClasses(gd = my.gd, plot.box = F, silent = T) < .5, ]
+#' SumSLCClasses(gd = my.gd, plot.box = FALSE)
+#' my.gd[SumSLCClasses(gd = my.gd, plot.box = FALSE, silent = TRUE) < .5, ]
 #' }
 #' 
 #' @importFrom graphics boxplot
 #' @export
 
 
-SumSLCClasses <- function(gd, plot.box = T, silent = F, ...) {
+SumSLCClasses <- function(gd, plot.box = TRUE, silent = FALSE, ...) {
   
   # identify SLC columns in gd
   gdcols.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")

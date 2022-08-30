@@ -11,7 +11,7 @@ BoxplotSLCClasses(
   col.group = NULL,
   lab.legend = NULL,
   pos.legend = 1,
-  abs.area = F,
+  abs.area = FALSE,
   log = "",
   ylim = NULL,
   range = 0,
@@ -19,7 +19,7 @@ BoxplotSLCClasses(
   mgp = c(1.5, 0.2, 0),
   tcl = 0.1,
   xaxs = "i",
-  xpd = T
+  xpd = TRUE
 )
 }
 \arguments{

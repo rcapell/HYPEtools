@@ -9,7 +9,7 @@ MapRegionalSources(
   map,
   map.subid.column = 1,
   digits = 3,
-  progbar = F,
+  progbar = FALSE,
   map.type = "default",
   plot.scale = TRUE,
   plot.searchbar = FALSE,

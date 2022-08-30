@@ -8,7 +8,7 @@ ReadGeoData(
   filename = "GeoData.txt",
   sep = "\\t",
   encoding = c("unknown", "UTF-8", "Latin-1"),
-  remove.na.cols = T
+  remove.na.cols = TRUE
 )
 }
 \arguments{

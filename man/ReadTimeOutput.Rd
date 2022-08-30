@@ -15,7 +15,7 @@ ReadTimeOutput(
   nrows = -1L,
   skip = 0L,
   warn.nan = FALSE,
-  verbose = T
+  verbose = TRUE
 )
 }
 \arguments{

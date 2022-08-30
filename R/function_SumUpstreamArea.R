@@ -29,7 +29,7 @@
 #' @importFrom parallel makePSOCKcluster stopCluster mclapply parLapply
 #' @export
 
-SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, cl = 2, progbar = F) {
+SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, cl = 2, progbar = FALSE) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")

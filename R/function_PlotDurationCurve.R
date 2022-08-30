@@ -143,10 +143,10 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
   if (xscale == "lin") {
     
     # set up the plot region, but do not plot yet. Background grid will be plotted first
-    plot(data[, c(1, 2)], log = plot.log, axes = F, type = "n", ylab = ylabel, xlab = xlab, ylim = ylim)
+    plot(data[, c(1, 2)], log = plot.log, axes = FALSE, type = "n", ylab = ylabel, xlab = xlab, ylim = ylim)
     
     # plot background grid
-    grid(equilogs = F)
+    grid(equilogs = FALSE)
     
     # manually add axes and framing box
     axis(side = 2)
@@ -170,7 +170,7 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
     xlab.gauss <- c("0.0001", "0.001", "0.01", "0.1", "0.2", "0.4", "0.6", "0.8", "0.9", "0.99", "0.999", "0.9999")
     
     # set up the plot region, but do not plot yet. Background grid will be plotted first. Axes omitted as well, because gaussian axis is created manually
-    plot(x.gaussian, data[, 2], axes = F, log = plot.log, type = "n", ylab = ylabel, xlab = xlab, ylim = ylim)
+    plot(x.gaussian, data[, 2], axes = FALSE, log = plot.log, type = "n", ylab = ylabel, xlab = xlab, ylim = ylim)
     
     # plot background grid (manually in this case, because grid() will not plot on gaussian tick marks)
     abline(h = axTicks(2), col = "lightgray", lty = "dotted")

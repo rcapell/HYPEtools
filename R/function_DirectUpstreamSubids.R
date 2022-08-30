@@ -85,7 +85,7 @@ DirectUpstreamSubids <- function(subid = NULL, gd, bd = NULL) {
   }
   
   # merge subid, maindown, branchid, mainpart, maxqmain to working data frame
-  df <- merge(gd[, c(geocol.sub, geocol.md)], bd[, c(brcol.sr, brcol.br, brcol.mp, brcol.mx, brcol.mn, brcol.mb)], by.x = 1, by.y = 1, all = T, sort = F)
+  df <- merge(gd[, c(geocol.sub, geocol.md)], bd[, c(brcol.sr, brcol.br, brcol.mp, brcol.mx, brcol.mn, brcol.mb)], by.x = 1, by.y = 1, all = TRUE, sort = FALSE)
   # sort as in gd, necessary to do separately because non-sorting in merge will still put all matches first (bifurcations) and then append all non-matches (no bif.)
   df <- df[match(x = gd[, geocol.sub], table = df[, 1]), ]
   

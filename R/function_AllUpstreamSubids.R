@@ -91,7 +91,7 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
   }
   
   # RENE'S OLD VERSION OF THE WEIGHT HELPER FUNCTION, _MUCH_ SLOWER BUT LEFT FOR REFERENCE ATM
-  # # internal helper function for get.weights = T
+  # # internal helper function for get.weights = TRUE
   # # finds direct upstream subids and weight fractions
   # # this.sub.gw: vector with two values, subid and weight fraction
   # findfun.gw <- function(this.sub.gw) {
@@ -107,7 +107,7 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
   #   }
   # }
   
-  # internal helper function for get.weights = T, builds on David's version, github issue #37
+  # internal helper function for get.weights = TRUE, builds on David's version, github issue #37
   # finds direct upstream subids and weight fractions
   # (use the old trick adding the branchpart as decimal to the SUBID)
   # this.sub: numeric, subid + flow weight fraction
@@ -170,7 +170,7 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
       }
       # append newly found upstreams to existing
       # ff duplicates found, keep the newest one, which is the most upstream (this only happens with branches)
-      us <- unique(c(us, this.us), fromLast = T)
+      us <- unique(c(us, this.us), fromLast = TRUE)
     }
     
     # add outlet SUBID to result vector
@@ -232,18 +232,18 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
   }
   
   # try to write arcgis select string to clipboard, with error recovery
-  if (write.arcgis == T && !get.weights) {
+  if (write.arcgis == TRUE && !get.weights) {
     to.arc <- paste0("\"SUBID\" IN (", paste(us, collapse = ","), ")")
-    if (clipr_available() == T) {
+    if (clipr_available() == TRUE) {
       write_clip(to.arc)
     } else {
       message("Writing to clipboard failed. Try installing command line tool 'xclip' if you run Linux.")
     }
   }
   
-  if (write.arcgis == T && get.weights) {
+  if (write.arcgis == TRUE && get.weights) {
     to.arc <- paste0("\"SUBID\" IN (", paste(us[, 1], collapse = ","), ")")
-    if (clipr_available() == T) {
+    if (clipr_available() == TRUE) {
       write_clip(to.arc)
     } else {
       message("Writing to clipboard failed. Try installing command line tool 'xclip' if you run Linux.")

@@ -90,7 +90,7 @@
 #' @export
 
 PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default", "pdf", "png", "screen"), timestep = attr(x, "timestep"), 
-                            hype.vars = "all", vol.err = T, log.q = F, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, 
+                            hype.vars = "all", vol.err = TRUE, log.q = FALSE, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, 
                             subid = attr(x, "subid"), gd = NULL, bd = NULL, ylab.t1 = "Conc.") {
   
   # Backup par and restore on function exit
@@ -158,7 +158,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
   # select time window from indata for plotting
   xw <- x[fw:tw, ]
   # save data extent for regime plot label
-  xlab.regime <- paste(format(range(xw[, 1], na.rm = T), "%Y"), collapse = " to ")
+  xlab.regime <- paste(format(range(xw[, 1], na.rm = TRUE), "%Y"), collapse = " to ")
   # if selected time window is longer than time series in x, extend date column
   if (exists("date.plot")) {
     xw[, 1] <- date.plot[fw:length(date.plot)]
@@ -249,17 +249,17 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
     if (exi.t["rout"] && exi.t["cout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = c("Qobs", "Qsim"), 
+                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = c("Qobs", "Qsim"), 
                                    col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["rout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rout), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = "Qobs", 
+                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Qobs", 
                                    col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["cout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cout), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = T, l.legend = "Qsim", 
+                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Qsim", 
                                    col = c("red"), mar = c(3.1, 3.1, .5, .5))')
     } else {
       cp <- cp + 1
@@ -276,7 +276,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
     list.plotexpr[[cp]] <- parse(text = 'title(main = name, line = -length(strsplit(x = as.character(name), split = "\n")[[1]])*1.1)')
     # compute and plot GoFs for discharge, TN, TP, and suspended solids if variables are available
     if (exi.t["rout"] && exi.t["cout"]){
-      gof.q <- tryCatch(gof(sim = get("cout"), obs = get("rout"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+      gof.q <- tryCatch(gof(sim = get("cout"), obs = get("rout"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                         error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, 
@@ -284,14 +284,14 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
                                    " obs.)")), bty = "n", title = "Q, goodness of fit", cex = .8)')
     }
     if (exi.t["retn"] && exi.t["cctn"]){
-      gof.tn <- tryCatch(gof(sim = get("cctn"), obs = get("retn"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+      gof.tn <- tryCatch(gof(sim = get("cctn"), obs = get("retn"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend(x = 1/4, y = 0.95, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",
                                    paste0("(", length(na.omit(retn)), " obs.)")), bty = "n", title = "TN, goodness of fit", cex = .8)')
     }
     if (exi.t["retp"] && exi.t["cctp"]){
-      gof.tp <- tryCatch(gof(sim = get("cctp"), obs = get("retp"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+      gof.tp <- tryCatch(gof(sim = get("cctp"), obs = get("retp"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/4, y = 0.95, 
@@ -299,7 +299,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
                                    paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness of fit", cex = .8)')
     }
     if (exi.t["ress"] && exi.t["ccss"]){
-      gof.ss <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = T)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+      gof.ss <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend(x = 3/4, y = 0.95, 
@@ -312,18 +312,18 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), 
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), 
+                                   add.legend = TRUE, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), 
                                    mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else if (exi.t["rout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), 
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+                                   add.legend = TRUE, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else if (exi.t["cout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), 
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = T, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+                                   add.legend = TRUE, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -343,9 +343,9 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
     list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
     cp <- cp + 1
     if (exi.t["upcprc"]) {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, upcprc, ylim = c(max(upcprc, na.rm = T), -2), col = NA, axes = F, ylab = "")')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upcprc, ylim = c(max(upcprc, na.rm = TRUE), -2), col = NA, axes = F, ylab = "")')
     } else {
-      list.plotexpr[[cp]] <- parse(text = 'plot(date, upcprf + upcpsf, ylim = c(max(upcprc, na.rm = T), -2), col = NA, axes = F, ylab = "")')
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, upcprf + upcpsf, ylim = c(max(upcprc, na.rm = TRUE), -2), col = NA, axes = F, ylab = "")')
     }
     
     cp <- cp + 1
@@ -357,13 +357,13 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
     if (exi.t["upcprf"] && exi.t["upcpsf"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'barplot(height = t(as.matrix(data.frame(upcprf, upcpsf))), border = c("darkblue", "forestgreen"), 
-                                   ylim = c(max(c(upcprf, upcpsf), na.rm = T), -2), xlab = "", col = c("darkblue", "forestgreen"), 
+                                   ylim = c(max(c(upcprf, upcpsf), na.rm = TRUE), -2), xlab = "", col = c("darkblue", "forestgreen"), 
                                    names.arg = rep("", length(upcprf)), legend.text = c("Rain", "Snow"), 
                                    args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), 
                                    ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
     } else {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'barplot(height = upcprc, border = "darkblue", ylim = c(max(upcprc, na.rm = T), -2), xlab = "", 
+      list.plotexpr[[cp]] <- parse(text = 'barplot(height = upcprc, border = "darkblue", ylim = c(max(upcprc, na.rm = TRUE), -2), xlab = "", 
                                    col = "darkblue", names.arg = rep("", length(upcprc)), legend.text = "Precipitation", 
                                    args.legend = list(x = "bottomleft", bty = "n", border = NA, cex = 1.2, horiz = TRUE), 
                                    ylab = "mm", space = 0, cex.axis = 1, cex.lab = 1.2)')
@@ -1135,7 +1135,7 @@ PlotBasinOutput <- function(x, filename = "PlotBasinOutput", driver = c("default
     }
     
     if(driver == "default"){
-      dev.new(width=wdth, height = hght, noRStudioGD = T)
+      dev.new(width=wdth, height = hght, noRStudioGD = TRUE)
     } else if (Sys.info()['sysname'] == "Windows") {
       grDevices::windows(width=wdth, height = hght)
       # suppress slow redraw on automatic screen device rezising

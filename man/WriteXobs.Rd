@@ -7,7 +7,7 @@
 WriteXobs(
   x,
   filename = "Xobs.txt",
-  append = F,
+  append = FALSE,
   comment = NULL,
   variable = NULL,
   subid = NULL,

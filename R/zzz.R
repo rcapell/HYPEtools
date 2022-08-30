@@ -11,6 +11,7 @@
 # Questions to ask when running devtools::release()
 release_questions <- function() {
   c(
-    "Have you updated the internal package data for the VariableLookup() function? Use the code at the bottom of function_VariableLookup.R"
+    "Have you updated the internal package data for the VariableLookup() function? Use the code at the bottom of function_VariableLookup.R",
+    "Have you used TRUE/FALSE instead of T/F? Check with lintr::lint_package(linters=list(lintr::T_and_F_symbol_linter()))"
   )
 }

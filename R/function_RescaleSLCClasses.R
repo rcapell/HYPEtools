@@ -31,7 +31,7 @@
 #' 
 #' @export
 
-RescaleSLCClasses <- function(gd, slc.exclude = NULL, target = 1, plot.box = T) {
+RescaleSLCClasses <- function(gd, slc.exclude = NULL, target = 1, plot.box = TRUE) {
   
   # check user input
   if (!(length(target) %in% c(1, nrow(gd)))) {
@@ -99,7 +99,7 @@ RescaleSLCClasses <- function(gd, slc.exclude = NULL, target = 1, plot.box = T) 
   }
   
   if (plot.box) {
-    SumSLCClasses(gd, plot.box = T, silent = T)
+    SumSLCClasses(gd, plot.box = TRUE, silent = TRUE)
   }
   
   gd

@@ -38,12 +38,12 @@ ExtractFreq <- function(data, probs = c(0, 0.00001, 0.0001, 0.001, seq(0.01,0.99
     n.obs <- NA
     # column-wise calculation of quantiles and number of observations
     for (i in 1:nc) {
-      res[,i+1] <- quantile(data[,i], probs=probs, na.rm=T, names=F)
+      res[,i+1] <- quantile(data[,i], probs=probs, na.rm=TRUE, names=FALSE)
       n.obs[i] <- length(na.omit(data[,i]))
     }
   } else {
     # condition: vector variable in data
-    res <- data.frame(prob=probs, quantile = quantile(data, probs=probs, na.rm=T, names=F))
+    res <- data.frame(prob=probs, quantile = quantile(data, probs=probs, na.rm=TRUE, names=FALSE))
     n.obs <- length(na.omit(data))
   }
   # add number of observations as new attribute to result dataframe

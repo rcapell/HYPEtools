@@ -40,7 +40,7 @@
 #' @examples
 #' \dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}
 
-UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, progbar = T) {
+UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, progbar = TRUE) {
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")

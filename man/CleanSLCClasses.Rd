@@ -14,8 +14,8 @@ CleanSLCClasses(
   m2.frac = NULL,
   m2.abs = NULL,
   signif.digits = 3,
-  verbose = T,
-  progbar = T
+  verbose = TRUE,
+  progbar = TRUE
 )
 }
 \arguments{

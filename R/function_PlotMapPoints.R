@@ -114,7 +114,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
                           par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE, graphics.off = TRUE,
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
-                          # plot.searchbar = F, # leaflet.extras searchbar currently doesn't work for CircleMarkers
+                          # plot.searchbar = FALSE, # leaflet.extras searchbar currently doesn't work for CircleMarkers
                           plot.label = FALSE, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL, file = "", vwidth = 1424,
                           vheight = 1000, html.name = "") {
   
@@ -124,19 +124,19 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
   
   # Check/Load Dependencies for interactive mapping features - do this here so that these packages are not required for the base HYPEtools installation
   if (map.type == "leaflet" & !all(
-    requireNamespace("sf", quietly = T),
-    requireNamespace("leaflet", quietly = T),
-    requireNamespace("leaflet.extras", quietly = T),
-    requireNamespace("mapview", quietly = T),
-    requireNamespace("htmlwidgets", quietly = T)
+    requireNamespace("sf", quietly = TRUE),
+    requireNamespace("leaflet", quietly = TRUE),
+    requireNamespace("leaflet.extras", quietly = TRUE),
+    requireNamespace("mapview", quietly = TRUE),
+    requireNamespace("htmlwidgets", quietly = TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop("To use the interactive mapping features, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets", call.=F)
+    stop("To use the interactive mapping features, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets", call.=FALSE)
     
     # Perform function
   } else {
     # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
-    if (graphics.off == T & !is.null(dev.list())) graphics.off()
+    if (graphics.off == TRUE & !is.null(dev.list())) graphics.off()
     
     # input argument checks
     stopifnot(
@@ -167,10 +167,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       stopifnot(legend.pos %in% c("bottomright", "topright", "topleft", "bottomleft"))
     }
     # if (length(col.breaks) == 1) {
-    #   col.breaks <- range(x[, 2], na.rm = T)
+    #   col.breaks <- range(x[, 2], na.rm = TRUE)
     #   warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
     # }
-    if (!is.null(col.breaks) && (min(col.breaks, na.rm = T) > min(x[, 2], na.rm = T) || max(col.breaks, na.rm = T) < max(x[, 2], na.rm = T))) {
+    if (!is.null(col.breaks) && (min(col.breaks, na.rm = TRUE) > min(x[, 2], na.rm = TRUE) || max(col.breaks, na.rm = TRUE) < max(x[, 2], na.rm = TRUE))) {
       warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2].
             Areas outside range will be excluded from plot.")
     }
@@ -237,7 +237,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     }
     
     # discretise the modeled values in x into classed groups, add to x as new column (of type factor)
-    x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = T)
+    x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = TRUE)
     
     # For leaflet mapping add NA Factor Level if any MapOutput data is NA
     if (map.type == "leaflet" & any(is.na(x[[2]]))) {
@@ -287,10 +287,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       ## plot settings
       if (!add) {
         plot.new()
-        par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
+        par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = TRUE, cex = par.cex)
         frame()
       } else {
-        par(xpd = T, cex = par.cex, lend = 1)
+        par(xpd = TRUE, cex = par.cex, lend = 1)
       }
       
       
@@ -303,7 +303,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       # legend position (fraction if 'add' is FALSE, otherwise already in map coordinates)
       leg.fr.pos <- legend(legend.pos,
                            legend = rep(NA, length(cbrks) - 1),
-                           col = col.class, lty = 1, lwd = 14, bty = "n", title = legend.title, plot = F
+                           col = col.class, lty = 1, lwd = 14, bty = "n", title = legend.title, plot = FALSE
       )
       # legend width (fraction if 'add' is FALSE, otherwise already in map coordinates)
       leg.fr.wd <- leg.fr.pos$rect$w
@@ -311,7 +311,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       if (length(leg.fr.pos$text$y) == 1) {
         te <- legend(legend.pos,
                      legend = rep(NA, length(cbrks)),
-                     col = crfun(length(cbrks)), lty = 1, lwd = 14, bty = "n", title = legend.title, plot = F
+                     col = crfun(length(cbrks)), lty = 1, lwd = 14, bty = "n", title = legend.title, plot = FALSE
         )
         legbx.fr.ht <- diff(c(te$text$y[length(cbrks)], te$text$y[length(cbrks) - 1]))
       } else {
@@ -386,7 +386,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       
       # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
       if (!is.null(bg)) {
-        if (sf::st_is_longlat(bg) == F) {
+        if (sf::st_is_longlat(bg) == FALSE) {
           bbx <- matrix(sf::st_bbox(bg),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # map side ratio (h/w)
           msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
@@ -395,7 +395,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
         } else {
           bbx <- matrix(sf::st_bbox(bg),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
-          par(new = T)
+          par(new = TRUE)
           plot(sites, col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
           # create a map side ratio based on the device region in user coordinates and the map bounding box
           p.range.x <- diff(par("usr")[1:2])
@@ -408,7 +408,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
           psr <- p.range.y / p.range.x
         }
       } else {
-        if (sf::st_is_longlat(sites) == F) {
+        if (sf::st_is_longlat(sites) == FALSE) {
           bbx <- matrix(sf::st_bbox(sites),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # map side ratio (h/w)
           msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
@@ -417,7 +417,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
         } else {
           bbx <- matrix(sf::st_bbox(sites),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # set user coordinates using a dummy plot
-          par(new = T)
+          par(new = TRUE)
           plot(sites, col = NULL, add = add)
           # create a map side ratio based on the device region in user coordinates and the map bounding box
           p.range.x <- diff(par("usr")[1:2])
@@ -466,7 +466,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       if (!is.null(bg)) {
         # plot(bg, col = "grey90", border = "grey70", ylim = pylim, xlim = pxlim, add = add)
         plot(sf::st_geometry(sf::st_as_sf(bg)), col = bg.fillColor, border = "grey70", ylim = pylim, xlim = pxlim, add = add)
-        plot(sf::st_geometry(sf::st_as_sf(sts)), bg = sts$color, border = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, add = T)
+        plot(sf::st_geometry(sf::st_as_sf(sts)), bg = sts$color, border = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, add = TRUE)
       } else {
         plot(sf::st_geometry(sf::st_as_sf(sts)), bg = sts$color, col = 1, pch = pch, lwd = lwd, cex = 1.2 * pt.cex, ylim = pylim, xlim = pxlim, add = add)
       }
@@ -528,7 +528,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       
       if (plot.scale) {
         if (sf::st_is_longlat(sites)) {
-          warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = F' to remove it.")
+          warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = FALSE' to remove it.")
         }
         if (!add) {
           ldistance <- signif(diff(bbx[1, ]) / 4, 0)
@@ -575,11 +575,11 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
     } else if (map.type == "leaflet") {
       
       # Reproject if not a lat/long CRS
-      if(sf::st_is_longlat(x)==F){
+      if(sf::st_is_longlat(x)==FALSE){
         x <- x %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
       }
       if(!is.null(bg)){
-        if(sf::st_is_longlat(bg)==F){
+        if(sf::st_is_longlat(bg)==FALSE){
           bg <- bg %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
         }
       }
@@ -605,12 +605,12 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       
       # Create Leaflet Map
       message("Generating Map")
-      leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = T)) %>%
+      leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
         leaflet::addTiles() %>%
         leaflet::addLayersControl(
           baseGroups = c("Map", "Street", "Topo", "Satellite"),
           overlayGroups = c("Points", "Subbasins"),
-          options = leaflet::layersControlOptions(collapsed = F, autoIndex = T)
+          options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
         ) %>%
         leaflet.extras::addResetMapButton()
       
@@ -657,7 +657,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
                 group = "Subbasins",
                 data = suppressWarnings(sf::st_point_on_surface(bg)),
                 label = bg[[bg.label.column]],
-                labelOptions = leaflet::labelOptions(noHide = T, direction = 'auto', textOnly = T)
+                labelOptions = leaflet::labelOptions(noHide = TRUE, direction = 'auto', textOnly = TRUE)
               )
           } else{ # Do not plot labels
             leafmap <- leafmap %>%
@@ -674,7 +674,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
         }
       }
       
-      if (plot.label == T) { # Create points with labels
+      if (plot.label == TRUE) { # Create points with labels
         
         # Create labels
         x <- x %>%
@@ -708,22 +708,22 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       }
       
       # # Add searchbar to map
-      # if (plot.searchbar == T) {
+      # if (plot.searchbar == TRUE) {
       #   leafmap <- leafmap %>%
       #     leaflet.extras::addSearchFeatures(
       #       targetGroups = c("Points"),
-      #       options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
+      #       options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
       #     )
       # }
       
       # Add scalebar to map
-      if (plot.scale == T) {
+      if (plot.scale == TRUE) {
         leafmap <- leafmap %>%
           leaflet::addScaleBar(position = "bottomright")
       }
       
       # Add legend to map
-      if (plot.legend == T) {
+      if (plot.legend == TRUE) {
         leafmap <- leafmap %>%
           leaflet::addLegend(
             group = "Points",
@@ -747,13 +747,13 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       # Save Image
       if (!file == "") {
         message("Saving Image")
-        mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = F)
+        mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
       }
       
       # Save HTML
       if (!html.name == "") {
         message("Saving HTML")
-        htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
+        htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to working directory so selfcontained=T works
         file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
       }
       
@@ -766,7 +766,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
 # # DEBUG
 # x <- ReadSubass("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_miracle/res_wq_baseline/subass2.txt")[, c(1, 3)]
 # x <- ReadGeoData("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/model_helgean_miracle/GeoData.txt")[, c("SUBID", "PARREG")]
-# x <- read.table(file = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.xDev/New Data/Xobs_WQ/Xobsar/RDir/subid_xobs.txt", sep = "\t", header = T)
+# x <- read.table(file = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.xDev/New Data/Xobs_WQ/Xobsar/RDir/subid_xobs.txt", sep = "\t", header = TRUE)
 # sites <- readOGR("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/gis", layer = "helgean_outlet_points")
 # sites <- readOGR(dsn = "//winfs-proj/data/proj/Fouh/Europe/E-HYPE/EHYPEv3.0/Data/RepurposedData/WHIST/Current_shapefiles/Utloppspunkter", layer = "EHYPE3_utlopp_20141211_rev20150325")
 # bg <- readOGR("//winfs-proj/data/proj/Fouh/Europe/Projekt/MIRACLE/WP2/gis/helgean/subbasin", layer = "helgean_shype_aro_y")

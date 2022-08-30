@@ -117,7 +117,7 @@ HypeGeoData <- function(x) {
 
 #' @export
 
-`[.HypeGeoData` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], drop = T) {
+`[.HypeGeoData` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], drop = TRUE) {
   y <- NextMethod("[", drop)
   
   # mandatory columns except SLCs and their positions
@@ -287,20 +287,20 @@ print.summaryHypeGeoData <- function(x, ...) {
   print(cbind(x$columns[1:te, ], "   |" = rep("|", te), 
         x$columns[(te + 1):(2 * te), ], "   |" = rep("|", te), 
         rbind(x$columns[(2 * te + 1):nrow(x$columns), ], data.frame(column = rep("", tep), name = rep("", tep), class = rep("", tep)))
-        ), row.names = F)
+        ), row.names = FALSE)
   
   
   ## range table
   # subbasin area range
-  tes <- c("Sub-basin area (km2):", format(x$subbasin.area, scientific = F, trim = T, drop0trailing = T))
+  tes <- c("Sub-basin area (km2):", format(x$subbasin.area, scientific = FALSE, trim = TRUE, drop0trailing = TRUE))
   # unit river length range
-  ter <- c("Unit river length (km/km2):", format(x$unit.river.length, scientific = F, trim = T, drop0trailing = T))
+  ter <- c("Unit river length (km/km2):", format(x$unit.river.length, scientific = FALSE, trim = TRUE, drop0trailing = TRUE))
   # icatch range
-  tei <- c("ilake drainage area fraction (-):", format(x$icatch, scientific = F, trim = T, drop0trailing = T))
-  tesri <- as.data.frame(matrix(c(tes, ter, tei), ncol = 5, byrow = T))
+  tei <- c("ilake drainage area fraction (-):", format(x$icatch, scientific = FALSE, trim = TRUE, drop0trailing = TRUE))
+  tesri <- as.data.frame(matrix(c(tes, ter, tei), ncol = 5, byrow = TRUE))
   names(tesri) <- c(" ", "mean", "median", "minimum", "maximum")
   cat("\n")
-  print(tesri, row.names = F)
+  print(tesri, row.names = FALSE)
   
   
   ## number of subbasins

@@ -33,7 +33,7 @@
 #' @export
 
 
-GroupSLCClasses <- function(gd, gcl = NULL, type = c("landuse", "soil", "crop"), group = NULL, abs.area = FALSE, verbose = T) {
+GroupSLCClasses <- function(gd, gcl = NULL, type = c("landuse", "soil", "crop"), group = NULL, abs.area = FALSE, verbose = TRUE) {
   
   # input argument checks
   type <- match.arg(type)

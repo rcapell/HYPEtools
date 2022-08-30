@@ -10,7 +10,7 @@ UpstreamPointSources(
   psd,
   bd = NULL,
   signif.digits = 4,
-  progbar = T
+  progbar = TRUE
 )
 }
 \arguments{

@@ -127,10 +127,10 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     
     # import
     if (progbar) {
-      res <- pblapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt")[, !"DATE", with = F])})
+      res <- pblapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt")[, !"DATE", with = FALSE])})
       res <- simplify2array(res)
     } else {
-      res <- lapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt")[, !"DATE", with = F])})
+      res <- lapply(locs, function(x) {as.matrix(ReadTimeOutput(filename = x, dt.format = dt.format, select = select, type = "dt")[, !"DATE", with = FALSE])})
       res <- simplify2array(res)
     }
     # add attributes with information
@@ -147,10 +147,10 @@ ReadWsOutput <- function(path, type = c("time", "map", "basin"), hype.var = NULL
     
     # import
     if (progbar) {
-      res <- pblapply(locs, function(x) {as.matrix(transpose(ReadMapOutput(filename = x, dt.format = dt.format, type = "dt", hype.var = hype.var)[, !"SUBID", with = F]))})
+      res <- pblapply(locs, function(x) {as.matrix(transpose(ReadMapOutput(filename = x, dt.format = dt.format, type = "dt", hype.var = hype.var)[, !"SUBID", with = FALSE]))})
       res <- simplify2array(res)
     } else {
-      res <- lapply(locs, function(x) {t(as.matrix(ReadMapOutput(filename = x, dt.format = dt.format, type = "dt", hype.var = hype.var)[, !"SUBID", with = F]))})
+      res <- lapply(locs, function(x) {t(as.matrix(ReadMapOutput(filename = x, dt.format = dt.format, type = "dt", hype.var = hype.var)[, !"SUBID", with = FALSE]))})
       res <- simplify2array(res)
     }
     # add attributes with information

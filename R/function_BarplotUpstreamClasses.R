@@ -189,7 +189,7 @@ BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "cr
   }
   
   # plot bars and labels
-  res <- barplot(height = as.matrix(x[, -1]) * 100, names.arg = names.arg, beside = T, xlab = xlab, ylab = ylab, 
+  res <- barplot(height = as.matrix(x[, -1]) * 100, names.arg = names.arg, beside = TRUE, xlab = xlab, ylab = ylab, 
                  ylim = ylim, border = border, space = c(0, .2), col = col, cex.axis = cex.axis, legend.text = NULL)
   mtext(text = lgroup, side = 3, at = colMeans(res), line = -.2, padj = .3, cex = cex.names, las = 3, adj = 1)
   mtext(xlab, side = 1, line = .5, cex = cex.names)

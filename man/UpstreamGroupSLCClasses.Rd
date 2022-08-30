@@ -12,7 +12,7 @@ UpstreamGroupSLCClasses(
   type = c("landuse", "soil", "crop"),
   group = NULL,
   signif.digits = 3,
-  progbar = T
+  progbar = TRUE
 )
 }
 \arguments{

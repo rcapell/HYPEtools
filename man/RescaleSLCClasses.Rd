@@ -4,7 +4,7 @@
 \alias{RescaleSLCClasses}
 \title{Re-scale SLC classes in a GeoData data frame}
 \usage{
-RescaleSLCClasses(gd, slc.exclude = NULL, target = 1, plot.box = T)
+RescaleSLCClasses(gd, slc.exclude = NULL, target = 1, plot.box = TRUE)
 }
 \arguments{
 \item{gd}{A data frame containing columns 'SLC_n' (\eqn{n \ge 1}), typically an imported 'GeoData.txt' file.}

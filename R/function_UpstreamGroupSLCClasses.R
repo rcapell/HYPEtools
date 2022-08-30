@@ -45,7 +45,7 @@
 
 
 UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, type = c("landuse", "soil", "crop"), 
-                                    group = NULL, signif.digits = 3, progbar = T) {
+                                    group = NULL, signif.digits = 3, progbar = TRUE) {
   
   # input argument checks
   type <- match.arg(type)

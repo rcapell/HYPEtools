@@ -46,7 +46,7 @@ Summarize fractions for the whole drainage area upstream of the gauge.
 Qobs.sbd <- 3587
 
 # Upstream soil fractions in percent
-sof <- as.numeric(UpstreamGroupSLCClasses(subid = Qobs.sbd, gd = gd, gc = gcl, type = "soil", progbar = F)[, -1] * 100)
+sof <- as.numeric(UpstreamGroupSLCClasses(subid = Qobs.sbd, gd = gd, gc = gcl, type = "soil", progbar = FALSE)[, -1] * 100)
 
 # Show how many classes are in each soil category
 length(sof)
@@ -69,7 +69,7 @@ Summarize fractions for the whole drainage area upstream of the gauge.
 Qobs.sbd <- 3587
 
 # Upstream land use fractions in percent
-luf <- as.numeric(UpstreamGroupSLCClasses(subid = Qobs.sbd, gd = gd, gc = gcl, type = "landuse", progbar = F)[, -1] * 100)
+luf <- as.numeric(UpstreamGroupSLCClasses(subid = Qobs.sbd, gd = gd, gc = gcl, type = "landuse", progbar = FALSE)[, -1] * 100)
 
 # Show how many land use classes there are
 length(luf)
@@ -107,12 +107,12 @@ This summarizes the soil and land use fractions for the total upstream area for 
 sbd <- gd$SUBID
 
 # Summarize upstream soils
-sof.all <- UpstreamGroupSLCClasses(gd = gd, gcl = gcl, type = "soil", progbar = F)[, -1] * 100
+sof.all <- UpstreamGroupSLCClasses(gd = gd, gcl = gcl, type = "soil", progbar = FALSE)[, -1] * 100
 sof.all <- cbind("SUBID" = sbd, sof.all)
 sof.all
 
 # Summarize upstream land use
-luf.all <- UpstreamGroupSLCClasses(gd = gd, gcl = gcl, type = "landuse", progbar = F)[, -1] * 100
+luf.all <- UpstreamGroupSLCClasses(gd = gd, gcl = gcl, type = "landuse", progbar = FALSE)[, -1] * 100
 luf.all <- cbind("SUBID" = sbd, luf.all)
 luf.all
 ```
@@ -121,12 +121,12 @@ luf.all
 This summarizes the soil and land use fractions within just each subbasin area.
 ```{r summarizeindividual}
 # Summarize subbasin soils
-sof.sbd.all <- GroupSLCClasses(gd = gd, gcl = gcl, type = "soil", verbose = F)[, -1] * 100
+sof.sbd.all <- GroupSLCClasses(gd = gd, gcl = gcl, type = "soil", verbose = FALSE)[, -1] * 100
 sof.sbd.all <- cbind("SUBID" = sbd, sof.sbd.all)
 sof.sbd.all
 
 # Summarize subbasin land use
-luf.sbd.all <- GroupSLCClasses(gd = gd, gcl = gcl, type = "landuse", verbose = F)[, -1] * 100
+luf.sbd.all <- GroupSLCClasses(gd = gd, gcl = gcl, type = "landuse", verbose = FALSE)[, -1] * 100
 luf.sbd.all <- cbind("SUBID" = sbd, luf.sbd.all)
 luf.sbd.all
 ```

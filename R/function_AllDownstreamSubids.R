@@ -76,10 +76,10 @@ AllDownstreamSubids <- function(subid, gd, bd = NULL, write.arcgis = FALSE) {
   ds <- as.integer(ds)
   
   # try to write arcgis select string to clipboard, with error recovery
-  if (write.arcgis == T) {
+  if (write.arcgis == TRUE) {
     to.arc <- paste(paste("\"SUBID\" =", ds, 'OR'), collapse=" ")
     to.arc <- substr(to.arc, 1, nchar(to.arc) - 3)
-    if (clipr_available() == T) {
+    if (clipr_available() == TRUE) {
       write_clip(to.arc)
     } else {
       message("Writing to clipboard failed. Try installing command line tool 'xclip' if you run Linux.")

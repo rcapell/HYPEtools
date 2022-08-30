@@ -11,7 +11,7 @@ VariableInfo(variable, info = "Name")
 VariableSearch(
   search,
   info = c("ID", "Name", "Unit", "Description", "Aggregation", "Component"),
-  ignore_case = T
+  ignore_case = TRUE
 )
 }
 \arguments{

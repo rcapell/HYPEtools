@@ -50,9 +50,9 @@ str(bas)
 # Plot to default device - select variables
 # PlotBasinOutput(bas, gd = gd, hype.vars = c("cout", "rout"))
 
-# Plot to default device - time series in R with a log scale for the flow (log.q = T)
+# Plot to default device - time series in R with a log scale for the flow (log.q = TRUE)
 # PlotBasinOutput(bas, timestep = attr(bas, "timestep"),
-#   hype.vars = "all", vol.err = T, log.q = T, start.mon = 10, from = 1,
+#   hype.vars = "all", vol.err = TRUE, log.q = TRUE, start.mon = 10, from = 1,
 #   to = nrow(bas), name = paste0("Subid ", attr(bas, "subid")), area = NULL,
 #   subid = attr(bas, "subid"), gd = gd, bd = NULL
 # )
@@ -79,5 +79,5 @@ regime <- AnnualRegime(bas[, c("DATE", "COUT", "ROUT")],
   start.mon = 10
 )
 
-PlotAnnualRegime(regime, band = "p25p75", add.legend = T, col = c(4, 2))
+PlotAnnualRegime(regime, band = "p25p75", add.legend = TRUE, col = c(4, 2))
 ```

@@ -117,12 +117,12 @@
 #' @export
 
 
-PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", map.adj = 0, plot.legend = T,
-                          legend.pos = "bottomright", legend.title = NULL, legend.outer = F, legend.inset = c(0, 0), legend.signif = 2,
-                          col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = F, plot.scale = T, plot.arrow = T,
+PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", map.adj = 0, plot.legend = TRUE,
+                          legend.pos = "bottomright", legend.title = NULL, legend.outer = FALSE, legend.inset = c(0, 0), legend.signif = 2,
+                          col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = FALSE, plot.scale = TRUE, plot.arrow = TRUE,
                           par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE, graphics.off = TRUE,
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
-                          plot.searchbar = F, plot.label = F, file = "", vwidth = 1424,
+                          plot.searchbar = FALSE, plot.label = FALSE, file = "", vwidth = 1424,
                           vheight = 1000, html.name = "") {
   
   # Backup par and restore on function exit
@@ -131,19 +131,19 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
 
   # Check/Load Dependencies for interactive mapping features - do this here so that these packages are not required for the base HYPEtools installation
   if (map.type == "leaflet" & !all(
-    requireNamespace("sf", quietly = T),
-    requireNamespace("leaflet", quietly = T),
-    requireNamespace("leaflet.extras", quietly = T),
-    requireNamespace("mapview", quietly = T),
-    requireNamespace("htmlwidgets", quietly = T)
+    requireNamespace("sf", quietly = TRUE),
+    requireNamespace("leaflet", quietly = TRUE),
+    requireNamespace("leaflet.extras", quietly = TRUE),
+    requireNamespace("mapview", quietly = TRUE),
+    requireNamespace("htmlwidgets", quietly = TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop("To use the interactive mapping features, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets", call.=F)
+    stop("To use the interactive mapping features, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets", call.=FALSE)
     
     # Perform function
   } else {
     # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
-    if (graphics.off == T & !is.null(dev.list())) graphics.off()
+    if (graphics.off == TRUE & !is.null(dev.list())) graphics.off()
     
     # input argument checks
     stopifnot(is.data.frame(x), dim(x)[2] == 2, is.null(col.breaks) || is.numeric(col.breaks), ("sf" %in% class(map) | "SpatialPolygonsDataFrame" %in% class(map)))
@@ -164,10 +164,10 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       stopifnot(legend.pos %in% c("bottomright", "topright", "topleft", "bottomleft"))
     }
     if (length(col.breaks) == 1) {
-      col.breaks <- range(x[, 2], na.rm = T)
+      col.breaks <- range(x[, 2], na.rm = TRUE)
       warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")
     }
-    if (!is.null(col.breaks) && (min(col.breaks, na.rm = T) > min(x[, 2], na.rm = T) || max(col.breaks, na.rm = T) < max(x[, 2], na.rm = T))) {
+    if (!is.null(col.breaks) && (min(col.breaks, na.rm = TRUE) > min(x[, 2], na.rm = TRUE) || max(col.breaks, na.rm = TRUE) < max(x[, 2], na.rm = TRUE))) {
       warning("Range of user-provided argument 'col.breaks' does not cover range of 'x[, 2].
             Areas outside range will be excluded from plot.")
     }
@@ -199,14 +199,14 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         # color breaks: special defaults for some of the inbuilt color ramp functions
         if (identical(col, ColDiffTemp)) {
           # temperature differences
-          cbrks <- c(ifelse(min(x[, 2] ,na.rm = T) < 7.5, min(x[, 2], na.rm = T) - 1, 30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[, 2], na.rm = T) > 7.5, max(x[, 2], na.rm = T) + 1, 30))
+          cbrks <- c(ifelse(min(x[, 2] ,na.rm = TRUE) < 7.5, min(x[, 2], na.rm = TRUE) - 1, 30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[, 2], na.rm = TRUE) > 7.5, max(x[, 2], na.rm = TRUE) + 1, 30))
         } else if (identical(col, ColDiffGeneric)) {
           # create a break point sequence which is centered around zero, with class widths based on equal intervals of the log-scaled
           # variable distribution
           cbrks <- c(rev(exp(seq(0, log(max(abs(range(x[, 2]))) + 1), length.out = 5)) * -1), exp(seq(0, log(max(abs(range(x[, 2]))) + 1), length.out = 5)))
         } else {
           # generic, quantile-based breaks for all other functions
-          cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
+          cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = TRUE)
         }
       }
     } else if (col[1] == "auto") {
@@ -214,7 +214,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       # for undefined variables
       if (toupper(var.name) == "CCTN") {
         crfun <- ColNitr
-        cbrks <- c(0, 10, 50, 100, 250, 500, 1000, 2500, 5000, ifelse(max(x[, 2], na.rm = T) > 5000, max(x[, 2], na.rm = T) + 1, 10000))
+        cbrks <- c(0, 10, 50, 100, 250, 500, 1000, 2500, 5000, ifelse(max(x[, 2], na.rm = TRUE) > 5000, max(x[, 2], na.rm = TRUE) + 1, 10000))
         if (is.null(legend.title)) {
           if (map.type == "default") {
             legend.title <- expression(paste("Total N (", mu, "g l"^"-1", ")"))
@@ -224,7 +224,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         }
       } else if (toupper(var.name) == "CCTP") {
         crfun <- ColPhos
-        cbrks <- c(0, 5, 10, 25, 50, 100, 150, 200, 250, ifelse(max(x[, 2], na.rm = T) > 250, max(x[, 2], na.rm = T) + 1, 1000))
+        cbrks <- c(0, 5, 10, 25, 50, 100, 150, 200, 250, ifelse(max(x[, 2], na.rm = TRUE) > 250, max(x[, 2], na.rm = TRUE) + 1, 1000))
         if (is.null(legend.title)) {
           if (map.type == "default") {
             legend.title <- expression(paste("Total P (", mu, "g l"^"-1", ")"))
@@ -234,7 +234,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         }
       } else if (toupper(var.name) == "COUT") {
         crfun <- ColQ
-        cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(x[, 2], na.rm = T) > 500, max(x[, 2], na.rm = T) + 1, 2000))
+        cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(x[, 2], na.rm = TRUE) > 500, max(x[, 2], na.rm = TRUE) + 1, 2000))
         if (is.null(legend.title)) {
           if (map.type == "default") {
             legend.title <- expression(paste("Q (m"^3, "s"^"-1", ")"))
@@ -244,7 +244,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         }
       } else if (toupper(var.name) == "TEMP") {
         crfun <- ColTemp
-        cbrks <- c(ifelse(min(x[, 2]) < -7.5, min(x[, 2]) - 1, -30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[, 2], na.rm = T) > 7.5, max(x[, 2], na.rm = T) + 1, 30))
+        cbrks <- c(ifelse(min(x[, 2]) < -7.5, min(x[, 2]) - 1, -30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[, 2], na.rm = TRUE) > 7.5, max(x[, 2], na.rm = TRUE) + 1, 30))
         if (is.null(legend.title)) {
           if (map.type == "default") {
             legend.title <- expression(paste("Air Temp. (" * degree, "C)"))
@@ -254,7 +254,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         }
       } else {
         crfun <- ColDiffGeneric
-        cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = T)
+        cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = TRUE)
       }
     } else if (is.vector(col)) {
       # Case 3: a vector of colors
@@ -267,7 +267,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
           stop("For leaflet maps, if colors are specified as vector in 'col', the number of colors in 'col' must be equal to the number of breakpoints in 'col.breaks'.")
         }
       } else {
-        cbrks <- quantile(x[, 2], probs = seq(0, 1, length.out = length(col) + 1), na.rm = T)
+        cbrks <- quantile(x[, 2], probs = seq(0, 1, length.out = length(col) + 1), na.rm = TRUE)
       }
     } else {
       # Error treatment for all other user input
@@ -292,7 +292,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       col <- col[1:(length(cbrks) - 1)]
     }
     # discretise the modeled values in x into classed groups, add to x as new column (of type factor)
-    x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = T)
+    x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = TRUE)
     
     # For leaflet mapping add NA Factor Level if any MapOutput data is NA
     if (map.type == "leaflet" & any(is.na(x[[2]]))) {
@@ -302,30 +302,30 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # replace the factor levels with color codes using the color ramp function assigned above or user-defined colors
     if (is.null(crfun)) {
       if (map.type == "leaflet" & any(is.na(x[[2]]))) {
-        if (col.rev == F) {
+        if (col.rev == FALSE) {
           levels(x[, 3]) <- c(col, na.color) # Add extra color for NA in leaflet maps
-        } else if (col.rev == T) {
+        } else if (col.rev == TRUE) {
           levels(x[, 3]) <- c(rev(col), na.color) # Add extra color for NA in leaflet maps
         }
       } else {
-        if (col.rev == F) {
+        if (col.rev == FALSE) {
           levels(x[, 3]) <- col
-        } else if (col.rev == T) {
+        } else if (col.rev == TRUE) {
           levels(x[, 3]) <- rev(col) # Reverse color palette
         }
       }
     } else {
       if (map.type == "leaflet" & any(is.na(x[[2]]))) {
-        if (col.rev == F) {
+        if (col.rev == FALSE) {
           levels(x[, 3]) <- crfun(length(cbrks)) # Add extra legend break for NA in leaflet maps
-        } else if (col.rev == T) {
+        } else if (col.rev == TRUE) {
           rev.col <- rev(crfun(length(cbrks))) # Add extra legend break for NA in leaflet maps, reverse color palette
           levels(x[, 3]) <- rev.col[c(2:length(rev.col), 1)] # Reorder colors so that NA color is still last
         }
       } else {
-        if (col.rev == F) {
+        if (col.rev == FALSE) {
           levels(x[, 3]) <- crfun(length(cbrks) - 1)
-        } else if (col.rev == T) {
+        } else if (col.rev == TRUE) {
           levels(x[, 3]) <- rev(crfun(length(cbrks) - 1)) # Reverse color palette
         }
       }
@@ -361,11 +361,11 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         # x11(width = 15, height = 5)
         # par(mfcol = c(1, 3))
         # plot(0,type='n',axes=FALSE,ann=FALSE)
-        par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = T, cex = par.cex)
+        par(mar = par.mar, xaxs = "i", yaxs = "i", lend = 1, xpd = TRUE, cex = par.cex)
         # plot.window(xlim = 0:1, ylim = 0:1)
         frame()
       } else {
-        par(lend = 1, xpd = T, cex = par.cex)
+        par(lend = 1, xpd = TRUE, cex = par.cex)
       }
       
       
@@ -380,30 +380,30 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # legend colors
     if (is.null(crfun)) {
       if (map.type == "leaflet" & any(is.na(x[[2]]))) {
-        if (col.rev == F) {
+        if (col.rev == FALSE) {
           lcol <- c(col, na.color) # Add extra legend color for NA for leaflet maps
-        } else if (col.rev == T) {
+        } else if (col.rev == TRUE) {
           lcol <- c(rev(col), na.color) # Add extra legend color for NA for leaflet maps and reverse color palette
         }
       } else {
-        if (col.rev == F) {
+        if (col.rev == FALSE) {
           lcol <- col
-        } else if (col.rev == T) {
+        } else if (col.rev == TRUE) {
           lcol <- rev(col) # Reverse color palette
         }
       }
     } else {
       if (map.type == "leaflet" & any(is.na(x[[2]]))) {
-        if (col.rev == F) {
+        if (col.rev == FALSE) {
           lcol <- crfun(length(cbrks)) # Add extra legend color for NA for leaflet maps
-        } else if (col.rev == T) {
+        } else if (col.rev == TRUE) {
           rev.col <- rev(crfun(length(cbrks))) # Add extra legend color for NA for leaflet maps, reverse color palette
           lcol <- rev.col[c(2:length(rev.col), 1)] # Reorder colors so that NA color is still last
         }
       } else {
-        if (col.rev == F) {
+        if (col.rev == FALSE) {
           lcol <- crfun(length(cbrks) - 1)
-        } else if (col.rev == T) {
+        } else if (col.rev == TRUE) {
           lcol <- rev(crfun(length(cbrks) - 1)) # Reverse color palette
         }
       }
@@ -413,7 +413,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     if (map.type == "default") {
       leg.fr.pos <- legend(legend.pos,
                            legend = rep(NA, length(cbrks) - 1),
-                           col = lcol, lty = 1, lwd = 14, bty = "n", title = legend.title, plot = F
+                           col = lcol, lty = 1, lwd = 14, bty = "n", title = legend.title, plot = FALSE
       )
       
       # legend width (fraction if 'add' is FALSE, otherwise already in map coordinates)
@@ -422,7 +422,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       if (length(leg.fr.pos$text$y) == 1) {
         te <- legend(legend.pos,
                      legend = rep(NA, length(cbrks)),
-                     col = ColQ(length(cbrks)), lty = 1, lwd = 14, bty = "n", title = legend.title, plot = F
+                     col = ColQ(length(cbrks)), lty = 1, lwd = 14, bty = "n", title = legend.title, plot = FALSE
         )
         legbx.fr.ht <- diff(c(te$text$y[length(cbrks)], te$text$y[length(cbrks) - 1]))
       } else {
@@ -494,7 +494,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       ## calculate coordinates for map positioning
       
       # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
-      if(sf::st_is_longlat(map) == F){
+      if(sf::st_is_longlat(map) == FALSE){
         bbx <- matrix(sf::st_bbox(map),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
         # map side ratio (h/w)
         msr <- apply(bbx, 1, diff)[2] / apply(bbx, 1, diff)[1]
@@ -503,7 +503,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       } else {
         bbx <- matrix(sf::st_bbox(map),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
         # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
-        par(new = T)
+        par(new = TRUE)
         # plot(SpatialPoints(coordinates(map), proj4string = CRS(proj4string(map))), col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
         plot(sf::st_geometry(sf::st_as_sf(map)), xlim = bbx[1, ], ylim = bbx[2, ])
         # create a map side ratio based on the device region in user coordinates and the map bounding box
@@ -609,7 +609,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       
       if (plot.scale) {
         if (sf::st_is_longlat(map)) {
-          warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = F' to remove it.")
+          warning("Scale bar meaningless with un-projected maps. Set 'plot.scale = FALSE' to remove it.")
         }
         if (!add) {
           ldistance <- signif(diff(bbx[1, ]) / 4, 0)
@@ -655,7 +655,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     } else if (map.type == "leaflet") {
       
       # Reproject if not a lat/long CRS
-      if(sf::st_is_longlat(x)==F){
+      if(sf::st_is_longlat(x)==FALSE){
         x <- x %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
       }
       
@@ -678,16 +678,16 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       
       # Create Leaflet Map
       message("Generating Map")
-      leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = T)) %>%
+      leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
         leaflet::addTiles() %>%
         leaflet::addLayersControl(
           baseGroups = c("Map", "Street", "Topo", "Satellite"),
           overlayGroups = c("Subbasins"),
-          options = leaflet::layersControlOptions(collapsed = F, autoIndex = T)
+          options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
         ) %>%
         leaflet.extras::addResetMapButton()
       
-      if (plot.label == T) { # Create polygons with labels
+      if (plot.label == TRUE) { # Create polygons with labels
         
         # Create labels
         x <- x %>%
@@ -719,22 +719,22 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       }
       
       # Add searchbar to map
-      if (plot.searchbar == T) {
+      if (plot.searchbar == TRUE) {
         leafmap <- leafmap %>%
           leaflet.extras::addSearchFeatures(
             targetGroups = "Subbasins",
-            options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
+            options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
           )
       }
       
       # Add scalebar to map
-      if (plot.scale == T) {
+      if (plot.scale == TRUE) {
         leafmap <- leafmap %>%
           leaflet::addScaleBar(position = "bottomright")
       }
       
       # Add legend to map
-      if (plot.legend == T) {
+      if (plot.legend == TRUE) {
         leafmap <- leafmap %>%
           leaflet::addLegend(
             group = "Subbasins",
@@ -758,13 +758,13 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       # Save Image
       if (!file == "") {
         message("Saving Image")
-        mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = F)
+        mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
       }
       
       # Save HTML
       if (!html.name == "") {
         message("Saving HTML")
-        htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
+        htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to working directory so selfcontained=T works
         file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
       }
       

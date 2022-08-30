@@ -38,4 +38,4 @@ INTERNAL.hype.vars <- toupper(c("temp","ctmp","snow","sdep","rswe","rsnw","soim"
                                 "c6AE", "c6TS", "c6T1", "c6T2"))
 
 
-usethis::use_data(INTERNAL.hype.vars, internal = T)
+usethis::use_data(INTERNAL.hype.vars, internal = TRUE)

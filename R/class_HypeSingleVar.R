@@ -137,7 +137,7 @@ HypeSingleVar <- function(x, datetime, subid = NULL, outregid = NULL, hype.var) 
 #' @export
 
 `[.HypeSingleVar` <- function(x, i = 1:dim(x)[1], j = 1:dim(x)[2], ...) {
-  y <- NextMethod("[", drop = F)
+  y <- NextMethod("[", drop = FALSE)
   print(names(attributes(y)))
   # add class names and other attributes, sub-set them where needed
   attributes(y) <- c(attributes(y), 

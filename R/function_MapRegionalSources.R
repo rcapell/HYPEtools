@@ -51,27 +51,27 @@
 #' @importFrom rlang .data
 #' @export
 
-MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, progbar = F, map.type = "default",
+MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, progbar = FALSE, map.type = "default",
                                plot.scale = TRUE, plot.searchbar = FALSE, weight = 0.5, opacity = 1, fillColor = "#4d4d4d",
                                fillOpacity = 0.25, line.weight = 5, line.opacity = 1, font.size = 10, file = "",
                                vwidth = 1424, vheight = 1000, html.name = "") {
 
   # Check/Load Dependencies for mapping features - do this here so that these packages are not required for the base HYPEtools installation
   if (map.type == "default" & !all(
-    requireNamespace("sf", quietly = T)
+    requireNamespace("sf", quietly = TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop("To use this function, please ensure that the following packages are installed: sf", call. = F)
+    stop("To use this function, please ensure that the following packages are installed: sf", call. = FALSE)
   } else if (map.type == "leaflet" & !all(
-    requireNamespace("sf", quietly = T),
-    requireNamespace("leaflet", quietly = T),
-    requireNamespace("leaflet.extras", quietly = T),
-    requireNamespace("mapview", quietly = T),
-    requireNamespace("htmlwidgets", quietly = T),
-    requireNamespace("randomcoloR", quietly = T)
+    requireNamespace("sf", quietly = TRUE),
+    requireNamespace("leaflet", quietly = TRUE),
+    requireNamespace("leaflet.extras", quietly = TRUE),
+    requireNamespace("mapview", quietly = TRUE),
+    requireNamespace("htmlwidgets", quietly = TRUE),
+    requireNamespace("randomcoloR", quietly = TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop("To use this function, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets, randomcoloR", call. = F)
+    stop("To use this function, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets, randomcoloR", call. = FALSE)
 
     # Perform function
   } else {
@@ -117,7 +117,7 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
 
     # Add a column to hold connection lengths,
     rcb <- data.frame(rcb, 0)
-    length_column <- paste("Length", sf::st_crs(map, parameters = T)$units_gdal, sep = "_") # Get units of CRS
+    length_column <- paste("Length", sf::st_crs(map, parameters = TRUE)$units_gdal, sep = "_") # Get units of CRS
     names(rcb)[3] <- length_column
 
     # Create data frame to store point coordinates
@@ -165,12 +165,12 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
       message("Creating Map")
 
       # Create map
-      leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = T)) %>%
+      leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
         leaflet::addTiles() %>%
         leaflet::addLayersControl(
           baseGroups = c("Map", "Street", "Topo", "Satellite"),
           overlayGroups = c("Connections", "Subbasins", "Labels"),
-          options = leaflet::layersControlOptions(collapsed = F, autoIndex = T)
+          options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
         ) %>%
         leaflet.extras::addResetMapButton()
 
@@ -181,7 +181,7 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
       if (exists("map_original")) {
 
         # Reproject if not a lat/long CRS
-        if (sf::st_is_longlat(map_original) == F) {
+        if (sf::st_is_longlat(map_original) == FALSE) {
           map_original <- map_original %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
         }
 
@@ -196,15 +196,15 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
             fillColor = fillColor,
             fillOpacity = fillOpacity,
             label = map_original[[map.subid.name]], # Add label so searchbar will work
-            labelOptions = leaflet::labelOptions(noHide = T, textOnly = T, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
+            labelOptions = leaflet::labelOptions(noHide = TRUE, textOnly = TRUE, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
           )
       }
 
       # Reproject if not a lat/long CRS
-      if (sf::st_is_longlat(map) == F) {
+      if (sf::st_is_longlat(map) == FALSE) {
         map <- map %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
       }
-      if (sf::st_is_longlat(condata) == F) {
+      if (sf::st_is_longlat(condata) == FALSE) {
         condata <- condata %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
       }
 
@@ -215,7 +215,7 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
           group = "Labels",
           data = suppressWarnings(sf::st_point_on_surface(label_data)),
           label = label_data[[map.subid.name]],
-          labelOptions = leaflet::labelOptions(noHide = T, direction = "auto", textOnly = T, style = list("font-size" = paste0(font.size, "px")))
+          labelOptions = leaflet::labelOptions(noHide = TRUE, direction = "auto", textOnly = TRUE, style = list("font-size" = paste0(font.size, "px")))
         )
 
       # Create function to get colors for polylines
@@ -254,16 +254,16 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
       }
 
       # Add searchbar to map
-      if (plot.searchbar == T) {
+      if (plot.searchbar == TRUE) {
         leafmap <- leafmap %>%
           leaflet.extras::addSearchFeatures(
             targetGroups = c("Subbasins", "Connections"),
-            options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
+            options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
           )
       }
 
       # Add scalebar to map
-      if (plot.scale == T) {
+      if (plot.scale == TRUE) {
         leafmap <- leafmap %>%
           leaflet::addScaleBar(position = "bottomright")
       }
@@ -279,13 +279,13 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
       # Save Image
       if (!file == "") {
         message("Saving Image")
-        mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = F)
+        mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
       }
 
       # Save HTML
       if (!html.name == "") {
         message("Saving HTML")
-        htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
+        htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to working directory so selfcontained=T works
         file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
       }
 

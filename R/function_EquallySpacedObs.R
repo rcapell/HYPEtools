@@ -61,7 +61,7 @@ EquallySpacedObs <- function(x, sort.data = TRUE, timestep, ts.col = 1) {
   y <- data.frame(date = seq(min(x[, ts.col]), max(x[, ts.col]), by = timestep))
   
   # merge x and y to create daily result
-  res <- merge(x, y, by.x = ts.col, by.y = 1, all.y = T)
+  res <- merge(x, y, by.x = ts.col, by.y = 1, all.y = TRUE)
   
   # add additional hype attributes of x to result, if any
   if (length(attributes(x)[-which(names(attributes(x)) %in% c("names", "row.names", "class"))]) > 0) {

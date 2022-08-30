@@ -33,7 +33,7 @@ NULL
 #' @rdname VariableLookup
 VariableInfo <- function(variable, info = "Name") {
   result <- INTERNAL.hype.vars.info %>%
-    filter(str_detect(.$ID, fixed(variable, ignore_case = T))) %>% # Search Variable IDs, Ignore Case
+    filter(str_detect(.$ID, fixed(variable, ignore_case = TRUE))) %>% # Search Variable IDs, Ignore Case
     select(info) %>% # Subset to info Columns
     as.list()
 
@@ -46,7 +46,7 @@ VariableInfo <- function(variable, info = "Name") {
 }
 
 #' @rdname VariableLookup
-VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description", "Aggregation", "Component"), ignore_case = T) {
+VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description", "Aggregation", "Component"), ignore_case = TRUE) {
   result <- INTERNAL.hype.vars.info %>%
     filter(if_any(info, ~ str_detect(., fixed(search, ignore_case = ignore_case))))
   return(result)

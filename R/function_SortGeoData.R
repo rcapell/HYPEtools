@@ -68,7 +68,7 @@ SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {
     bd.outlets$osbd.branch <- sapply(ibd$BRANCHID, function(x, y) {ifelse(x %in% y[, 1], rev(AllDownstreamSubids(subid = x, gd = y))[1], 0)}, y = igd)
     
     # identify and remove rows where maindown and branch outlets are the same (which means that the branch is a "shortcut" within a basin)
-    bd.outlets <- bd.outlets[ifelse(bd.outlets$osbd.main == bd.outlets$osbd.branch, F, T), ]
+    bd.outlets <- bd.outlets[ifelse(bd.outlets$osbd.main == bd.outlets$osbd.branch, FALSE, TRUE), ]
     
     # identify and remove rows with branches to outside domain (e.g. karstic sinks)
     bd.outlets <- bd.outlets[which(bd.outlets$osbd.branch != 0), ]

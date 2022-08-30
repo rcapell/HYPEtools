@@ -168,7 +168,7 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   # conditional on if obs is provided by user
   if (!is.null(x.obs)) {
     reg.obs <- na.omit(x.obs)
-    reg.obs <- tapply(reg.obs[, 2], format(reg.obs[, 1], format = "%m"), c, simplify = F)
+    reg.obs <- tapply(reg.obs[, 2], format(reg.obs[, 1], format = "%m"), c, simplify = FALSE)
     # create sorting vector to match start.mon
     if (start.mon == 1) {
       sort.mon <- 1:12
@@ -200,9 +200,9 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   
   # set up the plot region, but do not plot yet. Background grid will be plotted first
   if (!is.null(sim)) {
-    plot(reg.sim$mean[, c(1, 3)], axes = F, type = "n", ylab = ylab, xlab = xlab, ylim = ylim, log = lg)
+    plot(reg.sim$mean[, c(1, 3)], axes = FALSE, type = "n", ylab = ylab, xlab = xlab, ylim = ylim, log = lg)
   } else {
-    plot(reg.obs.date, sapply(reg.obs, mean), axes = F, type = "n", ylab = ylab, xlab = xlab, ylim = ylim, log = lg)
+    plot(reg.obs.date, sapply(reg.obs, mean), axes = FALSE, type = "n", ylab = ylab, xlab = xlab, ylim = ylim, log = lg)
   }
   
   # plot background grid
@@ -229,11 +229,11 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
   
   # plot observation box plots, if obs was provided by user
   if (!is.null(obs)) {
-    boxplot(reg.obs, at = reg.obs.date, add = T, boxwex = 1600000, show.names = F, axes = F, outpch = 20, outcol = .makeTransparent("black", 150), 
+    boxplot(reg.obs, at = reg.obs.date, add = TRUE, boxwex = 1600000, show.names = FALSE, axes = FALSE, outpch = 20, outcol = .makeTransparent("black", 150), 
             col = .makeTransparent("grey30", 60), log = lg)
     # obs counts
     text(x = reg.obs.date, y = ylim[1], as.character(sapply(reg.obs, function(x) length(na.omit(x)))), adj = c(.5, .9), cex = .75, font = 3, col = "grey50")
-    text(x = par("usr")[1] - diff(par("usr")[1:2])/25, y = ylim[1], "n obs.", adj = c(1, .9), cex = .75, font = 3, xpd = T, col = "grey50")
+    text(x = par("usr")[1] - diff(par("usr")[1:2])/25, y = ylim[1], "n obs.", adj = c(1, .9), cex = .75, font = 3, xpd = TRUE, col = "grey50")
     # add mean and median lines
     obs.mm <- data.frame(reg.obs.date, sapply(reg.obs, mean), sapply(reg.obs, median))
     obs.mm <- na.omit(obs.mm)

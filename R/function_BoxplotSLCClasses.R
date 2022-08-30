@@ -58,8 +58,8 @@
 #' @importFrom graphics par boxplot mtext points legend
 #' @export
 
-BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = F, log = "", ylim = NULL, 
-                             range = 0, mar = c(3,3,1,7)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = T) {
+BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL, lab.legend = NULL, pos.legend = 1, abs.area = FALSE, log = "", ylim = NULL, 
+                             range = 0, mar = c(3,3,1,7)+.1, mgp = c(1.5, .2, 0), tcl = .1, xaxs = "i", xpd = TRUE) {
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
@@ -96,7 +96,7 @@ BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL
   }
   
   # input data check: search negative area fractions and throw error if found
-  if (min(slc, na.rm = T) < 0) {
+  if (min(slc, na.rm = TRUE) < 0) {
     stop("Negative SLC class fraction(s) in 'gd'.")
   }
    
@@ -162,10 +162,10 @@ BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL
   # conditional: y-axis limits
   if (is.null(ylim)) {
     if (log == "y"){
-      ylimit <- c(10^floor(log10(min(slc, na.rm = T))), 10^ceiling(log10(max(slc, na.rm = T))))
+      ylimit <- c(10^floor(log10(min(slc, na.rm = TRUE))), 10^ceiling(log10(max(slc, na.rm = TRUE))))
     } else {
       # find pretty max limit for non-logscaled y-axis
-      mx <- round(max(slc, na.rm = T))
+      mx <- round(max(slc, na.rm = TRUE))
       mx <- ceiling(mx * 10^-(nchar(mx) - 2)) * 10^(nchar(mx) - 2)
       ylimit <- c(0, mx)
     }

@@ -13,21 +13,21 @@
 \alias{WriteForcKey}
 \title{Write HYPE data files}
 \usage{
-WriteAquiferData(x, filename = "AquiferData.txt", verbose = T)
+WriteAquiferData(x, filename = "AquiferData.txt", verbose = TRUE)
 
-WriteOutregions(x, filename = "Outregions.txt", verbose = T)
+WriteOutregions(x, filename = "Outregions.txt", verbose = TRUE)
 
-WriteBranchData(x, filename = "BranchData.txt", verbose = T)
+WriteBranchData(x, filename = "BranchData.txt", verbose = TRUE)
 
-WriteCropData(x, filename = "CropData.txt", verbose = T)
+WriteCropData(x, filename = "CropData.txt", verbose = TRUE)
 
-WriteDamData(x, filename = "DamData.txt", verbose = T)
+WriteDamData(x, filename = "DamData.txt", verbose = TRUE)
 
-WriteLakeData(x, filename = "LakeData.txt", verbose = T)
+WriteLakeData(x, filename = "LakeData.txt", verbose = TRUE)
 
-WriteMgmtData(x, filename = "MgmtData.txt", verbose = T)
+WriteMgmtData(x, filename = "MgmtData.txt", verbose = TRUE)
 
-WritePointSourceData(x, filename = "PointSourceData.txt", verbose = T)
+WritePointSourceData(x, filename = "PointSourceData.txt", verbose = TRUE)
 
 WriteForcKey(x, filename = "ForcKey.txt")
 }

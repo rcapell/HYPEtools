@@ -31,7 +31,7 @@
 #' @importFrom pbapply pblapply
 
 
-UpstreamPointSources <- function(subid = NULL, gd, psd, bd = NULL, signif.digits = 4, progbar = T) {
+UpstreamPointSources <- function(subid = NULL, gd, psd, bd = NULL, signif.digits = 4, progbar = TRUE) {
   
   # extract relevant column positions in gd and psd
   gd.sbd <- which(toupper(names(gd)) == "SUBID")

@@ -50,15 +50,15 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
   # Check/Load Dependencies - do this here so that these packages are not required for the base HYPEtools installation
   if (!all(
-    requireNamespace("sf", quietly = T),
-    requireNamespace("leaflet", quietly = T),
-    requireNamespace("leaflet.extras", quietly = T),
-    requireNamespace("mapview", quietly = T),
-    requireNamespace("htmlwidgets", quietly = T),
-    requireNamespace("randomcoloR", quietly = T)
+    requireNamespace("sf", quietly = TRUE),
+    requireNamespace("leaflet", quietly = TRUE),
+    requireNamespace("leaflet.extras", quietly = TRUE),
+    requireNamespace("mapview", quietly = TRUE),
+    requireNamespace("htmlwidgets", quietly = TRUE),
+    requireNamespace("randomcoloR", quietly = TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop("To use this function, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets, randomcoloR", call.=F)
+    stop("To use this function, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets, randomcoloR", call.=FALSE)
 
     # Perform function
   } else {
@@ -70,7 +70,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     }
 
     # Reproject if not a lat/long CRS
-    if (sf::st_is_longlat(map) == F) {
+    if (sf::st_is_longlat(map) == FALSE) {
       map <- map %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
     }
 
@@ -125,7 +125,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       } else {
         sf::st_sfc(sf::st_point(c(0, 0))) # Assign Point 0,0 and remove later
       }
-    }), recursive = F))
+    }), recursive = FALSE))
 
     # Get Downstream Subbasin Points for Branches
     if (!is.null(bd)) {
@@ -157,12 +157,12 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
     # Create Leaflet Plot
     message("Creating Map")
-    leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = T)) %>%
+    leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
       leaflet::addTiles() %>%
       leaflet::addLayersControl(
         baseGroups = c("Map", "Street", "Topo", "Satellite"),
         overlayGroups = c("Routing", "Subbasins"),
-        options = leaflet::layersControlOptions(collapsed = F, autoIndex = T)
+        options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
       ) %>%
       leaflet.extras::addResetMapButton() %>%
       leaflet::addPolygons(
@@ -174,13 +174,13 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
         fillColor = fillColor,
         fillOpacity = fillOpacity,
         label = paste(map[, map.subid.name]), # Add label so searchbar will work
-        labelOptions = leaflet::labelOptions(noHide = T, textOnly = T, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
+        labelOptions = leaflet::labelOptions(noHide = TRUE, textOnly = TRUE, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
       ) %>%
       leaflet::addLabelOnlyMarkers(
         group = "Subbasins",
         data = suppressWarnings(sf::st_point_on_surface(map)),
         label = map[[map.subid.name]],
-        labelOptions = leaflet::labelOptions(noHide = T, direction = "auto", textOnly = T, style = list("font-size" = paste0(font.size, "px")))
+        labelOptions = leaflet::labelOptions(noHide = TRUE, direction = "auto", textOnly = TRUE, style = list("font-size" = paste0(font.size, "px")))
       )
 
     # Create function to get colors for polylines
@@ -219,16 +219,16 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     }
 
     # Add searchbar to map
-    if (plot.searchbar == T) {
+    if (plot.searchbar == TRUE) {
       leafmap <- leafmap %>%
         leaflet.extras::addSearchFeatures(
           targetGroups = "Subbasins",
-          options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = T)
+          options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
         )
     }
 
     # Add scalebar to map
-    if (plot.scale == T) {
+    if (plot.scale == TRUE) {
       leafmap <- leafmap %>%
         leaflet::addScaleBar(position = "bottomright")
     }
@@ -244,13 +244,13 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     # Save Image
     if (!file == "") {
       message("Saving Image")
-      mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = F)
+      mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
     }
 
     # Save HTML
     if (!html.name == "") {
       message("Saving HTML")
-      htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = T) # Save HTML file to working directory so selfcontained=T works
+      htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to working directory so selfcontained=T works
       file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
     }
 

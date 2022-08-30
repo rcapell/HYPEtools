@@ -79,7 +79,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
   close(gf)
   
   # read in the data in the file, skipping the comments and header
-  x <- fread(filename, header = FALSE, skip = skip, fill = T, data.table = FALSE, encoding = encoding)
+  x <- fread(filename, header = FALSE, skip = skip, fill = TRUE, data.table = FALSE, encoding = encoding)
   
   ## identify number of soil layers in the file
   
@@ -212,9 +212,9 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
   # handling output type user choice
   type <- match.arg(type)
   if (type == "df") {
-    d.t <- F
+    d.t <- FALSE
   } else {
-    d.t <- T
+    d.t <- TRUE
   }
   
   # check if metadata comment row exists
@@ -234,14 +234,14 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", 
                             "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             skip = 2 + mc, sep = "\t", header = F, data.table = d.t, colClasses = c("character", rep("numeric", length(nm) - 1)))      
+             skip = 2 + mc, sep = "\t", header = FALSE, data.table = d.t, colClasses = c("character", rep("numeric", length(nm) - 1)))      
   
   # check if results are region outputs and update header with HYPE variable names
   if (all(substr(nm[-1], 1, 2) == "RG")) {
-    reg.out <- T
+    reg.out <- TRUE
     nm[-1] <- substr(nm[-1], 3, 100)
   } else {
-    reg.out <- F
+    reg.out <- FALSE
   }
   
   names(x) <- nm
@@ -361,7 +361,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     ## HypeMultiVar formatting
     hvar <- toupper(names(x)[-1])
     # remove dates
-    x <- x[, !"DATE", with = F]
+    x <- x[, !"DATE", with = FALSE]
     # convert to array (straigtht conversion to array gives error, therefore intermediate matrix)
     x <- as.array(as.matrix(x))
     # adding 'iteration' dimension
@@ -480,8 +480,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
   }
   
   # read the data, skip header and comment rows, force numeric data (automatic column classes can be integer)
-  xobs <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = F, data.table = F, nrows = nrows, 
-                colClasses = list(character = 1, numeric = 2:ncl), select = sel, fill = T)
+  xobs <- fread(filename,  na.strings = "-9999", skip = 3, sep = "\t", header = FALSE, data.table = FALSE, nrows = nrows, 
+                colClasses = list(character = 1, numeric = 2:ncl), select = sel, fill = TRUE)
   
   # update header, composite of variable and subid
   names(xobs) <- c("DATE", paste(hype.var, sbd, sep = "_"))
@@ -568,7 +568,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' @export
 
 
-ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unknown", "UTF-8", "Latin-1"), remove.na.cols = T) {
+ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unknown", "UTF-8", "Latin-1"), remove.na.cols = TRUE) {
   
   # argument checks
   encoding <- match.arg(encoding)
@@ -578,7 +578,7 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
   cnames <- strsplit(readLines(con = filename, n = 1), split = sep)[[1]]
   cnumeric <- which(toupper(cnames) %in% c("AREA", "RIVLEN"))
   
-  res <- fread(filename, header = T, sep = sep, colClasses = list("numeric" = cnumeric), data.table = F, encoding = encoding, fill = T)
+  res <- fread(filename, header = TRUE, sep = sep, colClasses = list("numeric" = cnumeric), data.table = FALSE, encoding = encoding, fill = TRUE)
   names(res) <- toupper(names(res))
   
   # remove columns with all NA
@@ -699,7 +699,7 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
   
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read par file into a character vector (one string per row in file)
-  x <- scan(filename, what = "", sep = "\n", quiet = T, encoding = encoding)
+  x <- scan(filename, what = "", sep = "\n", quiet = TRUE, encoding = encoding)
     # insert blank after comment character, to make sure they get split for comment identification below
   x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
   # split string elements along whitespaces, returns list of character vectors
@@ -809,14 +809,14 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
   # input argument checks
   type <- match.arg(type)
   if (type == "df") {
-    d.t <- F
+    d.t <- FALSE
   } else {
-    d.t <- T
+    d.t <- TRUE
   }
   
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             skip = 2, sep = ",", header = F, data.table = d.t)
+             skip = 2, sep = ",", header = FALSE, data.table = d.t)
   
   
   # read hype.var from filename, if not provided by user
@@ -894,7 +894,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
     ## HypeSingleVar formatting
     # copy and remove subids
     sbd <- x[["SUBID"]]
-    x <- x[, !"SUBID", with = F]
+    x <- x[, !"SUBID", with = FALSE]
     # transpose and convert to array (straigtht conversion to array gives error, therefore intermediate matrix)
     x <- transpose(x)
     x <- as.array(as.matrix(x))
@@ -987,14 +987,14 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' @export
 
 ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, out.reg = NULL, type = c("df", "dt", "hsv"), 
-                           select = NULL, id = NULL, nrows = -1L, skip = 0L, warn.nan = FALSE, verbose = T) {
+                           select = NULL, id = NULL, nrows = -1L, skip = 0L, warn.nan = FALSE, verbose = TRUE) {
   
   # check file type to import
   ftype <- tolower(substr(filename, nchar(filename) - 2, nchar(filename)))
   if (ftype == "txt") {
-    nc <- F
+    nc <- FALSE
   } else if (ftype == ".nc") {
-    nc <- T
+    nc <- TRUE
   } else {
     stop("Unknown file extension. Accepted file types are standard HYPE text files (*.txt), or netcdf 
          files following the HYPE standard (*.nc).")
@@ -1008,9 +1008,9 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
   # handling output type user choice
   type <- match.arg(type)
   if (type == "df") {
-    d.t <- F
+    d.t <- FALSE
   } else {
-    d.t <- T
+    d.t <- TRUE
   }
   
   
@@ -1042,7 +1042,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     # import id dimension
     # FUTURE DEV: ADD IDENTIFICATION OF OTHER ID TYPES, EG REGIONAL ID
     sbd <- as.numeric(ncvar_get(nc = ncf, "id"))
-    out.reg <- F
+    out.reg <- FALSE
     
     # global metadata, CURRENTLY JUST SAVED AS COMMENT, SHOULD BE DIGESTED IN FUTURE DEVELOPMENT
     gmdata <- ncatt_get(ncf, varid = 0)
@@ -1129,11 +1129,11 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
       select <- 1:(length(sbd) + 1)
     }
     
-    # read.table(filename, header = T, na.strings = "-9999", skip = 1)      
+    # read.table(filename, header = TRUE, na.strings = "-9999", skip = 1)      
     x <- fread(filename, 
                na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", 
                               "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-               skip = 2 + skip, sep = "\t", header = F, data.table = d.t, select = select, nrows = nrows)
+               skip = 2 + skip, sep = "\t", header = FALSE, data.table = d.t, select = select, nrows = nrows)
     
     
     # read hype.var from filename, if not provided by user
@@ -1155,31 +1155,31 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
           
           # exists as is, normal SUBID results
           hype.var <- te
-          out.reg <- F
+          out.reg <- FALSE
           
         } else if (substr(te, 1, 6) %in% INTERNAL.hype.vars) {
           
           # exists, normal SUBID results
           hype.var <- substr(te, 1, 6)
-          out.reg <- F
+          out.reg <- FALSE
         }
         else if (substr(te, 1, 4) %in% INTERNAL.hype.vars) {
           
           # exists, normal SUBID results
           hype.var <- substr(te, 1, 4)
-          out.reg <- F
+          out.reg <- FALSE
         }
         else if (substr(te, 3, 8) %in% INTERNAL.hype.vars) {
           
           # exists, is a regional variable
           hype.var <- substr(te, 3, 8)
-          out.reg <- T
+          out.reg <- TRUE
         }
         else if (substr(te, 3, 6) %in% INTERNAL.hype.vars) {
           
           # exists, is a regional variable
           hype.var <- substr(te, 3, 6)
-          out.reg <- T
+          out.reg <- TRUE
         } else {
           
           stop("Could not extract HYPE variable ID from filename, please provide arguments 'hype.var' and 'out.reg'.")
@@ -1317,7 +1317,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
   } else {
     ## HypeSingleVar formatting
     # remove dates
-    x <- x[, !"DATE", with = F]
+    x <- x[, !"DATE", with = FALSE]
     # convert to array (straight conversion to array gives error, therefore intermediate matrix)
     x <- as.array(as.matrix(x))
     # adding 'iteration' dimension
@@ -1463,9 +1463,9 @@ ReadObs <- function(filename, variable = "",
   # handling output type user choice
   type <- match.arg(type)
   if (type == "df") {
-    d.t <- F
+    d.t <- FALSE
   } else {
-    d.t <- T
+    d.t <- TRUE
   }
   
   ## import file header, extract obsid attribute
@@ -1509,7 +1509,7 @@ ReadObs <- function(filename, variable = "",
   # import file
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             sep = "\t", header = T, data.table = d.t, nrows = nrows, select = select, colClasses = cC, check.names = T)
+             sep = "\t", header = TRUE, data.table = d.t, nrows = nrows, select = select, colClasses = cC, check.names = TRUE)
   
   # date(time) conversion
   xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "UTC")
@@ -1525,7 +1525,7 @@ ReadObs <- function(filename, variable = "",
   obsid(x) <- sbd
   
   # conditional: timestep attribute identified by difference between first two rows
-  tdff <- as.numeric(difftime(x[2,grep("DATE",colnames(x),ignore.case = T,value=T)], x[1,grep("DATE",colnames(x),ignore.case = T,value=T)], units = "hours"))
+  tdff <- as.numeric(difftime(x[2,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)], x[1,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)], units = "hours"))
 
   if (!is.na(tdff)) {
     if (tdff == 24) {
@@ -1610,8 +1610,8 @@ NULL
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
-ReadAquiferData <- function(filename = "AquiferData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                            stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+ReadAquiferData <- function(filename = "AquiferData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                            stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1628,8 +1628,8 @@ ReadAquiferData <- function(filename = "AquiferData.txt", verbose = T, header = 
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
-ReadOutregions <- function(filename = "Outregions.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                            stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+ReadOutregions <- function(filename = "Outregions.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                            stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1643,8 +1643,8 @@ ReadOutregions <- function(filename = "Outregions.txt", verbose = T, header = T,
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
-ReadBranchData <- function(filename = "BranchData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                           stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+ReadBranchData <- function(filename = "BranchData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                           stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1660,8 +1660,8 @@ ReadBranchData <- function(filename = "BranchData.txt", verbose = T, header = T,
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
-ReadCropData <- function(filename = "CropData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                         stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+ReadCropData <- function(filename = "CropData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                         stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1677,8 +1677,8 @@ ReadCropData <- function(filename = "CropData.txt", verbose = T, header = T, na.
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
-ReadDamData <- function(filename = "DamData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                        quote = "", stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+ReadDamData <- function(filename = "DamData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                        quote = "", stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1694,8 +1694,8 @@ ReadDamData <- function(filename = "DamData.txt", verbose = T, header = T, na.st
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
-ReadGlacierData <- function(filename = "GlacierData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                            stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+ReadGlacierData <- function(filename = "GlacierData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                            stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1711,8 +1711,8 @@ ReadGlacierData <- function(filename = "GlacierData.txt", verbose = T, header = 
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
-ReadLakeData <- function(filename = "LakeData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                         quote = "", stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+ReadLakeData <- function(filename = "LakeData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                         quote = "", stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1728,8 +1728,8 @@ ReadLakeData <- function(filename = "LakeData.txt", verbose = T, header = T, na.
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
-ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                         stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+ReadMgmtData <- function(filename = "MgmtData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                         stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1746,8 +1746,8 @@ ReadMgmtData <- function(filename = "MgmtData.txt", verbose = T, header = T, na.
 #' @rdname HypeDataImport
 #' @importFrom data.table fread
 #' @export
-ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, header = T, na.strings = "-9999", sep = "\t", 
-                                stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), data.table = F, ...) {
+ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                                stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), data.table = FALSE, ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1767,7 +1767,7 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = T, h
 #' @importFrom utils read.table
 #' @export
 ReadAllsim <- function(filename = "allsim.txt", na.strings="-9999") {
-  read.table(file = filename, header = T, sep = ",", na.strings = na.strings)
+  read.table(file = filename, header = TRUE, sep = ",", na.strings = na.strings)
 }
 
 #' @rdname HypeDataImport
@@ -1778,14 +1778,14 @@ ReadForcKey <- function(filename = "ForcKey.txt", sep = "\t", encoding = c("unkn
   # argument checks
   encoding <- match.arg(encoding)
   
-  read.table(file = filename, header = T, sep = sep, encoding = encoding)
+  read.table(file = filename, header = TRUE, sep = sep, encoding = encoding)
 }
 
 #' @rdname HypeDataImport
 #' @importFrom data.table fread
 #' @export
-ReadUpdate <- function(filename = "update.txt", header = T, sep = "\t", 
-                                stringsAsFactors = F, encoding = c("unknown", "latin1", "UTF-8"), data.table = F, ...) {
+ReadUpdate <- function(filename = "update.txt", header = TRUE, sep = "\t", 
+                                stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), data.table = FALSE, ...) {
   # argument checks
   encoding <- match.arg(encoding)
   
@@ -1832,7 +1832,7 @@ ReadUpdate <- function(filename = "update.txt", header = T, sep = "\t",
 #' @export
 
 ReadPmsf <- function(filename = "pmsf.txt") {
-  x <- read.table(filename, header = T)
+  x <- read.table(filename, header = TRUE)
   x <- as.integer(x[, 1])
   return(x)
 }
@@ -1962,7 +1962,7 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 
 
 ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FALSE) {
-  x <- read.table(file = filename, header = F, sep = "\t", skip = 2)
+  x <- read.table(file = filename, header = FALSE, sep = "\t", skip = 2)
   te <- readLines(filename, n = 2)
   names(x) <- strsplit(te[2], split = "\t")[[1]]
   # extract additional information from first row in file and add as attributes
@@ -2079,11 +2079,11 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
   
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read description file into a character vector (one string per row in file)
-  x <- scan(file = filename, what = "", sep = "\n", quiet = T, encoding = encoding)
+  x <- scan(file = filename, what = "", sep = "\n", quiet = TRUE, encoding = encoding)
   # split string elements along semicolons, returns list of character vectors
-  x <- strsplit(enc2utf8(x), split = ";", useBytes = F)
+  x <- strsplit(enc2utf8(x), split = ";", useBytes = FALSE)
   # remove empty strings (excel export artefacts)
-  x <- sapply(x, function(x) {te <- nchar(x);te <- ifelse(te == 0, F, T);x[te]})
+  x <- sapply(x, function(x) {te <- nchar(x);te <- ifelse(te == 0, FALSE, TRUE);x[te]})
   # create result list, assign names
   res <- x[c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22)]
   names(res) <- c("Name", "Version", "lu.id", "Landuse", "lu", "so.id", "Soil", "so", "cr.id", "Crop", "cr")
@@ -2189,7 +2189,7 @@ ReadSimass <- function(filename = "simass.txt") {
   }
   
   # import data content
-  te <- read.table(file = filename, sep = ":", fill = T, skip = n.head, header = F, stringsAsFactors = F, blank.lines.skip = F)
+  te <- read.table(file = filename, sep = ":", fill = TRUE, skip = n.head, header = FALSE, stringsAsFactors = FALSE, blank.lines.skip = FALSE)
 
 
   # calculate number of performance measures and variable pairs for which performance measures are present (different numbers of 
@@ -2207,7 +2207,7 @@ ReadSimass <- function(filename = "simass.txt") {
   # transpose along the way to get column-wise performances (comparable to subass tables)
   res <- data.frame(t(matrix(unlist(tapply(te[, 2], rep(1:n.var, each = n.perf), 
                                          function(x) {te <- as.numeric(c(x[3:(n.perf - 1)])); ifelse(te == -9999, NA, te)})), 
-                           nrow = n.perf - 3, byrow = F)))
+                           nrow = n.perf - 3, byrow = FALSE)))
   
   # look-up table for short performance measure names used as column names
   lookup.perf <- data.frame( long = c("Regional NSE", "Regional RA", "Regional RE", "Regional MAE", "Average NSE", "Average RA", 
@@ -2267,7 +2267,7 @@ ReadSimass <- function(filename = "simass.txt") {
   # simulated and observed HYPE variables
   
   hvar <- strsplit(gsub(pattern = "^ *", replacement = "", te[, 2][seq(from = 1, length.out = n.var, by = n.perf)]), ", ")
-  hvar <- matrix(toupper(unlist(hvar)), ncol = 2, byrow = T)
+  hvar <- matrix(toupper(unlist(hvar)), ncol = 2, byrow = TRUE)
   res <- cbind(VAR.OBS = hvar[, 1], VAR.SIM = hvar[, 2], res)
   nm.long <- c("Observed variable", "Simulated variable", nm.long)
   
@@ -2348,7 +2348,7 @@ ReadInfo <- function(filename = "info.txt", encoding = c("unknown", "UTF-8", "la
   
   ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
   # read par file into a character vector (one string per row in file)
-  x <- scan(filename, what = "", sep = "\n", quiet = T, encoding = encoding)
+  x <- scan(filename, what = "", sep = "\n", quiet = TRUE, encoding = encoding)
   # insert blank after comment character, to make sure they get split for comment identification below
   x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
   # split string elements along whitespaces, returns list of character vectors

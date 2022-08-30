@@ -204,7 +204,7 @@ OutletNearObs <- function(gd, file.qobs = NULL, file.xobs = NULL, variable = NUL
     res <- res[res$area.fraction >= frac.drain, ]
     
     # order results by outlet subid and area fraction (decreasing)
-    res <- res[order(res$subid.outlet, res$area.fraction, decreasing = T), ]
+    res <- res[order(res$subid.outlet, res$area.fraction, decreasing = TRUE), ]
     
     # conditional, keep only obs sites nearest to outlet
     if (nearest.only) {

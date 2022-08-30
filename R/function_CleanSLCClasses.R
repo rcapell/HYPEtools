@@ -89,7 +89,7 @@
 #' @export
 
 CleanSLCClasses <- function (gd, gcl, m1.file = NULL, m1.class = "s", m1.clean = rep(TRUE, 2), m1.precedence = rep(TRUE, 2), 
-                            m2.frac = NULL, m2.abs = NULL, signif.digits = 3, verbose = T, progbar = T) {
+                            m2.frac = NULL, m2.abs = NULL, signif.digits = 3, verbose = TRUE, progbar = TRUE) {
   
   
   
@@ -136,7 +136,7 @@ CleanSLCClasses <- function (gd, gcl, m1.file = NULL, m1.class = "s", m1.clean =
   if (!is.null(m1.file)) {
     
     # import transfer tables as data frame 
-    transfer.classes <- tryCatch(read.table(m1.file, as.is = T, header = F, colClasses = rep("numeric", 100), fill = T, col.names = paste0("V", 1:100)), 
+    transfer.classes <- tryCatch(read.table(m1.file, as.is = TRUE, header = FALSE, colClasses = rep("numeric", 100), fill = TRUE, col.names = paste0("V", 1:100)), 
                                  error = function(e) {print("Class transfer table import failed.")})
     transfer.classes <- transfer.classes[, !apply(transfer.classes, 2, function(x) all(is.na(x)))]
     
@@ -161,12 +161,12 @@ CleanSLCClasses <- function (gd, gcl, m1.file = NULL, m1.class = "s", m1.clean =
     # Table with indices over thresholds for cleanable slc classes
     # Conditional: depending on land use or soil transfer classification
     if (m1.class == "s" || m1.class == "soil") {
-      ind.thr <- merge(gcl[, c(1:3)], transfer.classes[, 1:3], by.x = 3, by.y = 1, all.x = F, all.y = F, sort = F)
+      ind.thr <- merge(gcl[, c(1:3)], transfer.classes[, 1:3], by.x = 3, by.y = 1, all.x = FALSE, all.y = FALSE, sort = FALSE)
       # sort on SLC column
       ind.thr <- ind.thr[order(ind.thr[,2]), ]
     }
     if (m1.class == "l" || m1.class == "landuse") {
-      ind.thr <- merge(gcl[, c(1:3)], transfer.classes[, 1:3], by.x = 2, by.y = 1, all.x = F, all.y = F, sort = F)
+      ind.thr <- merge(gcl[, c(1:3)], transfer.classes[, 1:3], by.x = 2, by.y = 1, all.x = FALSE, all.y = FALSE, sort = FALSE)
       # sort on SLC column
       ind.thr <- ind.thr[order(ind.thr[,2]), ]
     }
@@ -368,7 +368,7 @@ CleanSLCClasses <- function (gd, gcl, m1.file = NULL, m1.class = "s", m1.clean =
       }
       
       # error check: fraction(s) must be between 0 and 1 and must not contain NAs
-      if (any(m2.frac >= 1, na.rm = T) || any(m2.frac < 0, na.rm = T) || length(m2.frac) != length(na.omit(m2.frac))) {
+      if (any(m2.frac >= 1, na.rm = TRUE) || any(m2.frac < 0, na.rm = TRUE) || length(m2.frac) != length(na.omit(m2.frac))) {
         stop("Area fraction threshold(s) given in 'm2.frac' must be within 0 >= x < 1 and must not contain NAs.")
       }
       
@@ -428,7 +428,7 @@ CleanSLCClasses <- function (gd, gcl, m1.file = NULL, m1.class = "s", m1.clean =
       }
       
       # error check: area must be positive and must not contain NAs
-      if (any(m2.abs < 0, na.rm = T) || length(m2.abs) != length(na.omit(m2.abs))) {
+      if (any(m2.abs < 0, na.rm = TRUE) || length(m2.abs) != length(na.omit(m2.abs))) {
         stop("Absolute area threshold(s) given in 'm2.abs' must be x > 0 and must not contain NAs.")
       }
       

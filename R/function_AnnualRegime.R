@@ -117,7 +117,7 @@ AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL
   if (ts.in == "week") {
     # create daily date vector over time period
     days <- data.frame(DATE = seq(x[1, 1], x[nrow(x), 1], by = "day"))
-    x <- merge(days, x, by = 1, all.x = T)
+    x <- merge(days, x, by = 1, all.x = TRUE)
     # use internal function to fill NAs with next available value, apply to all columns
     x <- data.frame(DATE = x[, 1], apply(x[, -1], 2, .FillWeek))
     tformat <- format(x[, 1], format = "%j")

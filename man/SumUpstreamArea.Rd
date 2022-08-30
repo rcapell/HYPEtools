@@ -4,7 +4,7 @@
 \alias{SumUpstreamArea}
 \title{Calculate upstream area sums}
 \usage{
-SumUpstreamArea(subid = NULL, gd, bd = NULL, cl = 2, progbar = F)
+SumUpstreamArea(subid = NULL, gd, bd = NULL, cl = 2, progbar = FALSE)
 }
 \arguments{
 \item{subid}{Integer vector of SUBIDs to calculate upstream areas for (must exist in \code{gd}). If \code{NULL}, upstream areas for all

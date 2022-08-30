@@ -18,103 +18,103 @@
 \usage{
 ReadAquiferData(
   filename = "AquiferData.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
   ...
 )
 
 ReadOutregions(
   filename = "Outregions.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
   ...
 )
 
 ReadBranchData(
   filename = "BranchData.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
   ...
 )
 
 ReadCropData(
   filename = "CropData.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
   ...
 )
 
 ReadDamData(
   filename = "DamData.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
   quote = "",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
   ...
 )
 
 ReadGlacierData(
   filename = "GlacierData.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
   ...
 )
 
 ReadLakeData(
   filename = "LakeData.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
   quote = "",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
   ...
 )
 
 ReadMgmtData(
   filename = "MgmtData.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
   ...
 )
 
 ReadPointSourceData(
   filename = "PointSourceData.txt",
-  verbose = T,
-  header = T,
+  verbose = TRUE,
+  header = TRUE,
   na.strings = "-9999",
   sep = "\\t",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
-  data.table = F,
+  data.table = FALSE,
   ...
 )
 
@@ -128,11 +128,11 @@ ReadForcKey(
 
 ReadUpdate(
   filename = "update.txt",
-  header = T,
+  header = TRUE,
   sep = "\\t",
-  stringsAsFactors = F,
+  stringsAsFactors = FALSE,
   encoding = c("unknown", "latin1", "UTF-8"),
-  data.table = F,
+  data.table = FALSE,
   ...
 )
 }

@@ -74,8 +74,8 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
       } else if (type == "Optpar") {
         list <- ReadOptpar(file)
         file <- data.frame(list) %>%
-          mutate("tasks.NA" = do.call(paste, .[grep("tasks.NA", colnames(.), value = T)])) %>% # Merge tasks.NA columns
-          select(-grep("tasks.NA.*.", colnames(.), value = T)) # Drop original tasks.NA columns
+          mutate("tasks.NA" = do.call(paste, .[grep("tasks.NA", colnames(.), value = TRUE)])) %>% # Merge tasks.NA columns
+          select(-grep("tasks.NA.*.", colnames(.), value = TRUE)) # Drop original tasks.NA columns
         file
         # } else if(type=="Outregions"){
         #   file <- ReadOutregions(file) # Untested
@@ -107,8 +107,8 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
         # Format Optpar if given object from R environment
       } else if (type == "Optpar") {
         file <- data.frame(file) %>%
-          mutate("tasks.NA" = do.call(paste, .[grep("tasks.NA", colnames(.), value = T)])) %>% # Merge tasks.NA columns
-          select(-grep("tasks.NA.*.", colnames(.), value = T)) # Drop original tasks.NA columns
+          mutate("tasks.NA" = do.call(paste, .[grep("tasks.NA", colnames(.), value = TRUE)])) %>% # Merge tasks.NA columns
+          select(-grep("tasks.NA.*.", colnames(.), value = TRUE)) # Drop original tasks.NA columns
       }
     }
 
@@ -153,8 +153,8 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
     relocate(c(
       by[which(!by == "FILE_ROW")], # Columns specified with "by" argument
       paste(rep(intersect_cols, each = 2), c("x", "y"), sep = "."), # Columns that are in both x and y
-      paste0(setdiff(colnames(x), colnames(y)), ".x", recycle0 = T), # Columns that are unique to x
-      paste0(setdiff(colnames(y), colnames(x)), ".y", recycle0 = T)
+      paste0(setdiff(colnames(x), colnames(y)), ".x", recycle0 = TRUE), # Columns that are unique to x
+      paste0(setdiff(colnames(y), colnames(x)), ".y", recycle0 = TRUE)
     ), # Columns that are unique to y
     .after = ifelse("FILE_ROW" %in% colnames(.), "FILE_ROW", by)
     )
@@ -166,8 +166,8 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
     same <- compare[paste0(col, ".x")] == compare[paste0(col, ".y")]
 
     # Set values to NA if they are the same
-    compare[which(same == T), paste0(col, ".x")] <- NA
-    compare[which(same == T), paste0(col, ".y")] <- NA
+    compare[which(same == TRUE), paste0(col, ".x")] <- NA
+    compare[which(same == TRUE), paste0(col, ".y")] <- NA
   }
 
   # Remove columns and rows that are all NA
