@@ -120,7 +120,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
-  on.exit(par(userpar)) # Restore par on function exit
+  on.exit(suppressWarnings(par(userpar))) # Restore par on function exit - suppress warnings because par not updated when using leaflet map so you get warning on exit that you call par with no plot
   
   # Check/Load Dependencies for interactive mapping features - do this here so that these packages are not required for the base HYPEtools installation
   if (map.type == "leaflet" & !all(
@@ -753,8 +753,9 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
       # Save HTML
       if (!html.name == "") {
         message("Saving HTML")
-        htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to working directory so selfcontained=T works
-        file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
+        temp <- file.path(tempdir(), basename(html.name))
+        htmlwidgets::saveWidget(leafmap, file = temp, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to temp directory so selfcontained=T works
+        file.rename(temp, html.name) # Rename/Move HTML file to desired file
       }
       
       return(leafmap)

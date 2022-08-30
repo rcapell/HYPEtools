@@ -63,7 +63,7 @@ BoxplotSLCClasses <- function(gd, gcl, col.landuse = "rainbow", col.group = NULL
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
-  on.exit(par(userpar)) # Restore par on function exit
+  on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
   
   # if lab.legend was specified, check for consistency with number of land use and soil classes
   if (!is.null(lab.legend) && length(lab.legend) != length(c(unique(gcl[, 2]), unique(gcl[,3])))) {

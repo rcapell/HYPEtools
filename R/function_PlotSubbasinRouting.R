@@ -250,8 +250,9 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     # Save HTML
     if (!html.name == "") {
       message("Saving HTML")
-      htmlwidgets::saveWidget(leafmap, file = basename(html.name), title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to working directory so selfcontained=T works
-      file.rename(basename(html.name), html.name) # Rename/Move HTML file to desired file
+      temp <- file.path(tempdir(), basename(html.name))
+      htmlwidgets::saveWidget(leafmap, file = temp, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to temp directory so selfcontained=T works
+      file.rename(temp, html.name) # Rename/Move HTML file to desired file
     }
 
     return(leafmap)

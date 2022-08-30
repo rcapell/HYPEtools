@@ -47,7 +47,7 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
-  on.exit(par(userpar)) # Restore par on function exit
+  on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
   
   # number of quantile series in freq
   nq <- ncol(freq) - 1

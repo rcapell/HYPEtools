@@ -104,7 +104,7 @@ PlotBasinSummary <- function(x, filename = "BasinSummary", driver = c("default",
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
-  on.exit(par(userpar)) # Restore par on function exit
+  on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
   
   ## Preliminaries
   
