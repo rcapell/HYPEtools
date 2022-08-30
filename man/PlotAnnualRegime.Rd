@@ -20,7 +20,6 @@ PlotAnnualRegime(
   lty = 1,
   lwd = 1,
   mar = c(3, 3, 1, 1) + 0.1,
-  restore.par = FALSE,
   verbose = TRUE
 )
 }
@@ -64,8 +63,6 @@ series in \code{freq}.}
 series in \code{freq}.}
 
 \item{mar}{Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.}
-
-\item{restore.par}{Logical, if \code{TRUE}, par settings will be restored to original state on function exit.}
 
 \item{verbose}{Logical, print warnings if \code{NA} values are found in \code{x}. Defaults to \code{TRUE}.}
 }

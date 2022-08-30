@@ -27,7 +27,6 @@
 #' @param lwd Line width specification, see \code{\link{par}} for details. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
 #' @param mar Numeric vector of length 4, margin specification as in \code{\link{par}} with modified default. Details see there.
-#' @param restore.par Logical, if \code{TRUE}, par settings will be restored to original state on function exit. 
 #' @param verbose Logical, print warnings if \code{NA} values are found in \code{x}. Defaults to \code{TRUE}.
 #' 
 #' @details
@@ -59,17 +58,11 @@ PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p0
                              l.legend = NULL, l.position = c("topright", "bottomright", "right", "topleft", "left", "bottomleft"), 
                              log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
                              xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", alpha = 30, 
-                             lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, restore.par = FALSE, verbose = TRUE) {
+                             lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, verbose = TRUE) {
   
-  # save current state of par() variables which are altered below, for restoring on function exit
-  par.mar <- par("mar")
-  par.xaxs <- par("xaxs")
-  par.mgp <- par("mgp")
-  par.tcl <- par("tcl")
-  par.lend <- par("lend")
-  if (restore.par) {
-    on.exit(par(mar = par.mar, xaxs = par.xaxs, mgp = par.mgp, tcl = par.tcl, lend = par.lend))
-  }
+  # Backup par and restore on function exit
+  userpar <- par(no.readonly = TRUE) # Backup par
+  on.exit(par(userpar)) # Restore par on function exit
   
   # number of time series in x
   nq <- ncol(x$mean) - 2
