@@ -15,6 +15,9 @@ Paths are separated by '/', not '\\'.}
 \item{use.comment}{Logical, set to \code{TRUE} to export comment lines saved in \code{attribute} 'comment'. Per
 default, column names are exported as header. See details.}
 }
+\value{
+No return value, called for export to text files.
+}
 \description{
 This is a convenience wrapper function to export a 'GeoClass.txt' file from R.
 }
@@ -26,6 +29,7 @@ where \code{\link{ReadGeoClass}} stores such comments. Description files (see \c
 way of storing that information.
 }
 \examples{
-\dontrun{WriteGeoClass(x = mygeoclass)}
+te <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+WriteGeoClass(x = te, filename = tempfile())
 
 }

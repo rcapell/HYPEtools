@@ -53,7 +53,8 @@
 #' \code{ReadGeoClass} returns a data frame with added attribute 'comment'.
 #' 
 #' @examples
-#' \dontrun{ReadGeoClass("Geoclass.txt")}
+#' te <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+#' te
 #' 
 #' @importFrom data.table fread
 #' @export
@@ -199,7 +200,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' issue from arising.
 #' 
 #' @examples
-#' \dontrun{ReadBasinOutput("0000001.txt")}
+#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
 #' 
 #' @importFrom data.table fread
 #' @importFrom stats na.fail
@@ -304,7 +305,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
   ## extract attributes to hold hype variable units and SUBID/OUTREGID
   
   munit <- readLines(filename, n = 2 + mc)[2 + mc]
-  munit <- strsplit(munit, split = "\t")[[1]]
+  munit <- strsplit(munit, split = "\t")[[1]][-1]
   
   # subid/outregid conditional on user argument
   if (is.null(id)) {
@@ -349,6 +350,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
     hypeunit(x) <- munit
     timestep(x) <- tstep
     comment(x) <- cmt
+    variable(x) <- toupper(names(x)[-1])
     if (reg.out) {
       outregid(x) <- sbd
       subid(x) <- NA
@@ -560,7 +562,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' a standard dataframe is returned along with informative warning messages.
 #' 
 #' @examples
-#' \dontrun{ReadGeoData("GeoData.txt")}
+#' te2 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' summary(te)
 #' 
 #' @importFrom data.table fread
 #' @importFrom dplyr select %>%
@@ -798,7 +801,8 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' issue from arising.
 #' 
 #' @examples
-#' \dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
+#' te <- ReadMapOutput(filename = system.file("demo_model", "results", "mapEVAP.txt", package = "HYPEtools"), dt.format = NULL)
+#' te
 #' 
 #' @importFrom data.table fread transpose :=
 #' @importFrom stats na.fail
@@ -1402,11 +1406,12 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' side effects when working with the imported data (and e.g. converting to string representations during the process).
 #' 
 #' @seealso 
-#' \code{\link{WritePTQobs}}
+#' \code{\link{WriteObs}}
 #' \code{\link{ReadXobs}} for multi-variable HYPE observation files
 #' 
 #' @examples
-#' \dontrun{ReadObs("Tobs.txt")}
+#' te <- ReadObs(filename = system.file("demo_model", "Tobs.txt", package = "HYPEtools"))
+#' head(te)
 #' 
 #' @importFrom data.table fread
 #' @importFrom stats na.fail
@@ -1599,9 +1604,7 @@ ReadPTQobs <- ReadObs
 #' Imported files are returned as data frames.
 #' 
 #' @examples
-#' \dontrun{ReadLakeData("LakeData.txt")}
-#' \dontrun{ReadDamData("DamData.txt")}
-#' \dontrun{ReadMgmtData("MgmtData.txt")}
+#' te <- ReadForcKey(filename = system.file("demo_model", "ForcKey.txt", package = "HYPEtools"))
 #' 
 #' @name HypeDataImport
 
@@ -1875,7 +1878,8 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 #' @seealso \code{\link{ReadPar}}
 
 #' @examples
-#' \dontrun{ReadOptpar("optpar.txt")}
+#' te <- ReadOptpar(filename = system.file("demo_model", "optpar.txt", package = "HYPEtools"))
+#' te
 #' 
 #' @export
 
@@ -2068,7 +2072,8 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FAL
 #' \code{Soil}, \code{so} (short names), \code{cr.id}, \code{Crop}, \code{cr} (short names)
 #' 
 #' @examples
-#' \dontrun{ReadDescription("description.txt")}
+#' te <- ReadDescription(filename = system.file("demo_model", "description.txt", package = "HYPEtools"))
+#' te
 #'
 #' @export 
 
@@ -2332,7 +2337,8 @@ ReadSimass <- function(filename = "simass.txt") {
 #' outputs are merged to single vectors on import. 
 #' 
 #' @examples
-#' \dontrun{ReadInfo("info.txt")}
+#' te <- ReadInfo(filename = system.file("demo_model", "info.txt", package = "HYPEtools"))
+#' te
 #' 
 #' @export
 

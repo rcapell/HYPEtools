@@ -12,6 +12,11 @@
 #' All functions return vectors of length \code{n} with interpolated RGB color values in hexadecimal 
 #' notation (see \code{\link{rgb}}).
 #' 
+#' @examples 
+#' ColNitr(10)
+#' ColGreens(6)
+#' barplot(rep(1, 11), col = ColTemp(11))
+#' 
 #' @name CustomColors
 
 NULL

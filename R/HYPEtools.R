@@ -7,6 +7,9 @@
 #' @docType package
 #' @name HYPEtools
 #' 
+#' @return 
+#' No return value, package documentation.
+#' 
 #' @importFrom utils globalVariables
 
 NULL

@@ -187,8 +187,6 @@ In most files, HYPE requires \code{NA}-free input in required columns, but empty
 allowed in additional comment columns. Informative warnings will be thrown if \code{NA}s are found during import.
 }
 \examples{
-\dontrun{ReadLakeData("LakeData.txt")}
-\dontrun{ReadDamData("DamData.txt")}
-\dontrun{ReadMgmtData("MgmtData.txt")}
+te <- ReadForcKey(filename = system.file("demo_model", "ForcKey.txt", package = "HYPEtools"))
 
 }

@@ -16,6 +16,15 @@
 #' @details 
 #' These functions are just shortcuts for \code{\link{attr}}.
 #' 
+#' @return 
+#' The extractor functions return the value of the respective attribute or \code{NULL} if no matching attribute is found.
+#' 
+#' @examples
+#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+#' hypeunit(te)
+#' timestep(te)
+#' subid(te)
+#' 
 #' @name HypeAttrAccess
 #' 
 

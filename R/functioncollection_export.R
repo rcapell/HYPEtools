@@ -10,7 +10,7 @@
 #     - WriteTimeOutput()
 #     - WriteMapOutput()
 #     - WritePmsf()
-#     - WritePTQobs()
+#     - WriteObs()
 #     - HypeDataExport:
 #         WriteAquiferData(), WriteBranchData(), WriteCropData(), WriteDamData(), WriteLakeData(), WriteMgmtData(), 
 #         WritePointSourceData()
@@ -38,8 +38,16 @@
 #' @details
 #' \code{WritePar} writes a 'par.txt' file, typically originating from an imported and modified 'par.txt'.
 #' 
+#' @return 
+#' No return value, called for export to text files.
+#' 
+#' @seealso \code{\link{ReadOptpar}} with a description of the expected content of \code{x}.
+#' 
 #' @examples
-#' \dontrun{WritePar(mypar)}
+#' te <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
+#' # Note that par files loose all comment rows on import
+#' WritePar(x = te, filename = tempfile())
+#' 
 #' 
 #' @export
 
@@ -81,8 +89,13 @@ WritePar <- function (x, filename, digits = 10, nsmall = 1) {
 #' HYPE does neither allow empty values in any GeoData column nor any string elements with more than 50 characters. The 
 #' function will return with warnings if \code{NA}s or long strings were exported.
 #' 
+#' @return 
+#' No return value, called for export to text files.
+#' 
 #' @examples
-#' \dontrun{WriteGeoData(x = mygeodata)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' summary(te)
+#' WriteGeoData(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite
 #' @importFrom stats na.action na.omit
@@ -150,8 +163,12 @@ WriteGeoData <- function(x, filename, digits = 6, scipen = getOption('scipen', 0
 #' where \code{\link{ReadGeoClass}} stores such comments. Description files (see \code{\link{ReadDescription}}) offer a more structured 
 #' way of storing that information.
 #' 
+#' @return 
+#' No return value, called for export to text files.
+#' 
 #' @examples
-#' \dontrun{WriteGeoClass(x = mygeoclass)}
+#' te <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+#' WriteGeoClass(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite
 #' @export
@@ -235,9 +252,12 @@ WriteGeoClass <- function(x, filename, use.comment = FALSE) {
 #' Both \code{variable} and \code{subid} do not include elements for the first column in the Xobs file/object, in accordance 
 #' with \code{\link{ReadXobs}}. These elements will be added by the function.
 #' 
+#' @return 
+#' No return value, called for export to text files.
 #' 
 #' @examples
-#' \dontrun{WriteXobs(myxobs)}
+#' te <- ReadXobs(filename = system.file("demo_model", "Xobs.txt", package = "HYPEtools"))
+#' WriteXobs(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite
 #' @export
@@ -481,8 +501,12 @@ WriteXobs <- function(x, filename, append = FALSE, comment = NULL, variable = NU
 #' \code{WriteBasinOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's basin output files.
 #  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
 #' 
+#' @return 
+#' No return value, called for file export.
+#' 
 #' @examples
-#' \dontrun{WriteBasinOutput(x = mybasin, filename = "000001.txt")}
+#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+#' WriteBasinOutput(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite
 #' @export
@@ -549,8 +573,12 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' \code{WriteTimeOutput} exports a data frame with headers and formatting options adjusted to match HYPE's time output files.
 #  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
 #' 
+#' @return 
+#' No return value, called for export to text files.
+#' 
 #' @examples
-#' \dontrun{WriteTimeOutput(x = myCCTN, filename = "timeCCTN.txt")}
+#' te <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "%Y-%m")
+#' WriteTimeOutput(x = te, filename = tempfile(), dt.format = "%Y-%m")
 #' 
 #' @importFrom data.table fwrite
 #' @export
@@ -581,16 +609,6 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 }
 
 
-# te <- ReadTimeOutput("../timeCCTN.txt", dt.format="%Y")
-# WriteTimeOutput(te, "test2.txt", dt.format="%Y")
-# x[,1]
-# dt.format <- "%Y"
-# filename <- "test.txt"
-
-
-
-
-
 
 
 
@@ -613,11 +631,15 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' Use \code{NULL} for single-column dataframes, i.e. long-term average map files.
 #'  
 #' @details
-#' \code{WriteTimeOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's map output files.
+#' \code{WriteMapOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's map output files.
 #'  The function attempts to format date-time information to strings and will return a warning if the attempt fails.
 #' 
+#' @return 
+#' No return value, called for export to text files.
+#' 
 #' @examples
-#' \dontrun{WriteMapOutput(x = myCCTN, filename = "mapCCTN.txt")}
+#' te <- ReadMapOutput(filename = system.file("demo_model", "results", "mapEVAP.txt", package = "HYPEtools"), dt.format = NULL)
+#' WriteMapOutput(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite
 #' @export
@@ -646,9 +668,7 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
   
   # export the object, omitting header
   fwrite(x, file = filename, append = TRUE, sep = ",", quote = FALSE, na = "-9999", row.names = FALSE, col.names = FALSE)
-  # old version, can be deleted after a while
-  # write.table(x, file = filename, append = TRUE, sep = ",", row.names = FALSE, col.names = FALSE, na = "-9999", quote = FALSE)
-  
+
 }
 
 
@@ -673,11 +693,15 @@ WriteMapOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' Pmsf files are represented as integer vectors in R. The total number of subcatchments in the file are added as first value on export. 
 #' pmsf.txt files need to be ordered as downstream sequence. 
 #' 
+#' @return 
+#' No return value, called for export to text files.
+#' 
 #' @seealso
 #' \code{\link{AllUpstreamSubids}}, which extracts upstream SUBIDs from a GeoData dataframe.
 #' 
 #' @examples
-#' \dontrun{WritePmsf(x = mypmsf)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' WritePmsf(x = te$SUBID[te$SUBID %in% AllUpstreamSubids(3564, te)], filename = tempfile())
 #' 
 #' @importFrom data.table fwrite
 #' @export
@@ -694,7 +718,7 @@ WritePmsf <- function(x, filename) {
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------
-# WritePTQobs
+# WriteObs
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 #' Write 'Pobs.txt', 'Tobs.txt', 'Qobs.txt', and other observation data files
@@ -714,7 +738,7 @@ WritePmsf <- function(x, filename) {
 #' sequence. If \code{NULL} (default), the data to export is not touched.
 #'  
 #' @details
-#' \code{WritePTQobs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
+#' \code{WriteObs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
 #' headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
 #' 
 #' Observation IDs are SUBIDs or IDs connected to SUBIDs with a 
@@ -723,20 +747,24 @@ WritePmsf <- function(x, filename) {
 # #' The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
 # #' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
 # #' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = FALSE, drop0trailing = TRUE, trim = TRUE} are 
-# #' hard-coded into \code{WritePTQobs}.
+# #' hard-coded into \code{WriteObs}.
+#' 
+#' @return 
+#' No return value, called for export to text files.
 #' 
 #' @seealso 
 #' \code{\link{ReadObs}}
 #' \code{\link{WriteXobs}}
 #' 
 #' @examples
-#' \dontrun{WritePTQobs(mytops, "Tobs.txt")}
+#' te <- ReadObs(filename = system.file("demo_model", "Tobs.txt", package = "HYPEtools"))
+#' WriteObs(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite .SD
 #' @export
 
 
-WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif = NULL, obsid = NULL) {
+WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif = NULL, obsid = NULL) {
   
   ## check if consistent header information is available, obsid arguments take precedence before attribute
   ## construct HYPE-conform header for export (violates R header rules)
@@ -781,12 +809,14 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, sign
   
   # export
  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
-  # old version, cann be deleted after a while
-  # write.table(format(x, digits = digits, nsmall = nsmall, scientific = FALSE, drop0trailing = TRUE, trim = TRUE), file = filename, 
-  # quote = FALSE, sep = "\t", row.names = FALSE, col.names = header)
-  
+
 }
 
+# alias, for backwards compatibility
+#' @rdname WriteObs
+#' @importFrom stats na.fail
+#' @export
+WritePTQobs <- WriteObs
 
 
 
@@ -819,7 +849,7 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, sign
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
+# NOT YET IMPLEMENTED #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
@@ -835,12 +865,13 @@ WritePTQobs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, sign
 # #' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
 # #' arguments \code{digits} and \code{nsmall}, \code{format} arguments \code{scientific = FALSE, drop0trailing = TRUE, trim = TRUE} are 
 # #' hard-coded into the export functions.
-
+#' 
+#' @return 
+#' No return value, called for export to text files.
 #' 
 #' @examples
-#' \dontrun{WriteLakeData(mylakedata, "LakeData.txt")}
-#' \dontrun{WriteDamData(mydamdata, "DamData.txt")}
-#' \dontrun{WriteMgmtData(mymgmtdata, "MgmtData.txt")}
+#' te <- ReadForcKey(filename = system.file("demo_model", "ForcKey.txt", package = "HYPEtools"))
+#' WriteForcKey(x = te, filename = tempfile())
 #' 
 #' @name HypeDataExport
 
@@ -1011,13 +1042,14 @@ WriteForcKey <- function(x, filename) {
 #' @param digits Integer, number of significant digits to export. See \code{\link{format}}.
 #' @param nsmall Integer, number of significant decimals to export. See \code{\link{format}}.
 #' 
-#' @details
-#' \code{WriteOptpar} writes an 'optpar.txt' file, typically originating from an imported and modified 'optpar.txt'.
+#' @return 
+#' No return value, called for export to text files.
 #' 
 #' @seealso \code{\link{ReadOptpar}} with a description of the expected content of \code{x}.
 #' 
 #' @examples
-#' \dontrun{WriteOptpar(myoptpar)}
+#' te <- ReadOptpar(filename = system.file("demo_model", "optpar.txt", package = "HYPEtools"))
+#' WriteOptpar(x = te, filename = tempfile())
 #' 
 #' @export
 

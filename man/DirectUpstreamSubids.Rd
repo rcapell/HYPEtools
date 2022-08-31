@@ -47,7 +47,9 @@ imported through \code{\link{ReadGeoData}} and \code{\link{ReadBranchData}}. See
 Between SUBIDs in the model.
 }
 \examples{
-\dontrun{DirectUpstreamSubids(subid = 1, gd = mygeodata)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+DirectUpstreamSubids(subid = 3594, gd = te)
+
 }
 \seealso{
 \code{\link{AllUpstreamSubids}}, which returns all upstream SUBIDs, i.e. the full upstream network up to the headwaters, for a given SUBID.

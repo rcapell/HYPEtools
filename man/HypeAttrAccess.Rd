@@ -51,10 +51,20 @@ variable(x) <- value
 
 \item{value}{Value to be assigned}
 }
+\value{
+The extractor functions return the value of the respective attribute or \code{NULL} if no matching attribute is found.
+}
 \description{
 These are simple convenience wrapper functions to quickly query and assign values of attributes which are added to HYPE data
 on import.
 }
 \details{
 These functions are just shortcuts for \code{\link{attr}}.
+}
+\examples{
+te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+hypeunit(te)
+timestep(te)
+subid(te)
+
 }

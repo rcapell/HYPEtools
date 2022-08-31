@@ -53,3 +53,9 @@ Pre-defined color ramp palettes which are used in other \code{HYPEtools} functio
 \details{
 These functions build on calls to \code{\link{colorRampPalette}}.
 }
+\examples{
+ColNitr(10)
+ColGreens(6)
+barplot(rep(1, 11), col = ColTemp(11))
+
+}

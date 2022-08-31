@@ -16,6 +16,9 @@ Paths are separated by '/', not '\\'.}
 
 \item{nsmall}{Integer, number of significant decimals to export. See \code{\link{format}}.}
 }
+\value{
+No return value, called for export to text files.
+}
 \description{
 \code{WritePar} prints its required argument \code{x} to a file.
 }
@@ -23,6 +26,12 @@ Paths are separated by '/', not '\\'.}
 \code{WritePar} writes a 'par.txt' file, typically originating from an imported and modified 'par.txt'.
 }
 \examples{
-\dontrun{WritePar(mypar)}
+te <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
+# Note that par files loose all comment rows on import
+WritePar(x = te, filename = tempfile())
 
+
+}
+\seealso{
+\code{\link{ReadOptpar}} with a description of the expected content of \code{x}.
 }

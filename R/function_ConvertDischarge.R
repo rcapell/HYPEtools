@@ -28,11 +28,12 @@
 #' \code{ConvertDischarge} is a simple conversion function, most likely to be used in combination with \code{\link{apply}} 
 #' or related functions.
 #' 
-#' @examples
-#' \dontrun{ConvertDischarge(6, 400000000)
-#' apply(data[, -c(1:2)], 2, ConvertDischarge, data$AREA)
-#' }
+#' @return 
+#' \code{ConvertDischarge} returns a numeric object of the same type as provided in argument \code{q}.
 #' 
+#' @examples
+#' ConvertDischarge(6, 400000000)
+#' ConvertDischarge(c(1.1, 1.2, 1.9, 2.8, 2, 1.5, 1.3, 1.2, 1.15, 1.1), from = "mmd", to = "ls", area = 1.2e6)
 
 ConvertDischarge <- function (q, area, from = "m3s", to = "mmd") {
   

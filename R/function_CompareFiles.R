@@ -25,9 +25,12 @@
 #' files are set to \code{NA}. If the returned data frame has 0 row, then there were no differences between the files.
 #'
 #' @examples
-#' \dontrun{
-#' CompareFiles(x = GeoData.x, y = GeoData.y, type = "GeoData", by = "SUBID")
-#' }
+#' # Import demo model GeoData file, edit a SUBID
+#' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te1$SUBID[1] <- 1
+#' # Compare with original file
+#' te2 <- CompareFiles(system.file("demo_model", "GeoData.txt", package = "HYPEtools"), te1, type = "GeoData")
+#' te2
 #'
 #' @importFrom dplyr distinct filter full_join if_any relocate rename_with select syms %>%
 #' @importFrom tidyselect matches all_of

@@ -49,10 +49,10 @@
 #'  
 #' 
 #' @examples
-#' \dontrun{
-#' x11(width = 14, height = 7)
-#' BoxplotSLCClasses(gd = my.gd, gcl = my.gcl)
-#' }
+#' # Import source data
+#' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te2 <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+#' BoxplotSLCClasses(gd = te1, gcl = te2)
 #' 
 #' @importFrom grDevices rainbow
 #' @importFrom graphics par boxplot mtext points legend

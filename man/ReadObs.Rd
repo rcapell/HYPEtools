@@ -85,10 +85,11 @@ For the conversion of date/time strings, time zone "UTC" is assumed. This is don
 side effects when working with the imported data (and e.g. converting to string representations during the process).
 }
 \examples{
-\dontrun{ReadObs("Tobs.txt")}
+te <- ReadObs(filename = system.file("demo_model", "Tobs.txt", package = "HYPEtools"))
+head(te)
 
 }
 \seealso{
-\code{\link{WritePTQobs}}
+\code{\link{WriteObs}}
 \code{\link{ReadXobs}} for multi-variable HYPE observation files
 }

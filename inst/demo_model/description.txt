@@ -1,0 +1,22 @@
+# Name
+demo_model
+# Version
+NA
+# Land use class ID
+1;2;3
+# Land use class names
+Water;Coniferous forest;Agricultural land
+# Short land use class names
+Water;Conif. f.;Agriculture
+# Soil class ID
+1;2
+# Soil class names
+Fine;Coarse
+# Short soil class names
+Fine;Coarse
+# Crop class ID
+0
+# Crop class names
+None
+# Short crop class names
+None

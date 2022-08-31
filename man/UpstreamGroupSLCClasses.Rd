@@ -53,8 +53,14 @@ The function builds on \code{\link{GroupSLCClasses}}, which provides grouped sum
 \code{UpstreamGroupSLCClasses} expects SLC class columns in argument \code{gd} to be ordered in ascending order.
 }
 \examples{
-\dontrun{UpstreamGroupSLCClasses(subid = 21, gd = mygeodata,
-gcl = mygeoclass, bd = mybranchdata, type = "landuse")}
+# Import source data
+te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+te2 <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+te3 <- ReadDescription(filename = system.file("demo_model", "description.txt", package = "HYPEtools"))
+# Upstream land use fractions for single SUBID
+UpstreamGroupSLCClasses(subid = 63794, gd = te1, gcl = te2, type = "landuse", progbar = FALSE)
+# Upstream soil fraction for all SUBIDs in GeoData
+UpstreamGroupSLCClasses(gd = te1, gcl = te2, type = "soil")
 
 }
 \seealso{

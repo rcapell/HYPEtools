@@ -4,6 +4,9 @@
 \name{HYPEtools}
 \alias{HYPEtools}
 \title{HYPEtools: Tools to work with HYPE model set-ups and results}
+\value{
+No return value, package documentation.
+}
 \description{
 This package contains functions to handle and analyse input and
 output files from the conceptual rainfall-runoff model HYPE (HYdrological

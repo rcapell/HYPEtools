@@ -31,7 +31,8 @@ including potential irrigation links or groundwater flows) using GeoData columns
 is provided, the function will also include information on downstream bifurcations.
 }
 \examples{
-\dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+AllDownstreamSubids(subid = 3344, gd = te)
 
 }
 \seealso{

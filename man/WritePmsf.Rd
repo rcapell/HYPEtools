@@ -12,6 +12,9 @@ WritePmsf(x, filename)
 \item{filename}{A character string naming a file to write to. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 }
+\value{
+No return value, called for export to text files.
+}
 \description{
 This is a small convenience function to export a 'partial model setup file' from R.
 }
@@ -20,7 +23,8 @@ Pmsf files are represented as integer vectors in R. The total number of subcatch
 pmsf.txt files need to be ordered as downstream sequence.
 }
 \examples{
-\dontrun{WritePmsf(x = mypmsf)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+WritePmsf(x = te$SUBID[te$SUBID \%in\% AllUpstreamSubids(3564, te)], filename = tempfile())
 
 }
 \seealso{

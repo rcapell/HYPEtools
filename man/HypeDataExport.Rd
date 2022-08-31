@@ -40,6 +40,9 @@ Paths are separated by '/', not '\\'.}
 \item{verbose}{Logical, display informative warning messages if columns contain \code{NA} values or if character strings are
 too long. See Details.}
 }
+\value{
+No return value, called for export to text files.
+}
 \description{
 These are simple convenience wrapper functions to export various HYPE data files from R.
 }
@@ -53,7 +56,6 @@ specifications:
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
@@ -66,8 +68,7 @@ found during export. Character string lengths in comment columns of HYPE data fi
 the functions will return with a warning if longer strings were exported.
 }
 \examples{
-\dontrun{WriteLakeData(mylakedata, "LakeData.txt")}
-\dontrun{WriteDamData(mydamdata, "DamData.txt")}
-\dontrun{WriteMgmtData(mymgmtdata, "MgmtData.txt")}
+te <- ReadForcKey(filename = system.file("demo_model", "ForcKey.txt", package = "HYPEtools"))
+WriteForcKey(x = te, filename = tempfile())
 
 }

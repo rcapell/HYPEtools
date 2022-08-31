@@ -16,6 +16,9 @@ Paths are separated by '/', not '\\'.}
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly
 and annual values allowed, e.g. '\\\%Y'.}
 }
+\value{
+No return value, called for export to text files.
+}
 \description{
 Function to export a time output file from R.
 }
@@ -23,6 +26,7 @@ Function to export a time output file from R.
 \code{WriteTimeOutput} exports a data frame with headers and formatting options adjusted to match HYPE's time output files.
 }
 \examples{
-\dontrun{WriteTimeOutput(x = myCCTN, filename = "timeCCTN.txt")}
+te <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "\%Y-\%m")
+WriteTimeOutput(x = te, filename = tempfile(), dt.format = "\%Y-\%m")
 
 }

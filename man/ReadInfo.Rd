@@ -28,6 +28,7 @@ provide access to settings and details of a model run, not to mirror the exact i
 corresponding export function exists.
 }
 \examples{
-\dontrun{ReadInfo("info.txt")}
+te <- ReadInfo(filename = system.file("demo_model", "info.txt", package = "HYPEtools"))
+te
 
 }

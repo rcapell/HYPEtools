@@ -52,7 +52,8 @@ For details on bifurcation handling in HYPE, see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{HYPE online documentation for BranchData.txt}.
 }
 \examples{
-\dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+AllUpstreamSubids(subid = 63794, gd = te)
 
 }
 \seealso{

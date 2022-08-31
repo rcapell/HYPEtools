@@ -59,6 +59,7 @@ Current versions of HYPE allow for defining significant instead of fixed number 
 issue from arising.
 }
 \examples{
-\dontrun{ReadMapOutput("mapCOUT.txt", type = "hsv")}
+te <- ReadMapOutput(filename = system.file("demo_model", "results", "mapEVAP.txt", package = "HYPEtools"), dt.format = NULL)
+te
 
 }

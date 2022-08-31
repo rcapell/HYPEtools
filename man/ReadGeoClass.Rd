@@ -34,6 +34,7 @@ comment rows. Column names are created on import, optional comment rows are impo
 Optional inline comments (additional non-numeric columns) are automatically identified and imported along with data columns.
 }
 \examples{
-\dontrun{ReadGeoClass("Geoclass.txt")}
+te <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+te
 
 }

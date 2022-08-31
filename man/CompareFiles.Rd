@@ -37,8 +37,11 @@ the same in both files are set to \code{NA}. The function is primarily intended 
 model files using the various HYPEtools write functions. However, it can also be used to e.g. compare files between different model versions.
 }
 \examples{
-\dontrun{
-CompareFiles(x = GeoData.x, y = GeoData.y, type = "GeoData", by = "SUBID")
-}
+# Import demo model GeoData file, edit a SUBID
+te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+te1$SUBID[1] <- 1
+# Compare with original file
+te2 <- CompareFiles(system.file("demo_model", "GeoData.txt", package = "HYPEtools"), te1, type = "GeoData")
+te2
 
 }

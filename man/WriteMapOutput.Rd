@@ -17,14 +17,18 @@ Paths are separated by '/', not '\\'.}
 Incomplete format strings for monthly and annual values allowed, e.g. '\\%Y', if columns contain annual aggregates.
 Use \code{NULL} for single-column dataframes, i.e. long-term average map files.}
 }
+\value{
+No return value, called for export to text files.
+}
 \description{
 Function to export a map output file from R.
 }
 \details{
-\code{WriteTimeOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's map output files.
+\code{WriteMapOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's map output files.
 The function attempts to format date-time information to strings and will return a warning if the attempt fails.
 }
 \examples{
-\dontrun{WriteMapOutput(x = myCCTN, filename = "mapCCTN.txt")}
+te <- ReadMapOutput(filename = system.file("demo_model", "results", "mapEVAP.txt", package = "HYPEtools"), dt.format = NULL)
+WriteMapOutput(x = te, filename = tempfile())
 
 }

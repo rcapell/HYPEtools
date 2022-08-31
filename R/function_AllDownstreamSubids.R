@@ -28,7 +28,8 @@
 #' \code{\link{AllUpstreamSubids}}, \code{\link{OutletSubids}}, \code{\link{OutletIds}}
 #' 
 #' @examples
-#' \dontrun{AllDownstreamSubids(subid = 21, gd = mygeodata)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' AllDownstreamSubids(subid = 3344, gd = te)
 #' 
 #' @importFrom clipr write_clip clipr_available
 

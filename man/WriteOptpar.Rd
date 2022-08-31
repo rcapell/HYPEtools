@@ -16,14 +16,15 @@ Paths are separated by '/', not '\\'.}
 
 \item{nsmall}{Integer, number of significant decimals to export. See \code{\link{format}}.}
 }
+\value{
+No return value, called for export to text files.
+}
 \description{
 \code{WriteOptpar} prints a HYPE parameter optimisation list to a file.
 }
-\details{
-\code{WriteOptpar} writes an 'optpar.txt' file, typically originating from an imported and modified 'optpar.txt'.
-}
 \examples{
-\dontrun{WriteOptpar(myoptpar)}
+te <- ReadOptpar(filename = system.file("demo_model", "optpar.txt", package = "HYPEtools"))
+WriteOptpar(x = te, filename = tempfile())
 
 }
 \seealso{

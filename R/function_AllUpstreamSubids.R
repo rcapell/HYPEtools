@@ -36,7 +36,8 @@
 #' \code{\link{UpstreamGeoData}}, \code{\link{AllDownstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{AllUpstreamSubids(subid = 21, gd = mygeodata)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' AllUpstreamSubids(subid = 63794, gd = te)
 #' 
 #' @export
 #' 

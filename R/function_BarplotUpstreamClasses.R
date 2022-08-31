@@ -48,9 +48,14 @@
 #' \code{\link{barplot}}
 #' 
 #' @examples
-#' \dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass,
-#' bd = mybranchdata, type = "soil")}
-#' \dontrun{BarplotUpstreamClasses(x = res, type = "s", desc = mydescription)}
+#' # Import source data
+#' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te2 <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+#' te3 <- ReadDescription(filename = system.file("demo_model", "description.txt", package = "HYPEtools"))
+#' # Calculate plot data, upstream soil fractions
+#' te4 <- UpstreamGroupSLCClasses(subid = 63794, gd = te1, gcl = te2, type = "soil")
+#' # Function call
+#' BarplotUpstreamClasses(x = te4, type = "s", desc = te4, ylim = c(0,100))
 #' 
 #' @importFrom stats aggregate na.fail
 #' @importFrom graphics par barplot mtext abline legend box
@@ -225,22 +230,4 @@ BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "cr
   # return barplot value invisibly
   invisible(res)
 }
-
-# # DEBUG
-# gd <- ReadGeoData("../PlotBasinSummary/GeoData.txt")
-# gcl <- ReadGeoClass("../PlotBasinSummary/GeoClass.txt", headrow = 4)
-# type <- "landuse"
-# x <- UpstreamGroupSLCClasses(subid = c(8000152, 8127943, 8213537), gd = gd, gc = gcl, type = type)
-# desc <- ReadDescription("../PlotBasinSummary/description.txt")
-# pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")
-# ylab <- "Area fraction (%)"
-# ylim <- c(0,  max(x[, -1] * 1.5))
-# names.arg = rep("", ncol(x) - 1)
-# cex.axis = 1
-# cex.names = .9
-# class.names = NULL
-# xlab = NULL
-# col = NULL
-# legend.text = NULL
-# legend.pos <- "left"
 

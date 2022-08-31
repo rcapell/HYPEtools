@@ -44,6 +44,9 @@ from file per default, but can be provided to reduce execution time when appendi
 \item{timestep}{Character string, either "day" or "hour", giving the time step between observations. Can be
 abbreviated.}
 }
+\value{
+No return value, called for export to text files.
+}
 \description{
 \code{WriteXobs} writes or appends an observation data set to an Xobs file.
 }
@@ -66,6 +69,7 @@ Both \code{variable} and \code{subid} do not include elements for the first colu
 with \code{\link{ReadXobs}}. These elements will be added by the function.
 }
 \examples{
-\dontrun{WriteXobs(myxobs)}
+te <- ReadXobs(filename = system.file("demo_model", "Xobs.txt", package = "HYPEtools"))
+WriteXobs(x = te, filename = tempfile())
 
 }

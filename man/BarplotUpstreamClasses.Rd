@@ -82,9 +82,14 @@ If manual names are provided in \code{class.names}, the column name endings must
 in \code{class.names}.
 }
 \examples{
-\dontrun{res <- UpstreamGroupSLCClasses(subid = 21, gd = mygeodata, gcl = mygeoclass,
-bd = mybranchdata, type = "soil")}
-\dontrun{BarplotUpstreamClasses(x = res, type = "s", desc = mydescription)}
+# Import source data
+te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+te2 <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+te3 <- ReadDescription(filename = system.file("demo_model", "description.txt", package = "HYPEtools"))
+# Calculate plot data, upstream soil fractions
+te4 <- UpstreamGroupSLCClasses(subid = 63794, gd = te1, gcl = te2, type = "soil")
+# Function call
+BarplotUpstreamClasses(x = te4, type = "s", desc = te4, ylim = c(0,100))
 
 }
 \seealso{

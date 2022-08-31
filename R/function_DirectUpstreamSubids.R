@@ -1,4 +1,3 @@
-#' @export
 #' @title
 #' Find Direct Upstream SUBIDs, with Flow Fractions
 #'
@@ -46,7 +45,10 @@
 #' \code{\link{AllUpstreamSubids}}, which returns all upstream SUBIDs, i.e. the full upstream network up to the headwaters, for a given SUBID.
 #' 
 #' @examples
-#' \dontrun{DirectUpstreamSubids(subid = 1, gd = mygeodata)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' DirectUpstreamSubids(subid = 3594, gd = te)
+#' 
+#' @export
 
 DirectUpstreamSubids <- function(subid = NULL, gd, bd = NULL) {
   

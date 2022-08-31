@@ -15,6 +15,9 @@ Paths are separated by '/', not '\\'.}
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly
 and annual values allowed, e.g. '\\\%Y'.}
 }
+\value{
+No return value, called for file export.
+}
 \description{
 Function to export a basin output file from R.
 }
@@ -22,6 +25,7 @@ Function to export a basin output file from R.
 \code{WriteBasinOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's basin output files.
 }
 \examples{
-\dontrun{WriteBasinOutput(x = mybasin, filename = "000001.txt")}
+te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+WriteBasinOutput(x = te, filename = tempfile())
 
 }

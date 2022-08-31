@@ -103,12 +103,14 @@ the transfer table). Cleaning thresholds for method 2 area fractions and absolut
 SLC areas below the given thresholds will be moved to the largest SLC in the given SUBID without considering any similarity between classes.
 }
 \examples{
-\dontrun{
-my.gd <- ReadGeoData("GeoData.txt")
-my.gcl <- ReadGeoClass("GeoClass.txt")
-# Clean-up using method 1 only, between soil classes, and based on area fractions only
-CleanSLCClasses(gd = my.gd, gcl = my.gcl, m1.file = "myTransferSoil.txt", m1.clean = c(T, F))
-}
+# Import source data
+te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+te2 <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+# Clean-up using method 2, 0.5 \% area fraction threshold and 100 m^2 absolute area threshold
+te3 <- CleanSLCClasses(gd = te1, gcl = te2, m2.frac = 0.005, m2.abs = 100)
+# Detailed comparison with function CompareFiles
+te4 <- CompareFiles(te1, te3, type = "GeoData")
+te4
 
 }
 \seealso{
