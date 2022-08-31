@@ -54,13 +54,31 @@
 #' @importFrom utils modifyList
 #' @export
 
-
+# Exported function
 PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.mon = 1, add.legend = TRUE, pos.legend = "topright", inset = 0, 
                              l.legend = NULL, log = FALSE, ylim = NULL, xlab = NULL, ylab = NULL, mar = c(3, 3, 1, 1) + .1) {
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
   on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
+  
+  # Call function and pass arguments
+  .PlotSimObsRegime(x=x, sim=sim, obs=obs, ts.in=ts.in, ts.out=ts.out, start.mon=start.mon,
+                    add.legend=add.legend, pos.legend=pos.legend, inset=inset, 
+                    l.legend=l.legend, log=log, ylim=ylim, xlab=xlab, ylab=ylab, mar=mar)
+  
+}
+
+# Internal function used for PlotBasinSummary
+.PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.mon = 1, add.legend = TRUE, pos.legend = "topright", inset = 0, 
+                             l.legend = NULL, log = FALSE, ylim = NULL, xlab = NULL, ylab = NULL, mar = c(3, 3, 1, 1) + .1) {
+  
+  # If user calls the internal function using HYPEtools:::.PlotSimObsRegime(), then make sure that par is reset on exit
+  if(!length(sys.calls())>1){
+    warning("Please use HYPEtools::PlotSimObsRegime() instead of the internal HYPEtools:::.PlotSimObsRegime() function")
+    userpar <- par(no.readonly = TRUE) # Backup par
+    on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
+  }
   
   ## check arguments and prepare data
   

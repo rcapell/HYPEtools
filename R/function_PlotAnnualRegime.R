@@ -53,7 +53,7 @@
 #' @importFrom stats na.omit
 #' @export
 
-
+# Exported function
 PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p05p95", "p25p75", "minmax"), add.legend = FALSE, 
                              l.legend = NULL, l.position = c("topright", "bottomright", "right", "topleft", "left", "bottomleft"), 
                              log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
@@ -64,6 +64,27 @@ PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p0
   userpar <- par(no.readonly = TRUE) # Backup par
   on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
   
+  # Call function and pass arguments
+  .PlotAnnualRegime(x=x, line=line, band=band, add.legend=add.legend,l.legend=l.legend,
+                    l.position=l.position, log=log,ylim=ylim, ylab=ylab, xlab=xlab,
+                    col=col, alpha=alpha, lty=lty, lwd=lwd, mar=mar, verbose=verbose)
+  
+}
+
+# Internal function used for PlotBasinOutput and PlotBasinSummary
+.PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p05p95", "p25p75", "minmax"), add.legend = FALSE, 
+                             l.legend = NULL, l.position = c("topright", "bottomright", "right", "topleft", "left", "bottomleft"), 
+                             log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
+                             xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", alpha = 30, 
+                             lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, verbose = TRUE) {
+  
+  # If user calls the internal function using HYPEtools:::.PlotAnnualRegime(), then make sure that par is reset on exit
+  if(!length(sys.calls())>1){
+    warning("Please use HYPEtools::PlotAnnualRegime() instead of the internal HYPEtools:::.PlotAnnualRegime() function")
+    userpar <- par(no.readonly = TRUE) # Backup par
+    on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
+  }
+
   # number of time series in x
   nq <- ncol(x$mean) - 2
   

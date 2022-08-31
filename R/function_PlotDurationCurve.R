@@ -40,7 +40,7 @@
 #' @importFrom stats qnorm
 #' @export
 
-
+# Exported function
 PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend = FALSE, l.legend = NULL, ylim = NULL, 
                               xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue", lty = 1, lwd = 1, 
                               mar = c(3, 3, 1, 1) + .1) {
@@ -48,6 +48,24 @@ PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend =
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
   on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
+  
+  # Call function and pass arguments
+  .PlotDurationCurve(freq=freq, xscale=xscale, yscale=yscale, add.legend=add.legend,
+                     l.legend=l.legend, ylim=ylim, xlab=xlab, ylab=ylab, col=col, lty=lty, lwd=lwd, mar=mar)
+  
+}
+
+# Internal function used for PlotBasinOutput and PlotBasinSummary
+.PlotDurationCurve <- function(freq, xscale = "lin", yscale = "log", add.legend = FALSE, l.legend = NULL, ylim = NULL, 
+                               xlab = "Flow exceedance percentile", ylab = "m3s", col = "blue", lty = 1, lwd = 1, 
+                               mar = c(3, 3, 1, 1) + .1) {
+  
+  # If user calls the internal function using HYPEtools:::.PlotDurationCurve(), then make sure that par is reset on exit
+  if(!length(sys.calls())>1){
+    warning("Please use HYPEtools::PlotDurationCurve() instead of the internal HYPEtools:::.PlotDurationCurve() function")
+    userpar <- par(no.readonly = TRUE) # Backup par
+    on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
+  }
   
   # number of quantile series in freq
   nq <- ncol(freq) - 1

@@ -373,15 +373,15 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
     
     ## panel 2: upstream land use bars
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "l", progbar = F), type = "l", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
+    list.plotexpr[[cp]] <- parse(text = '.BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "l", progbar = F), type = "l", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
     
     ## panel 3: upstream soil bars
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "s", progbar = F), type = "s", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
+    list.plotexpr[[cp]] <- parse(text = '.BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "s", progbar = F), type = "s", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
     
     ## panel 4: upstream crop bars
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "cr", progbar = F), type = "cr", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
+    list.plotexpr[[cp]] <- parse(text = '.BarplotUpstreamClasses(x = UpstreamGroupSLCClasses(sbd, gd = gd, bd = bd, gc = gcl, type = "cr", progbar = F), type = "cr", desc = desc, cex.names = .8, col = .makeTransparent("red", 150))')
     
     ## panels 5 and 6: upstream TN and TP loads in ton/year
     cp <- cp + 1
@@ -466,13 +466,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: FDC for Q
       if (exi.t["rout"] && exi.t["cout"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = xscale, yscale =yscale, add.legend = T, l.legend = c("obs. Q", "sim. Q"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = xscale, yscale =yscale, add.legend = T, l.legend = c("obs. Q", "sim. Q"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["rout"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rout), xscale = xscale, yscale =yscale, add.legend = T, l.legend = "obs. Q", col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = rout), xscale = xscale, yscale =yscale, add.legend = T, l.legend = "obs. Q", col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["cout"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cout), xscale = xscale, yscale =yscale, add.legend = T, l.legend = "sim. Q", col = c("red"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cout), xscale = xscale, yscale =yscale, add.legend = T, l.legend = "sim. Q", col = c("red"), mar = c(3.1, 3.1, .5, .5))')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -482,13 +482,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       # panel 5: regimeplot for Q
       if (exi.t["rout"] && exi.t["cout"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+        list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
       } else if (exi.t["rout"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+        list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
       } else if (exi.t["cout"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+        list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", log = log.r, add.legend = T, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -613,13 +613,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for TN
       if (exi.t["retn"] && exi.t["cctn"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(retn, cctn)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. TN", "sim. TN"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TN conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(retn, cctn)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. TN", "sim. TN"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TN conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["retn"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = retn), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. TN", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TN conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = retn), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. TN", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TN conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["cctn"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cctn), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. TN", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TN conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cctn), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. TN", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TN conc. (",mu,"g l"^"-1", ")")))')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -629,13 +629,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for TN
       if (exi.t["retn"] && exi.t["cctn"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "cctn", obs = "retn", start.mon = start.mon, log = log.r, l.legend = c("sim. TN", "obs. TN"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "cctn", obs = "retn", start.mon = start.mon, log = log.r, l.legend = c("sim. TN", "obs. TN"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["retn"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "retn", start.mon = start.mon, log = log.r, l.legend = c("obs. TN"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "retn", start.mon = start.mon, log = log.r, l.legend = c("obs. TN"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["cctn"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "cctn", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. TN"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "cctn", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. TN"), mar = c(3.1, 3.1, .5, .5))')
       } 
     }
     
@@ -757,13 +757,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for IN
       if (exi.t["rein"] && exi.t["ccin"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rein, ccin)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. IN", "sim. IN"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("IN conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(rein, ccin)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. IN", "sim. IN"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("IN conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["rein"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rein), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. IN", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("IN conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = rein), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. IN", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("IN conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["ccin"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccin), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. IN", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("IN conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ccin), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. IN", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("IN conc. (",mu,"g l"^"-1", ")")))')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -773,13 +773,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for IN
       if (exi.t["rein"] && exi.t["ccin"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccin", obs = "rein", start.mon = start.mon, log = log.r, l.legend = c("sim. IN", "obs. IN"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccin", obs = "rein", start.mon = start.mon, log = log.r, l.legend = c("sim. IN", "obs. IN"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["rein"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "rein", start.mon = start.mon, log = log.r, l.legend = c("obs. IN"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "rein", start.mon = start.mon, log = log.r, l.legend = c("obs. IN"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["ccin"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccin", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. IN"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccin", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. IN"), mar = c(3.1, 3.1, .5, .5))')
       }
     }
     
@@ -901,13 +901,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for ON
       if (exi.t["reon"] && exi.t["ccon"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(reon, ccon)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. ON", "sim. ON"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("ON conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(reon, ccon)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. ON", "sim. ON"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("ON conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["reon"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = reon), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. ON", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("ON conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = reon), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. ON", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("ON conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["ccon"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccon), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. ON", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("ON conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ccon), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. ON", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("ON conc. (",mu,"g l"^"-1", ")")))')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -917,13 +917,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for ON
       if (exi.t["reon"] && exi.t["ccon"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccon", obs = "reon", start.mon = start.mon, log = log.r, l.legend = c("sim. ON", "obs. ON"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccon", obs = "reon", start.mon = start.mon, log = log.r, l.legend = c("sim. ON", "obs. ON"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["reon"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "reon", start.mon = start.mon, log = log.r, l.legend = c("obs. ON"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "reon", start.mon = start.mon, log = log.r, l.legend = c("obs. ON"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["ccon"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccon", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. ON"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccon", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. ON"), mar = c(3.1, 3.1, .5, .5))')
       }
     }
     
@@ -1052,13 +1052,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for IN/TN ratio
       if (exists("reintn") && exists("ccintn")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(reintn, ccintn)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. IN/TN", "sim. IN/TN"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "IN/TN ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(reintn, ccintn)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. IN/TN", "sim. IN/TN"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "IN/TN ratio (%)")')
       } else if (exi.t["reon"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = reon), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. IN/TN", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "IN/TN ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = reon), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. IN/TN", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "IN/TN ratio (%)")')
       } else if (exi.t["ccon"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccon), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. IN/TN", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "IN/TN ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ccon), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. IN/TN", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "IN/TN ratio (%)")')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -1068,13 +1068,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for IN/TN ratio
       if (exists("reintn") && exists("ccintn")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = data.frame(xw[, 1], reintn, ccintn), sim = "ccintn", obs = "reintn", ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("sim. IN/TN", "obs. IN/TN"), mar = c(3.1, 3.1, .5, .5), ylab = "IN/TN ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = data.frame(xw[, 1], reintn, ccintn), sim = "ccintn", obs = "reintn", ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("sim. IN/TN", "obs. IN/TN"), mar = c(3.1, 3.1, .5, .5), ylab = "IN/TN ratio (%)")')
       } else if (exists("reintn")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = data.frame(xw[, 1], reintn), sim = NULL, obs = "reintn", ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("obs. IN/TN"), mar = c(3.1, 3.1, .5, .5), ylab = "IN/TN ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = data.frame(xw[, 1], reintn), sim = NULL, obs = "reintn", ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("obs. IN/TN"), mar = c(3.1, 3.1, .5, .5), ylab = "IN/TN ratio (%)")')
       } else if (exists("ccintn")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = data.frame(xw[, 1], ccintn), sim = "ccintn", obs = NULL, ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("sim. IN/TN"), mar = c(3.1, 3.1, .5, .5), ylab = "IN/TN ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = data.frame(xw[, 1], ccintn), sim = "ccintn", obs = NULL, ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("sim. IN/TN"), mar = c(3.1, 3.1, .5, .5), ylab = "IN/TN ratio (%)")')
       }
     }
     
@@ -1196,13 +1196,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for TP
       if (exi.t["retp"] && exi.t["cctp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(retp, cctp)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. TP", "sim. TP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(retp, cctp)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. TP", "sim. TP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TP conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["retp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = retp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. TP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = retp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. TP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TP conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["cctp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cctp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. TP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cctp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. TP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("TP conc. (",mu,"g l"^"-1", ")")))')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -1212,13 +1212,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for TP
       if (exi.t["retp"] && exi.t["cctp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "cctp", obs = "retp", start.mon = start.mon, log = log.r, l.legend = c("sim. TP", "obs. TP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "cctp", obs = "retp", start.mon = start.mon, log = log.r, l.legend = c("sim. TP", "obs. TP"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["retp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "retp", start.mon = start.mon, log = log.r, l.legend = c("obs. TP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "retp", start.mon = start.mon, log = log.r, l.legend = c("obs. TP"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["cctp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "cctp", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. TP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "cctp", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. TP"), mar = c(3.1, 3.1, .5, .5))')
       }
     }
     
@@ -1340,13 +1340,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for SP
       if (exi.t["resp"] && exi.t["ccsp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(resp, ccsp)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. SP", "sim. SP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("SP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(resp, ccsp)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. SP", "sim. SP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("SP conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["resp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = resp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. SP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("SP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = resp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. SP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("SP conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["ccsp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccsp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. SP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("SP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ccsp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. SP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("SP conc. (",mu,"g l"^"-1", ")")))')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -1356,13 +1356,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for SP
       if (exi.t["resp"] && exi.t["ccsp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccsp", obs = "resp", start.mon = start.mon, log = log.r, l.legend = c("sim. SP", "obs. SP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccsp", obs = "resp", start.mon = start.mon, log = log.r, l.legend = c("sim. SP", "obs. SP"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["resp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "resp", start.mon = start.mon, log = log.r, l.legend = c("obs. SP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "resp", start.mon = start.mon, log = log.r, l.legend = c("obs. SP"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["ccsp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccsp", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. SP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccsp", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. SP"), mar = c(3.1, 3.1, .5, .5))')
       }
     }
     
@@ -1486,13 +1486,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for PP
       if (exi.t["repp"] && exi.t["ccpp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(repp, ccpp)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. PP", "sim. PP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(repp, ccpp)), xscale = xscale, yscale = yscale, add.legend = T, l.legend = c("obs. PP", "sim. PP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["repp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = repp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. PP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = repp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "obs. PP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
       } else if (exi.t["ccpp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccpp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. PP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ccpp), xscale = xscale, yscale = yscale, add.legend = T, l.legend = "sim. PP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Concentration exceedance percentile", ylab = expression(paste("PP conc. (",mu,"g l"^"-1", ")")))')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -1502,13 +1502,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for PP
       if (exi.t["repp"] && exi.t["ccpp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccpp", obs = "repp", start.mon = start.mon, log = log.r, l.legend = c("sim. PP", "obs. PP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccpp", obs = "repp", start.mon = start.mon, log = log.r, l.legend = c("sim. PP", "obs. PP"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["repp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "repp", start.mon = start.mon, log = log.r, l.legend = c("obs. PP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "repp", start.mon = start.mon, log = log.r, l.legend = c("obs. PP"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["ccpp"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccpp", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. PP"), mar = c(3.1, 3.1, .5, .5))')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccpp", obs = NULL, start.mon = start.mon, log = log.r, l.legend = c("sim. PP"), mar = c(3.1, 3.1, .5, .5))')
       }
     }
     
@@ -1636,13 +1636,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for SP/TP ratio
       if (exists("resptp") && exists("ccsptp")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(resptp, ccsptp)), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. SP/TP", "sim. SP/TP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(resptp, ccsptp)), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. SP/TP", "sim. SP/TP"), col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
       } else if (exi.t["repp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = repp), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = "obs. SP/TP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = repp), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = "obs. SP/TP", col = c("black"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
       } else if (exi.t["ccpp"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccpp), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = "sim. SP/TP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ccpp), xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = "sim. SP/TP", col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = "Exceedance percentile", ylab = "SP/TP ratio (%)")')
       } else {
         cp <- cp + 1
         list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -1652,13 +1652,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for SP/TP ratio
       if (exists("resptp") && exists("ccsptp")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = data.frame(xw[, 1], resptp, ccsptp), sim = "ccsptp", obs = "resptp", ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("sim. SP/TP", "obs. SP/TP"), mar = c(3.1, 3.1, .5, .5), ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = data.frame(xw[, 1], resptp, ccsptp), sim = "ccsptp", obs = "resptp", ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("sim. SP/TP", "obs. SP/TP"), mar = c(3.1, 3.1, .5, .5), ylab = "SP/TP ratio (%)")')
       } else if (exists("resptp")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = data.frame(xw[, 1], resptp), sim = NULL, obs = "resptp", ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("obs. SP/TP"), mar = c(3.1, 3.1, .5, .5), ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = data.frame(xw[, 1], resptp), sim = NULL, obs = "resptp", ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("obs. SP/TP"), mar = c(3.1, 3.1, .5, .5), ylab = "SP/TP ratio (%)")')
       } else if (exists("ccsptp")){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = data.frame(xw[, 1], ccsptp), sim = "ccsptp", obs = NULL, ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("sim. SP/TP"), mar = c(3.1, 3.1, .5, .5), ylab = "SP/TP ratio (%)")')
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = data.frame(xw[, 1], ccsptp), sim = "ccsptp", obs = NULL, ts.in = timestep, start.mon = start.mon, log = log.r, l.legend = c("sim. SP/TP"), mar = c(3.1, 3.1, .5, .5), ylab = "SP/TP ratio (%)")')
       }
     }
     
@@ -1789,21 +1789,21 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for SS
       if (exi.t["ress"] && exi.t["ccss"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(ress, ccss)), 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(ress, ccss)), 
                                      xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. SS", "sim. SS"), 
                                      col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ress"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ress), xscale = xscale, yscale = yscale, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ress), xscale = xscale, yscale = yscale, 
                                      add.legend = TRUE, l.legend = "obs. SS", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
                                      ylim = lim.ss, 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccss"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccss), xscale = xscale, yscale = yscale, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ccss), xscale = xscale, yscale = yscale, 
                                      add.legend = TRUE, l.legend = "sim. SS", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
                                      ylim = lim.ss, 
                                      xlab = "Concentration exceedance percentile", 
@@ -1817,17 +1817,17 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for SS
       if (exi.t["ress"] && exi.t["ccss"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccss", obs = "ress", start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccss", obs = "ress", start.mon = start.mon, 
                                      log = log.r, l.legend = c("sim. SS", "obs. SS"), mar = c(3.1, 3.1, .5, .5),
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ress"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "ress", start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "ress", start.mon = start.mon, 
                                      log = log.r, l.legend = c("obs. SS"), mar = c(3.1, 3.1, .5, .5),
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccss"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccss", obs = NULL, start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccss", obs = NULL, start.mon = start.mon, 
                                      log = log.r, l.legend = c("sim. SS"), mar = c(3.1, 3.1, .5, .5), ylim = lim.ss, 
                                      ylab = expression(paste("SS conc. (mg l"^"-1", ")")))')
       }
@@ -1971,20 +1971,20 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for TS
       if (exi.t["rets"] && exi.t["ccts"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rets, ccts)), 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(rets, ccts)), 
                                      xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. TS", "sim. TS"), 
                                      col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["rets"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rets), xscale = xscale, yscale = yscale, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = rets), xscale = xscale, yscale = yscale, 
                                      add.legend = TRUE, l.legend = "obs. TS", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccts"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ccts), xscale = xscale, yscale = yscale, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ccts), xscale = xscale, yscale = yscale, 
                                      add.legend = TRUE, l.legend = "sim. TS", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
@@ -1997,17 +1997,17 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for TS
       if (exi.t["rets"] && exi.t["ccts"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccts", obs = "rets", start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccts", obs = "rets", start.mon = start.mon, 
                                      log = log.r, l.legend = c("sim. TS", "obs. TS"), mar = c(3.1, 3.1, .5, .5),
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["rets"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "rets", start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "rets", start.mon = start.mon, 
                                      log = log.r, l.legend = c("obs. TS"), mar = c(3.1, 3.1, .5, .5),
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       } else if (exi.t["ccts"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "ccts", obs = NULL, start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "ccts", obs = NULL, start.mon = start.mon, 
                                      log = log.r, l.legend = c("sim. TS"), mar = c(3.1, 3.1, .5, .5),
                                      ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
       }
@@ -2139,20 +2139,20 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 4: CDC for T1
       if (exi.t["ret1"] && exi.t["cct1"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(ret1, cct1)), 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(ret1, cct1)), 
                                      xscale = xscale, yscale = yscale, add.legend = TRUE, l.legend = c("obs. T1", "sim. T1"), 
                                      col = c("black", "red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = ylab.t1)')
       } else if (exi.t["ret1"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = ret1), xscale = xscale, yscale = yscale, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = ret1), xscale = xscale, yscale = yscale, 
                                      add.legend = TRUE, l.legend = "obs. T1", col = c("black"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = ylab.t1)')
       } else if (exi.t["cct1"]) {
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cct1), xscale = xscale, yscale = yscale, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cct1), xscale = xscale, yscale = yscale, 
                                      add.legend = TRUE, l.legend = "sim. T1", col = c("red"), mar = c(3.1, 3.1, .5, .5), 
                                      xlab = "Concentration exceedance percentile", 
                                      ylab = ylab.t1)')
@@ -2165,15 +2165,15 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       ## panel 5: sim-obs regime plot for T1
       if (exi.t["ret1"] && exi.t["cct1"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "cct1", obs = "ret1", start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "cct1", obs = "ret1", start.mon = start.mon, 
                                      log = log.r, l.legend = c("sim. T1", "obs. T1"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["ret1"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = NULL, obs = "ret1", start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = NULL, obs = "ret1", start.mon = start.mon, 
                                      log = log.r, l.legend = c("obs. T1"), mar = c(3.1, 3.1, .5, .5))')
       } else if (exi.t["cct1"]){
         cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = 'PlotSimObsRegime(x = xw, sim = "cct1", obs = NULL, start.mon = start.mon, 
+        list.plotexpr[[cp]] <- parse(text = '.PlotSimObsRegime(x = xw, sim = "cct1", obs = NULL, start.mon = start.mon, 
                                      log = log.r, l.legend = c("sim. T1"), mar = c(3.1, 3.1, .5, .5))')
       }
     }

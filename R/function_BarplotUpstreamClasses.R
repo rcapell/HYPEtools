@@ -56,6 +56,7 @@
 #' @importFrom graphics par barplot mtext abline legend box
 #' @export
 
+# Exported function
 BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "crop"), desc = NULL, class.names = NULL, xlab = NULL, 
                                     ylab = "Area fraction (%)", ylim = c(-.05,  max(x[, -1] * 150)), names.arg = rep("", ncol(x) - 1), 
                                     cex.axis = 1, cex.names = .9, col = NULL, border = NA, legend.text = NULL, legend.pos = "left", 
@@ -64,6 +65,28 @@ BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "cr
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
   on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
+  
+  # Call function and pass arguments
+  .BarplotUpstreamClasses(x=x, type=type, desc=desc, class.names=class.names, xlab=xlab,
+                          ylab=ylab, ylim=ylim, names.arg=names.arg, cex.axis=cex.axis,
+                          cex.names=cex.names, col=col, border=border, legend.text=legend.text,
+                          legend.pos=legend.pos, pars=pars)
+  
+  
+}
+
+# Internal function used for PlotBasinSummary
+.BarplotUpstreamClasses <- function (x, type = c("custom", "landuse", "soil", "crop"), desc = NULL, class.names = NULL, xlab = NULL, 
+                                    ylab = "Area fraction (%)", ylim = c(-.05,  max(x[, -1] * 150)), names.arg = rep("", ncol(x) - 1), 
+                                    cex.axis = 1, cex.names = .9, col = NULL, border = NA, legend.text = NULL, legend.pos = "left", 
+                                    pars = list(mar = c(1.5, 3, .5, .5) + .1, mgp = c(1.5, .3, 0),  tcl = NA, xaxs = "i")) {
+  
+  # If user calls the internal function using HYPEtools:::.BarplotUpstreamClasses(), then make sure that par is reset on exit
+  if(!length(sys.calls())>1){
+    warning("Please use HYPEtools::BarplotUpstreamClasses() instead of the internal HYPEtools:::.BarplotUpstreamClasses() function")
+    userpar <- par(no.readonly = TRUE) # Backup par
+    on.exit(suppressWarnings(par(userpar))) # Restore par on function exit
+  }
   
   # input argument checks
   type <- match.arg(type)

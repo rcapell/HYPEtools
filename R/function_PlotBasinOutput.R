@@ -248,17 +248,17 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     # conditional: prepare FDC plot call depending on data availability
     if (exi.t["rout"] && exi.t["cout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = "gauss", 
+      list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = "gauss", 
                                    yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = c("Qobs", "Qsim"), 
                                    col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["rout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = rout), xscale = "gauss", 
+      list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = rout), xscale = "gauss", 
                                    yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Qobs", 
                                    col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["cout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotDurationCurve(ExtractFreq(data = cout), xscale = "gauss", 
+      list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cout), xscale = "gauss", 
                                    yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Qsim", 
                                    col = c("red"), mar = c(3.1, 3.1, .5, .5))')
     } else {
@@ -310,18 +310,18 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     # conditional: prepare regime plot call depending on data availability
     if (exi.t["rout"] && exi.t["cout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), 
+      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), 
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
                                    add.legend = TRUE, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), 
                                    mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else if (exi.t["rout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), 
+      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), 
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
                                    add.legend = TRUE, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else if (exi.t["cout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), 
+      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), 
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
                                    add.legend = TRUE, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else {
