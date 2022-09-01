@@ -1,7 +1,12 @@
 ## Resubmission 2
-This is a resubmission. In this version we have made the following requested changes:
+This is a resubmission after comments and change requests by Victoria Wimmer. In this version we have made the following requested changes:
 * Removed redundant "Functions to" from the beginning of DESCRIPTION
+* We have no relevant references to describe methods in our package. The package objective is to provide service functions in order to integrate a 
+hydrological model (HYPE) into R workflows
+* Updated code to remove unexecutable code in HypeMultiVar.Rd
 * Updated code to use TRUE and FALSE instead of T and F
+* Updated \value section where it was missing before
+* Examples updated to contain executable code, based on demo data packaged in inst/demo_model 
 * Removed default write path from PlotBasinOutput(), PlotBasinSummary(), and functions in functioncollection_export.R
 * Updated MapRegionalSources(), PlotSubbasinRouting(), PlotMapPoints(), PlotMapOutput() functions to ensure that they do not write by default to the user's home filespace
 * Updated ReadPar(), PlotBasinOutput(), and PlotBasinSummary() functions so that they do not change user options

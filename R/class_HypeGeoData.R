@@ -40,7 +40,7 @@
 #' \code{\link{ReadGeoData}}
 #' 
 #' @examples
-#' te <- data.table::fread(file = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te <- data.table::fread(file = system.file("demo_model", "GeoData.txt", package = "HYPEtools"), data.table = FALSE)
 #' HypeGeoData(x = te)
 #' summary(te)
 #' 

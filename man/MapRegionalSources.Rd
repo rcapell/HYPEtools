@@ -96,6 +96,6 @@ te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package 
 te3 <- data.frame(SUBID = c(3594, 63794), REGSRCID = c(40556, 3486))
 # Plot regional irrigation links between subbasins with subbasin outlines as background
 MapRegionalSources(data = te3, map = te1, map.subid.column = 25)
-plot(st_geometry(te2), add = T, border = 2)
+plot(st_geometry(te2), add = TRUE, border = 2)
 
 }
