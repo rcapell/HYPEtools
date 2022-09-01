@@ -82,7 +82,8 @@ For the observed variable, the aggregation is fixed to months, in order to aggre
 }
 \examples{
 # Plot observed and simulated discharge
-te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+te <- ReadBasinOutput(filename = system.file("demo_model",
+"results", "0003587.txt", package = "HYPEtools"))
 PlotSimObsRegime(x = te, sim = "cout", obs = "rout", start.mon = 10)
 
 }

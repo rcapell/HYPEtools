@@ -26,7 +26,8 @@ Usually, this class will be assigned to GeoData tables on import with \code{\lin
 \code{HypeGeoData} data frames.
 }
 \examples{
-te <- data.table::fread(file = system.file("demo_model", "GeoData.txt", package = "HYPEtools"), data.table = FALSE)
+te <- data.table::fread(file = system.file("demo_model",
+"GeoData.txt", package = "HYPEtools"), data.table = FALSE)
 HypeGeoData(x = te)
 summary(te)
 

@@ -26,8 +26,9 @@ No return value, called for export to text files.
 \code{WritePar} writes a 'par.txt' file, typically originating from an imported and modified 'par.txt'.
 }
 \examples{
-te <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
-# Note that par files loose all comment rows on import
+te <- ReadPar(filename = system.file("demo_model",
+"par.txt", package = "HYPEtools"))
+# Note that par files lose all comment rows on import
 WritePar(x = te, filename = tempfile())
 
 

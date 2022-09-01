@@ -62,7 +62,8 @@ on import.
 These functions are just shortcuts for \code{\link{attr}}.
 }
 \examples{
-te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+te <- ReadBasinOutput(filename = system.file("demo_model", "results",
+"0003587.txt", package = "HYPEtools"))
 hypeunit(te)
 timestep(te)
 subid(te)

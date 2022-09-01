@@ -82,7 +82,8 @@ Formatting example for description.txt files:
 \code{None;Row;Aut.-sown} \cr
 }
 \examples{
-te <- ReadDescription(filename = system.file("demo_model", "description.txt", package = "HYPEtools"))
+te <- ReadDescription(filename = system.file("demo_model",
+"description.txt", package = "HYPEtools"))
 te
 
 }

@@ -29,7 +29,8 @@ where \code{\link{ReadGeoClass}} stores such comments. Description files (see \c
 way of storing that information.
 }
 \examples{
-te <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+te <- ReadGeoClass(filename = system.file("demo_model",
+"GeoClass.txt", package = "HYPEtools"))
 WriteGeoClass(x = te, filename = tempfile())
 
 }

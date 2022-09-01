@@ -36,7 +36,8 @@ The function interprets character-coded time steps (e.g. \code{"DD"} for daily t
 function. Please update issue #106 on \href{https://github.com/rcapell/HYPEtools}{github} if you need support for sub-daily time steps!
 }
 \examples{
-te <- ReadSimass(filename = system.file("demo_model", "results", "simass.txt", package = "HYPEtools"))
+te <- ReadSimass(filename = system.file("demo_model",
+"results", "simass.txt", package = "HYPEtools"))
 te
 
 }

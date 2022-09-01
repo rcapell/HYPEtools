@@ -33,7 +33,8 @@ information in the imported R object, users must provide the actual model evalua
 in argument \code{nhour} in the sub-daily case.
 }
 \examples{
-te <- ReadSubass(filename = system.file("demo_model", "results", "subass1.txt", package = "HYPEtools"))
+te <- ReadSubass(filename = system.file("demo_model",
+"results", "subass1.txt", package = "HYPEtools"))
 te
 
 }

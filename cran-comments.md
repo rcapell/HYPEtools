@@ -6,7 +6,7 @@ hydrological model (HYPE) into R workflows
 * Updated code to remove unexecutable code in HypeMultiVar.Rd
 * Updated code to use TRUE and FALSE instead of T and F
 * Updated \value section where it was missing before
-* Examples updated to contain executable code, based on demo data packaged in inst/demo_model 
+* Examples updated to contain executable code, based on demo data packaged in inst/demo_model. \dontrun{} was used for PlotBasinOutput() and PlotBasinSummary() because these functions plot to the screen device and R CMD check says that screen devices should not be used in examples.
 * Removed default write path from PlotBasinOutput(), PlotBasinSummary(), and functions in functioncollection_export.R
 * Updated MapRegionalSources(), PlotSubbasinRouting(), PlotMapPoints(), PlotMapOutput() functions to ensure that they do not write by default to the user's home filespace
 * Updated ReadPar(), PlotBasinOutput(), and PlotBasinSummary() functions so that they do not change user options

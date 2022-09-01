@@ -43,8 +43,10 @@ call the data frame method explicitly (\code{merge.data.frame()}).
 }
 \examples{
 # import and create dummy data
-te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
-te2 <- data.frame(SUBID = sample(x = te1$SUBID, size = 10), loc_vol = runif(n = 10, 10, 50))
+te1 <- ReadGeoData(filename = system.file("demo_model",
+"GeoData.txt", package = "HYPEtools"))
+te2 <- data.frame(SUBID = sample(x = te1$SUBID, size = 10),
+loc_vol = runif(n = 10, 10, 50))
 merge(x = te1, y = te2)
 
 }

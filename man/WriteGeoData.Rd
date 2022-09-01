@@ -31,7 +31,8 @@ HYPE does neither allow empty values in any GeoData column nor any string elemen
 function will return with warnings if \code{NA}s or long strings were exported.
 }
 \examples{
-te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+te <- ReadGeoData(filename = system.file("demo_model",
+"GeoData.txt", package = "HYPEtools"))
 summary(te)
 WriteGeoData(x = te, filename = tempfile())
 

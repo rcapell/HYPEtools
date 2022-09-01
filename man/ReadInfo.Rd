@@ -28,7 +28,8 @@ provide access to settings and details of a model run, not to mirror the exact i
 corresponding export function exists.
 }
 \examples{
-te <- ReadInfo(filename = system.file("demo_model", "info.txt", package = "HYPEtools"))
+te <- ReadInfo(filename = system.file("demo_model",
+"info.txt", package = "HYPEtools"))
 te
 
 }
