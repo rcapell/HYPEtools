@@ -94,8 +94,10 @@
 #' @examples
 #' # Import plot data and subbasin polygons
 #' require(sf)
-#' te1 <- ReadSubass(filename = system.file("demo_model", "results", "subass1.txt", package = "HYPEtools"))
-#' te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_station.shp", package = "HYPEtools"))
+#' te1 <- ReadSubass(filename = system.file("demo_model", "results", "subass1.txt", 
+#'                                          package = "HYPEtools"))
+#' te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_station.shp", 
+#'                                  package = "HYPEtools"))
 #' te2$SUBID <- 3587 # add station SUBID to point
 #' te3 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package = "HYPEtools"))
 #' # plot NSE performance for discharge

@@ -53,7 +53,8 @@
 #' # HYPE soil load (sl) variables for TN, dummy loads
 #' GwRetention(nfrz = data.frame(SUBID = te1$SUBID, SL06 = runif(n = nrow(te1), 10, 50)), 
 #'             gts3 = data.frame(SUBID = te1$SUBID, SL17 = runif(n = nrow(te1), 10, 50)), 
-#'             nfs3 = data.frame(SUBID = te1$SUBID, SL18 = runif(n = nrow(te1), 10, 50)), gd = te1, par = te2)
+#'             nfs3 = data.frame(SUBID = te1$SUBID, SL18 = runif(n = nrow(te1), 10, 50)), 
+#'             gd = te1, par = te2)
 #' 
 #' @export
 
