@@ -45,7 +45,7 @@
 #' te1 <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
 #' # Create optimisation parameters for a Monte Carlo run with 1000 iterations
 #' te2 <- data.frame(key = c("task", "num_mc", "task"), value = c("MC", 1000, "WS"))
-#' # Create an optpar file structure for HYPE recession coefficients, with parameter limits set to current values
+#' # Create an optpar file structure for HYPE recession coefficients
 #' te3 <- CreateOptpar(x = te1, pars = c("rrcs1", "rrcs2"), tasks = te2)
 #' te3
 #' 

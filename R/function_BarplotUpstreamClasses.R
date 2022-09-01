@@ -51,7 +51,8 @@
 #' # Import source data
 #' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
 #' te2 <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
-#' te3 <- ReadDescription(filename = system.file("demo_model", "description.txt", package = "HYPEtools"))
+#' te3 <- ReadDescription(filename = system.file("demo_model", "description.txt", 
+#'                        package = "HYPEtools"))
 #' # Calculate plot data, upstream soil fractions
 #' te4 <- UpstreamGroupSLCClasses(subid = 63794, gd = te1, gcl = te2, type = "soil")
 #' # Function call

@@ -64,13 +64,15 @@
 #'
 #' @examples
 #' # Source data, HYPE basin output with a number of result variables
-#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", 
+#' package = "HYPEtools"))
 #' # Daily discharge regime, computed and observed, hydrologigical year from October 
 #' AnnualRegime(te[, c("DATE", "COUT", "ROUT")], ts.in = "day", start.mon = 10)
 #' # Id., aggregated to weekly means
 #' AnnualRegime(te[, c("DATE", "COUT", "ROUT")], ts.in = "day", ts.out = "week", start.mon = 10)
 #' # Long format, e.g. for subsequent plotting with ggplot
-#' AnnualRegime(te[, c("DATE", "COUT", "ROUT")], ts.in = "day", ts.out = "week", format = "long", start.mon = 10)
+#' AnnualRegime(te[, c("DATE", "COUT", "ROUT")], ts.in = "day", ts.out = "week", format = "long", 
+#' start.mon = 10)
 #' # Precipitation regime, monthly sums
 #' AnnualRegime(te[, c("DATE", "UPCPRC")], ts.in = "day", ts.out = "month", stat = "sum")
 #' 

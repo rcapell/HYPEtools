@@ -35,10 +35,11 @@
 #' 
 #' @examples
 #' # Import source data
-#' te1 <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+#' te1 <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", 
+#'                        package = "HYPEtools"))
 #' te2 <- ExtractFreq(te1[, c("COUT", "ROUT")])
 #' # Plot flow duration curves for simulated and observed discharge
-#' PlotDurationCurve(freq = te2, add.legend = T, col = c("red", "blue"))
+#' PlotDurationCurve(freq = te2, add.legend = TRUE, col = c("red", "blue"))
 #' 
 #' @importFrom graphics par grid axis box lines abline axTicks legend
 #' @importFrom stats qnorm

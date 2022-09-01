@@ -41,7 +41,8 @@ model files using the various HYPEtools write functions. However, it can also be
 te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
 te1$SUBID[1] <- 1
 # Compare with original file
-te2 <- CompareFiles(system.file("demo_model", "GeoData.txt", package = "HYPEtools"), te1, type = "GeoData")
+te2 <- CompareFiles(system.file("demo_model", "GeoData.txt", package = "HYPEtools"), te1, 
+                    type = "GeoData")
 te2
 
 }
