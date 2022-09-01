@@ -200,13 +200,8 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' issue from arising.
 #' 
 #' @examples
-<<<<<<< HEAD
-#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", 
-#'                       package = "HYPEtools"))
-=======
 #' te <- ReadBasinOutput(filename = system.file("demo_model",
 #' "results", "0003587.txt", package = "HYPEtools"))
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' 
 #' @importFrom data.table fread
 #' @importFrom stats na.fail
@@ -809,13 +804,8 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' issue from arising.
 #' 
 #' @examples
-<<<<<<< HEAD
-#' te <- ReadMapOutput(filename = system.file("demo_model", "results", "mapEVAP.txt", 
-#'                     package = "HYPEtools"), dt.format = NULL)
-=======
 #' te <- ReadMapOutput(filename = system.file("demo_model",
 #' "results", "mapEVAP.txt", package = "HYPEtools"), dt.format = NULL)
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' te
 #' 
 #' @importFrom data.table fread transpose :=
@@ -996,13 +986,8 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' issue from arising.
 #' 
 #' @examples 
-<<<<<<< HEAD
-#' te <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", 
-#'                      package = "HYPEtools"), dt.format = "%Y-%m")
-=======
 #' te <- ReadTimeOutput(filename = system.file("demo_model",
 #' "results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "%Y-%m")
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' te
 #' 
 #' @importFrom data.table fread is.data.table data.table
@@ -1981,13 +1966,8 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 #' keyword detailing the evaluation time step.
 #' 
 #' @examples
-<<<<<<< HEAD
-#' te <- ReadSubass(filename = system.file("demo_model", "results", "subass1.txt", 
-#'                  package = "HYPEtools"))
-=======
 #' te <- ReadSubass(filename = system.file("demo_model",
 #' "results", "subass1.txt", package = "HYPEtools"))
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' te
 #' 
 #' @importFrom utils read.table
@@ -2101,13 +2081,8 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FAL
 #' \code{Soil}, \code{so} (short names), \code{cr.id}, \code{Crop}, \code{cr} (short names)
 #' 
 #' @examples
-<<<<<<< HEAD
-#' te <- ReadDescription(filename = system.file("demo_model", "description.txt", 
-#'                       package = "HYPEtools"))
-=======
 #' te <- ReadDescription(filename = system.file("demo_model",
 #' "description.txt", package = "HYPEtools"))
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' te
 #'
 #' @export 
@@ -2206,13 +2181,8 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 #' \code{\link{ReadSubass}}
 #' 
 #' @examples
-<<<<<<< HEAD
-#' te <- ReadSimass(filename = system.file("demo_model", "results", "simass.txt", 
-#'                  package = "HYPEtools"))
-=======
 #' te <- ReadSimass(filename = system.file("demo_model",
 #' "results", "simass.txt", package = "HYPEtools"))
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' te
 #' 
 #' @importFrom stats na.omit

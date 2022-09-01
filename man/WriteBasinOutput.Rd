@@ -25,8 +25,8 @@ Function to export a basin output file from R.
 \code{WriteBasinOutput} exports a dataframe with headers and formatting options adjusted to match HYPE's basin output files.
 }
 \examples{
-te <- ReadBasinOutput(filename = system.file("demo_model",
-"results", "0003587.txt", package = "HYPEtools"))
+te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", 
+                      package = "HYPEtools"))
 WriteBasinOutput(x = te, filename = tempfile())
 
 }

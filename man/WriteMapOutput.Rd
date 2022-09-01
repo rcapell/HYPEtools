@@ -28,8 +28,8 @@ Function to export a map output file from R.
 The function attempts to format date-time information to strings and will return a warning if the attempt fails.
 }
 \examples{
-te <- ReadMapOutput(filename = system.file("demo_model",
-"results", "mapEVAP.txt", package = "HYPEtools"), dt.format = NULL)
+te <- ReadMapOutput(filename = system.file("demo_model", "results", "mapEVAP.txt", 
+                    package = "HYPEtools"), dt.format = NULL)
 WriteMapOutput(x = te, filename = tempfile())
 
 }

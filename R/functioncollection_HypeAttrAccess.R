@@ -20,13 +20,8 @@
 #' The extractor functions return the value of the respective attribute or \code{NULL} if no matching attribute is found.
 #' 
 #' @examples
-<<<<<<< HEAD
-#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", 
-#'                       package = "HYPEtools"))
-=======
 #' te <- ReadBasinOutput(filename = system.file("demo_model", "results",
 #' "0003587.txt", package = "HYPEtools"))
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' hypeunit(te)
 #' timestep(te)
 #' subid(te)

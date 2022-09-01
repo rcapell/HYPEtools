@@ -94,17 +94,10 @@
 #' @examples
 #' # Import plot data and subbasin polygons
 #' require(sf)
-<<<<<<< HEAD
-#' te1 <- ReadSubass(filename = system.file("demo_model", "results", "subass1.txt", 
-#'                                          package = "HYPEtools"))
-#' te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_station.shp", 
-#'                                  package = "HYPEtools"))
-=======
 #' te1 <- ReadSubass(filename = system.file("demo_model",
 #' "results", "subass1.txt", package = "HYPEtools"))
 #' te2 <- st_read(dsn = system.file("demo_model",
 #' "gis", "Nytorp_station.gpkg", package = "HYPEtools"))
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' te2$SUBID <- 3587 # add station SUBID to point
 #' te3 <- st_read(dsn = system.file("demo_model",
 #' "gis", "Nytorp_map.gpkg", package = "HYPEtools"))

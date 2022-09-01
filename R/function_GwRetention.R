@@ -53,19 +53,10 @@
 #' "par.txt", package = "HYPEtools"))
 #' te2$locsoil <- .3
 #' # HYPE soil load (sl) variables for TN, dummy loads
-<<<<<<< HEAD
 #' GwRetention(nfrz = data.frame(SUBID = te1$SUBID, SL06 = runif(n = nrow(te1), 10, 50)), 
 #'             gts3 = data.frame(SUBID = te1$SUBID, SL17 = runif(n = nrow(te1), 10, 50)), 
 #'             nfs3 = data.frame(SUBID = te1$SUBID, SL18 = runif(n = nrow(te1), 10, 50)), 
 #'             gd = te1, par = te2)
-=======
-#' GwRetention(nfrz = data.frame(SUBID = te1$SUBID,
-#' SL06 = runif(n = nrow(te1), 10, 50)), 
-#'             gts3 = data.frame(SUBID = te1$SUBID,
-#'             SL17 = runif(n = nrow(te1), 10, 50)), 
-#'             nfs3 = data.frame(SUBID = te1$SUBID,
-#'             SL18 = runif(n = nrow(te1), 10, 50)), gd = te1, par = te2)
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' 
 #' @export
 

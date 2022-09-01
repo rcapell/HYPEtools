@@ -44,9 +44,8 @@
 #' @seealso \code{\link{ReadOptpar}} with a description of the expected content of \code{x}.
 #' 
 #' @examples
-#' te <- ReadPar(filename = system.file("demo_model",
-#' "par.txt", package = "HYPEtools"))
-#' # Note that par files lose all comment rows on import
+#' te <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
+#' # Note that par files loose all comment rows on import
 #' WritePar(x = te, filename = tempfile())
 #' 
 #' 
@@ -94,8 +93,7 @@ WritePar <- function (x, filename, digits = 10, nsmall = 1) {
 #' No return value, called for export to text files.
 #' 
 #' @examples
-#' te <- ReadGeoData(filename = system.file("demo_model",
-#' "GeoData.txt", package = "HYPEtools"))
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
 #' summary(te)
 #' WriteGeoData(x = te, filename = tempfile())
 #' 
@@ -169,8 +167,7 @@ WriteGeoData <- function(x, filename, digits = 6, scipen = getOption('scipen', 0
 #' No return value, called for export to text files.
 #' 
 #' @examples
-#' te <- ReadGeoClass(filename = system.file("demo_model",
-#' "GeoClass.txt", package = "HYPEtools"))
+#' te <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
 #' WriteGeoClass(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite
@@ -508,8 +505,8 @@ WriteXobs <- function(x, filename, append = FALSE, comment = NULL, variable = NU
 #' No return value, called for file export.
 #' 
 #' @examples
-#' te <- ReadBasinOutput(filename = system.file("demo_model",
-#' "results", "0003587.txt", package = "HYPEtools"))
+#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", 
+#'                       package = "HYPEtools"))
 #' WriteBasinOutput(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite
@@ -581,8 +578,8 @@ WriteBasinOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' No return value, called for export to text files.
 #' 
 #' @examples
-#' te <- ReadTimeOutput(filename = system.file("demo_model",
-#' "results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "%Y-%m")
+#' te <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", 
+#'                      package = "HYPEtools"), dt.format = "%Y-%m")
 #' WriteTimeOutput(x = te, filename = tempfile(), dt.format = "%Y-%m")
 #' 
 #' @importFrom data.table fwrite
@@ -643,8 +640,8 @@ WriteTimeOutput <- function(x, filename, dt.format = "%Y-%m-%d") {
 #' No return value, called for export to text files.
 #' 
 #' @examples
-#' te <- ReadMapOutput(filename = system.file("demo_model",
-#' "results", "mapEVAP.txt", package = "HYPEtools"), dt.format = NULL)
+#' te <- ReadMapOutput(filename = system.file("demo_model", "results", "mapEVAP.txt", 
+#'                     package = "HYPEtools"), dt.format = NULL)
 #' WriteMapOutput(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite

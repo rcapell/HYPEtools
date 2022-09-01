@@ -26,8 +26,8 @@ Function to export a time output file from R.
 \code{WriteTimeOutput} exports a data frame with headers and formatting options adjusted to match HYPE's time output files.
 }
 \examples{
-te <- ReadTimeOutput(filename = system.file("demo_model",
-"results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "\%Y-\%m")
+te <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", 
+                     package = "HYPEtools"), dt.format = "\%Y-\%m")
 WriteTimeOutput(x = te, filename = tempfile(), dt.format = "\%Y-\%m")
 
 }

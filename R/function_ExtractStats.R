@@ -31,13 +31,8 @@
 #' 
 #' @examples
 #' # Import example data
-<<<<<<< HEAD
-#' te1 <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", 
-#'                       package = "HYPEtools"), dt.format = "%Y-%m")
-=======
 #' te1 <- ReadTimeOutput(filename = system.file("demo_model", "results",
 #' "timeCOUT.txt", package = "HYPEtools"), dt.format = "%Y-%m")
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' # Extract maxima
 #' ExtractStats(x = te1, start.mon = 1, FUN = max)
 #' # Multiple result stats: Extract min, mean, and max in one go:

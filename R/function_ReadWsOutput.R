@@ -66,14 +66,9 @@
 #' }
 #' 
 #' @examples
-<<<<<<< HEAD
-#' te <- ReadWsOutput(path = system.file("demo_model", "results", package = "HYPEtools"), 
-#'                    type = "map", hype.var = "cout", dt.format = "%Y-%m")
-=======
 #' te <- ReadWsOutput(path = system.file("demo_model",
 #' "results", package = "HYPEtools"), type = "map",
 #' hype.var = "cout", dt.format = "%Y-%m")
->>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' te
 #' 
 #' @importFrom pbapply pblapply
