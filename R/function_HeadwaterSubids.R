@@ -1,9 +1,5 @@
-#' @export
-
-#' @title
 #' Find all headwater SUBIDs of a model domain
 #'
-#' @description
 #' Function to find all headwater SUBIDs of a HYPE model domain.
 #'
 #' @param gd A data frame, containing among others two columns \code{subid} and \code{maindown}. Column names are not case-sensitive 
@@ -21,7 +17,10 @@
 #' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{HeadwaterSubids(gd = mygeodata)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' HeadwaterSubids(gd = te)
+#' 
+#' @export
 
 
 HeadwaterSubids <- function(gd) {

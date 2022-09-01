@@ -41,7 +41,11 @@ but not including potential irrigation links or groundwater flows.
 This function is now superseded by \code{\link{UpstreamGeoData}}, which returns more upstream variables.
 }
 \examples{
-\dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}
+# Import source data
+te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+# Upstream SLCs for single SUBID
+UpstreamSLCClasses(subid = 3361, gd = te1, progbar = FALSE)
+
 }
 \seealso{
 \code{\link{SumUpstreamArea}}, \code{\link{UpstreamGeoData}}, \code{\link{UpstreamGroupSLCClasses}}

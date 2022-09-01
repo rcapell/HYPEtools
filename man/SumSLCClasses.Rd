@@ -26,10 +26,9 @@ SumSLCClasses(gd, plot.box = TRUE, silent = FALSE, ...)
 GeoData data frame sum up to 1.
 }
 \examples{
-\dontrun{
-my.gd <- ReadGeoData("GeoData.txt")
-SumSLCClasses(gd = my.gd, plot.box = FALSE)
-my.gd[SumSLCClasses(gd = my.gd, plot.box = FALSE, silent = TRUE) < .5, ]
-}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+SumSLCClasses(gd = te, plot.box = TRUE)
+SumSLCClasses(gd = te, plot.box = FALSE)
+
 
 }

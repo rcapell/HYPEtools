@@ -92,6 +92,7 @@ For large numbers of result files, simulations can be partially imported using a
 memory exceedance problems.
 }
 \examples{
-\dontrun{ReadWsOutput(path = "../my_optim_results/", hype.var = "cout", dt.format = "\%Y-\%m")}
+te <- ReadWsOutput(path = system.file("demo_model", "results", package = "HYPEtools"), type = "map", hype.var = "cout", dt.format = "\%Y-\%m")
+te
 
 }

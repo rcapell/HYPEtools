@@ -15,11 +15,10 @@
 #' \code{SumSLCClasses} returns a vector of SLC sums, invisibly if \code{plot.box} is \code{TRUE}. 
 #' 
 #' @examples
-#' \dontrun{
-#' my.gd <- ReadGeoData("GeoData.txt")
-#' SumSLCClasses(gd = my.gd, plot.box = FALSE)
-#' my.gd[SumSLCClasses(gd = my.gd, plot.box = FALSE, silent = TRUE) < .5, ]
-#' }
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' SumSLCClasses(gd = te, plot.box = TRUE)
+#' SumSLCClasses(gd = te, plot.box = FALSE)
+#' 
 #' 
 #' @importFrom graphics boxplot
 #' @export

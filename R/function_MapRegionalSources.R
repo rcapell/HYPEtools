@@ -5,7 +5,7 @@
 #'
 #' @param data Dataframe, containing a column \code{SUBID} and a column \code{REGSRCID} (not case-sensitive), which identify
 #' irrigation target and source sub-catchments, respectively. Typically a HYPE 'MgmtData.txt' file, imported with \code{\link{ReadMgmtData}}.
-#' @param map A \code{SpatialPointsDataFrame}, \code{SpatialPolygonsDataFrame}, or \code{sf} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
+#' @param map A \code{sf}, \code{SpatialPointsDataFrame}, or \code{SpatialPolygonsDataFrame} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
 #' centre-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link{st_centroid}}). Spatial data import requires additional packages, e.g. \code{sf}.
 #' @param map.subid.column Integer, index of the column in the \code{map} column holding SUBIDs (sub-catchment IDs).
 #' @param digits Integer, number of digits to which irrigation connection lengths are rounded to.
@@ -42,9 +42,15 @@
 #' polygon data, then the interactive map will include the polygons as a background layer.
 #'
 #' @examples
-#' \dontrun{
-#' MapRegionalSources(data = myMgmtData, map = mySUBIDCentrePoints)
-#' }
+#' # Import subbasin centroids and subbasin polygons (to use as background)
+#' require(sf)
+#' te1 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_centroids.shp", package = "HYPEtools"))
+#' te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package = "HYPEtools"))
+#' # Create dummy MgmtData file with irrigation links
+#' te3 <- data.frame(SUBID = c(3594, 63794), REGSRCID = c(40556, 3486))
+#' # Plot regional irrigation links between subbasins with subbasin outlines as background
+#' MapRegionalSources(data = te3, map = te1, map.subid.column = 25)
+#' plot(st_geometry(te2), add = T, border = 2)
 #'
 #' @importFrom dplyr all_of left_join mutate rename_with select sym %>%
 #' @importFrom pbapply pblapply
@@ -97,7 +103,7 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
     # Rename data columns to all uppercase
     colnames(data) <- toupper(colnames(data))
 
-    # Get column indices fortarget and regional source SUBIDs
+    # Get column indices for target and regional source SUBIDs
     col.subid <- which(names(data) == "SUBID")
     col.regsrcid <- which(names(data) == "REGSRCID")
 

@@ -30,7 +30,7 @@ MapRegionalSources(
 \item{data}{Dataframe, containing a column \code{SUBID} and a column \code{REGSRCID} (not case-sensitive), which identify
 irrigation target and source sub-catchments, respectively. Typically a HYPE 'MgmtData.txt' file, imported with \code{\link{ReadMgmtData}}.}
 
-\item{map}{A \code{SpatialPointsDataFrame}, \code{SpatialPolygonsDataFrame}, or \code{sf} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
+\item{map}{A \code{sf}, \code{SpatialPointsDataFrame}, or \code{SpatialPolygonsDataFrame} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
 centre-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link{st_centroid}}). Spatial data import requires additional packages, e.g. \code{sf}.}
 
 \item{map.subid.column}{Integer, index of the column in the \code{map} column holding SUBIDs (sub-catchment IDs).}
@@ -88,8 +88,14 @@ irrigation sources in HYPE are transfers from outlet lakes or rivers in a source
 (Soil, Land use, Crop) in a target sub-catchment. If \code{map.type} is set to "leaflet", then  \code{MapRegionalSources} returns an object of class \code{leaflet}.
 }
 \examples{
-\dontrun{
-MapRegionalSources(data = myMgmtData, map = mySUBIDCentrePoints)
-}
+# Import subbasin centroids and subbasin polygons (to use as background)
+require(sf)
+te1 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_centroids.shp", package = "HYPEtools"))
+te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package = "HYPEtools"))
+# Create dummy MgmtData file with irrigation links
+te3 <- data.frame(SUBID = c(3594, 63794), REGSRCID = c(40556, 3486))
+# Plot regional irrigation links between subbasins with subbasin outlines as background
+MapRegionalSources(data = te3, map = te1, map.subid.column = 25)
+plot(st_geometry(te2), add = T, border = 2)
 
 }

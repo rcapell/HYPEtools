@@ -1,6 +1,9 @@
 
 #' Find outlet-near observations in HYPE observation data files.
 #' 
+#' Find observation stations close to specified outlet subbasins of a HYPE model set-up. Proximity threshold as upstream area fraction of target 
+#' outlet subbasin(s). Currently, only upstream observations are identified.
+#' 
 #' @param gd Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive). 
 #' Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}. 
 #' @param file.qobs,file.xobs Character string, file location of HYPE observation data file. \emph{Only one of these needs to be 
@@ -42,14 +45,13 @@
 #' returns the same information as character vector. 
 #' 
 #' @examples 
-#' \dontrun{OutletNearObs(file.qobs = "Qobs.txt", gd = mygd)
-#' 
+#' # Import source data
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' # Find observation near domain outlet
+#' OutletNearObs(file.qobs = system.file("demo_model", "Qobs.txt", package = "HYPEtools"), gd = te)
 #' # get vector of variables in an Xobs file
-#' OutletNearObs(file.xobs = "./Xobs.txt", gd = mygd)
+#' OutletNearObs(file.xobs = system.file("demo_model", "Xobs.txt", package = "HYPEtools"), gd = te)
 #' 
-#' # get observation site SUBIDs for total nitrogen concentrations
-#' OutletNearObs(file.xobs = "./Xobs.txt", gd = gd, variable = "retn")
-#' }
 #' 
 #' @importFrom pbapply pbsapply
 #' @importFrom utils txtProgressBar setTxtProgressBar

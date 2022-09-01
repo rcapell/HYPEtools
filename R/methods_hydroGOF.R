@@ -26,6 +26,22 @@
 #' argument \code{sim}, with values in the same order 
 #' as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 #' 
+#' @examples 
+#' # Create dummy data, discharge observations with added white noise as model simulations
+#' te1 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
+#' te1 <- HypeSingleVar(x = array(data = unlist(te1[, -1]) + runif(n = nrow(te1), min = -.5, max = .5), 
+#'                                dim = c(nrow(te1), ncol(te1) - 1, 1), 
+#'                                dimnames = list(rownames(te1), colnames(te1)[-1])), 
+#'                      datetime = te1$DATE, subid = obsid(te1), hype.var = "cout")
+#' te2 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
+#' te2 <- HypeSingleVar(x = array(data = unlist(te2[, -1]), 
+#'                                dim = c(nrow(te2), ncol(te2) - 1, 1), 
+#'                                dimnames = list(rownames(te2), colnames(te2)[-1])), 
+#'                      datetime = te2$DATE, subid = obsid(te2), hype.var = "rout")
+#' # Nash-Sutcliffe Efficiency
+#' NSE(sim = te1, obs = te2, progbar = FALSE)
+#' 
+#' 
 #' @name NSE
 #' 
 #' @seealso \code{\link[hydroGOF]{NSE}}, the S3 generic function defined in package 'hydroGOF'.
@@ -103,6 +119,21 @@ NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) {
 #' \code{pbias.HypeSingleVar} returns a 2-dimensional array of NSE performances for all SUBIDs and model iterations provided in 
 #' argument \code{sim}, with values in the same order 
 #' as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
+#' 
+#' @examples 
+#' # Create dummy data, discharge observations with added white noise as model simulations
+#' te1 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
+#' te1 <- HypeSingleVar(x = array(data = unlist(te1[, -1]) + runif(n = nrow(te1), min = -.5, max = .5), 
+#'                                dim = c(nrow(te1), ncol(te1) - 1, 1), 
+#'                                dimnames = list(rownames(te1), colnames(te1)[-1])), 
+#'                      datetime = te1$DATE, subid = obsid(te1), hype.var = "cout")
+#' te2 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
+#' te2 <- HypeSingleVar(x = array(data = unlist(te2[, -1]), 
+#'                                dim = c(nrow(te2), ncol(te2) - 1, 1), 
+#'                                dimnames = list(rownames(te2), colnames(te2)[-1])), 
+#'                      datetime = te2$DATE, subid = obsid(te2), hype.var = "rout")
+#' # Percentage bias
+#' pbias(sim = te1, obs = te2, progbar = FALSE)
 #' 
 #' @name pbias
 #' 

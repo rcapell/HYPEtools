@@ -31,7 +31,8 @@ Function to calculate upstream areas of a vector of SUBIDs or all SUBIDs in a Ge
 but not including potential irrigation links or groundwater flows.
 }
 \examples{
-\dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+SumUpstreamArea(subid = c(3361, 63794), gd = te, progbar = FALSE)
 
 }
 \seealso{

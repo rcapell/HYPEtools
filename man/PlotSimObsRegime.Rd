@@ -81,7 +81,9 @@ Aggregation time length of the simulated variable can be chosen in argument \cod
 For the observed variable, the aggregation is fixed to months, in order to aggregate enough values for each box plot element.
 }
 \examples{
-\dontrun{PlotSimObsRegime(x = mybasinoutput, sim = "ccin", obs = "rein", start.mon = 10)}
+# Plot observed and simulated discharge
+te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+PlotSimObsRegime(x = te, sim = "cout", obs = "rout", start.mon = 10)
 
 }
 \seealso{

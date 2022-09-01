@@ -1,9 +1,6 @@
-#' @export
 
-#' @title
 #' Find all Outlet SUBIDs of a model domain
 #'
-#' @description
 #' Function to find all outlet SUBIDs of a HYPE model domain.
 #'
 #' @param gd A data frame, with two columns \code{subid} and \code{maindown}, (not case-sensitive). 
@@ -20,7 +17,10 @@
 #' \code{\link{AllDownstreamSubids}}, \code{\link{OutletIds}}
 #' 
 #' @examples
-#' \dontrun{OutletSubids(gd = mygeodata)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' OutletSubids(gd = te)
+#' 
+#' @export
 
 
 OutletSubids <- function(gd) {

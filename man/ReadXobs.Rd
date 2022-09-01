@@ -52,6 +52,7 @@ For the conversion of date/time strings, time zone "UTC" is assumed. This is don
 side effects when working with the imported data (and e.g. converting to string representations during the process).
 }
 \examples{
-\dontrun{ReadXobs("Xobs.txt")}
+te <- ReadXobs(filename = system.file("demo_model", "Xobs.txt", package = "HYPEtools"))
+te
 
 }

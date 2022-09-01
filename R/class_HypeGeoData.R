@@ -40,7 +40,9 @@
 #' \code{\link{ReadGeoData}}
 #' 
 #' @examples
-#' \dontrun{HypeGeoData(x = )}
+#' te <- data.table::fread(file = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' HypeGeoData(x = te)
+#' summary(te)
 #' 
 #' @export
 
@@ -420,7 +422,10 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' A \code{HypeGeoData} data frame.
 #' 
 #' @examples 
-#' \dontrun{merge(gd1, gd2)}
+#' # import and create dummy data
+#' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te2 <- data.frame(SUBID = sample(x = te1$SUBID, size = 10), loc_vol = runif(n = 10, 10, 50))
+#' merge(x = te1, y = te2)
 #' 
 #' @name merge
 #' @method merge HypeGeoData

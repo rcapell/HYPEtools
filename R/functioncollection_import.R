@@ -427,7 +427,8 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
 #' side effects when working with the imported data (and e.g. converting to string representations during the process).
 #' 
 #' @examples
-#' \dontrun{ReadXobs("Xobs.txt")}
+#' te <- ReadXobs(filename = system.file("demo_model", "Xobs.txt", package = "HYPEtools"))
+#' te
 #' 
 #' @importFrom data.table fread
 #' @importFrom stats na.fail
@@ -690,7 +691,8 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
 #' named \code{`!!`}.
 #' 
 #' @examples
-#' \dontrun{ReadPar("par.txt")}
+#' te <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
+#' te
 #' 
 #' @importFrom stats na.fail
 #' @export
@@ -982,7 +984,8 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' issue from arising.
 #' 
 #' @examples 
-#' \dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "%Y-%m")}
+#' te <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "%Y-%m")
+#' te
 #' 
 #' @importFrom data.table fread is.data.table data.table
 #' @importFrom ncdf4 nc_open nc_close ncvar_get ncatt_get
@@ -1829,7 +1832,8 @@ ReadUpdate <- function(filename = "update.txt", header = TRUE, sep = "\t",
 #' \code{ReadPmsf} returns an integer vector.
 #' 
 #' @examples
-#' \dontrun{ReadPmsf("pmsf.txt")}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te
 #' 
 #' @importFrom utils read.table
 #' @export
@@ -1959,8 +1963,9 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 #' keyword detailing the evaluation time step.
 #' 
 #' @examples
-#' \dontrun{ReadSubass("subass1.txt")}
-#'
+#' te <- ReadSubass(filename = system.file("demo_model", "results", "subass1.txt", package = "HYPEtools"))
+#' te
+#' 
 #' @importFrom utils read.table
 #' @export 
 
@@ -2171,8 +2176,9 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 #' \code{\link{ReadSubass}}
 #' 
 #' @examples
-#' \dontrun{ReadSimass("simass.txt")}
-#'
+#' te <- ReadSimass(filename = system.file("demo_model", "results", "simass.txt", package = "HYPEtools"))
+#' te
+#' 
 #' @importFrom stats na.omit
 #' @export 
 

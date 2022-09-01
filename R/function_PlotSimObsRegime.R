@@ -47,7 +47,9 @@
 #' \code{\link{PlotAnnualRegime}} for a more generic annual regime plot, \code{\link{AnnualRegime}} to compute annual regimes only.
 #' 
 #' @examples
-#' \dontrun{PlotSimObsRegime(x = mybasinoutput, sim = "ccin", obs = "rein", start.mon = 10)}
+#' # Plot observed and simulated discharge
+#' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+#' PlotSimObsRegime(x = te, sim = "cout", obs = "rout", start.mon = 10)
 #' 
 #' @importFrom graphics par grid abline axis axis.POSIXct box polygon lines boxplot text legend
 #' @importFrom stats na.omit median

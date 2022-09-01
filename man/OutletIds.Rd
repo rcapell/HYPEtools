@@ -25,7 +25,8 @@ several SUBIDs if the GeoData file originates from a HYPE sub-model set-up, crea
 with the 'SelectAro' tool.
 }
 \examples{
-\dontrun{OutletIds(gd = mygeodata)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+OutletIds(gd = te)
 
 }
 \seealso{

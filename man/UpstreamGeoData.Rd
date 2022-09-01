@@ -57,7 +57,9 @@ Currently, the following variables are considered:
 }
 }
 \examples{
-\dontrun{UpstreamGeoData(subid = 21, gd = mygeodata, bd = mybranchdata, olake.slc = 1)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+# Upstream stats for domain outlet
+UpstreamGeoData(subid = OutletSubids(te), gd = te, olake.slc = 1, progbar = FALSE)
 
 }
 \seealso{

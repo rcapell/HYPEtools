@@ -10,11 +10,8 @@
 
 ## Constructor function
 
-#' @export
-#' @title
 #' HypeXobs data frames
 #' 
-#' @description
 #' Constructor function for data frames which hold HYPE Xobs.txt file contents, i.e. time series of a multiple observation 
 #' variables for multiple sub-basins and equidistant time steps in POSIXct format in the first column.
 #' 
@@ -45,8 +42,13 @@
 #' }
 #' 
 #' @examples
-#' \dontrun{HypeXobs(mydata, comment = "Water quality data",
-#' variable = c("cctn", "cctp", "cctp"), subid = c(23, 45, 56))}
+#' # Use the Xobs file import function instead of the class constructor for standard work flows
+#' te <- ReadXobs(file = system.file("demo_model", "Xobs.txt", package = "HYPEtools"))
+#' summary(te)
+#' # Class constructor
+#' HypeXobs(x = as.data.frame(te), comment = comment(te), variable = variable(te), subid = subid(te))
+#' 
+#' @export
 
 HypeXobs <- function(x, comment, variable, subid, verbose = TRUE) {
   

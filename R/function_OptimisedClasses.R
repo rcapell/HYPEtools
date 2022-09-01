@@ -16,7 +16,8 @@
 #' names are HYPE parameter names. Each vector contains the optimised class numbers for the respective parameter.
 #' 
 #' @examples 
-#' \dontrun{OptimisedClasses(myoptpar)}
+#' te <- ReadOptpar(filename = system.file("demo_model", "optpar.txt", package = "HYPEtools"))
+#' OptimisedClasses(te)
 #' 
 #' @aliases OptimizedClasses
 #' @export

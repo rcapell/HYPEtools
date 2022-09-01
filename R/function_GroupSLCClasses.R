@@ -25,9 +25,11 @@
 #' \code{GroupSLClasses} returns the data frame with SUBIDs, SUBID areas, and grouped SLC class columns. 
 #' 
 #' @examples
-#' \dontrun{
-#' GroupSLCClasses(gd = mygeodata, gcl = mygeoclass, type = "s")
-#' }
+#' # Import source data
+#' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te2 <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
+#' # Calculate soil groups
+#' GroupSLCClasses(gd = te1, gcl = te2, type = "s")
 #' 
 #' @importFrom pbapply pbapply
 #' @export

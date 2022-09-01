@@ -23,7 +23,11 @@
 #' 
 #' 
 #' @examples
-#' \dontrun{MergeXobs(x = myxobs1, y = myxobs2)}
+#' # Import dummy data, add new observations to second Xobs table
+#' te1 <- ReadXobs(filename = system.file("demo_model", "Xobs.txt", package = "HYPEtools"))
+#' te2 <- ReadXobs(filename = system.file("demo_model", "Xobs.txt", package = "HYPEtools"))
+#' te2$WSTR_40541[1:10] <- runif(n = 10, 50, 100)
+#' MergeXobs(x = te1, y = te2)
 #' 
 #' @importFrom stats na.omit
 #' @export

@@ -24,6 +24,7 @@ during a HYPE optimisation run. The function compares min and max values in the 
 optpar.txt file to identify those.
 }
 \examples{
-\dontrun{OptimisedClasses(myoptpar)}
+te <- ReadOptpar(filename = system.file("demo_model", "optpar.txt", package = "HYPEtools"))
+OptimisedClasses(te)
 
 }

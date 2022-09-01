@@ -63,7 +63,11 @@ internally and will override previously set values for the returned plot. It typ
 function it can be used to visualise and compare time series properties.
 }
 \examples{
-\dontrun{PlotDurationCurve(freq = myfreq, print.n.obs = T)}
+# Import source data
+te1 <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+te2 <- ExtractFreq(te1[, c("COUT", "ROUT")])
+# Plot flow duration curves for simulated and observed discharge
+PlotDurationCurve(freq = te2, add.legend = T, col = c("red", "blue"))
 
 }
 \seealso{

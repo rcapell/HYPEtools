@@ -1,10 +1,6 @@
-#' @export
-#' @importFrom pbapply pblapply
-#' 
-#' @title
+
 #' Sort a GeoData dataframe in downstream order
 #'
-#' @description
 #' Function to sort an imported GeoData.txt file in downstream order, so that all upstream sub-basins are listed in rows above downstream sub-basins.
 #' 
 #' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.
@@ -23,7 +19,11 @@
 #' \code{\link{OutletSubids}}
 #' 
 #' @examples
-#' \dontrun{SortGeoData(gd = mygeodata, bd = mybranchdata)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' SortGeoData(gd = te)
+#' 
+#' @importFrom pbapply pblapply
+#' @export
 
 
 SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {

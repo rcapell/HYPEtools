@@ -27,6 +27,7 @@ Import a HYPE parameter file as list into R.
 \code{ReadPar} checks for inline comments in 'par.txt' files, these are moved to separate "lines" (list elements).
 }
 \examples{
-\dontrun{ReadPar("par.txt")}
+te <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
+te
 
 }

@@ -1,10 +1,6 @@
-#' @export
-#' @importFrom pbapply pblapply pbsapply
-#' 
-#' @title
+
 #' Calculate SLC class fractions of all upstream areas
 #'
-#' @description
 #' Function to calculate SLC class fractions over all upstream areas of a vector of SUBIDs or all SUBIDs in a GeoData table.
 #'
 #' @param subid Integer vector of SUBIDs to calculate upstream SUBID fractions for (must exist in \code{gd}). 
@@ -38,7 +34,14 @@
 #' \code{\link{SumUpstreamArea}}, \code{\link{UpstreamGeoData}}, \code{\link{UpstreamGroupSLCClasses}}
 #' 
 #' @examples
-#' \dontrun{UpstreamSLCClasses(subid = 21, gd = mygeodata, bd = mybranchdata)}
+#' # Import source data
+#' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' # Upstream SLCs for single SUBID
+#' UpstreamSLCClasses(subid = 3361, gd = te1, progbar = FALSE)
+#' 
+#' @importFrom pbapply pblapply pbsapply
+#' @export
+
 
 UpstreamSLCClasses <- function(subid = NULL, gd, bd = NULL, signif.digits = 3, progbar = TRUE) {
   

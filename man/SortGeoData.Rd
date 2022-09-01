@@ -24,7 +24,9 @@ GeoData.txt files need to be sorted in downstream order for HYPE to run without 
 irrigation or groundwater flow links.
 }
 \examples{
-\dontrun{SortGeoData(gd = mygeodata, bd = mybranchdata)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+SortGeoData(gd = te)
+
 }
 \seealso{
 \code{\link{AllUpstreamSubids}}

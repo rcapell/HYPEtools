@@ -31,10 +31,10 @@ maybe must correspond to areas a LakeData file. The function will throw a warnin
 are greater than sums provided in \code{target}, but not if they are smaller.
 }
 \examples{
-\dontrun{
-gd <- ReadGeoData("GeoData.txt")
-RescaleSLCClasses(gd = gd, slc.exlude = 1:2)
-}
+# Import source data
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+# Re-scale SLC classes, protect the first two
+RescaleSLCClasses(gd = te, slc.exclude = 1:2)
 
 }
 \seealso{

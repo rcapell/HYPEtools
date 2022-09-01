@@ -29,9 +29,7 @@ observations.
 \code{\link{POSIXct}} and set time zone to \code{"UTC"}.
 }
 \examples{
-\dontrun{
-my.obs <- data.frame(date = as.POSIXct(c("2000-01-01", "2000-02-01"), tz = "gmt"), obs = c(1, 2))
-EquallySpacedObs(x = my.obs, timestep = "day")
-}
+te <- data.frame(date = as.POSIXct(c("2000-01-01", "2000-02-01"), tz = "gmt"), obs = c(1, 2))
+EquallySpacedObs(x = te, timestep = "day")
 
 }

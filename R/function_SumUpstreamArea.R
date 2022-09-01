@@ -23,7 +23,8 @@
 #' \code{\link{AllUpstreamSubids}}
 #' 
 #' @examples
-#' \dontrun{SumUpstreamArea(gd = mygeodata, progbar = T)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' SumUpstreamArea(subid = c(3361, 63794), gd = te, progbar = FALSE)
 #' 
 #' @importFrom pbapply pbsapply
 #' @importFrom parallel makePSOCKcluster stopCluster mclapply parLapply

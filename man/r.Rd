@@ -33,6 +33,22 @@ This function wraps a call to \code{cor(x = obs, y = sim, use = "na.or.complete"
 Method \code{r.HypeSingleVar} calculates Pearson's r for imported HYPE outputs with single variables for several
 catchments, i.e. time and map files, optionally multiple model runs combined, typically results from calibration runs.
 }
+\examples{
+# Create dummy data, discharge observations with added white noise as model simulations
+te1 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
+te1 <- HypeSingleVar(x = array(data = unlist(te1[, -1]) + runif(n = nrow(te1), min = -.5, max = .5), 
+                               dim = c(nrow(te1), ncol(te1) - 1, 1), 
+                               dimnames = list(rownames(te1), colnames(te1)[-1])), 
+                     datetime = te1$DATE, subid = obsid(te1), hype.var = "cout")
+te2 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
+te2 <- HypeSingleVar(x = array(data = unlist(te2[, -1]), 
+                               dim = c(nrow(te2), ncol(te2) - 1, 1), 
+                               dimnames = list(rownames(te2), colnames(te2)[-1])), 
+                     datetime = te2$DATE, subid = obsid(te2), hype.var = "rout")
+# Pearson correlation
+r(sim = te1, obs = te2, progbar = FALSE)
+
+}
 \seealso{
 \code{\link{cor}}, on which the function is based. \code{\link{ReadWsOutput}} for importing HYPE calibration results.
 }

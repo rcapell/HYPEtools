@@ -24,6 +24,7 @@ Pmsf.txt files imported with \code{ReadPmsf} are stripped from the first value c
 in the file. No additional attribute is added to hold this number since it can be easily obtained using \code{\link{length}}.
 }
 \examples{
-\dontrun{ReadPmsf("pmsf.txt")}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+te
 
 }

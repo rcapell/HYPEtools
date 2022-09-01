@@ -24,10 +24,10 @@
 #' \code{\link{CleanSLCClasses}} for pruning of small SLC fractions.
 #' 
 #' @examples 
-#' \dontrun{
-#' gd <- ReadGeoData("GeoData.txt")
-#' RescaleSLCClasses(gd = gd, slc.exlude = 1:2)
-#' }
+#' # Import source data
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' # Re-scale SLC classes, protect the first two
+#' RescaleSLCClasses(gd = te, slc.exclude = 1:2)
 #' 
 #' @export
 

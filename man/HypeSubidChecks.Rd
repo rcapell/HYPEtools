@@ -39,6 +39,12 @@ These are convenience functions to query subbasin properties. Some functions can
 subbasins of a HYPE model setup and more efficient functions may exist in HYPEtools, see links in \emph{See also} section below or browse
 the package index.
 }
+\examples{
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+IsHeadwater(subid = 40556, gd = te)
+IsHeadwater(subid = te$SUBID, gd = te)
+
+}
 \seealso{
 \code{\link[=AllUpstreamSubids]{AllUpstreamSubids()}}; \code{\link[=AllDownstreamSubids]{AllDownstreamSubids()}}; \code{\link[=OutletSubids]{OutletSubids()}}; \code{\link[=OutletIds]{OutletIds()}}
 }

@@ -25,6 +25,11 @@
 #' @seealso 
 #' [AllUpstreamSubids()]; [AllDownstreamSubids()]; [OutletSubids()]; [OutletIds()]
 #' 
+#' @examples 
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' IsHeadwater(subid = 40556, gd = te)
+#' IsHeadwater(subid = te$SUBID, gd = te)
+#' 
 #' @name HypeSubidChecks
 
 NULL

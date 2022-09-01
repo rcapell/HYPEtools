@@ -42,7 +42,10 @@ The method warns if any of these arguments is supplied by the user. To override,
 call the data frame method explicitly (\code{merge.data.frame()}).
 }
 \examples{
-\dontrun{merge(gd1, gd2)}
+# import and create dummy data
+te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+te2 <- data.frame(SUBID = sample(x = te1$SUBID, size = 10), loc_vol = runif(n = 10, 10, 50))
+merge(x = te1, y = te2)
 
 }
 \seealso{

@@ -25,7 +25,9 @@
 #' total phosphorus, total suspended sediment, tracer, and temperature.
 #' 
 #' @examples
-#' \dontrun{UpstreamPointSources(subid = 21, gd = mygeodata, psd = mypsdata, bd = mybranchdata)}
+#' te1 <- ReadPointSourceData(filename = system.file("demo_model", "PointSourceData.txt", package = "HYPEtools"))
+#' te2 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' UpstreamPointSources(subid = OutletSubids(te2), gd = te2, psd = te1, progbar = FALSE)
 #' 
 #' @export
 #' @importFrom pbapply pblapply

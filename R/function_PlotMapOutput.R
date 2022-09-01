@@ -105,9 +105,13 @@
 #' \code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for plotting HYPE results at points, e.g. sub-basin outlets.
 #'
 #' @examples
-#' \dontrun{
-#' PlotMapOutput(x = mymapresult, map = myGISdata, map.subid.column = 2, var.name = "CCTN")
-#' }
+#' # Import plot data and subbasin polygons
+#' require(sf)
+#' te1 <- ReadMapOutput(filename = system.file("demo_model", "results", "mapCRUN.txt", package = "HYPEtools"), dt.format = NULL)
+#' te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package = "HYPEtools"))
+#' # plot runooff map
+#' PlotMapOutput(x = te1, map = te2, map.subid.column = 25, var.name = "CRUN", col = ColQ)
+#' 
 #'
 #' @importFrom dplyr right_join %>% mutate filter across
 #' @importFrom grDevices dev.list

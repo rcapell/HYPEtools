@@ -179,13 +179,15 @@ argument \code{legend.inset}. This is particularly useful for legend titles with
 specification for the default maps, see \code{inset} in \code{\link{legend}}.
 }
 \examples{
-\dontrun{
+# Import plot data and subbasin polygons
 require(sf)
-x11(width = 5, height = 8)
-mysites <- st_read(dsn = "../gisdata", layer = "myHYPEoutlets")
-mybg <- st_read(dsn = "../gisdata", layer = "myHYPEsubids")
-PlotMappoints(x = mysubass, sites = mysites, map.subid.column = 2, bg = mybg)
-}
+te1 <- ReadSubass(filename = system.file("demo_model", "results", "subass1.txt", package = "HYPEtools"))
+te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_station.shp", package = "HYPEtools"))
+te2$SUBID <- 3587 # add station SUBID to point
+te3 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package = "HYPEtools"))
+# plot NSE performance for discharge
+PlotMapPoints(x = te1[, 1:2], sites = te2, sites.subid.column = 3, bg = te3)
+
 
 }
 \seealso{

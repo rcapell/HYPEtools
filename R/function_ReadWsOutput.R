@@ -66,7 +66,8 @@
 #' }
 #' 
 #' @examples
-#' \dontrun{ReadWsOutput(path = "../my_optim_results/", hype.var = "cout", dt.format = "%Y-%m")}
+#' te <- ReadWsOutput(path = system.file("demo_model", "results", package = "HYPEtools"), type = "map", hype.var = "cout", dt.format = "%Y-%m")
+#' te
 #' 
 #' @importFrom pbapply pblapply
 #' @importFrom data.table fread is.data.table transpose

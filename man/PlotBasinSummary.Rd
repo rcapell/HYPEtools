@@ -131,7 +131,11 @@ less than 10 inch screen height, redrawing is inhibited, which can lead to an em
 is to plot to pdf or png file devices instead.
 }
 \examples{
-\dontrun{PlotBasinSummary(x = mybasin, gd = mygd, gcl = mygcl, psd = mypsd, desc = mydesc)}
+# Source data, HYPE basin output with a number of result variables
+te1 <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+te2 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+# Plot basin summary for discharge
+PlotBasinSummary(x = te1, gd = te2, gcl = te3, driver = "screen", panels = 2)
 
 }
 \seealso{

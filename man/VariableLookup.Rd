@@ -38,8 +38,7 @@ The \code{VariableInfo} and \code{VariableSearch} functions provide features to 
 The \code{info} argument can be used to select which information to return or search.
 }
 \examples{
-\dontrun{
 VariableInfo(variable = "COUT", info = c("Name","Unit"))
 VariableSearch(search = "ccSS", info = c("ID", "Name", "Description"))
-}
+
 }

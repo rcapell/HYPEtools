@@ -18,10 +18,9 @@
 #' \code{VariableInfo} returns a tibble of the search results.
 #'
 #' @examples
-#' \dontrun{
 #' VariableInfo(variable = "COUT", info = c("Name","Unit"))
 #' VariableSearch(search = "ccSS", info = c("ID", "Name", "Description"))
-#' }
+#' 
 #' @name VariableLookup
 NULL
 

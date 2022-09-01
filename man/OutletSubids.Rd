@@ -21,7 +21,9 @@ Function to find all outlet SUBIDs of a HYPE model domain.
 stream water leaves the model domain.
 }
 \examples{
-\dontrun{OutletSubids(gd = mygeodata)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+OutletSubids(gd = te)
+
 }
 \seealso{
 \code{\link{AllDownstreamSubids}}, \code{\link{OutletIds}}

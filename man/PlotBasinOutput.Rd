@@ -119,7 +119,11 @@ less than 10 inch screen, redrawing is inhibited, which can lead to an empty plo
 is to plot to pdf or png file devices instead.
 }
 \examples{
-\dontrun{PlotBasinOutput(x = mybasin, area = 5667000)}
+# Source data, HYPE basin output with a number of result variables
+te1 <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+te2 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+# Plot selected water variables on screen device
+PlotBasinOutput(x = te1, gd = te2, driver = "screen", hype.vars = c("cout", "rout", "snow", "upcprf", "upcpsf"))
 
 }
 \seealso{

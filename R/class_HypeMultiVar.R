@@ -45,9 +45,14 @@
 #' }
 #' 
 #' @examples
-#' pth <- file.path(system.file("demo_model", package = "HYPEtools"), "results/0003587.txt")
-#' te <- ReadBasinOutput(pth)
-#' HypeMultiVar(pth, datetime = mydates, hype.var = c("cctn", "ccin", "ccon"), subid = 23, tstep = "day")
+#' # import a basin output file
+#' te1 <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+#' # create a dummy array with two iterations from imported basin file
+#' te2 <- array(data = c(unlist(te1[, -1]),  unlist(te1[, -1])), 
+#'              dim = c(nrow(te1), ncol(te1) - 1, 2), 
+#'              dimnames = list(rownames(te1), colnames(te1)[-1]))
+#' # Construct HypeMultiVar array
+#' HypeMultiVar(te2, datetime = te1$DATE, hype.var = variable(te1), hype.unit = hypeunit(te1), subid = 3587)
 #' 
 #' @export
 

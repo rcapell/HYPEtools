@@ -89,6 +89,7 @@ Current versions of HYPE allow for defining significant instead of fixed number 
 issue from arising.
 }
 \examples{
-\dontrun{ReadTimeOutput("timeCCIN.txt", dt.format = "\%Y-\%m")}
+te <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "\%Y-\%m")
+te
 
 }

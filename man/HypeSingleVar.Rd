@@ -42,7 +42,13 @@ and multiple model runs, typically imported time and map output results.
 S3 class constructor function for array objects which can hold (multiple) HYPE time or map output results.
 }
 \examples{
-\dontrun{HypeSingleVar(mytimeoutput, datetime = mydates,
-subid = c(23, 45, 56), hype.var = "cctn")}
+# Import a time output file
+te1 <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "\%Y-\%m")
+# Create a dummy array with two iterations from imported time file
+te2 <- array(data = c(unlist(te1[, -1]),  unlist(te1[, -1])), 
+             dim = c(nrow(te1), ncol(te1) - 1, 2), 
+             dimnames = list(rownames(te1), colnames(te1)[-1]))
+# Construct HypeSingleVar array
+HypeSingleVar(x = te2, datetime = te1$DATE, subid = subid(te1), hype.var = variable(te1))
 
 }

@@ -52,12 +52,13 @@ If \code{FUN} returns several values per aggregation period, these are returned 
 \code{Value} section for \code{\link{aggregate}} and example code below.
 }
 \examples{
-\dontrun{
-ExtractStats(x = mytimeoutput, start.mon = 10, FUN = max)
-
-# function definition to extract min, mean, and max in one go:
-te <- ExtractStats(x = mytimeoutput, start.mon = 10, FUN = function(x) {c(min(x), mean(x), max())})
+# Import example data
+te1 <- ReadTimeOutput(filename = system.file("demo_model", "results", "timeCOUT.txt", package = "HYPEtools"), dt.format = "\%Y-\%m")
+# Extract maxima
+ExtractStats(x = te1, start.mon = 1, FUN = max)
+# Multiple result stats: Extract min, mean, and max in one go:
+te2 <- ExtractStats(x = te1, start.mon = 1, FUN = function(x) {c(min(x), mean(x), max(x))})
 # extract mean from resulting nested dataframe:
-data.frame(te[, 1:2], sapply(te[, -c(1:2)], function(x){x[, 2]}))}
+data.frame(te2[, 1:2], sapply(te2[, -c(1:2)], function(x){x[, 2]}))
 
 }

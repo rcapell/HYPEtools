@@ -1,9 +1,5 @@
-
-#' @export
-#' @title
 #' Create an equally spaced time series from irregular observations
 #'
-#' @description
 #' \code{EquallySpacedObs} creates equally spaced time series with missing observations from a data frame with irregular 
 #' observations.
 #' 
@@ -22,11 +18,10 @@
 #' \code{EquallySpacedObs} returns a dataframe.
 #' 
 #' @examples
-#' \dontrun{
-#' my.obs <- data.frame(date = as.POSIXct(c("2000-01-01", "2000-02-01"), tz = "gmt"), obs = c(1, 2))
-#' EquallySpacedObs(x = my.obs, timestep = "day")
-#' }
+#' te <- data.frame(date = as.POSIXct(c("2000-01-01", "2000-02-01"), tz = "gmt"), obs = c(1, 2))
+#' EquallySpacedObs(x = te, timestep = "day")
 #' 
+#' @export
 
 
 EquallySpacedObs <- function(x, sort.data = TRUE, timestep, ts.col = 1) {

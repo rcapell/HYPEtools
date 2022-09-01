@@ -22,7 +22,9 @@ Function to find all headwater SUBIDs of a HYPE model domain.
 which do not have any upstream subcatchments.
 }
 \examples{
-\dontrun{HeadwaterSubids(gd = mygeodata)}
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+HeadwaterSubids(gd = te)
+
 }
 \seealso{
 \code{\link{AllUpstreamSubids}}

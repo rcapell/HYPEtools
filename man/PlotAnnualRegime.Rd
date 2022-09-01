@@ -84,7 +84,12 @@ results.
 Grid lines plotted in the background are mid-month lines.
 }
 \examples{
-\dontrun{PlotAnnualRegime(x = myregime)}
+# Source data, HYPE basin output with a number of result variables
+te1 <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+# Daily discharge regime, computed and observed, hydrologigical year from October, aggregated to weekly means
+te2 <- AnnualRegime(te1[, c("DATE", "COUT", "ROUT")], ts.in = "day", ts.out = "week", start.mon = 10)
+PlotAnnualRegime(x = te2)
+PlotAnnualRegime(x = te2, line = "median", band = "p05p95", add.legend = TRUE, col = c("red", "blue"))
 
 }
 \seealso{

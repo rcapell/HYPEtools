@@ -44,9 +44,16 @@
 #' . 
 #' 
 #' @examples
-#' \dontrun{
-#' # HYPE soil load (sl) variables for TN
-#' GwRetention(nfrz = sl06, gts3 = sl17, nfs3 = sl18, gd = mygd, par = mypar)}
+#' # Create dummy data
+#' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te1$loc_tn <- runif(n = nrow(te1), min = 0, max = 100)
+#' te1$loc_vol <- runif(n = nrow(te1), min = 0, max = 2)
+#' te2 <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
+#' te2$locsoil <- .3
+#' # HYPE soil load (sl) variables for TN, dummy loads
+#' GwRetention(nfrz = data.frame(SUBID = te1$SUBID, SL06 = runif(n = nrow(te1), 10, 50)), 
+#'             gts3 = data.frame(SUBID = te1$SUBID, SL17 = runif(n = nrow(te1), 10, 50)), 
+#'             nfs3 = data.frame(SUBID = te1$SUBID, SL18 = runif(n = nrow(te1), 10, 50)), gd = te1, par = te2)
 #' 
 #' @export
 

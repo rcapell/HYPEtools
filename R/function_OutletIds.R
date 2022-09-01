@@ -22,7 +22,8 @@
 #' \code{\link{AllDownstreamSubids}}, \code{\link{OutletSubids}}
 #' 
 #' @examples
-#' \dontrun{OutletIds(gd = mygeodata)}
+#' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' OutletIds(gd = te)
 #' 
 #' @export
 

@@ -52,7 +52,8 @@ If \code{file.xobs} is provided without \code{variable}, the function prints ava
 returns the same information as character vector.
 }
 \description{
-Find outlet-near observations in HYPE observation data files.
+Find observation stations close to specified outlet subbasins of a HYPE model set-up. Proximity threshold as upstream area fraction of target
+outlet subbasin(s). Currently, only upstream observations are identified.
 }
 \details{
 \code{OutletNearObs} finds observation sites for observation variables in
@@ -66,13 +67,12 @@ defined by drainage area size compared to the respective outlet. The function re
 or exceeding fraction \code{frac.drain}, depending on argument \code{nearest.only}.
 }
 \examples{
-\dontrun{OutletNearObs(file.qobs = "Qobs.txt", gd = mygd)
-
+# Import source data
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+# Find observation near domain outlet
+OutletNearObs(file.qobs = system.file("demo_model", "Qobs.txt", package = "HYPEtools"), gd = te)
 # get vector of variables in an Xobs file
-OutletNearObs(file.xobs = "./Xobs.txt", gd = mygd)
+OutletNearObs(file.xobs = system.file("demo_model", "Xobs.txt", package = "HYPEtools"), gd = te)
 
-# get observation site SUBIDs for total nitrogen concentrations
-OutletNearObs(file.xobs = "./Xobs.txt", gd = gd, variable = "retn")
-}
 
 }
