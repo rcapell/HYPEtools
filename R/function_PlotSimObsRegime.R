@@ -48,8 +48,13 @@
 #' 
 #' @examples
 #' # Plot observed and simulated discharge
+<<<<<<< HEAD
 #' te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", 
 #'                       package = "HYPEtools"))
+=======
+#' te <- ReadBasinOutput(filename = system.file("demo_model",
+#' "results", "0003587.txt", package = "HYPEtools"))
+>>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #' PlotSimObsRegime(x = te, sim = "cout", obs = "rout", start.mon = 10)
 #' 
 #' @importFrom graphics par grid abline axis axis.POSIXct box polygon lines boxplot text legend

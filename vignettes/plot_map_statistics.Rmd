@@ -39,9 +39,9 @@ mcrun <- ReadMapOutput(file.path(model_path,"results","mapCRUN.txt"))
 ## Read GIS Files
 ```{r readGIS}
 # Read GIS Files
-map.subid <- st_read(file.path(model_path, "gis","Nytorp_map.shp"))
+map.subid <- st_read(file.path(model_path, "gis","Nytorp_map.gpkg"))
 
-map.Qobs <- st_read(file.path(model_path,"gis", "Nytorp_station.shp")) %>%
+map.Qobs <- st_read(file.path(model_path,"gis", "Nytorp_station.gpkg")) %>%
   mutate(SUBID = 3587, .after = "long") # Add SUBID to gauge station attributes
 
 # Show the column names of imported GIS file

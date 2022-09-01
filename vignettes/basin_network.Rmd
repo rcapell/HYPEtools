@@ -47,7 +47,7 @@ ups.sbd
 Generate an interactive map of subbasin routing.
 ```{r routing, message=FALSE}
 # import subbasin polygons
-map.subid <- st_read(file.path(model_path, "gis", "Nytorp_map.shp"))
+map.subid <- st_read(file.path(model_path, "gis", "Nytorp_map.gpkg"))
 
 # Generate map
 # PlotSubbasinRouting(map = map.subid, map.subid.column = 25, gd = gd)

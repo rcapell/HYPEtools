@@ -44,8 +44,11 @@ corresponding to water abstractions, no differentiation/tracer, and type 1 to 3 
 For water abstraction point sources, only summed upstream volumes are returned, i.e., concentrations are simply set to zero in results.
 }
 \examples{
-te1 <- ReadPointSourceData(filename = system.file("demo_model", "PointSourceData.txt", package = "HYPEtools"))
-te2 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
-UpstreamPointSources(subid = OutletSubids(te2), gd = te2, psd = te1, progbar = FALSE)
+te1 <- ReadPointSourceData(filename = system.file("demo_model",
+"PointSourceData.txt", package = "HYPEtools"))
+te2 <- ReadGeoData(filename = system.file("demo_model",
+"GeoData.txt", package = "HYPEtools"))
+UpstreamPointSources(subid = OutletSubids(te2), gd = te2,
+psd = te1, progbar = FALSE)
 
 }

@@ -61,6 +61,7 @@ Current versions of HYPE allow for defining significant numbers of digits instea
 issue from arising.
 }
 \examples{
-te <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
+te <- ReadBasinOutput(filename = system.file("demo_model",
+"results", "0003587.txt", package = "HYPEtools"))
 
 }

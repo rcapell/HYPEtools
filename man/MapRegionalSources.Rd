@@ -90,8 +90,10 @@ irrigation sources in HYPE are transfers from outlet lakes or rivers in a source
 \examples{
 # Import subbasin centroids and subbasin polygons (to use as background)
 require(sf)
-te1 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_centroids.shp", package = "HYPEtools"))
-te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package = "HYPEtools"))
+te1 <- st_read(dsn = system.file("demo_model", "gis",
+"Nytorp_centroids.gpkg", package = "HYPEtools"))
+te2 <- st_read(dsn = system.file("demo_model", "gis",
+"Nytorp_map.gpkg", package = "HYPEtools"))
 # Create dummy MgmtData file with irrigation links
 te3 <- data.frame(SUBID = c(3594, 63794), REGSRCID = c(40556, 3486))
 # Plot regional irrigation links between subbasins with subbasin outlines as background

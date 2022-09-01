@@ -37,7 +37,7 @@ with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they
 upper-case column names.
 }
 \examples{
-te2 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
 summary(te)
 
 }

@@ -37,9 +37,15 @@
 #' # Import GeoData and subbasin polygons
 #' require(sf);require(leaflet.extras);require(leaflet);require(mapview)
 #' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+<<<<<<< HEAD
 #' te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package = "HYPEtools"))
 #' PlotSubbasinRouting(map = system.file("demo_model", "gis", "Nytorp_map.shp", 
 #'                                       package = "HYPEtools"), 
+=======
+#' te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"))
+#' PlotSubbasinRouting(map = system.file("demo_model",
+#' "gis", "Nytorp_map.gpkg", package = "HYPEtools"), 
+>>>>>>> 8b824bb3a70de5addc3ff3106f3e6ff2c71e93e8
 #'                     gd = system.file("demo_model", "GeoData.txt", package = "HYPEtools"),
 #'                     map.subid.column = 25)
 #' 

@@ -84,10 +84,17 @@
 #' 
 #' @examples
 #' # Source data, HYPE basin output with a number of result variables
-#' te1 <- ReadBasinOutput(filename = system.file("demo_model", "results", "0003587.txt", package = "HYPEtools"))
-#' te2 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
+#' te1 <- ReadBasinOutput(filename = system.file("demo_model",
+#' "results","0003587.txt", package = "HYPEtools"))
+#' te2 <- ReadGeoData(filename = system.file("demo_model",
+#' "GeoData.txt", package = "HYPEtools"))
+#'
+# Screen devices should not be used in examples
+#' \dontrun{ (
 #' # Plot selected water variables on screen device
-#' PlotBasinOutput(x = te1, gd = te2, driver = "screen", hype.vars = c("cout", "rout", "snow", "upcprf", "upcpsf"))
+#' PlotBasinOutput(x = te1, gd = te2, driver = "screen",
+#' hype.vars = c("cout", "rout", "snow", "upcprf", "upcpsf"))
+#' }
 #' 
 #' @importFrom hydroGOF gof gof.default
 #' @importFrom grDevices dev.new dev.control dev.off cairo_pdf png

@@ -171,10 +171,13 @@ specification see \code{inset} in \code{\link{legend}}.
 \examples{
 # Import plot data and subbasin polygons
 require(sf)
-te1 <- ReadMapOutput(filename = system.file("demo_model", "results", "mapCRUN.txt", package = "HYPEtools"), dt.format = NULL)
-te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.shp", package = "HYPEtools"))
+te1 <- ReadMapOutput(filename = system.file("demo_model",
+"results", "mapCRUN.txt", package = "HYPEtools"), dt.format = NULL)
+te2 <- st_read(dsn = system.file("demo_model",
+"gis", "Nytorp_map.gpkg", package = "HYPEtools"))
 # plot runooff map
-PlotMapOutput(x = te1, map = te2, map.subid.column = 25, var.name = "CRUN", col = ColQ)
+PlotMapOutput(x = te1, map = te2, map.subid.column = 25,
+var.name = "CRUN", col = ColQ)
 
 
 }
