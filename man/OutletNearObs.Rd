@@ -76,6 +76,10 @@ verbose = FALSE)
 # get vector of variables in an Xobs file
 OutletNearObs(file.xobs = system.file("demo_model", "Xobs.txt", package = "HYPEtools"), gd = te,
 verbose = FALSE)
+<<<<<<< HEAD
 }
+=======
+
+>>>>>>> 1b19ae16b42a5adf22dde9aca2e0bf29834dd6d2
 
 }
