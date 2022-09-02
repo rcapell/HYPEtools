@@ -179,6 +179,7 @@ argument \code{legend.inset}. This is particularly useful for legend titles with
 specification for the default maps, see \code{inset} in \code{\link{legend}}.
 }
 \examples{
+\donttest{
 # Import plot data and subbasin polygons
 require(sf)
 te1 <- ReadSubass(filename = system.file("demo_model",
@@ -190,7 +191,7 @@ te3 <- st_read(dsn = system.file("demo_model",
 "gis", "Nytorp_map.gpkg", package = "HYPEtools"))
 # plot NSE performance for discharge
 PlotMapPoints(x = te1[, 1:2], sites = te2, sites.subid.column = 3, bg = te3)
-
+}
 
 }
 \seealso{

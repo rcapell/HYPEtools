@@ -169,15 +169,17 @@ argument \code{legend.inset}. This is particularly useful for legend titles with
 specification see \code{inset} in \code{\link{legend}}.
 }
 \examples{
+\donttest{
 # Import plot data and subbasin polygons
 require(sf)
 te1 <- ReadMapOutput(filename = system.file("demo_model",
 "results", "mapCRUN.txt", package = "HYPEtools"), dt.format = NULL)
 te2 <- st_read(dsn = system.file("demo_model",
 "gis", "Nytorp_map.gpkg", package = "HYPEtools"))
-# plot runooff map
+# plot runoff map
 PlotMapOutput(x = te1, map = te2, map.subid.column = 25,
 var.name = "CRUN", col = ColQ)
+}
 
 
 }

@@ -92,6 +92,7 @@
 #' \code{\link{ReadSubass}} for HYPE result import; \code{\link{ReadMapOutput}} for a similar plot function
 
 #' @examples
+#' \donttest{
 #' # Import plot data and subbasin polygons
 #' require(sf)
 #' te1 <- ReadSubass(filename = system.file("demo_model",
@@ -103,7 +104,7 @@
 #' "gis", "Nytorp_map.gpkg", package = "HYPEtools"))
 #' # plot NSE performance for discharge
 #' PlotMapPoints(x = te1[, 1:2], sites = te2, sites.subid.column = 3, bg = te3)
-#' 
+#' }
 #' 
 #' @importFrom dplyr right_join %>% mutate filter across
 #' @importFrom grDevices dev.list colorRampPalette
@@ -111,6 +112,7 @@
 #' @importFrom stats setNames
 #' @importFrom rlang .data
 #' @export
+#' 
 
 
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.column = 1, map.type = "default", map.adj = 0, plot.legend = TRUE,

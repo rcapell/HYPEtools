@@ -45,13 +45,16 @@
 #' returns the same information as character vector. 
 #' 
 #' @examples 
+#' \donttest{
 #' # Import source data
 #' te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
 #' # Find observation near domain outlet
-#' OutletNearObs(file.qobs = system.file("demo_model", "Qobs.txt", package = "HYPEtools"), gd = te)
+#' OutletNearObs(file.qobs = system.file("demo_model", "Qobs.txt", package = "HYPEtools"), gd = te,
+#' verbose = FALSE)
 #' # get vector of variables in an Xobs file
-#' OutletNearObs(file.xobs = system.file("demo_model", "Xobs.txt", package = "HYPEtools"), gd = te)
-#' 
+#' OutletNearObs(file.xobs = system.file("demo_model", "Xobs.txt", package = "HYPEtools"), gd = te,
+#' verbose = FALSE)
+#' }
 #' 
 #' @importFrom pbapply pbsapply
 #' @importFrom utils txtProgressBar setTxtProgressBar
