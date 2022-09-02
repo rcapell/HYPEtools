@@ -90,10 +90,10 @@
 #' "GeoData.txt", package = "HYPEtools"))
 #'
 # Screen devices should not be used in examples
-#' \dontrun{ (
+#' \dontrun{ 
 #' # Plot selected water variables on screen device
-#' PlotBasinOutput(x = te1, gd = te2, driver = "screen",
-#' hype.vars = c("cout", "rout", "snow", "upcprf", "upcpsf"))
+#' PlotBasinOutput(x = te1, gd = te2, driver = "screen",hype.vars = c("cout", "rout", 
+#' "snow", "upcprf", "upcpsf"))
 #' }
 #' 
 #' @importFrom hydroGOF gof gof.default

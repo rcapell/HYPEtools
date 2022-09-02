@@ -125,10 +125,10 @@ te1 <- ReadBasinOutput(filename = system.file("demo_model",
 te2 <- ReadGeoData(filename = system.file("demo_model",
 "GeoData.txt", package = "HYPEtools"))
 
-\dontrun{ (
+\dontrun{ 
 # Plot selected water variables on screen device
-PlotBasinOutput(x = te1, gd = te2, driver = "screen",
-hype.vars = c("cout", "rout", "snow", "upcprf", "upcpsf"))
+PlotBasinOutput(x = te1, gd = te2, driver = "screen",hype.vars = c("cout", "rout", 
+"snow", "upcprf", "upcpsf"))
 }
 
 }

@@ -1,3 +1,14 @@
+## Resubmission 3
+This is a resubmission which hopefully removes a last issue with the package as identified by Victoria Wimmer 
+during CRAN submission checks:
+Unexecutable code in man/PlotBasinOutput.Rd:
+   hype.vars = c("cout", "rout", "snow", "upcprf", "upcpsf"))
+-> Probably you should not write it in the same line above. ->
+PlotBasinOutput(x = te1, gd = te2, driver = "screen",hype.vars =
+c("cout", "rout", "snow", "upcprf", "upcpsf"))
+We can not reproduce the error but found an orphaned opening parenthesis in the offending section (line 128). Parenthesis 
+removed and line break position changed as suggested.
+
 ## Resubmission 2
 This is a resubmission after comments and change requests by Victoria Wimmer. In this version we have made the following requested changes:
 * Removed redundant "Functions to" from the beginning of DESCRIPTION
