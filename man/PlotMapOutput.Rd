@@ -169,6 +169,7 @@ argument \code{legend.inset}. This is particularly useful for legend titles with
 specification see \code{inset} in \code{\link{legend}}.
 }
 \examples{
+\donttest{
 # Import plot data and subbasin polygons
 require(sf)
 te1 <- ReadMapOutput(filename = system.file("demo_model",
@@ -178,6 +179,7 @@ te2 <- st_read(dsn = system.file("demo_model",
 # plot runooff map
 PlotMapOutput(x = te1, map = te2, map.subid.column = 25,
 var.name = "CRUN", col = ColQ)
+}
 
 
 }

@@ -105,6 +105,7 @@
 #' \code{\link{ReadMapOutput}} for HYPE result import; \code{\link{PlotMapPoints}} for plotting HYPE results at points, e.g. sub-basin outlets.
 #'
 #' @examples
+#' \donttest{
 #' # Import plot data and subbasin polygons
 #' require(sf)
 #' te1 <- ReadMapOutput(filename = system.file("demo_model",
@@ -114,6 +115,7 @@
 #' # plot runooff map
 #' PlotMapOutput(x = te1, map = te2, map.subid.column = 25,
 #' var.name = "CRUN", col = ColQ)
+#' }
 #' 
 #'
 #' @importFrom dplyr right_join %>% mutate filter across
