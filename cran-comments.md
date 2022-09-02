@@ -8,7 +8,8 @@ PlotBasinOutput(x = te1, gd = te2, driver = "screen",hype.vars =
 c("cout", "rout", "snow", "upcprf", "upcpsf"))
 We can not reproduce the error but found an orphaned opening parenthesis in the offending section (line 128). Parenthesis 
 removed and line break position changed as suggested.
-* We also wrapped PlotMapOutput(), PlotMapPoints(), and OutletNearObs() examples in \donttest{} because they fail the 5 second execution mark sometimes
+* We also wrapped PlotMapOutput(), PlotMapPoints(), PlotSubbasinRouting, and OutletNearObs() examples in \donttest{} because 
+they fail the 5 second execution mark (sometimes)
 
 ## Resubmission 2
 This is a resubmission after comments and change requests by Victoria Wimmer. In this version we have made the following requested changes:

@@ -34,6 +34,7 @@
 #' Returns an interactive Leaflet map.
 #'
 #' @examples
+#' \donttest{
 #' # Import GeoData and subbasin polygons
 #' require(sf);require(leaflet.extras);require(leaflet);require(mapview)
 #' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
@@ -42,7 +43,7 @@
 #' "gis", "Nytorp_map.gpkg", package = "HYPEtools"), 
 #'                     gd = system.file("demo_model", "GeoData.txt", package = "HYPEtools"),
 #'                     map.subid.column = 25)
-#' 
+#' }
 #'
 #' @importFrom dplyr full_join %>% bind_rows filter across
 #' @importFrom tidyselect matches
