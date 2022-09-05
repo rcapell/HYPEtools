@@ -9,3 +9,4 @@ data-raw
 ^\.github$
 ^README\.Rmd$
 ^CRAN-SUBMISSION$
+^release_procedure\.R$
