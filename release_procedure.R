@@ -1,3 +1,4 @@
+library(dplyr)
 
 # Update DESCRIPTION
 # - Package version
@@ -13,7 +14,12 @@
 
 # check example execution time
 devtools::check(incoming = T, args = "--timings")
-timing_df <- read.delim('C:/Users/a002416/AppData/Local/Temp/Rtmp4Ay4BY/HYPEtools.Rcheck/HYPEtools-Ex.timings')
+timing_df <- read.delim('<Path to Check Outputs>/HYPEtools.Rcheck/HYPEtools-Ex.timings') %>%
+  mutate(cpu = user + system) %>% # Calculate CPU time (user + system)
+  arrange(desc(cpu))
+
+any(timing_df$cpu > 5) # Check if any CPU times > 5s
+any(timing_df$elapsed > 5) # Check if any elapsed times >5s
 
 # check for T/F instead of TRUE/FALSE
 lintr::lint_package(linters=list(lintr::T_and_F_symbol_linter()))
