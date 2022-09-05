@@ -1,3 +1,6 @@
+## HYPEtools 1.0.0.9000
+*development version*
+
 ## HYPEtools 1.0.0 (2022-08-22)
 *New functions and bug fixes*
 
