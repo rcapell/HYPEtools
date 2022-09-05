@@ -27,8 +27,13 @@ See the HYPEtools changelog [here](NEWS.md).
 
 ## Installation
 
-You can install the development version of HYPEtools from
-[GitHub](https://github.com/rcapell/HYPEtools) with:
+HYPEtools is on CRAN and can be downloaded with:
+``` r
+install.packages("HYPEtools")
+```
+
+If, however, you would like to install the latest development version of HYPEtools from
+[GitHub](https://github.com/rcapell/HYPEtools), then you can do so with:
 
 ``` r
 # install.packages("devtools")
