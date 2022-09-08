@@ -1,6 +1,9 @@
 ## HYPEtools 1.0.0.9000
 *development version*
 
+#### Highlights
+* Fixed bug in PlotMapPoints() that prevented plot from displaying for default plots with geographic coordinate systems
+
 ## HYPEtools 1.0.0 (2022-08-22)
 *New functions and bug fixes*
 
