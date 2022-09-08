@@ -387,8 +387,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
           ann.fr.y <- rev(seq(from = leg.fr.pos$text$y[length(cbrks) - 1] - legbx.fr.ht / 2, by = legbx.fr.ht, length.out = length(cbrks))) - legend.inset[2] * f.inset.y
         }
       }
-      
-      
+
       ## calculate coordinates for map positioning
       
       # map coordinates,unprojected maps need a workaround with dummy map to calculate map side ratio
@@ -403,7 +402,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
           bbx <- matrix(sf::st_bbox(bg),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # set user coordinates using a dummy plot (no fast way with Spatial polygons plot, therefore construct with SpatialPoints map)
           par(new = TRUE)
-          plot(sites, col = NULL, xlim = bbx[1, ], ylim = bbx[2, ])
+          suppressWarnings(plot(sf::st_geometry(sf::st_as_sf(sites)), col = NULL, xlim = bbx[1, ], ylim = bbx[2, ]))
           # create a map side ratio based on the device region in user coordinates and the map bounding box
           p.range.x <- diff(par("usr")[1:2])
           p.range.y <- diff(par("usr")[3:4])
@@ -425,7 +424,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, bg = NULL, bg.label.
           bbx <- matrix(sf::st_bbox(sites),nrow=2, ncol=2, dimnames = list(c("x","y"),c("min", "max")))
           # set user coordinates using a dummy plot
           par(new = TRUE)
-          plot(sites, col = NULL, add = add)
+          suppressWarnings(plot(sf::st_geometry(sf::st_as_sf(sites)), col = NULL, add = add))
           # create a map side ratio based on the device region in user coordinates and the map bounding box
           p.range.x <- diff(par("usr")[1:2])
           p.range.y <- diff(par("usr")[3:4])
