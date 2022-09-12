@@ -1874,8 +1874,8 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
       
       
       ## panel 2: Conc-Q plots, depending on variable availability
-      if ((exi.t["rout"] && exi.t["rets"]) || (exi.t["cout"] && exi.t["ccts"])) {
-        if ((exi.t["rout"] && exi.t["rets"]) && (exi.t["cout"] && exi.t["ccts"])) {
+      if ((exi.t["cout"] && exi.t["rets"]) || (exi.t["cout"] && exi.t["ccts"])) {
+        if ((exi.t["cout"] && exi.t["rets"]) && (exi.t["cout"] && exi.t["ccts"])) {
           
           # calculate y axis limits
           lim.ts <- range(c(rets, ccts), na.rm = TRUE)
@@ -1892,13 +1892,13 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
           cp <- cp + 1
-          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccts, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, ccts, col = "#FF00003C", pch = 16, log = log.cq, cex = .7, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
           cp <- cp + 1
-          list.plotexpr[[cp]] <- parse(text = 'points(rout, rets, col = "#00000080", pch = 16)')
+          list.plotexpr[[cp]] <- parse(text = 'points(cout, rets, col = "#00000080", pch = 16)')
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
           
-        }  else if (exi.t["rout"] && exi.t["rets"]) {
+        }  else if (exi.t["cout"] && exi.t["rets"]) {
           
           # calculate y axis limits
           lim.ts <- range(rets, na.rm = TRUE)
@@ -1914,7 +1914,7 @@ PlotBasinSummary <- function(x, filename, driver = c("default", "pdf", "png", "s
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'par(mar = c(3.1, 3.1, .5, .5), tcl = -0.2, mgp = c(1.8, 0.3, 0))')
           cp <- cp + 1
-          list.plotexpr[[cp]] <- parse(text = 'plot(rout, rets, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
+          list.plotexpr[[cp]] <- parse(text = 'plot(cout, rets, col = "#00000080", pch = 16, log = log.cq, xlim = lim.q, ylim = lim.ts, xlab = expression(paste("simulated Q (m"^3,"s"^"-1", ")")), ylab = expression(paste("TS conc. (mg l"^"-1", ")")))')
           cp <- cp + 1
           list.plotexpr[[cp]] <- parse(text = 'legend("topright", legend = c("sim.", "obs."), pch = 16, col = c("#FF000080", "#00000080"), bty = "n")')
           
