@@ -8,6 +8,7 @@ PlotMapPoints(
   x,
   sites,
   sites.subid.column = 1,
+  sites.groups = NULL,
   bg = NULL,
   bg.label.column = 1,
   map.type = "default",
@@ -57,6 +58,10 @@ with two columns, first column containing SUBIDs and second column containing mo
 requires additional packages, e.g. \code{\link[sf:st_read]{sf::st_read()}}.}
 
 \item{sites.subid.column}{Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
+
+\item{sites.groups}{Named list providing groups of SUBIDs to allow toggling of point groups in Leaflet maps. Default \code{NULL} will produce maps without
+point groups. List names represent the names of the groups to plot, and list values represent the SUBIDs within the group.
+Example: \code{sites.groups = list("GROUP 1" = c(1, 2, 3), "GROUP 2" = c(4, 5, 6))}.}
 
 \item{bg}{A \code{SpatialPolygonsDataFrame} or \code{sf} object to plot in the background. Typically an imported sub-basin vector polygon file.
 For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.}

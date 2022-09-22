@@ -3,6 +3,7 @@
 
 #### Highlights
 * Fixed bug in PlotMapPoints() that prevented plot from displaying for default plots with geographic coordinate systems
+* Added ability to toggle on/off display of point groups in PlotMapPoints() Leaflet maps
 * Fixed TS plots in PlotBasinSummary() to use simulated discharge (cout) with reTS instead of using observed discharge (rout)
 
 ## HYPEtools 1.0.0 (2022-08-22)
