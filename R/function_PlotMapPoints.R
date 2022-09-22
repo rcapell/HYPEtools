@@ -805,7 +805,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
             if(nrow(x_group) > 0){
               leafmap <- leafmap %>%
                 leaflet::addCircleMarkers(
-                  group = "Points",
+                  group = names(sites.groups)[i],
                   data = x_group,
                   color = "black",
                   radius = radius,
