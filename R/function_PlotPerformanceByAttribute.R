@@ -54,17 +54,30 @@
 
 #' @examples
 #' \donttest{
-#' # Import plot data and subbasin polygons
-#' require(sf)
-#' te1 <- ReadSubass(filename = system.file("demo_model",
-#' "results", "subass1.txt", package = "HYPEtools"))
-#' te2 <- st_read(dsn = system.file("demo_model",
-#' "gis", "Nytorp_station.gpkg", package = "HYPEtools"))
-#' te2$SUBID <- 3587 # add station SUBID to point
-#' te3 <- st_read(dsn = system.file("demo_model",
-#' "gis", "Nytorp_map.gpkg", package = "HYPEtools"))
-#' # plot NSE performance for discharge
-#' PlotMapPoints(x = te1[, 1:2], sites = te2, sites.subid.column = 3, bg = te3)
+#' subass <- ReadSubass(filename = system.file("demo_model", "results",
+#'   "subass1.txt",
+#'   package = "HYPEtools"
+#' ), check.names = TRUE)
+#' gd <- ReadGeoData(filename = system.file("demo_model",
+#'   "GeoData.txt",
+#'   package = "HYPEtools"
+#' ))
+#' gc <- ReadGeoClass(filename = system.file("demo_model",
+#'   "GeoClass.txt",
+#'   package = "HYPEtools"
+#' ))
+#' 
+#' attributes <- SubidAttributeSummary(subids <- subass$SUBID,
+#'   gd = gd, gc = gc,
+#'   mapoutputs = c(system.file("demo_model", "results", "mapCOUT.txt", package = "HYPEtools")),
+#'   upstream.gd.cols = c("SLOPE_MEAN")
+#' )
+#' 
+#' PlotPerformanceByAttribute(
+#'   subass = subass,
+#'   attributes = attributes[, c("SUBID", "landuse_1", "landuse_2", "landuse_3")],
+#'   xlimits = c(0, 1)
+#' )
 #' }
 #' 
 #' @importFrom dplyr group_by sym left_join n rename select summarize
@@ -219,17 +232,17 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         group_by(Group) %>%
         summarize(
           n = n(),
-          Mean = round(mean(!!sym(colnames(subass)[subass.column]), na.rm = T), 2),
-          Median = round(median(!!sym(colnames(subass)[subass.column]), na.rm = T), 2),
-          Min = round(min(!!sym(colnames(subass)[subass.column]), na.rm = T), 2),
-          Max = round(max(!!sym(colnames(subass)[subass.column]), na.rm = T), 2)
+          Mean = round(mean(!!sym(colnames(subass)[subass.column]), na.rm = TRUE), 2),
+          Median = round(median(!!sym(colnames(subass)[subass.column]), na.rm = TRUE), 2),
+          Min = round(min(!!sym(colnames(subass)[subass.column]), na.rm = TRUE), 2),
+          Max = round(max(!!sym(colnames(subass)[subass.column]), na.rm = TRUE), 2)
         )
     } else {
       table <- plotdata %>%
         summarize(
           n = n(),
-          Mean = round(mean(!!sym(colnames(subass)[subass.column]), na.rm = T), 2),
-          Median = round(median(!!sym(colnames(subass)[subass.column]), na.rm = T), 2)
+          Mean = round(mean(!!sym(colnames(subass)[subass.column]), na.rm = TRUE), 2),
+          Median = round(median(!!sym(colnames(subass)[subass.column]), na.rm = TRUE), 2)
         )
     }
 

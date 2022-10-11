@@ -155,17 +155,30 @@ A subbasin attribute summary table can be generated using \code{\link{SubidAttri
 }
 \examples{
 \donttest{
-# Import plot data and subbasin polygons
-require(sf)
-te1 <- ReadSubass(filename = system.file("demo_model",
-"results", "subass1.txt", package = "HYPEtools"))
-te2 <- st_read(dsn = system.file("demo_model",
-"gis", "Nytorp_station.gpkg", package = "HYPEtools"))
-te2$SUBID <- 3587 # add station SUBID to point
-te3 <- st_read(dsn = system.file("demo_model",
-"gis", "Nytorp_map.gpkg", package = "HYPEtools"))
-# plot NSE performance for discharge
-PlotMapPoints(x = te1[, 1:2], sites = te2, sites.subid.column = 3, bg = te3)
+subass <- ReadSubass(filename = system.file("demo_model", "results",
+  "subass1.txt",
+  package = "HYPEtools"
+), check.names = TRUE)
+gd <- ReadGeoData(filename = system.file("demo_model",
+  "GeoData.txt",
+  package = "HYPEtools"
+))
+gc <- ReadGeoClass(filename = system.file("demo_model",
+  "GeoClass.txt",
+  package = "HYPEtools"
+))
+
+attributes <- SubidAttributeSummary(subids <- subass$SUBID,
+  gd = gd, gc = gc,
+  mapoutputs = c(system.file("demo_model", "results", "mapCOUT.txt", package = "HYPEtools")),
+  upstream.gd.cols = c("SLOPE_MEAN")
+)
+
+PlotPerformanceByAttribute(
+  subass = subass,
+  attributes = attributes[, c("SUBID", "landuse_1", "landuse_2", "landuse_3")],
+  xlimits = c(0, 1)
+)
 }
 
 }
