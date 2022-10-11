@@ -13,7 +13,9 @@ PlotAnnualRegime(
   l.position = c("topright", "bottomright", "right", "topleft", "left", "bottomleft"),
   log = FALSE,
   ylim = NULL,
-  ylab = expression(paste("Q (m"^3, " s"^{     -1 }, ")")),
+  ylab = expression(paste("Q (m"^3, " s"^{
+     -1
+ }, ")")),
   xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse = " to "),
   col = "blue",
   alpha = 30,

@@ -55,6 +55,7 @@ SumUpstreamArea <- function(subid = NULL, gd, bd = NULL, cl = 2, progbar = FALSE
   
   # conditional: use the progress bar version of sapply if user-requested (imported from package pbapply)
   if (progbar) {
+    cat("\nCalculating upstream areas.\n")
     if (cl > 1) {
       # parallel computation
       if (.Platform$OS.type == "unix") {

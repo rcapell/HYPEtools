@@ -9,7 +9,7 @@
 #' @param bd A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param gcl Data frame containing columns with SLCs and corresponding land use and soil class IDs, typically a 'GeoClass.txt' 
 #' file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.
-#' @param type Keyword character string for use with \code{gcl}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"}, 
+#' @param type Keyword character string for use with \code{gcl}. Type of grouping index, choice of \code{"landuse"}, \code{"soil"}, and/or \code{"crop"}, 
 #' can be abbreviated.
 #' @param group Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gcl} + \code{type}.
 #' @param signif.digits Integer, number of significant digits to round upstream SLCs to. See also \code{\link{signif}}. Set to \code{NULL} to prevent rounding. 
@@ -53,12 +53,11 @@ UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, typ
                                     group = NULL, signif.digits = 3, progbar = TRUE) {
   
   # input argument checks
-  type <- match.arg(type)
+  type <- match.arg(type, several.ok = TRUE)
   
   # extract column positions of subid and area in gd
   pos.sbd <- which(toupper(names(gd)) == "SUBID")
   pos.area <- which(toupper(names(gd)) == "AREA")
-  pos.slc <- which(toupper(substr(names(gd), 1, 3)) == "SLC")
   
   # check if gd contains necessary information
   if (length(pos.sbd) == 0) {
@@ -84,8 +83,19 @@ UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, typ
   
   # create grouped slc classes using existing function, just for upstream subids
   gd.sel <- gd[gd[, pos.sbd] %in% unlist(up.sbd), ]
-  grclass <- GroupSLCClasses(gd = gd.sel, gcl = gcl, type = type, group = group, abs.area = FALSE, verbose = progbar)
   
+  # Process using group index specification
+  if(!is.null(group)){
+    grclass <- GroupSLCClasses(gd = gd.sel, gcl = gcl, type = type, group = group, abs.area = FALSE, verbose = progbar)
+  
+  # Process using GeoClass + type specification - allows for summarizing multiple types at same time
+  } else{
+    grclass <- vector("list")
+    for(ty in type){
+      grclass[[ty]] <- GroupSLCClasses(gd = gd.sel, gcl = gcl, type = ty, group = group, abs.area = FALSE, verbose = progbar)
+    }
+    grclass <- grclass %>% reduce(full_join, by = c("SUBID", "AREA"))
+  }
   
   ## calculate upstream average groups
   
