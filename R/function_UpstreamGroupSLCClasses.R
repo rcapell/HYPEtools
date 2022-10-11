@@ -47,6 +47,7 @@
 #' 
 #' @export
 #' @importFrom pbapply pblapply pbsapply
+#' @importFrom purrr reduce
 
 
 UpstreamGroupSLCClasses <- function(subid = NULL, gd, bd = NULL, gcl = NULL, type = c("landuse", "soil", "crop"), 

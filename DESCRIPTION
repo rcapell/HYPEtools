@@ -23,6 +23,7 @@ Imports:
     ncdf4,
     parallel,
     pbapply,
+    purrr,
     rlang,
     sf,
     stats,
