@@ -300,7 +300,7 @@ AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL
     rlen <- nrow(res) * 8
     
     # format into 'long' data frame with single value column
-    res <- lapply(as.list(res)[-c(1:2)], function(x, y) {r <- data.frame(cbind(period = as.factor(y), data.frame(x)) %>% pivot_longer(!"period")); r$name <- factor(r$name); r}, y = res[, 2])
+    res <- lapply(as.list(res)[-c(1:2)], function(x, y) {r <- data.frame(cbind(refdate = y$refdate, period = as.factor(y[, 2]), data.frame(x)) %>% pivot_longer(!c("refdate", "period"))); r$name <- factor(r$name); r}, y = res[, 1:2])
     res <- do.call(rbind, res)
     
     # create id column, with SUBIDs or variable IDs
