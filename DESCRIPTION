@@ -19,6 +19,8 @@ Imports:
     dplyr,
     grDevices,
     graphics,
+    ggplot2,
+    ggpubr,
     hydroGOF,
     ncdf4,
     parallel,
