@@ -161,10 +161,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Format colors if color palette specified
     if (!is.null(groups.color.pal)) {
       plot <- plot +
-        scale_fill_manual(values = groups.color.pal, name = "Group") +
+        scale_fill_manual(values = groups.color.pal, name = "Group", drop = FALSE) +
         scale_color_manual(values = unlist(lapply(groups.color.pal, function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = "Group") + 
+        })), name = "Group", drop = FALSE) + 
         guides(color = guide_legend(override.aes = list(color = groups.color.pal))) # Override colors in legend to be the original colors
 
       # Format colors if no color palette specified
@@ -181,10 +181,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
       # Adjust colors
       plot <- plot +
-        scale_fill_discrete(name = "Group") + # Assign name to pallette for points
+        scale_fill_discrete(name = "Group", drop = FALSE) + # Assign name to pallette for points
         scale_color_manual(values = unlist(lapply(gg_colors, function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = "Group") + 
+        })), name = "Group", drop = FALSE) + 
         guides(color = guide_legend(override.aes = list(color = gg_colors))) # Override colors in legend to be the original colors
     }
 
