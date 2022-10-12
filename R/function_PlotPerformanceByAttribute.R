@@ -12,6 +12,7 @@
 #' will perform a \code{\link{cbind}} in which the order of the SUBIDs needs to match; this can be helpful if you want to create plots where \code{subass} performance data is calculated according to a 
 #' grouping variable (e.g. month).
 #' @param groups.color.pal Vector containing colors to use when plotting groups. Only used if groups is not \code{NULL}.
+#' @param drop Logical, should unused factor levels be omitted from the legend. See \code{\link{scale_color_manual}} and \code{link{scale_fill_manual}}.
 #' @param alpha Numeric value to set transparency of dots in output plots. Should be in the range 0-1.
 #' @param trendline Logical, if \code{TRUE}, then trendlines will be added to the output plots. Set to \code{FALSE} to hide trendlines. See \code{\link{geom_smooth}}.
 #' @param trendline.method Specify method used to create trendlines. See \code{\link{geom_smooth}}.
@@ -90,7 +91,7 @@
 #' @importFrom patchwork plot_spacer plot_layout
 #' @export
 
-PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, alpha = 0.4,
+PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
                                        trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15, density.plot = FALSE,
                                        xlimits = c(NA, NA), ylimits = c(NA, NA), xbreaks = waiver(), ybreaks = waiver(), xlabels = waiver(), ylabels = waiver(), xlab = NULL, ylab = NULL,
                                        ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", summary.table = FALSE,
@@ -161,10 +162,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Format colors if color palette specified
     if (!is.null(groups.color.pal)) {
       plot <- plot +
-        scale_fill_manual(values = groups.color.pal, name = "Group", drop = FALSE) +
+        scale_fill_manual(values = groups.color.pal, name = "Group", drop = drop) +
         scale_color_manual(values = unlist(lapply(groups.color.pal, function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = "Group", drop = FALSE) + 
+        })), name = "Group", drop = drop) + 
         guides(color = guide_legend(override.aes = list(color = groups.color.pal))) # Override colors in legend to be the original colors
 
       # Format colors if no color palette specified
@@ -181,10 +182,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
       # Adjust colors
       plot <- plot +
-        scale_fill_discrete(name = "Group", drop = FALSE) + # Assign name to pallette for points
+        scale_fill_discrete(name = "Group", drop = drop) + # Assign name to pallette for points
         scale_color_manual(values = unlist(lapply(gg_colors, function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = "Group", drop = FALSE) + 
+        })), name = "Group", drop = drop) + 
         guides(color = guide_legend(override.aes = list(color = gg_colors))) # Override colors in legend to be the original colors
     }
 
