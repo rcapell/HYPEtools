@@ -18,6 +18,7 @@
 #' @param trendline.formula Specify formula used to create trendlines. See \code{\link{geom_smooth}}.
 #' @param trendline.alpha Numeric value to set transparency of trendlines in output plots. Should be in the range 0-1.
 #' @param trendline.darken Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.
+#' @param density.plot Logical, if \code{TRUE}, then density plots will be addded to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.
 #' @param xlimits Vector containing minimum and maximum values for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
 #' @param xbreaks Vector containing the break values used for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
 #' @param xlabels Vector containing the labels for each break value used for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
@@ -81,15 +82,16 @@
 #' }
 #' 
 #' @importFrom dplyr group_by sym left_join n rename select summarize
-#' @importFrom ggplot2 aes element_text geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
-#' scale_y_continuous theme unit waiver xlab ylab
+#' @importFrom ggplot2 aes element_text geom_point geom_smooth geom_density ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
+#' scale_y_continuous theme unit waiver xlab ylab theme_void coord_flip
 #' @importFrom ggpubr colnames_style ggarrange ggtexttable tab_add_title tbody_style ttheme
 #' @importFrom grDevices colorRampPalette hcl
 #' @importFrom stats median
+#' @importFrom patchwork plot_spacer plot_layout
 #' @export
 
 PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, alpha = 0.4,
-                                       trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15,
+                                       trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15, density.plot = FALSE,
                                        xlimits = c(NA, NA), ylimits = c(NA, NA), xbreaks = waiver(), ybreaks = waiver(), xlabels = waiver(), ylabels = waiver(), xlab = NULL, ylab = NULL,
                                        ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", summary.table = FALSE,
                                        filename = NULL, width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300) {
@@ -190,7 +192,73 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     plot <- plot +
       scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels) +
       scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels) +
-      theme(axis.title = element_text(face = "bold"))
+      theme(axis.title = element_text(face = "bold"),
+            legend.position = "bottom")
+    
+    # Add density plots
+    if(density.plot == TRUE){
+      
+      if(!is.null(groups)){
+        if (!is.null(groups.color.pal)) { # If custom colors exist
+          # Create density plot for x-axis
+          densx <- ggplot(plotdata, aes(x = !!sym(col), fill = Group)) +
+            geom_density(size = 0.2, alpha = 0.4) +
+            scale_fill_manual(values = groups.color.pal, name = "Group") +
+            theme_void()+
+            theme(legend.position = "none")
+          
+          # Create density plot for y-axis
+          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = Group)) +
+            geom_density(size = 0.2, alpha = 0.4) +
+            scale_fill_manual(values = groups.color.pal, name = "Group") +
+            theme_void()+
+            theme(legend.position = "none") +
+            coord_flip()
+        } else{ # Use default colors
+          # Create density plot for x-axis
+          densx <- ggplot(plotdata, aes(x = !!sym(col), fill = Group)) +
+            geom_density(size = 0.2, alpha = 0.4) +
+            theme_void()+
+            theme(legend.position = "none")
+          
+          # Create density plot for y-axis
+          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = Group)) +
+            geom_density(size = 0.2, alpha = 0.4) +
+            theme_void()+
+            theme(legend.position = "none") +
+            coord_flip()
+        }
+      } else{
+        # Create density plot for x-axis
+        densx <- ggplot(plotdata, aes(x = !!sym(col))) +
+          geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
+          theme_void()
+        
+        # Create density plot for y-axis
+        densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
+          geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
+          theme_void() +
+          coord_flip()
+      }
+      
+      # Backup legend
+      plot_legend <- plot
+      
+      # Remove legend from plot
+      plot <- plot + theme(legend.position = "none")
+      
+      # Create arranged plot
+      plot <- densx + 
+        plot_spacer() + 
+        plot + 
+        densy + 
+        plot_layout(
+          ncol = 2, 
+          nrow = 2, 
+          widths = c(4, 1),
+          heights = c(1, 4)
+        ) 
+    }
 
     # Store plot in list
     plots[[col]] <- plot
@@ -221,7 +289,11 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   }
 
   # Arrange plots
-  arrangeplot <- ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, common.legend = common.legend, legend = legend.position)
+  if(density.plot == TRUE){
+    arrangeplot <- ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, common.legend = common.legend, legend = legend.position, legend.grob = get_legend(plot_legend))
+  } else{
+    arrangeplot <- ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, common.legend = common.legend, legend = legend.position)
+  }
 
   # Add summary stats table
   if (summary.table == TRUE) {

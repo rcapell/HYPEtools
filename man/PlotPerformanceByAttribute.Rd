@@ -18,6 +18,7 @@ PlotPerformanceByAttribute(
   trendline.formula = NULL,
   trendline.alpha = 0.5,
   trendline.darken = 15,
+  density.plot = FALSE,
   xlimits = c(NA, NA),
   ylimits = c(NA, NA),
   xbreaks = waiver(),
@@ -52,6 +53,7 @@ PlotJohan(
   trendline.formula = NULL,
   trendline.alpha = 0.5,
   trendline.darken = 15,
+  density.plot = FALSE,
   xlimits = c(NA, NA),
   ylimits = c(NA, NA),
   xbreaks = waiver(),
@@ -100,6 +102,8 @@ grouping variable (e.g. month).}
 \item{trendline.alpha}{Numeric value to set transparency of trendlines in output plots. Should be in the range 0-1.}
 
 \item{trendline.darken}{Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.}
+
+\item{density.plot}{Logical, if \code{TRUE}, then density plots will be addded to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.}
 
 \item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.}
 
