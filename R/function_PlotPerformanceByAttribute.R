@@ -83,12 +83,12 @@
 #' }
 #' 
 #' @importFrom dplyr group_by sym left_join n rename select summarize
-#' @importFrom ggplot2 aes element_text geom_point geom_smooth geom_density ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
-#' scale_y_continuous theme unit waiver xlab ylab theme_void coord_flip
-#' @importFrom ggpubr colnames_style ggarrange ggtexttable tab_add_title tbody_style ttheme
+#' @importFrom ggplot2 aes coord_flip element_text geom_density geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
+#' scale_y_continuous theme theme_void unit waiver xlab ylab
+#' @importFrom ggpubr colnames_style get_legend ggarrange ggtexttable tab_add_title tbody_style ttheme
 #' @importFrom grDevices colorRampPalette hcl
+#' @importFrom patchwork plot_layout plot_spacer
 #' @importFrom stats median
-#' @importFrom patchwork plot_spacer plot_layout
 #' @export
 
 PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
