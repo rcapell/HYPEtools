@@ -271,6 +271,20 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
           coord_flip()
       }
       
+      # Scale x axis
+      if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
+        densx <- densx + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
+      } else{ # Normal scale
+        densx <- densx + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels)
+      }
+      
+      # Scale y axis
+      if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
+        densy <- densy + scale_x_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
+      } else{ # Normal scale
+        densy <- densy + scale_x_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels)
+      }
+      
       # Backup legend
       plot_legend <- plot
       
