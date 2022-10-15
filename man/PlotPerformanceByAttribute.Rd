@@ -20,6 +20,8 @@ PlotPerformanceByAttribute(
   trendline.alpha = 0.5,
   trendline.darken = 15,
   density.plot = FALSE,
+  scale.x.log = FALSE,
+  scale.y.log = FALSE,
   xlimits = c(NA, NA),
   ylimits = c(NA, NA),
   xbreaks = waiver(),
@@ -56,6 +58,8 @@ PlotJohan(
   trendline.alpha = 0.5,
   trendline.darken = 15,
   density.plot = FALSE,
+  scale.x.log = FALSE,
+  scale.y.log = FALSE,
   xlimits = c(NA, NA),
   ylimits = c(NA, NA),
   xbreaks = waiver(),
@@ -108,6 +112,10 @@ grouping variable (e.g. month).}
 \item{trendline.darken}{Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.}
 
 \item{density.plot}{Logical, if \code{TRUE}, then density plots will be addded to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.}
+
+\item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.}
+
+\item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.}
 
 \item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.}
 

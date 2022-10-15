@@ -20,6 +20,8 @@
 #' @param trendline.alpha Numeric value to set transparency of trendlines in output plots. Should be in the range 0-1.
 #' @param trendline.darken Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.
 #' @param density.plot Logical, if \code{TRUE}, then density plots will be addded to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.
+#' @param scale.x.log Vector describing if output plots should use a log scale on the x-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.
+#' @param scale.y.log Vector describing if output plots should use a log scale on the y-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.
 #' @param xlimits Vector containing minimum and maximum values for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
 #' @param xbreaks Vector containing the break values used for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
 #' @param xlabels Vector containing the labels for each break value used for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
@@ -84,7 +86,7 @@
 #' 
 #' @importFrom dplyr group_by sym left_join n rename select summarize
 #' @importFrom ggplot2 aes coord_flip element_text geom_density geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
-#' scale_y_continuous theme theme_void unit waiver xlab ylab
+#' scale_y_continuous theme theme_void unit waiver xlab ylab scale_x_log10 scale_y_log10
 #' @importFrom ggpubr colnames_style get_legend ggarrange ggtexttable tab_add_title tbody_style ttheme
 #' @importFrom grDevices colorRampPalette hcl
 #' @importFrom patchwork plot_layout plot_spacer
@@ -93,8 +95,8 @@
 
 PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
                                        trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15, density.plot = FALSE,
-                                       xlimits = c(NA, NA), ylimits = c(NA, NA), xbreaks = waiver(), ybreaks = waiver(), xlabels = waiver(), ylabels = waiver(), xlab = NULL, ylab = NULL,
-                                       ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", summary.table = FALSE,
+                                       scale.x.log = FALSE, scale.y.log = FALSE, xlimits = c(NA, NA), ylimits = c(NA, NA), xbreaks = waiver(), ybreaks = waiver(), xlabels = waiver(), ylabels = waiver(),
+                                       xlab = NULL, ylab = NULL, ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", summary.table = FALSE,
                                        filename = NULL, width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300) {
 
   # Check join type
@@ -127,9 +129,24 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
   # Create vector to store plots
   plots <- vector("list")
+  plotcols <- colnames(attributes)[which(!colnames(attributes) == "SUBID")]
+  
+  # Check scale.x.log
+  if(length(scale.x.log == 1)){
+    scale.x.log = rep(scale.x.log, length(plotcols))
+  } else if(!length(scale.x.log) == length(plotcols)){
+    stop("ERROR: length of scale.x.log does not match number of output plots")
+  }
+  
+  # Check scale.y.log
+  if(length(scale.y.log == 1)){
+    scale.y.log = rep(scale.y.log, length(plotcols))
+  } else if(!length(scale.y.log) == length(plotcols)){
+    stop("ERROR: length of scale.y.log does not match number of output plots")
+  }
 
   # Generate plots
-  for (col in colnames(attributes)[which(!colnames(attributes) == "SUBID")]) {
+  for (col in plotcols) {
 
     # Create plot
     if (!is.null(groups)) {
@@ -188,11 +205,23 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         })), name = "Group", drop = drop) + 
         guides(color = guide_legend(override.aes = list(color = gg_colors))) # Override colors in legend to be the original colors
     }
+    
+    # Scale x axis
+    if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
+      plot <- plot + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
+    } else{ # Normal scale
+      plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels)
+    }
+    
+    # Scale y axis
+    if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
+      plot <- plot + scale_y_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
+    } else{ # Normal scale
+      plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels)
+    }
 
     # Format plot
     plot <- plot +
-      scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels) +
-      scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels) +
       theme(axis.title = element_text(face = "bold"),
             legend.position = "bottom")
     
