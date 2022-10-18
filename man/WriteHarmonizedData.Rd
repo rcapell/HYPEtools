@@ -23,6 +23,8 @@ If \code{FALSE}, then strings will be left unmodified.}
 
 \item{strip.punctuation}{Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 If \code{FALSE}, then strings will be left unmodified.}
+
+\item{nThread}{Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}}
 }
 \value{
 \code{WriteHarmonizedData} exports a CSV file if \code{filename} is specified. Otherwise, the function outputs a data frame to the console.

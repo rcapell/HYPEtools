@@ -26,6 +26,7 @@
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
+#' @param nThread Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}
 #' 
 #' @details
 #' \code{WriteHarmonizedData} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized data in the HYPEObsMetadataTools Harmonized Data Format.
