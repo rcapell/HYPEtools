@@ -2,59 +2,58 @@
 % Please edit documentation in R/functioncollection_Harmonized.R
 \name{WriteHarmonizedSpatialDescription}
 \alias{WriteHarmonizedSpatialDescription}
-\title{Read an 'Xobs.txt' file}
+\title{Write a Harmonized Spatial Description File}
 \usage{
-WriteHarmonizedSpatialDescription()
+WriteHarmonizedSpatialDescription(
+  df,
+  filename = "",
+  replace.accents = FALSE,
+  strip.punctuation = FALSE,
+  nThread = getDTthreads()
+)
 }
 \arguments{
-\item{filename}{Path to and file name of the Xobs file to import. Windows users: Note that
+\item{df}{Data frame containing the harmonized spatial description data.}
+
+\item{filename}{Path to and file name (including ".csv" file extension) of the Harmonized Spatial Description CSV file to export. Windows users: Note that
 Paths are separated by '/', not '\\'.}
 
-\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
+\item{replace.accents}{Logical, if \code{TRUE}, then accented characters (e.g. ä, ö, å) will be replaced with non-accented characters in all strings.
+If \code{FALSE}, then strings will be left unmodified.}
 
-\item{variable}{Character vector, HYPE variable ID(s) to select for import. Not case-sensitive. If \code{NULL} (default), all
-variables are imported. See \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt documentation}
-for a list of variable IDs.}
+\item{strip.punctuation}{Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
+If \code{FALSE}, then strings will be left unmodified.}
 
-\item{nrows}{Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives
-the number of rows to import.}
-
-\item{verbose}{Logical, throw warning if class \code{HypeXobs}'s attribute \code{timestep} cannot be computed.}
+\item{nThread}{Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}}
 }
 \value{
-If datetime import to POSIXct worked, \code{ReadXobs} returns a \code{\link{HypeXobs}} object, a data frame with four
-additional attributes \code{variable}, \code{subid}, \code{comment}, and \code{timestep}: \code{variable}
-and \code{subid} each contain a vector with column-wise HYPE IDs (first column with date/time information omitted).
-\code{comment} contains the content of the Xobs file comment row as single string. \code{timestep} contains a keyword string.
-Column names of the returned data frame are composed of variable names and SUBIDs, separated by an underscore,
-i.e. \code{[variable]_[subid]}. If datetime conversion failed on import, the returned object is a data frame
-(i.e. no class \code{HypeXobs}).
+\code{WriteSpatialDescrption} exports a CSV file if \code{filename} is specified. Otherwise, the function outputs a data frame to the console.
 }
 \description{
-This is a convenience wrapper function to import an Xobs file into R.
+This is a convenience wrapper function to export a data frame to the required Harmonized Spatial Description File format. See the
+\href{https://git.smhi.se/fouh/hypeobsmetadatatools}{HYPEObsMetadataTools documentation}.
 }
 \details{
-\code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package
-\code{\link{data.table}},
-with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as
-attributes (see \code{\link{attr}} on how to access these).
-
-Duplicated variable-SUBID combinations are not allowed in HYPE Xobs files, and the function will throw a warning if any are found.
-}
-\note{
-For the conversion of date/time strings, time zone "UTC" is assumed. This is done to avoid potential daylight saving time
-side effects when working with the imported data (and e.g. converting to string representations during the process).
+\code{WriteHarmonizedSpatialDescrption} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized spatial description data in the HYPEObsMetadataTools Harmonized Spatial Descrption Format.
+The function checks that all required columns are present, includes options to format strings, and exports data to output CSV files with the correct encoding and formatting.
 }
 \examples{
 df <- data.frame(
   "STATION_ID" = "A1",
-  "DATE_START" = "2002-06-18 12:00",
-  "DATE_END" = "2002-06-18 12:00",
   "PARAMETER" = "NH4_N",
-  "VALUE" = 0.050,
-  "UNIT" = "mg/L",
-  "QUALITY_CODE" = "AA"
+  "SRC_NAME" = "Example",
+  "DOWNLOAD_DATE" = "2022-10-19",
+  "SRC_STATNAME" = "Station",
+  "SRC_RIVNAME" = "River",
+  "SRC_UAREA" = NA,
+  "SRC_XCOORD" = 28.11831,
+  "SRC_YCOORD" = -25.83053,
+  "SRC_EPSG" = 4326,
+  "ADJ_XCOORD" = 28.11831,
+  "ADJ_YCOORD" = -25.83053,
+  "ADJ_EPSG" = 4326
 )
-WriteHarmonizedData(df)
+
+WriteHarmonizedSpatialDescription(df)
 
 }
