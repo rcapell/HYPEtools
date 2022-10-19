@@ -85,7 +85,7 @@
 #' }
 #' 
 #' @importFrom dplyr group_by sym left_join n rename select summarize
-#' @importFrom ggplot2 aes_string coord_flip element_text geom_density geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
+#' @importFrom ggplot2 aes aes_string coord_flip element_text geom_density geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
 #' scale_y_continuous theme theme_void unit waiver xlab ylab scale_x_log10 scale_y_log10
 #' @importFrom ggpubr colnames_style get_legend ggarrange ggtexttable tab_add_title tbody_style ttheme
 #' @importFrom grDevices colorRampPalette hcl
@@ -151,10 +151,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
     # Create plot
     if (!is.null(groups)) {
-      plot <- ggplot(data = plotdata, aes_string(x = col, y = colnames(subass)[subass.column])) +
+      plot <- ggplot(data = plotdata, aes(x = !!sym(col), y = !!sym(colnames(subass)[subass.column]))) +
         geom_point(aes_string(fill = "Group"), alpha = alpha, shape = 21, color = "transparent")
     } else {
-      plot <- ggplot(data = plotdata, aes_string(x = col, y = colnames(subass)[subass.column])) +
+      plot <- ggplot(data = plotdata, aes(x = !!sym(col), y = !!sym(colnames(subass)[subass.column]))) +
         geom_point(alpha = alpha)
     }
     
@@ -232,14 +232,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       if(!is.null(groups)){
         if (!is.null(groups.color.pal)) { # If custom colors exist
           # Create density plot for x-axis
-          densx <- ggplot(plotdata, aes_string(x = col, fill = "Group")) +
+          densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
             geom_density(size = 0.2, alpha = 0.4) +
             scale_fill_manual(values = groups.color.pal, name = "Group") +
             theme_void()+
             theme(legend.position = "none")
           
           # Create density plot for y-a.xis
-          densy <- ggplot(plotdata, aes_string(x = colnames(subass)[subass.column], fill = "Group")) +
+          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
             geom_density(size = 0.2, alpha = 0.4) +
             scale_fill_manual(values = groups.color.pal, name = "Group") +
             theme_void()+
@@ -247,13 +247,13 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             coord_flip()
         } else{ # Use default colors
           # Create density plot for x-axis
-          densx <- ggplot(plotdata, aes_string(x = col, fill = "Group")) +
+          densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
             geom_density(size = 0.2, alpha = 0.4) +
             theme_void()+
             theme(legend.position = "none")
           
           # Create density plot for y-axis
-          densy <- ggplot(plotdata, aes_string(x = colnames(subass)[subass.column], fill = "Group")) +
+          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
             geom_density(size = 0.2, alpha = 0.4) +
             theme_void()+
             theme(legend.position = "none") +
@@ -261,12 +261,12 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         }
       } else{
         # Create density plot for x-axis
-        densx <- ggplot(plotdata, aes_string(x = col)) +
+        densx <- ggplot(plotdata, aes(x = !!sym(col))) +
           geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
           theme_void()
         
         # Create density plot for y-axis
-        densy <- ggplot(plotdata, aes_string(x = colnames(subass)[subass.column])) +
+        densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
           geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
           theme_void() +
           coord_flip()
