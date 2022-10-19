@@ -773,7 +773,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
           for(i in 1:length(sites.groups)){
             
             # Get data for group
-            x_group <- x %>% filter(SUBID %in% sites.groups[[i]])
+            x_group <- x %>% filter(.data$SUBID %in% sites.groups[[i]])
             
             # Add points
             if(nrow(x_group) > 0){
@@ -799,7 +799,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
           for(i in 1:length(sites.groups)){
             
             # Get data for group
-            x_group <- x%>% filter(SUBID%in%sites.groups[[i]])
+            x_group <- x%>% filter(.data$SUBID%in%sites.groups[[i]])
             
             # Add points
             if(nrow(x_group) > 0){

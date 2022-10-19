@@ -57,6 +57,7 @@
 #' @importFrom dplyr filter all_of left_join rename_with select
 #' @importFrom data.table setnames
 #' @importFrom purrr reduce
+#' @importFrom rlang .data
 #' @export
 
 # Create Johan summary dataframe
@@ -107,12 +108,12 @@ SubidAttributeSummary <- function(subids, gd, bd = NULL, gc = NULL, desc = NULL,
   if (summarize.upstreamarea == TRUE | !is.null(upstream.gd.cols)) {
 
     # Summarize upstream area & GeoData columns
-    uparea <- UpstreamGeoData(subid = subids, gd = gd %>% select(SUBID, MAINDOWN, AREA, all_of(upstream.gd.cols)), bd = bd, olake.slc = olake.slc, bd.weight = bd.weight, signif.digits = signif.digits, progbar = progbar) %>%
-      select(-MAINDOWN)
+    uparea <- UpstreamGeoData(subid = subids, gd = gd %>% select("SUBID", "MAINDOWN", "AREA", all_of(upstream.gd.cols)), bd = bd, olake.slc = olake.slc, bd.weight = bd.weight, signif.digits = signif.digits, progbar = progbar) %>%
+      select(-"MAINDOWN")
 
     # Remove upstream area column if summarize.upstreamarea is FALSE
     if (summarize.upstreamarea == FALSE) {
-      uparea <- uparea %>% select(-UP_AREA)
+      uparea <- uparea %>% select(-"UP_AREA")
     }
 
     data[["uparea"]] <- uparea
@@ -123,7 +124,7 @@ SubidAttributeSummary <- function(subids, gd, bd = NULL, gc = NULL, desc = NULL,
   if (!is.null(mapoutputs)) {
     for (mapoutput in mapoutputs) {
       mapdf <- ReadMapOutput(mapoutput) %>%
-        filter(SUBID %in% subids)
+        filter(.data$SUBID %in% subids)
 
       data[[basename(mapoutput)]] <- mapdf %>%
         rename_with(~ paste0("map_", attr(mapdf, "variable")), .cols = 2)
@@ -137,7 +138,7 @@ SubidAttributeSummary <- function(subids, gd, bd = NULL, gc = NULL, desc = NULL,
   # Add unweighted GeoData columns --------------------------------------------------------------------------------------------------------------------
   if (!is.null(unweighted.gd.cols)) {
     data <- data %>%
-      left_join(gd %>% select(SUBID, all_of(unweighted.gd.cols)), by = "SUBID")
+      left_join(gd %>% select("SUBID", all_of(unweighted.gd.cols)), by = "SUBID")
   }
 
   # Return data frame

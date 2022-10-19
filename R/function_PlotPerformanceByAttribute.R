@@ -85,12 +85,13 @@
 #' }
 #' 
 #' @importFrom dplyr group_by sym left_join n rename select summarize
-#' @importFrom ggplot2 aes coord_flip element_text geom_density geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
+#' @importFrom ggplot2 aes_string coord_flip element_text geom_density geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
 #' scale_y_continuous theme theme_void unit waiver xlab ylab scale_x_log10 scale_y_log10
 #' @importFrom ggpubr colnames_style get_legend ggarrange ggtexttable tab_add_title tbody_style ttheme
 #' @importFrom grDevices colorRampPalette hcl
 #' @importFrom patchwork plot_layout plot_spacer
 #' @importFrom stats median
+#' @importFrom rlang .data
 #' @export
 
 PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
@@ -124,7 +125,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     if (!nrow(plotdata) == nrow(attributes)) {
       stop("ERROR: number of rows in subass does not match number of rows in attributes")
     }
-    plotdata <- cbind(plotdata, attributes %>% select(-SUBID))
+    plotdata <- cbind(plotdata, attributes %>% select(-"SUBID"))
   }
 
   # Create vector to store plots
@@ -150,17 +151,17 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
     # Create plot
     if (!is.null(groups)) {
-      plot <- ggplot(data = plotdata, aes(x = !!sym(col), y = !!sym(colnames(subass)[subass.column]))) +
-        geom_point(aes(fill = Group), alpha = alpha, shape = 21, color = "transparent")
+      plot <- ggplot(data = plotdata, aes_string(x = col, y = colnames(subass)[subass.column])) +
+        geom_point(aes_string(fill = "Group"), alpha = alpha, shape = 21, color = "transparent")
     } else {
-      plot <- ggplot(data = plotdata, aes(x = !!sym(col), y = !!sym(colnames(subass)[subass.column]))) +
+      plot <- ggplot(data = plotdata, aes_string(x = col, y = colnames(subass)[subass.column])) +
         geom_point(alpha = alpha)
     }
-
+    
     # Add trendlines
     if (trendline == TRUE) {
       if (!is.null(groups)) {
-        plot <- plot + geom_smooth(aes(color = Group), method = trendline.method, formula = trendline.formula)
+        plot <- plot + geom_smooth(aes_string(color = "Group"), method = trendline.method, formula = trendline.formula)
       } else {
         plot <- plot + geom_smooth(method = trendline.method, formula = trendline.formula)
       }
@@ -231,14 +232,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       if(!is.null(groups)){
         if (!is.null(groups.color.pal)) { # If custom colors exist
           # Create density plot for x-axis
-          densx <- ggplot(plotdata, aes(x = !!sym(col), fill = Group)) +
+          densx <- ggplot(plotdata, aes_string(x = col, fill = "Group")) +
             geom_density(size = 0.2, alpha = 0.4) +
             scale_fill_manual(values = groups.color.pal, name = "Group") +
             theme_void()+
             theme(legend.position = "none")
           
-          # Create density plot for y-axis
-          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = Group)) +
+          # Create density plot for y-a.xis
+          densy <- ggplot(plotdata, aes_string(x = colnames(subass)[subass.column], fill = "Group")) +
             geom_density(size = 0.2, alpha = 0.4) +
             scale_fill_manual(values = groups.color.pal, name = "Group") +
             theme_void()+
@@ -246,13 +247,13 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             coord_flip()
         } else{ # Use default colors
           # Create density plot for x-axis
-          densx <- ggplot(plotdata, aes(x = !!sym(col), fill = Group)) +
+          densx <- ggplot(plotdata, aes_string(x = col, fill = "Group")) +
             geom_density(size = 0.2, alpha = 0.4) +
             theme_void()+
             theme(legend.position = "none")
           
           # Create density plot for y-axis
-          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = Group)) +
+          densy <- ggplot(plotdata, aes_string(x = colnames(subass)[subass.column], fill = "Group")) +
             geom_density(size = 0.2, alpha = 0.4) +
             theme_void()+
             theme(legend.position = "none") +
@@ -260,12 +261,12 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         }
       } else{
         # Create density plot for x-axis
-        densx <- ggplot(plotdata, aes(x = !!sym(col))) +
+        densx <- ggplot(plotdata, aes_string(x = col)) +
           geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
           theme_void()
         
         # Create density plot for y-axis
-        densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
+        densy <- ggplot(plotdata, aes_string(x = colnames(subass)[subass.column])) +
           geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
           theme_void() +
           coord_flip()
@@ -345,7 +346,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Calculate Summary Stats
     if (!is.null(groups)) {
       table <- plotdata %>%
-        group_by(Group) %>%
+        group_by(.data$Group) %>%
         summarize(
           n = n(),
           Mean = round(mean(!!sym(colnames(subass)[subass.column]), na.rm = TRUE), 2),
