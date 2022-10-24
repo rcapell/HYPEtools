@@ -88,6 +88,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 
     # Get columns with character type
     character_cols <- names(sapply(df, typeof)[which(sapply(df, typeof) == "character")])
+    character_cols <- character_cols[which(!grepl("DATE", character_cols))] # Don't format dates
 
     # Remove accented characters (e.g. ä, ö, å)
     if (replace.accents == TRUE) {
@@ -194,6 +195,7 @@ WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents
 
     # Get columns with character type
     character_cols <- names(sapply(df, typeof)[which(sapply(df, typeof) == "character")])
+    character_cols <- character_cols[which(!grepl("DATE", character_cols))] # Don't format dates
 
     # Remove accented characters (e.g. ä, ö, å)
     if (replace.accents == TRUE) {
