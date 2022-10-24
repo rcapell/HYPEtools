@@ -76,6 +76,12 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
   if (length(extra_cols) > 0) {
     warning(paste0("Column names not matching harmonzied format were identified in df: ", paste0(extra_cols, collapse = ", ")), call. = FALSE)
   }
+  
+  # Convert STATION_ID to string
+  if(!typeof(df$STATION_ID) == "character"){
+    df$STATION_ID <- as.character(df$STATION_ID)
+    warning("Converted STATION_ID field to string type")
+  }
 
   # Check strings
   if (replace.accents == TRUE | strip.punctuation == TRUE) {
@@ -132,7 +138,6 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 #' @examples
 #' df <- data.frame(
 #'   "STATION_ID" = "A1",
-#'   "PARAMETER" = "NH4_N",
 #'   "SRC_NAME" = "Example",
 #'   "DOWNLOAD_DATE" = "2022-10-19",
 #'   "SRC_STATNAME" = "Station",
@@ -155,7 +160,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, nThread = getDTthreads()) {
 
   # Required Column Names
-  required_cols <- c("STATION_ID", "PARAMETER", "SRC_NAME", "DOWNLOAD_DATE", "SRC_STATNAME", "SRC_RIVNAME", "SRC_UAREA", "SRC_XCOORD", "SRC_YCOORD", "SRC_EPSG", "ADJ_XCOORD", "ADJ_YCOORD", "ADJ_EPSG")
+  required_cols <- c("STATION_ID", "SRC_NAME", "DOWNLOAD_DATE", "SRC_STATNAME", "SRC_RIVNAME", "SRC_UAREA", "SRC_XCOORD", "SRC_YCOORD", "SRC_EPSG", "ADJ_XCOORD", "ADJ_YCOORD", "ADJ_EPSG")
 
   # Check filename
   if (!filename == "") {
@@ -173,9 +178,15 @@ WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents
   }
 
   # Check for extra columns
-  extra_cols <- colnames(df)[which(!colnames(df) %in% c(required_cols, grep("KEY_|OPT_", colnames(df)[which(!colnames(df) %in% required_cols)], value = TRUE)))]
+  extra_cols <- colnames(df)[which(!colnames(df) %in% required_cols)]
   if (length(extra_cols) > 0) {
     warning(paste0("Column names not matching harmonzied format were identified in df: ", paste0(extra_cols, collapse = ", ")), call. = FALSE)
+  }
+  
+  # Convert STATION_ID to string
+  if(!typeof(df$STATION_ID) == "character"){
+    df$STATION_ID <- as.character(df$STATION_ID)
+    warning("Converted STATION_ID field to string type")
   }
 
   # Check strings

@@ -40,7 +40,6 @@ The function checks that all required columns are present, includes options to f
 \examples{
 df <- data.frame(
   "STATION_ID" = "A1",
-  "PARAMETER" = "NH4_N",
   "SRC_NAME" = "Example",
   "DOWNLOAD_DATE" = "2022-10-19",
   "SRC_STATNAME" = "Station",
