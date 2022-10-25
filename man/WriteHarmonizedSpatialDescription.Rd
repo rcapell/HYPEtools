@@ -9,6 +9,7 @@ WriteHarmonizedSpatialDescription(
   filename = "",
   replace.accents = FALSE,
   strip.punctuation = FALSE,
+  ignore.cols = NULL,
   nThread = getDTthreads()
 )
 }
@@ -23,6 +24,8 @@ If \code{FALSE}, then strings will be left unmodified.}
 
 \item{strip.punctuation}{Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 If \code{FALSE}, then strings will be left unmodified.}
+
+\item{ignore.cols}{Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.}
 
 \item{nThread}{Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}}
 }

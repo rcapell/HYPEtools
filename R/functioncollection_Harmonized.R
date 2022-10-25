@@ -26,6 +26,7 @@
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
+#' @param ignore.cols Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.
 #' @param nThread Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}
 #'
 #' @details
@@ -51,7 +52,7 @@
 #' @importFrom data.table fwrite getDTthreads
 #' @export
 
-WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, nThread = getDTthreads()) {
+WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, ignore.cols = NULL, nThread = getDTthreads()) {
 
   # Required Column Names
   required_cols <- c("STATION_ID", "DATE_START", "DATE_END", "PARAMETER", "VALUE", "UNIT", "QUALITY_CODE")
@@ -89,6 +90,9 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
     # Get columns with character type
     character_cols <- names(sapply(df, typeof)[which(sapply(df, typeof) == "character")])
     character_cols <- character_cols[which(!grepl("DATE", character_cols))] # Don't format dates
+    if(!is.null(ignore.cols)){
+      character_cols <- character_cols[which(!character_cols %in% ignore.cols)] # Don't format ignore columns
+    }
 
     # Remove accented characters (e.g. ä, ö, å)
     if (replace.accents == TRUE) {
@@ -127,6 +131,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
+#' @param ignore.cols Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.
 #' @param nThread Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}
 #'
 #' @details
@@ -158,7 +163,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 #' @importFrom data.table fwrite getDTthreads
 #' @export
 
-WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, nThread = getDTthreads()) {
+WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, ignore.cols = NULL, nThread = getDTthreads()) {
 
   # Required Column Names
   required_cols <- c("STATION_ID", "SRC_NAME", "DOWNLOAD_DATE", "SRC_STATNAME", "SRC_RIVNAME", "SRC_UAREA", "SRC_XCOORD", "SRC_YCOORD", "SRC_EPSG", "ADJ_XCOORD", "ADJ_YCOORD", "ADJ_EPSG")
@@ -196,6 +201,9 @@ WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents
     # Get columns with character type
     character_cols <- names(sapply(df, typeof)[which(sapply(df, typeof) == "character")])
     character_cols <- character_cols[which(!grepl("DATE", character_cols))] # Don't format dates
+    if(!is.null(ignore.cols)){
+      character_cols <- character_cols[which(!character_cols %in% ignore.cols)] # Don't format ignore columns
+    }
 
     # Remove accented characters (e.g. ä, ö, å)
     if (replace.accents == TRUE) {
