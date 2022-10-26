@@ -1,5 +1,5 @@
 Package: HYPEtools
-Version: 1.0.0.9000
+Version: 1.1.0
 Title: Tools for Processing and Analysing Files from the Hydrological
     Catchment Model HYPE
 Description: Work with model files (setup, input, output) from
@@ -17,10 +17,10 @@ Imports:
     clipr,
     data.table (>= 1.9.8),
     dplyr,
-    grDevices,
-    graphics,
     ggplot2,
     ggpubr,
+    grDevices,
+    graphics,
     hydroGOF,
     ncdf4,
     parallel,
@@ -49,5 +49,6 @@ Suggests:
     leaflet,
     leaflet.extras,
     mapview,
-    randomcoloR
+    randomcoloR,
+    webshot
 VignetteBuilder: knitr
