@@ -112,7 +112,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
     relocate(all_of(required_cols), .before = 1)
 
   # Write file
-  fwrite(x = df, file = filename, sep = ",", dec = ".", dateTimeAs = "ISO", nThread = nThread)
+  fwrite(x = df, file = filename, sep = ",", dec = ".", dateTimeAs = "ISO", nThread = nThread, quote = TRUE)
 }
 
 #--------------------------------------------------------------------------------------------------------------------------------------
@@ -223,5 +223,5 @@ WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents
     relocate(all_of(required_cols), .before = 1)
 
   # Write file
-  fwrite(x = df, file = filename, sep = ",", dec = ".", dateTimeAs = "ISO", nThread = nThread)
+  fwrite(x = df, file = filename, sep = ",", dec = ".", dateTimeAs = "ISO", nThread = nThread, quote = TRUE)
 }
