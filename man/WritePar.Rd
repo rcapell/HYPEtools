@@ -27,11 +27,11 @@ No return value, called for export to text files.
 }
 \examples{
 te <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
-# Note that par files loose all comment rows on import
+# Note that par files lose all comment rows on import
 WritePar(x = te, filename = tempfile())
 
 
 }
 \seealso{
-\code{\link{ReadOptpar}} with a description of the expected content of \code{x}.
+\code{\link{ReadPar}} with a description of the expected content of \code{x}.
 }

@@ -1,3 +1,10 @@
+## HYPEtools 1.1.0.9000
+*development version*
+
+#### Highlights
+* Added "exact" mode to ReadInfo() to read info.txt files with exact info.txt file structure
+* Added AddInfoLine(), RemoveInfoLine(), and WriteInfo() functions to help with info.txt file manipulation
+
 ## HYPEtools 1.1.0
 *New functions and bug fixes*
 

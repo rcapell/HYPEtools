@@ -60,7 +60,16 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
         file <- ReadGeoClass(file)
       } else if (type == "GeoData") {
         file <- ReadGeoData(file)
-      } else if (type %in% c("Info", "Par")) {
+      } else if (type == "Info") {
+        list <- ReadInfo(file, mode = "exact")
+        file <- data.frame(FILE_ROW = as.numeric(), Name = as.character(), Value = as.character())
+        for (i in 1:length(list)) {
+          file[i, "FILE_ROW"] <- i
+          file[i, "Name"] <- names(list[i])
+          file[i, "Value"] <- paste(unlist(list[i]), collapse = " ")
+        }
+        file
+      } else if (type == "Par") {
         list <- ReadPar(file)
         file <- data.frame(FILE_ROW = as.numeric(), Name = as.character(), Value = as.character())
         for (i in 1:length(list)) {

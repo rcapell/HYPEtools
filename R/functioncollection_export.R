@@ -15,7 +15,7 @@
 #         WriteAquiferData(), WriteBranchData(), WriteCropData(), WriteDamData(), WriteLakeData(), WriteMgmtData(), 
 #         WritePointSourceData()
 #     - WriteOptpar()
-#     - 
+#     - WriteInfo()
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -41,11 +41,11 @@
 #' @return 
 #' No return value, called for export to text files.
 #' 
-#' @seealso \code{\link{ReadOptpar}} with a description of the expected content of \code{x}.
+#' @seealso \code{\link{ReadPar}} with a description of the expected content of \code{x}.
 #' 
 #' @examples
 #' te <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
-#' # Note that par files loose all comment rows on import
+#' # Note that par files lose all comment rows on import
 #' WritePar(x = te, filename = tempfile())
 #' 
 #' 
@@ -1087,3 +1087,42 @@ WriteOptpar <- function (x, filename, digits = 10, nsmall = 1) {
   
 }
 
+#--------------------------------------------------------------------------------------------------------------------------------------
+# WriteInfo
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+#' Write a 'info.txt' File
+#'
+#' \code{WriteInfo} writes its required argument \code{x} to a file.
+#' 
+#' @param x The object to be written, a list with named vector elements, as an object returned from \code{\link{ReadInfo}} using the \code{exact} mode.
+#' @param filename A character string naming a file to write to. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#' 
+#' @details
+#' \code{WriteInfo} writes an 'info.txt' file, typically originating from an imported and modified 'info.txt'.
+#' 
+#' @return 
+#' No return value, called for export to text files.
+#' 
+#' @seealso
+#' \code{\link{ReadInfo}} with a description of the expected content of \code{x}.
+#' \code{\link{AddInfoLine}}
+#' \code{\link{RemoveInfoLine}}
+#' 
+#' @examples
+#' te <- ReadInfo(filename = system.file("demo_model",
+#' "info.txt", package = "HYPEtools"), mode = "exact")
+#' WriteInfo(x = te, filename = tempfile())
+#' 
+#' 
+#' @export
+
+WriteInfo <- function (x, filename) {
+  
+  # format list contents to avoid scientific format in output
+  fx <- lapply(x, format, scientific = FALSE, trim = TRUE, justify = "none")
+  
+  # write formatted list elements to file, first converts all list elements (vectors) and their names to concatenated strings.
+  write(sapply(seq_along(x), function(x, y) paste(c(names(y)[x], y[[x]]), collapse="\t"), y = fx), filename)
+}

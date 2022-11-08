@@ -4,7 +4,11 @@
 \alias{ReadInfo}
 \title{Read an 'info.txt' file}
 \usage{
-ReadInfo(filename = "info.txt", encoding = c("unknown", "UTF-8", "latin1"))
+ReadInfo(
+  filename = "info.txt",
+  encoding = c("unknown", "UTF-8", "latin1"),
+  mode = c("simple", "exact")
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the info.txt file to import.}
@@ -12,6 +16,9 @@ ReadInfo(filename = "info.txt", encoding = c("unknown", "UTF-8", "latin1"))
 \item{encoding}{Character string, encoding of non-ascii characters in imported text file. Particularly relevant when
 importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See
 also argument description in \code{\link{scan}}.}
+
+\item{mode}{Use \code{simple} to read info.txt file as a nested list to that provides easy access to key information.
+Alternatively, use \code{exact} to read info.txt file as a list matching the exact info.txt file structure (including all comment lines).}
 }
 \value{
 \code{ReadInfo} returns a named list. List names are settings codes
@@ -23,13 +30,18 @@ outputs are merged to single vectors on import.
 Import a HYPE model settings information file as list into R.
 }
 \details{
-\code{ReadInfo} discards all comments of the imported file (comment rows and in-line comments). The function's purpose is to quickly
-provide access to settings and details of a model run, not to mirror the exact info.txt file structure into an R data object. No
-corresponding export function exists.
+Using \code{ReadInfo} with the \code{simple} mode discards all comments of the imported file (comment rows and in-line comments). The function's purpose is to quickly
+provide access to settings and details of a model run, not to mirror the exact info.txt file structure into an R data object. If you would like to mirror the exact file
+structure, then use the \code{exact} mode.
 }
 \examples{
 te <- ReadInfo(filename = system.file("demo_model",
 "info.txt", package = "HYPEtools"))
 te
 
+}
+\seealso{
+\code{\link{WriteInfo}}
+\code{\link{AddInfoLine}}
+\code{\link{RemoveInfoLine}}
 }

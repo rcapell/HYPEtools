@@ -20,7 +20,6 @@
 #     - ReadDescription()
 #     - ReadSimass()
 #     - ReadInfo()
-#     - 
 #--------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -2336,17 +2335,24 @@ ReadSimass <- function(filename = "simass.txt") {
 #' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
 #' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
 #' also argument description in \code{\link{scan}}.
+#' @param mode Use \code{simple} to read info.txt file as a nested list to that provides easy access to key information.
+#' Alternatively, use \code{exact} to read info.txt file as a list matching the exact info.txt file structure (including all comment lines).
 #'  
 #' @details
-#' \code{ReadInfo} discards all comments of the imported file (comment rows and in-line comments). The function's purpose is to quickly 
-#' provide access to settings and details of a model run, not to mirror the exact info.txt file structure into an R data object. No 
-#' corresponding export function exists.
+#' Using \code{ReadInfo} with the \code{simple} mode discards all comments of the imported file (comment rows and in-line comments). The function's purpose is to quickly 
+#' provide access to settings and details of a model run, not to mirror the exact info.txt file structure into an R data object. If you would like to mirror the exact file
+#' structure, then use the \code{exact} mode.
 #' 
 #' @return
 #' \code{ReadInfo} returns a named list. List names are settings codes 
 #' (see [info.txt documentation](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt)). Settings with two 
 #' codes are placed in nested lists, e.g. `myinfo$basinoutput$variable`. Multi-line subbasin definitions for basin outputs and class 
 #' outputs are merged to single vectors on import. 
+#' 
+#' @seealso 
+#' \code{\link{WriteInfo}}
+#' \code{\link{AddInfoLine}}
+#' \code{\link{RemoveInfoLine}}
 #' 
 #' @examples
 #' te <- ReadInfo(filename = system.file("demo_model",
@@ -2355,126 +2361,199 @@ ReadSimass <- function(filename = "simass.txt") {
 #' 
 #' @export
 
-ReadInfo <- function(filename = "info.txt", encoding = c("unknown", "UTF-8", "latin1")) {
+ReadInfo <- function(filename = "info.txt", encoding = c("unknown", "UTF-8", "latin1"), mode = c("simple", "exact")) {
   
   # argument checks
   encoding <- match.arg(encoding)
-  
+  mode <- match.arg(mode)
   
   #--------------------------------------------------------------------------------------------------------------------------------------
-  # Import info file as list with one vector per row in file
+  # ReadInfo function to emulate structure of info.txt
   #--------------------------------------------------------------------------------------------------------------------------------------
-  
-  ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
-  # read par file into a character vector (one string per row in file)
-  x <- scan(filename, what = "", sep = "\n", quiet = TRUE, encoding = encoding)
-  # insert blank after comment character, to make sure they get split for comment identification below
-  x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
-  # split string elements along whitespaces, returns list of character vectors
-  x <- strsplit(x, split = "[[:space:]]+")
-  
-  # first vector elements
-  x.v1 <- sapply(x, `[[`, 1)
-  
-  ## identify inline comments and move to separate list elements (preceding element)
-  # list of vector indices in x with comment characters
-  te <- sapply(x, function(x){grep(pattern = "!!", x)})
-  # initialise result list and result list element counter
-  res <- list()
-  j <- 1
-  for (i in 1:length(te)) {
-    # comment characters identification, but omit comment rows
-    if (length(te[[i]] > 0) && x.v1[i] != "!!") {
-      # copy comment to new result row
-      res[[j]] <- x[[i]][(te[[i]][1]):length(x[[i]])]
-      # names(res)[j] <- "!!"
-      j <- j + 1
-      # copy parameter value(s) without comments to result list
-      res[[j]] <- x[[i]][1:(te[[i]][1] - 1)]
-      # # update result name
-      # names(res)[j] <- names(x)[i]
-      j <- j + 1
-    } else {
-      res[[j]] <- x[[i]]
-      # names(res)[j] <- names(x)[i]
-      j <- j + 1
+  if(mode == "exact"){
+
+    ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
+    # read par file into a character vector (one string per row in file)
+    x <- scan(filename, what = "", sep = "\n", quiet = TRUE, encoding = encoding)
+    # insert blank after comment character, to make sure they get split for comment identification below
+    x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
+    # split string elements along whitespaces, returns list of character vectors
+    x <- strsplit(x, split = "[[:space:]]+")
+    # assign first vector elements as list element names and convert to lower-case (as standardisation)
+    names(x) <- sapply(x, `[[`, 1)
+    names(x) <- tolower(names(x))
+    # # replace comment row names
+    # names(x) <- ifelse(names(x) == "!!", "comment", names(x))
+    # remove first vector elements (parameter names)
+    x <- lapply(x, `[`, -1)
+    
+    ## identify inline comments and move to separate list elements (preceding element)
+    # list of vector indices in x with comment characters
+    te <- sapply(x, function(x){grep(pattern = "!!", x)})
+    # initialise result list and result list element counter
+    info <- list()
+    j <- 1
+    for (i in 1:length(te)) {
+      # comment characters identification, but omit comment rows
+      if (length(te[[i]] > 0) && names(te)[i] != "!!") {
+        # copy comment to new result row
+        info[[j]] <- x[[i]][(te[[i]][1] + 1):length(x[[i]])]
+        names(info)[j] <- "!!"
+        j <- j + 1
+        # copy parameter value(s) without comments to result list
+        info[[j]] <- x[[i]][1:(te[[i]][1] - 1)]
+        # update result name
+        names(info)[j] <- names(x)[i]
+        j <- j + 1
+      } else {
+        info[[j]] <- x[[i]]
+        names(info)[j] <- names(x)[i]
+        j <- j + 1
+      }
     }
-  }
-  
-  # merge crit with second-element index number if it is present
-  res <- lapply(res, function(x) if (x[1] == "crit" && !is.na(suppressWarnings(as.numeric(x[2])))) {x[1] <- paste(x[1], x[2]); x <- x[-2]} else x)
-  
-  # update first vector element after inline comment and crit treatment
-  res.v1 <- tolower(sapply(res, function(x) x[1]))
-  
-  # discard comments
-  res <- res[res.v1 != "!!"]
-  res.v1 <- res.v1[res.v1 != "!!"]
-  
-  
+    # convert list elements to numeric, if possible, catch conversion errors and collapse non-numeric vectors to single strings
+    info <- suppressWarnings(lapply(info, function(x) tryCatch(na.fail(as.numeric(x)), error = function(e) paste(x, collapse = " "))))
+
+    # Set names to lower
+    names(info) <- tolower(names(info))
+    
+    # Adjust names for modeloptions, outputs, and crit lines
+    for(i in which(names(info) %in% c("modeloption", "basinoutput", "timeoutput", "mapoutput", "crit"))){
+      values <- unlist(strsplit(info[[i]], "\\s+")) # Get values
+      name <- paste(names(info)[i], values[1]) # Get name
+      
+      # Rename element and remove name from element - Crit
+      if(grepl("crit [0-9]", name) == TRUE){
+        names(info)[i] <- paste(name, values[2]) # Rename element
+        info[[i]] <- paste(values[3:length(values)], collapse = " ") # Remove name from element
+        
+        # Rename element and remove name from element - All others
+      } else{
+        names(info)[i] <-  name # Rename element
+        info[[i]] <- paste(values[2:length(values)], collapse = " ") # Remove name from element
+      }
+    }
+    return(info)
   
   #--------------------------------------------------------------------------------------------------------------------------------------
-  # Split off all two-code elements, these are moved into nested lists
+  # Original ReadInfo Function
   #--------------------------------------------------------------------------------------------------------------------------------------
   
-  # two-code elements, first codes
-  code1 <- c("modeloption", "basinoutput", "mapoutput", "timeoutput", "regionoutput", "classoutput", "update", unique(res.v1[grep("^crit", res.v1)]))
-  
-  # iterate through codes and move into nested lists
-  for (i in 1:length(code1)) {
+  } else if(mode == "simple"){
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Import info file as list with one vector per row in file
+    #--------------------------------------------------------------------------------------------------------------------------------------
     
-    # elements with current code
-    te <- which(res.v1 == code1[i])
+    ## builds on suggestion found here: http://stackoverflow.com/questions/6602881/text-file-to-list-in-r
+    # read par file into a character vector (one string per row in file)
+    x <- scan(filename, what = "", sep = "\n", quiet = TRUE, encoding = encoding)
+    # insert blank after comment character, to make sure they get split for comment identification below
+    x <- gsub(pattern = "!!", replacement = "!!\t", x = x)
+    # split string elements along whitespaces, returns list of character vectors
+    x <- strsplit(x, split = "[[:space:]]+")
     
-    # move on if none found
-    if (length(te) == 0) next
+    # first vector elements
+    x.v1 <- sapply(x, `[[`, 1)
     
-    # split
-    te.res <- res[te]
-    res <- res[-te]
-    res.v1 <- res.v1[-te]
-    
-    # remove code names from split list
-    te.res <- lapply(te.res, `[`, -1)
-    
-    # assign first vector elements as list element names and convert to lower-case
-    names(te.res) <- tolower(sapply(te.res, `[[`, 1))
-    
-    # remove first vector elements (parameter names) and convert values to numeric if possible
-    te.res <- lapply(te.res, function(x) tryCatch(as.numeric(x[-1]), warning = function(y) x[-1]))
-    
-    # merge multi-line subbasin codes
-    if (code1[i] %in% c("basinoutput", "classoutput")) {
-      te.sbd <- which(names(te.res) == "subbasin")
-      if (length(te.sbd) > 1) {
-        te.res[[te.sbd[1]]] <- as.numeric(unlist(te.res[te.sbd]))
-        te.res <- te.res[-(te.sbd[-1])]
+    ## identify inline comments and move to separate list elements (preceding element)
+    # list of vector indices in x with comment characters
+    te <- sapply(x, function(x){grep(pattern = "!!", x)})
+    # initialise result list and result list element counter
+    res <- list()
+    j <- 1
+    for (i in 1:length(te)) {
+      # comment characters identification, but omit comment rows
+      if (length(te[[i]] > 0) && x.v1[i] != "!!") {
+        # copy comment to new result row
+        res[[j]] <- x[[i]][(te[[i]][1]):length(x[[i]])]
+        # names(res)[j] <- "!!"
+        j <- j + 1
+        # copy parameter value(s) without comments to result list
+        res[[j]] <- x[[i]][1:(te[[i]][1] - 1)]
+        # # update result name
+        # names(res)[j] <- names(x)[i]
+        j <- j + 1
+      } else {
+        res[[j]] <- x[[i]]
+        # names(res)[j] <- names(x)[i]
+        j <- j + 1
       }
     }
     
-    # append to full info list
-    res[[length(res) + 1]] <- te.res
-    names(res)[length(res)] <- gsub(" ", "_", code1[i])
+    # merge crit with second-element index number if it is present
+    res <- lapply(res, function(x) if (x[1] == "crit" && !is.na(suppressWarnings(as.numeric(x[2])))) {x[1] <- paste(x[1], x[2]); x <- x[-2]} else x)
     
+    # update first vector element after inline comment and crit treatment
+    res.v1 <- tolower(sapply(res, function(x) x[1]))
+    
+    # discard comments
+    res <- res[res.v1 != "!!"]
+    res.v1 <- res.v1[res.v1 != "!!"]
+    
+    
+    
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Split off all two-code elements, these are moved into nested lists
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    
+    # two-code elements, first codes
+    code1 <- c("modeloption", "basinoutput", "mapoutput", "timeoutput", "regionoutput", "classoutput", "update", unique(res.v1[grep("^crit", res.v1)]))
+    
+    # iterate through codes and move into nested lists
+    for (i in 1:length(code1)) {
+      
+      # elements with current code
+      te <- which(res.v1 == code1[i])
+      
+      # move on if none found
+      if (length(te) == 0) next
+      
+      # split
+      te.res <- res[te]
+      res <- res[-te]
+      res.v1 <- res.v1[-te]
+      
+      # remove code names from split list
+      te.res <- lapply(te.res, `[`, -1)
+      
+      # assign first vector elements as list element names and convert to lower-case
+      names(te.res) <- tolower(sapply(te.res, `[[`, 1))
+      
+      # remove first vector elements (parameter names) and convert values to numeric if possible
+      te.res <- lapply(te.res, function(x) tryCatch(as.numeric(x[-1]), warning = function(y) x[-1]))
+      
+      # merge multi-line subbasin codes
+      if (code1[i] %in% c("basinoutput", "classoutput")) {
+        te.sbd <- which(names(te.res) == "subbasin")
+        if (length(te.sbd) > 1) {
+          te.res[[te.sbd[1]]] <- as.numeric(unlist(te.res[te.sbd]))
+          te.res <- te.res[-(te.sbd[-1])]
+        }
+      }
+      
+      # append to full info list
+      res[[length(res) + 1]] <- te.res
+      names(res)[length(res)] <- gsub(" ", "_", code1[i])
+      
+    }
+    
+    
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    # Formatting of single-code lines
+    #--------------------------------------------------------------------------------------------------------------------------------------
+    
+    # assign first vector elements as list element names and convert to lower-case
+    te.ind <- 1:length(res.v1)
+    names(res)[te.ind] <- tolower(sapply(res[te.ind], `[[`, 1))
+    
+    # remove first vector elements (parameter names) and convert values to numeric if possible
+    res[te.ind] <- lapply(res[te.ind], function(x) tryCatch(as.numeric(x[-1]), warning = function(y) x[-1]))
+    
+    # format dates
+    ## NOT YET IMPLEMENTED
+    
+    res
   }
-  
-  
-  #--------------------------------------------------------------------------------------------------------------------------------------
-  # Formatting of single-code lines
-  #--------------------------------------------------------------------------------------------------------------------------------------
-  
-  # assign first vector elements as list element names and convert to lower-case
-  te.ind <- 1:length(res.v1)
-  names(res)[te.ind] <- tolower(sapply(res[te.ind], `[[`, 1))
-  
-  # remove first vector elements (parameter names) and convert values to numeric if possible
-  res[te.ind] <- lapply(res[te.ind], function(x) tryCatch(as.numeric(x[-1]), warning = function(y) x[-1]))
-  
-  # format dates
-  ## NOT YET IMPLEMENTED
-  
-  res
-  
 }
 
 
