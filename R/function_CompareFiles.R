@@ -61,7 +61,7 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
       } else if (type == "GeoData") {
         file <- ReadGeoData(file)
       } else if (type == "Info") {
-        list <- ReadInfo(file, mode = "exact")
+        list <- ReadInfo(file, mode = "exact", comment.duplicates = FALSE)
         file <- data.frame(FILE_ROW = as.numeric(), Name = as.character(), Value = as.character())
         for (i in 1:length(list)) {
           file[i, "FILE_ROW"] <- i

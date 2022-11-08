@@ -29,7 +29,7 @@ NULL
 
 #' @rdname InfoManipulation
 AddInfoLine <- function(info, name, value, after = NULL){
-  # Replace value if element already exists
+  # Replace value if code already exists
   if(name %in% names(info)){
     # Replace value in original location
     if(is.null(after)){
@@ -37,27 +37,27 @@ AddInfoLine <- function(info, name, value, after = NULL){
       # Replace value and relocate
     } else{
       if(any(names(info) %in% after)){
-        position <- max(which(names(info) %in% after)) # Place element after last "after" element line
-        info <- info %>% append(c("newline" = value), after = position) # Add new element
-        info <- info[which(!names(info) %in% name)] # Remove original element
+        position <- max(which(names(info) %in% after)) # Place code after last "after" code line
+        info <- info %>% append(c("newline" = value), after = position) # Add new code
+        info <- info[which(!names(info) %in% name)] # Remove original code
         names(info)[which(names(info) == "newline")] <- name # Rename new item
       } else{
         info[name] <- value
-        warning(paste0('Position Element(s) "', paste(after, collapse = "; "), '" not found in info. Replacing value for "', name, '" without relocating element.'), call. = FALSE)
+        warning(paste0('Position Code(s) "', paste(after, collapse = "; "), '" not found in info. Replacing value for "', name, '" without relocating code.'), call. = FALSE)
       }
     }
-    # Add new element
+    # Add new code
   } else{
-    position <- max(0, which(names(info) %in% after)) # Place element at top of info file if "after" element doesn't exist
+    position <- max(0, which(names(info) %in% after)) # Place code at top of info file if "after" code doesn't exist
     info <- info %>% append(c("newline" = value), after = position)
     names(info)[which(names(info) == "newline")] <- name # Rename item
     
     # Warning if "after" not found
     if(position == 0){
       if(is.null(after)){
-        warning(paste0('Element "', name, '" not found in info and no position specified using "after" argument. Placing line for "', name, '" at the top of info.'), call. = FALSE)
+        warning(paste0('Code "', name, '" not found in info and no position specified using "after" argument. Placing line for "', name, '" at the top of info.'), call. = FALSE)
       } else{
-        warning(paste0('Position Element(s) "', paste(after, collapse = "; "), '" not found in info. Placing line for "', name, '" at the top of info.'), call. = FALSE)
+        warning(paste0('Position Code(s) "', paste(after, collapse = "; "), '" not found in info. Placing line for "', name, '" at the top of info.'), call. = FALSE)
       }
     }
   }
@@ -69,7 +69,7 @@ RemoveInfoLine <- function(info, name){
   if(any(name %in% names(info))){
     info <- info[which(!names(info) %in% name)]
   } else{
-    warning(paste0('Element(s) "', paste(name, collapse = "; "), '" not found in info'), call. = FALSE)
+    warning(paste0('Code(s) "', paste(name, collapse = "; "), '" not found in info. No Codes removed.'), call. = FALSE)
   }
   return(info)
 }

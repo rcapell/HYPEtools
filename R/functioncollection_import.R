@@ -2337,7 +2337,9 @@ ReadSimass <- function(filename = "simass.txt") {
 #' also argument description in \code{\link{scan}}.
 #' @param mode Use \code{simple} to read info.txt file as a nested list to that provides easy access to key information.
 #' Alternatively, use \code{exact} to read info.txt file as a list matching the exact info.txt file structure (including all comment lines).
-#'  
+#' @param comment.duplicates Logical, if \code{TRUE}, then duplicate codes will be commented out when reading the input file. If \code{FALSE},
+#' then the input file will not not be checked for duplicate codes.
+#'
 #' @details
 #' Using \code{ReadInfo} with the \code{simple} mode discards all comments of the imported file (comment rows and in-line comments). The function's purpose is to quickly 
 #' provide access to settings and details of a model run, not to mirror the exact info.txt file structure into an R data object. If you would like to mirror the exact file
@@ -2361,7 +2363,7 @@ ReadSimass <- function(filename = "simass.txt") {
 #' 
 #' @export
 
-ReadInfo <- function(filename = "info.txt", encoding = c("unknown", "UTF-8", "latin1"), mode = c("simple", "exact")) {
+ReadInfo <- function(filename = "info.txt", encoding = c("unknown", "UTF-8", "latin1"), mode = c("simple", "exact"), comment.duplicates = TRUE) {
   
   # argument checks
   encoding <- match.arg(encoding)
@@ -2422,17 +2424,33 @@ ReadInfo <- function(filename = "info.txt", encoding = c("unknown", "UTF-8", "la
       values <- unlist(strsplit(info[[i]], "\\s+")) # Get values
       name <- paste(names(info)[i], values[1]) # Get name
       
-      # Rename element and remove name from element - Crit
+      # Rename code and remove name from code - Crit
       if(grepl("crit [0-9]", name) == TRUE){
-        names(info)[i] <- paste(name, values[2]) # Rename element
-        info[[i]] <- paste(values[3:length(values)], collapse = " ") # Remove name from element
+        names(info)[i] <- paste(name, values[2]) # Rename code
+        info[[i]] <- paste(values[3:length(values)], collapse = " ") # Remove name from code
         
-        # Rename element and remove name from element - All others
+        # Rename code and remove name from code - All others
       } else{
-        names(info)[i] <-  name # Rename element
-        info[[i]] <- paste(values[2:length(values)], collapse = " ") # Remove name from element
+        names(info)[i] <-  name # Rename code
+        info[[i]] <- paste(values[2:length(values)], collapse = " ") # Remove name from code
       }
     }
+    
+    # Comment out duplicate lines
+    if(comment.duplicates == TRUE){
+      duplicates <- names(info)[which(duplicated(names(info)))]
+      duplicates <- duplicates[which(!duplicates == "!!")]
+      
+      if(length(duplicates) > 0){
+        for(dup in duplicates){
+          i <- max(which(names(info) == dup)) # Get position of second instance
+          info[[i]] <- paste(names(info)[i], info[[i]]) # Set valuet to include name
+          names(info)[i] <- "!!" # Set name to be comment character
+          warning(paste("Duplicate code(s) found in input file. Commenting out duplicate instances of:",paste(duplicates, collapse = "; ")), call. = FALSE)
+        }
+      }
+    }
+
     return(info)
   
   #--------------------------------------------------------------------------------------------------------------------------------------

@@ -7,7 +7,8 @@
 ReadInfo(
   filename = "info.txt",
   encoding = c("unknown", "UTF-8", "latin1"),
-  mode = c("simple", "exact")
+  mode = c("simple", "exact"),
+  comment.duplicates = TRUE
 )
 }
 \arguments{
@@ -19,6 +20,9 @@ also argument description in \code{\link{scan}}.}
 
 \item{mode}{Use \code{simple} to read info.txt file as a nested list to that provides easy access to key information.
 Alternatively, use \code{exact} to read info.txt file as a list matching the exact info.txt file structure (including all comment lines).}
+
+\item{comment.duplicates}{Logical, if \code{TRUE}, then duplicate codes will be commented out when reading the input file. If \code{FALSE},
+then the input file will not not be checked for duplicate codes.}
 }
 \value{
 \code{ReadInfo} returns a named list. List names are settings codes
