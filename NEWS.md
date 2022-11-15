@@ -4,6 +4,7 @@
 #### Highlights
 * Added "exact" mode to ReadInfo() to read info.txt files with exact info.txt file structure
 * Added AddInfoLine(), RemoveInfoLine(), and WriteInfo() functions to help with info.txt file manipulation
+* Added AllSimToPar() and BestSimsToPar() functions to update a par.txt file with parameter values from an allsim.txt or bestsims.txt file
 
 ## HYPEtools 1.1.0
 *New functions and bug fixes*
