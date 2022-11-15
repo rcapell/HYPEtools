@@ -9,10 +9,11 @@
 #' @param type Character string identifying the type of HYPE model file. Used to determine appropriate read function. One of
 #' \code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{GeoClass},
 #' \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointsourceData}, \code{PTQobs},
-#' \code{TimeOutput}, or \code{Xobs}.
+#' \code{Simass}, \code{Subass}, \code{TimeOutput}, or \code{Xobs}.
 #' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See [dplyr::full_join()].
 #' @param compare.order Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
 #' will also be joined by row number. See \code{\link{full_join}}.
+#' @param ... Other arguments passed on to functions to read the files to compare (e.g. \code{\link{ReadGeoData}}, \code{\link{ReadPar}}, etc.).
 #'
 #' @details
 #' \code{CompareFiles} compares two HYPE model files and identifies any differences in values. The function reads two model files, compares
@@ -33,35 +34,35 @@
 #'                     type = "GeoData")
 #' te2
 #'
-#' @importFrom dplyr distinct filter full_join if_any relocate rename_with select syms %>%
+#' @importFrom dplyr distinct filter full_join if_any relocate rename_with select syms %>% mutate row_number
 #' @importFrom tidyselect matches all_of
 #' @importFrom rlang .data
 #' @export
 
-CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
+CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE, ...) {
 
   # Create function to read files
-  ReadFile <- function(file, type) {
+  ReadFile <- function(file, type, ...) {
     # Given path to a file (i.e. not given an object)
     if (typeof(file) == "character") {
       if (type == "AquiferData") {
-        file <- ReadAquiferData(file)
+        file <- ReadAquiferData(file, ...)
       } else if (type == "BasinOutput") {
-        file <- ReadBasinOutput(file)
+        file <- ReadBasinOutput(file, ...)
       } else if (type == "BranchData") {
-        file <- ReadBranchData(file)
+        file <- ReadBranchData(file, ...)
       } else if (type == "CropData") {
-        file <- ReadCropData(file)
+        file <- ReadCropData(file, ...)
       } else if (type == "DamData") {
-        file <- ReadDamData(file)
+        file <- ReadDamData(file, ...)
       } else if (type == "ForcKey") {
-        file <- ReadForcKey(file)
+        file <- ReadForcKey(file, ...)
       } else if (type == "GeoClass") {
-        file <- ReadGeoClass(file)
+        file <- ReadGeoClass(file, ...)
       } else if (type == "GeoData") {
-        file <- ReadGeoData(file)
+        file <- ReadGeoData(file, ...)
       } else if (type == "Info") {
-        list <- ReadInfo(file, mode = "exact", comment.duplicates = FALSE)
+        list <- ReadInfo(file, mode = "exact", comment.duplicates = FALSE, ...)
         file <- data.frame(FILE_ROW = as.numeric(), Name = as.character(), Value = as.character())
         for (i in 1:length(list)) {
           file[i, "FILE_ROW"] <- i
@@ -70,7 +71,7 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
         }
         file
       } else if (type == "Par") {
-        list <- ReadPar(file)
+        list <- ReadPar(file, ...)
         file <- data.frame(FILE_ROW = as.numeric(), Name = as.character(), Value = as.character())
         for (i in 1:length(list)) {
           file[i, "FILE_ROW"] <- i
@@ -79,13 +80,13 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
         }
         file
       } else if (type == "LakeData") {
-        file <- ReadLakeData(file)
+        file <- ReadLakeData(file, ...)
       } else if (type == "MapOutput") {
-        file <- ReadMapOutput(file)
+        file <- ReadMapOutput(file, ...)
       } else if (type == "MgmtData") {
-        file <- ReadMgmtData(file)
+        file <- ReadMgmtData(file, ...)
       } else if (type == "Optpar") {
-        list <- ReadOptpar(file)
+        list <- ReadOptpar(file, ...)
         file <- data.frame(list) %>%
           mutate("tasks.NA" = do.call(paste, .[grep("tasks.NA", colnames(.), value = TRUE)])) %>% # Merge tasks.NA columns
           select(-grep("tasks.NA.*.", colnames(.), value = TRUE)) # Drop original tasks.NA columns
@@ -95,13 +96,17 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
         # } else if(type=="Pmsf"){
         #   file <- ReadPmsf(file) # Untested
       } else if (type == "PointSourceData") {
-        file <- ReadPointSourceData(file)
+        file <- ReadPointSourceData(file, ...)
       } else if (type == "PTQobs") {
-        file <- ReadPTQobs(file)
+        file <- ReadPTQobs(file, ...)
+      } else if (type == "Simass") {
+        file <- ReadSimass(file, ...)
+      } else if (type == "Subass") {
+        file <- ReadSubass(file, ...)
       } else if (type == "TimeOutput") {
-        file <- ReadTimeOutput(file)
+        file <- ReadTimeOutput(file, ...)
       } else if (type == "Xobs") {
-        file <- ReadXobs(file)
+        file <- ReadXobs(file, ...)
       }
       # Given an object from R environment
     } else {
@@ -127,7 +132,8 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
 
     # Add Row Number for types where row number wasn't added on import
     if (!type %in% c("Info", "Par")) {
-      file["FILE_ROW"] <- 1:nrow(file)
+      # file["FILE_ROW"] <- 1:nrow(file)
+      file <- file %>% mutate(FILE_ROW = row_number())
     }
 
     # Return File
@@ -137,12 +143,16 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
   # Add "FILE_ROW" to Join By Argument
   if (compare.order == TRUE) {
     by <- c("FILE_ROW", by)
+  } else{
+    if(is.null(by)){
+      stop('Argument "by" must be specified if compare.order == FALSE', call. = FALSE)
+    }
   }
 
   # Import Files
   message("Reading Files")
-  x <- ReadFile(x, type)
-  y <- ReadFile(y, type)
+  x <- ReadFile(x, type, ...)
+  y <- ReadFile(y, type, ...)
 
   # Check that join is unique
   if (!nrow(x %>% distinct(!!!syms(by))) == nrow(x)) {
@@ -185,7 +195,7 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE) {
 
   # Remove columns and rows that are all NA
   compare <- compare %>%
-    select(where(~ any(!is.na(.)))) %>% # Remove columns that are all NA
+    select(.data$FILE_ROW, where(~ any(!is.na(.)))) %>% # Remove columns that are all NA except for FILE_ROW column
     filter(if_any(!all_of(by), ~ !is.na(.))) # Remove rows that are all NA
 
   # Return data frame

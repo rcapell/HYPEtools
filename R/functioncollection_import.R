@@ -1974,7 +1974,7 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 
 
 ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FALSE) {
-  x <- read.table(file = filename, header = FALSE, sep = "\t", skip = 2)
+  x <- read.table(file = filename, header = TRUE, sep = "\t", skip = 1)
   te <- readLines(filename, n = 2)
   names(x) <- strsplit(te[2], split = "\t")[[1]]
   # extract additional information from first row in file and add as attributes
