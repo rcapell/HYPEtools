@@ -10,3 +10,4 @@ data-raw
 ^README\.Rmd$
 ^CRAN-SUBMISSION$
 ^release_procedure\.R$
+^man/figures/logo\.png$

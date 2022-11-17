@@ -1,5 +1,5 @@
 
-# HYPEtools
+# HYPEtools <a href='https://github.com/rcapell/HYPEtools'><img src='man/figures/logo.png' align="right" height="139" /></a>
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/HYPEtools)](https://CRAN.R-project.org/package=HYPEtools)
@@ -7,10 +7,6 @@
 [![R-CMD-check](https://github.com/rcapell/HYPEtools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rcapell/HYPEtools/actions/workflows/R-CMD-check.yaml)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 <!-- badges: end -->
-
-This repository contains source files for an R package HYPEtools, which
-provides functions to work with files from and for the hydrological
-model HYPE.
 
 ## Summary
 
