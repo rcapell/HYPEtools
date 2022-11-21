@@ -62,8 +62,7 @@ stat.nm.plot <- "NSE"
 
 # Generate Plot - There is only one observation station, so only one point appears on the map
 PlotMapPoints(x = stats.cout[, c(1,stat.col.plot)], 
-              sites = map.Qobs, sites.subid.column = 3, bg = map.subid, 
-              plot.scale = FALSE, plot.arrow = FALSE)
+              sites = map.Qobs, sites.subid.column = 3, bg = map.subid)
 
 ```
 
@@ -73,6 +72,7 @@ PlotMapPoints(x = stats.cout[, c(1,stat.col.plot)],
 # PlotMapPoints(map.type = "leaflet",
 #               x = stats.cout[, c(1,stat.col.plot)],
 #               sites = map.Qobs, sites.subid.column = 3, bg = map.subid,
+#               legend.pos = "bottomright",
 #               plot.scale = FALSE, plot.arrow = FALSE, plot.label=TRUE, bg.label.column = 25, plot.bg.label="static")
 
 ```

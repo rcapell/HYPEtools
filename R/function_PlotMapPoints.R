@@ -14,17 +14,13 @@
 #' @param bg A \code{SpatialPolygonsDataFrame} or \code{sf} object to plot in the background. Typically an imported sub-basin vector polygon file.
 #' For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.
 #' @param bg.label.column Integer, column index in the \code{bg} 'data' \code{\link{slot}} holding labels (e.g. SUBIDs) to use for plotting.
-#' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.
-#' @param map.adj Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
-#' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.
-#' @param plot.legend Logical, plot a legend along with the map. Uses function \code{\link{legend}} for default maps.
-#' @param legend.pos Legend, scale, and north arrow position, keyword string. For static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
-#' \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}.
+#' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps. Use \code{"legacy"} for deprecated static plots.
+#' @param plot.legend Logical, plot a legend along with the map.
+#' @param legend.pos Keyword string for legend position. For static plots, one of: \code{"none"}, \code{"left"}, \code{"right"},
+#' \code{"bottom"}, \code{"top"}, or a two-element numeric vector. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}. For legacy static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
+#' \code{"right"}, \code{"bottomright"}, \code{"bottomleft"}. 
 #' @param legend.title Character string or mathematical expression. An optional title for the legend. If none is provided here, the name of the second column in \code{x}
 #' is used as legend title string.
-#' @param legend.outer Logical. If \code{TRUE}, outer break point values will be plotted in legend. Only used for default maps.
-#' @param legend.inset Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow.
-#' See \code{\link{legend}} and details below. Only used for default maps.
 #' @param legend.signif Integer, number of significant digits to display in legend labels.
 #' @param col Colors to use on the map. One of the following: \itemize{
 #' \item \code{NULL}, to use a default purple-red-yellow-blue color ramp, best used with \code{col.breaks = NULL}.
@@ -37,38 +33,46 @@
 #' Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
 #' unclassified white spots on the map plot. If \code{NULL} (the default), \code{col.breaks} covers a range from 0 to 1
 #' with 9 intervals, and an additional interval for negative values. This is suitable for e.g. NSE performances.
-#' @param plot.scale Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with
-#' projected maps based on meter units, not geographical projections
-#' @param plot.arrow Logical, plot a North arrow below legend for default maps (i.e. position defined by legend position).
-#' @param pt.cex Numeric, plot point size expansion factor, works on top of \code{par.cex}.
-#' @param par.cex Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}. Only used for default maps.
-#' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
-#' In standard use cases of this function, plot margins do not need to be changed. Only used for default maps.
-#' @param pch,lwd Integer, plotting symbol and line width. See \code{\link{points}}. Only used for default maps.
-#' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.
-#' @param graphics.off Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when 
-#' adding default maps to a plotting device. See \code{\link{graphics.off}}.
-#' @param radius Numeric, radius of markers in Leaflet maps. See [leaflet::addCircleMarkers()].
+#' @param plot.scale Logical, plot a scale bar on map. NOTE: Scale bar may be inaccurate for geographic coordinate systems (Consider switching to projected coordinate system).
+#' @param scale.pos Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_scale}}.
+#' @param plot.arrow Logical, plot a North arrow in static maps.
+#' @param arrow.pos Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_north_arrow}}.
+#' @param radius Numeric, radius of markers maps. See \code{\link{geom_sf}} for static maps and [leaflet::addCircleMarkers()] for Leaflet maps.
 #' @param weight Numeric, weight of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
 #' @param opacity Numeric, opacity of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
 #' @param fillOpacity Numeric, opacity of markers in Leaflet maps. See [leaflet::addCircleMarkers()].
-#' @param na.color Character string of color to use to symbolize markers in Leaflet maps which correspond to \code{NA} values.
+#' @param na.color Character string of color to use to symbolize markers in maps which correspond to \code{NA} values.
 #' @param bg.weight Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See [leaflet::addPolygons()].
-#' @param bg.opacity Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See [leaflet::addPolygons()].
-#' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
-#' @param bg.fillOpacity Numeric, opacity of \code{bg} subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
+#' @param bg.opacity Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
+#' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
+#' @param bg.fillOpacity Numeric in range 0-1, opacity of \code{bg} subbasin polygons in maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
 #' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See [leaflet::addCircleMarkers()].
 #' @param noHide Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See [leaflet::labelOptions()].
 #' @param textOnly Logical, set to \code{TRUE} to hide marker label background in Leaflet maps. See [leaflet::labelOptions()].
 #' @param font.size Numeric, font size (px) for marker labels in Leaflet maps.
 #' @param plot.bg.label String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
 #' labels for \code{bg} will be displayed in Leaflet maps.
-#' @param file Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See [mapview::mapshot()].
-#' You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs()].
+#' @param file Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
+#' [mapview::mapshot()] for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs()].
+#' @param width Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
+#' @param height Numeric, height of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
+#' @param units Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \code{\link{ggsave}}.
+#' @param dpi Interger, resolution to save static map. See \code{\link{ggsave}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [webshot::webshot()].
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [webshot::webshot()].
 #' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. 
 #' See [htmlwidgets::saveWidget()].
+#' @param map.adj Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
+#' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for legacy static maps.
+#' @param legend.outer Logical. If \code{TRUE}, outer break point values will be plotted in legend. Only used for legacy static maps.
+#' @param legend.inset Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow.
+#' See \code{\link{legend}} and details below. Only used for legacy static maps.
+#' @param pt.cex Numeric, plot point size expansion factor, works on top of \code{par.cex}.
+#' @param par.cex Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}. Only used for legacy maps.
+#' @param par.mar Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
+#' In standard use cases of this function, plot margins do not need to be changed. Only used for legacy maps.
+#' @param pch,lwd Integer, plotting symbol and line width. See \code{\link{points}}. Only used for legacy maps.
+#' @param add Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for legacy maps.
 #'
 #' @details
 #' \code{PlotMapPoints} can be used to print point information on a mapped surface. The primary target are model performance
@@ -77,19 +81,16 @@
 #' color scale and break point arguments are flexible enough to also be used with e.g. HYPE output variables or other data.
 #'
 #' \code{PlotMapOutput} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}.
-#' By default, \code{PlotMapPoints} generates a margin-less figure and positions map and legend items close to the plot boundaries.
-#' In order to move map and legend closer to each other, change the plot device width.
-#'
-#' Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the bottom right side of the map. For default maps, \code{legend.pos} and
+#' For backwards compatibility, legacy static plots can still be generated by setting \code{map.type} to \code{legacy}. For legacy plots, \code{legend.pos} and
 #' \code{map.adj} should be chosen so that legend and map do not overlap, and the legend position can be fine-tuned using
 #' argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. For details on inset
 #' specification for the default maps, see \code{inset} in \code{\link{legend}}.
 #'
 #' @return
-#' For default static maps, \code{PlotMapPoints} returns a plot to the currently active plot device, and invisibly an object of class
-#' \code{SpatialPointsDataFrame} as provided in argument \code{sites}, with plotted values and color codes added as columns
-#' in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
-#' an object of class \code{leaflet}.
+#' For default static maps, \code{PlotMapPoints} returns an object of class \code{ggplot}. This plot can also be assigned to a variable in the environment.
+#' For interactive Leaflet maps, \code{PlotMapOutput} returns an object of class \code{leaflet}. For legacy static plots, \code{PlotMapOutput} returns a plot to the
+#' currently active plot device and invisibly an object of class \code{SpatialPointsDataFrame} as provided in argument \code{sites}, with plotted values and color codes added as columns
+#' in the data slot. 
 #'
 #' @seealso
 #' \code{\link{ReadSubass}} for HYPE result import; \code{\link{ReadMapOutput}} for a similar plot function
@@ -106,10 +107,12 @@
 #' te3 <- st_read(dsn = system.file("demo_model",
 #' "gis", "Nytorp_map.gpkg", package = "HYPEtools"))
 #' # plot NSE performance for discharge
-#' PlotMapPoints(x = te1[, 1:2], sites = te2, sites.subid.column = 3, bg = te3)
+#' PlotMapPoints(x = te1[, 1:2], sites = te2, sites.subid.column = 4, bg = te3)
 #' }
 #' 
 #' @importFrom dplyr right_join %>% mutate filter across
+#' @importFrom ggplot2 aes geom_sf ggplot ggsave scale_color_manual scale_fill_manual theme element_text
+#' @importFrom ggspatial annotation_north_arrow annotation_scale
 #' @importFrom grDevices dev.list colorRampPalette
 #' @importFrom graphics par frame legend strwidth text plot.new
 #' @importFrom stats setNames
@@ -119,14 +122,16 @@
 
 
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL, bg = NULL, bg.label.column = 1, map.type = "default",
-                          map.adj = 0, plot.legend = TRUE, legend.pos = "bottomright", legend.title = NULL, legend.outer = FALSE,
-                          legend.inset = c(0, 0), legend.signif = 2, col = NULL, col.breaks = NULL, plot.scale = TRUE, plot.arrow = TRUE,
-                          pt.cex = 1, par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE, graphics.off = TRUE,
+                          plot.legend = TRUE, legend.pos = "right", legend.title = NULL, 
+                          legend.signif = 2, col = NULL, col.breaks = NULL,
+                          plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
                           # plot.searchbar = FALSE, # leaflet.extras searchbar currently doesn't work for CircleMarkers
-                          plot.label = FALSE, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL, file = "", vwidth = 1424,
-                          vheight = 1000, html.name = "") {
+                          plot.label = FALSE, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL,
+                          file = "", width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300,
+                          vwidth = 1424, vheight = 1000, html.name = "",
+                          map.adj = 0, legend.outer = FALSE, legend.inset = c(0, 0), pt.cex = 1, par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE) {
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
@@ -146,7 +151,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     # Perform function
   } else {
     # Clear plotting devices if graphics.off argument is true - prevents R fatal errors caused if PlotMapPoints tries to add default plot to existing Leaflet map
-    if (graphics.off == TRUE & !is.null(dev.list())) graphics.off()
+    # if (graphics.off == TRUE & !is.null(dev.list())) graphics.off()
+    
+    # Argument Verification
+    units <- match.arg(units)
     
     # input argument checks
     stopifnot(
@@ -155,14 +163,14 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       ("sf" %in% class(bg) | "SpatialPolygonsDataFrame" %in% class(bg) | is.null(bg)),
       is.null(col.breaks) || is.numeric(col.breaks)
     )
-    if (map.type == "default") {
+    if (map.type == "legacy") {
       if ("sf" %in% class(sites)) {
         sites <- sf::as_Spatial(sites)
       }
       if ("sf" %in% class(bg) & !is.null(bg)) {
         bg <- sf::as_Spatial(bg)
       }
-    } else if (map.type == "leaflet") {
+    } else if (map.type %in% c("default", "leaflet")) {
       if ("SpatialPointsDataFrame" %in% class(sites)) {
         sites <- sf::st_as_sf(sites)
       }
@@ -171,8 +179,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       }
     }
     stopifnot(map.adj %in% c(0, .5, 1))
-    if (map.type == "default") {
+    if (map.type == "legacy") {
       stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
+    } else if (map.type == "default"){
+      stopifnot(legend.pos %in% c("none", "left", "right", "bottom", "top"))
     } else if (map.type == "leaflet") {
       stopifnot(legend.pos %in% c("bottomright", "topright", "topleft", "bottomleft"))
     }
@@ -250,12 +260,12 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = TRUE)
     
     # For leaflet mapping add NA Factor Level if any MapOutput data is NA
-    if (map.type == "leaflet" & any(is.na(x[[2]]))) {
+    if (map.type %in% c("default", "leaflet") & any(is.na(x[[2]]))) {
       x[, 3] <- addNA(x[, 3])
     }
     
     # replace the factor levels with color codes using the color ramp function assigned above
-    if (map.type == "leaflet" & any(is.na(x[[2]]))) {
+    if (map.type %in% c("default,", "leaflet") & any(is.na(x[[2]]))) {
       levels(x[, 3]) <- c(col.class, na.color) # Add extra color for NA in leaflet maps
     } else {
       levels(x[, 3]) <- col.class
@@ -269,7 +279,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     # give it a name
     names(x)[3] <- "color"
     
-    if (map.type == "default") {
+    if (map.type == "legacy") {
       # number of columns in original sites map
       nc.sites <- ncol(sites@data)
       # add x to subid map table (in data slot, indicated by @), merge by SUBID
@@ -278,7 +288,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       sts <- sites[!is.na(sites@data[, nc.sites + 1]), ]
       sts <- sts[match(x[, 1], sts@data[, sites.subid.column]), ]
       
-    } else if (map.type == "leaflet") {
+    } else if (map.type %in% c("default", "leaflet")) {
       message(paste0('Joining "', colnames(sites)[sites.subid.column], '" from GIS Data (sites) To "', colnames(x)[1], '" from subass (x)'))
       
       # Check for duplicate SUBIDS
@@ -293,7 +303,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       legend.title <- toupper(names(x)[2])
     }
     
-    if (map.type == "default") {
+    if (map.type == "legacy") {
       ## plot settings
       if (!add) {
         plot.new()
@@ -581,7 +591,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       # invisible unless assigned: return map with added data and color codes
       # invisible(sites)
       invisible(sts)
-    } else if (map.type == "leaflet") {
+    } else if (map.type %in% c("default", "leaflet")) {
       
       # Reproject if not a lat/long CRS
       if(sf::st_is_longlat(x)==FALSE){
@@ -612,268 +622,314 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         }))
       }
       
+      # Create ggplot static map
+      if(map.type == "default"){
+        
+        # Create plot
+        plot <- ggplot()
+        
+        # Add background map
+        if(!is.null(bg)){
+          plot <- plot +
+            geom_sf(data = bg, color = "black", fill = bg.fillColor, alpha = bg.fillOpacity)
+        }
+
+        # Add points
+        plot <- plot +
+          geom_sf(data = x, aes_string(color = "color", fill = "color"), size = radius, show.legend = plot.legend) +
+          scale_color_manual(name = legend.title, values = lcol, labels = l.label) +
+          scale_fill_manual(name = legend.title, values = lcol, labels = l.label)
+        
+        # Add legend
+        if(plot.legend == TRUE){
+          plot <- plot +
+            theme(legend.position = legend.pos,
+                  legend.title = element_text(face = "bold"))
+        }
+        
+        # Add scale bar
+        if(plot.scale == TRUE){
+          plot <- plot +
+            annotation_scale(location = scale.pos)
+        }
+        
+        # Add north arrow
+        if(plot.arrow == TRUE){
+          plot <- plot +
+            annotation_north_arrow(location = arrow.pos)
+        }
+        
+        # Save image
+        if(!file == ""){
+          ggsave(filename = file, plot = plot, width = width, height = height, units = units, dpi = dpi)
+        }
+        
+        return(plot)
+        
       # Create Leaflet Map
-      message("Generating Map")
-      leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
-        leaflet::addTiles() %>%
-        leaflet.extras::addResetMapButton()
-      
-      # If using point groups, then add group for all subasins that aren't already assigned to a group
-      if(!is.null(sites.groups)){
-        unassigned <- x$SUBID[which(!x$SUBID%in%unlist(sites.groups))]
-        if(length(unassigned) > 0){
-          sites.groups[["Unassigned"]] <- unassigned
+      } else if (map.type == "leaflet"){
+        
+        message("Generating Map")
+        leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
+          leaflet::addTiles() %>%
+          leaflet.extras::addResetMapButton()
+        
+        # If using point groups, then add group for all subasins that aren't already assigned to a group
+        if(!is.null(sites.groups)){
+          unassigned <- x$SUBID[which(!x$SUBID%in%unlist(sites.groups))]
+          if(length(unassigned) > 0){
+            sites.groups[["Unassigned"]] <- unassigned
+          }
         }
-      }
-      
-      # Add Overlay Groups
-      if(is.null(bg)){
-        # No Background + no point groups
-        if(is.null(sites.groups)){
-          leafmap <-  leafmap %>%
-            leaflet::addLayersControl(
-              baseGroups = c("Map", "Street", "Topo", "Satellite"),
-              overlayGroups = c("Points"),
-              options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
-            )
-          # No Background + point groups
-        } else{
-          leafmap <-  leafmap %>%
-            leaflet::addLayersControl(
-              baseGroups = c("Map", "Street", "Topo", "Satellite"),
-              overlayGroups = c(names(sites.groups)),
-              options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
-            )
-        }
-      } else{
-        # Background + no point groups
-        if(is.null(sites.groups)){
-          leafmap <-  leafmap %>%
-            leaflet::addLayersControl(
-              baseGroups = c("Map", "Street", "Topo", "Satellite"),
-              overlayGroups = c("Points", "Subbasins"),
-              options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
-            )
-          # Background + point groups
-        } else{
-          leafmap <-  leafmap %>%
-            leaflet::addLayersControl(
-              baseGroups = c("Map", "Street", "Topo", "Satellite"),
-              overlayGroups = c("Subbasins", names(sites.groups)),
-              options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
-            )
-        }
-      }
-      
-      # Add Subbasins
-      if (!is.null(bg)) {
-        # Do Not Plot Labels
-        if(is.null(plot.bg.label)){
-          leafmap <- leafmap %>%
-            leaflet::addPolygons(
-              group = "Subbasins",
-              data = bg,
-              color = "black",
-              weight = bg.weight,
-              opacity = bg.opacity,
-              fillColor = bg.fillColor,
-              fillOpacity = bg.fillOpacity
-            )
-          # Plot Labels
-        } else{
-          if (plot.bg.label == "hover"){
-            leafmap <- leafmap %>%
-              leaflet::addPolygons(
-                group = "Subbasins",
-                data = bg,
-                label = bg[[bg.label.column]],
-                color = "black",
-                weight = bg.weight,
-                opacity = bg.opacity,
-                fillColor = bg.fillColor,
-                fillOpacity = bg.fillOpacity
+        
+        # Add Overlay Groups
+        if(is.null(bg)){
+          # No Background + no point groups
+          if(is.null(sites.groups)){
+            leafmap <-  leafmap %>%
+              leaflet::addLayersControl(
+                baseGroups = c("Map", "Street", "Topo", "Satellite"),
+                overlayGroups = c("Points"),
+                options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
               )
-          } else if (plot.bg.label == "static"){
-            leafmap <- leafmap %>%
-              leaflet::addPolygons(
-                group = "Subbasins",
-                data = bg,
-                color = "black",
-                weight = bg.weight,
-                opacity = bg.opacity,
-                fillColor = bg.fillColor,
-                fillOpacity = bg.fillOpacity
-              )%>%
-              leaflet::addLabelOnlyMarkers(
-                group = "Subbasins",
-                data = suppressWarnings(sf::st_point_on_surface(bg)),
-                label = bg[[bg.label.column]],
-                labelOptions = leaflet::labelOptions(noHide = TRUE, direction = 'auto', textOnly = TRUE)
+            # No Background + point groups
+          } else{
+            leafmap <-  leafmap %>%
+              leaflet::addLayersControl(
+                baseGroups = c("Map", "Street", "Topo", "Satellite"),
+                overlayGroups = c(names(sites.groups)),
+                options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
               )
-          } else{ # Do not plot labels
-            leafmap <- leafmap %>%
-              leaflet::addPolygons(
-                group = "Subbasins",
-                data = bg,
-                color = "black",
-                weight = bg.weight,
-                opacity = bg.opacity,
-                fillColor = bg.fillColor,
-                fillOpacity = bg.fillOpacity
+          }
+        } else{
+          # Background + no point groups
+          if(is.null(sites.groups)){
+            leafmap <-  leafmap %>%
+              leaflet::addLayersControl(
+                baseGroups = c("Map", "Street", "Topo", "Satellite"),
+                overlayGroups = c("Points", "Subbasins"),
+                options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
+              )
+            # Background + point groups
+          } else{
+            leafmap <-  leafmap %>%
+              leaflet::addLayersControl(
+                baseGroups = c("Map", "Street", "Topo", "Satellite"),
+                overlayGroups = c("Subbasins", names(sites.groups)),
+                options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
               )
           }
         }
-      }
-
-      # Plot points without groups
-      if(is.null(sites.groups)){
-        if (plot.label == TRUE) { # Create points with labels
+        
+        # Add Subbasins
+        if (!is.null(bg)) {
+          # Do Not Plot Labels
+          if(is.null(plot.bg.label)){
+            leafmap <- leafmap %>%
+              leaflet::addPolygons(
+                group = "Subbasins",
+                data = bg,
+                color = "black",
+                weight = bg.weight,
+                opacity = bg.opacity,
+                fillColor = bg.fillColor,
+                fillOpacity = bg.fillOpacity
+              )
+            # Plot Labels
+          } else{
+            if (plot.bg.label == "hover"){
+              leafmap <- leafmap %>%
+                leaflet::addPolygons(
+                  group = "Subbasins",
+                  data = bg,
+                  label = bg[[bg.label.column]],
+                  color = "black",
+                  weight = bg.weight,
+                  opacity = bg.opacity,
+                  fillColor = bg.fillColor,
+                  fillOpacity = bg.fillOpacity
+                )
+            } else if (plot.bg.label == "static"){
+              leafmap <- leafmap %>%
+                leaflet::addPolygons(
+                  group = "Subbasins",
+                  data = bg,
+                  color = "black",
+                  weight = bg.weight,
+                  opacity = bg.opacity,
+                  fillColor = bg.fillColor,
+                  fillOpacity = bg.fillOpacity
+                )%>%
+                leaflet::addLabelOnlyMarkers(
+                  group = "Subbasins",
+                  data = suppressWarnings(sf::st_point_on_surface(bg)),
+                  label = bg[[bg.label.column]],
+                  labelOptions = leaflet::labelOptions(noHide = TRUE, direction = 'auto', textOnly = TRUE)
+                )
+            } else{ # Do not plot labels
+              leafmap <- leafmap %>%
+                leaflet::addPolygons(
+                  group = "Subbasins",
+                  data = bg,
+                  color = "black",
+                  weight = bg.weight,
+                  opacity = bg.opacity,
+                  fillColor = bg.fillColor,
+                  fillOpacity = bg.fillOpacity
+                )
+            }
+          }
+        }
+        
+        # Plot points without groups
+        if(is.null(sites.groups)){
+          if (plot.label == TRUE) { # Create points with labels
+            
+            # Create labels
+            x <- x %>%
+              mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
+            
+            leafmap <- leafmap %>%
+              leaflet::addCircleMarkers(
+                group = "Points",
+                data = x,
+                color = "black",
+                radius = radius,
+                weight = weight,
+                opacity = opacity,
+                fillColor = x$color,
+                fillOpacity = fillOpacity,
+                label = ~label,
+                labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
+              )
+          } else { # Create points without labels
+            leafmap <- leafmap %>%
+              leaflet::addCircleMarkers(
+                group = "Points",
+                data = x,
+                color = "black",
+                radius = radius,
+                weight = weight,
+                opacity = opacity,
+                fillColor = x$color,
+                fillOpacity = fillOpacity
+              )
+          }
           
-          # Create labels
-          x <- x %>%
-            mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
+          # Plot points with groups
+        } else{
           
+          if (plot.label == TRUE) { # Create points with labels
+            
+            # Create labels
+            x <- x %>%
+              mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
+            
+            # Add points for individual groups
+            for(i in 1:length(sites.groups)){
+              
+              # Get data for group
+              x_group <- x %>% filter(.data$SUBID %in% sites.groups[[i]])
+              
+              # Add points
+              if(nrow(x_group) > 0){
+                leafmap <- leafmap %>%
+                  leaflet::addCircleMarkers(
+                    group = names(sites.groups)[i],
+                    data = x_group,
+                    color = "black",
+                    radius = radius,
+                    weight = weight,
+                    opacity = opacity,
+                    fillColor = x_group$color,
+                    fillOpacity = fillOpacity,
+                    label = ~label,
+                    labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
+                  )
+              }
+              
+            }
+          } else { # Create points without labels
+            
+            # Add points for individual groups
+            for(i in 1:length(sites.groups)){
+              
+              # Get data for group
+              x_group <- x%>% filter(.data$SUBID%in%sites.groups[[i]])
+              
+              # Add points
+              if(nrow(x_group) > 0){
+                leafmap <- leafmap %>%
+                  leaflet::addCircleMarkers(
+                    group = names(sites.groups)[i],
+                    data = x_group,
+                    color = "black",
+                    radius = radius,
+                    weight = weight,
+                    opacity = opacity,
+                    fillColor = x_group$color,
+                    fillOpacity = fillOpacity
+                  )
+              }
+            }
+          }
+        }
+        
+        # # Add searchbar to map
+        # if (plot.searchbar == TRUE) {
+        #   leafmap <- leafmap %>%
+        #     leaflet.extras::addSearchFeatures(
+        #       targetGroups = c("Points"),
+        #       options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
+        #     )
+        # }
+        
+        # Add scalebar to map
+        if (plot.scale == TRUE) {
           leafmap <- leafmap %>%
-            leaflet::addCircleMarkers(
-              group = "Points",
-              data = x,
-              color = "black",
-              radius = radius,
-              weight = weight,
-              opacity = opacity,
-              fillColor = x$color,
-              fillOpacity = fillOpacity,
-              label = ~label,
-              labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
-            )
-        } else { # Create points without labels
+            leaflet::addScaleBar(position = "bottomright")
+        }
+        
+        # Add legend to map
+        if (plot.legend == TRUE) {
           leafmap <- leafmap %>%
-            leaflet::addCircleMarkers(
+            leaflet::addLegend(
               group = "Points",
-              data = x,
-              color = "black",
-              radius = radius,
-              weight = weight,
-              opacity = opacity,
-              fillColor = x$color,
-              fillOpacity = fillOpacity
+              position = legend.pos,
+              title = ifelse(legend.title == "", "Legend", legend.title),
+              colors = lcol,
+              labels = l.label,
+              values = x[[2]],
+              opacity = 1
             )
         }
         
-      # Plot points with groups
-      } else{
-
-        if (plot.label == TRUE) { # Create points with labels
-          
-          # Create labels
-          x <- x %>%
-            mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
-
-          # Add points for individual groups
-          for(i in 1:length(sites.groups)){
-            
-            # Get data for group
-            x_group <- x %>% filter(.data$SUBID %in% sites.groups[[i]])
-            
-            # Add points
-            if(nrow(x_group) > 0){
-              leafmap <- leafmap %>%
-                leaflet::addCircleMarkers(
-                  group = names(sites.groups)[i],
-                  data = x_group,
-                  color = "black",
-                  radius = radius,
-                  weight = weight,
-                  opacity = opacity,
-                  fillColor = x_group$color,
-                  fillOpacity = fillOpacity,
-                  label = ~label,
-                  labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
-                )
-            }
-
-          }
-        } else { # Create points without labels
-          
-          # Add points for individual groups
-          for(i in 1:length(sites.groups)){
-            
-            # Get data for group
-            x_group <- x%>% filter(.data$SUBID%in%sites.groups[[i]])
-            
-            # Add points
-            if(nrow(x_group) > 0){
-              leafmap <- leafmap %>%
-                leaflet::addCircleMarkers(
-                  group = names(sites.groups)[i],
-                  data = x_group,
-                  color = "black",
-                  radius = radius,
-                  weight = weight,
-                  opacity = opacity,
-                  fillColor = x_group$color,
-                  fillOpacity = fillOpacity
-                )
-            }
-          }
+        # Add various basemaps
+        leafmap <- leafmap %>%
+          leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
+          leaflet::addTiles(group = "Street") %>%
+          leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
+          leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
+          leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
+        
+        # Save Image
+        if (!file == "") {
+          message("Saving Image")
+          mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
         }
+        
+        # Save HTML
+        if (!html.name == "") {
+          message("Saving HTML")
+          temp <- file.path(tempdir(), basename(html.name))
+          htmlwidgets::saveWidget(leafmap, file = temp, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to temp directory so selfcontained=T works
+          file.rename(temp, html.name) # Rename/Move HTML file to desired file
+        }
+        
+        return(leafmap)
       }
-      
-      # # Add searchbar to map
-      # if (plot.searchbar == TRUE) {
-      #   leafmap <- leafmap %>%
-      #     leaflet.extras::addSearchFeatures(
-      #       targetGroups = c("Points"),
-      #       options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
-      #     )
-      # }
-      
-      # Add scalebar to map
-      if (plot.scale == TRUE) {
-        leafmap <- leafmap %>%
-          leaflet::addScaleBar(position = "bottomright")
-      }
-      
-      # Add legend to map
-      if (plot.legend == TRUE) {
-        leafmap <- leafmap %>%
-          leaflet::addLegend(
-            group = "Points",
-            position = legend.pos,
-            title = ifelse(legend.title == "", "Legend", legend.title),
-            colors = lcol,
-            labels = l.label,
-            values = x[[2]],
-            opacity = 1
-          )
-      }
-      
-      # Add various basemaps
-      leafmap <- leafmap %>%
-        leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
-        leaflet::addTiles(group = "Street") %>%
-        leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
-        leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
-        leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
-      
-      # Save Image
-      if (!file == "") {
-        message("Saving Image")
-        mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
-      }
-      
-      # Save HTML
-      if (!html.name == "") {
-        message("Saving HTML")
-        temp <- file.path(tempdir(), basename(html.name))
-        htmlwidgets::saveWidget(leafmap, file = temp, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to temp directory so selfcontained=T works
-        file.rename(temp, html.name) # Rename/Move HTML file to desired file
-      }
-      
-      return(leafmap)
     }
   }
-
 }
 
 # # DEBUG
