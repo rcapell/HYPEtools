@@ -284,14 +284,18 @@ WriteXobs <- function(x, filename, append = FALSE, comment = NULL, variable = NU
       # comment argument is empty
       if(!is.null(attr(x, which = "comment"))) {
         # comment attribute exists, export
-        writeLines(paste(attr(x, which = "comment"), collapse = "\t"), con = fcon)
+        comment <- paste(attr(x, which = "comment"), collapse = "\t") # Format comment attribute
+        if(!grepl("^\\!!.*", comment)){comment = paste("!!", comment)} # Add comment characters if they don't exist
+        writeLines(comment, con = fcon)
       } else {
         # comment attribute does not exist, export the following string
-        writeLines("Exported from R", con = fcon)
+        writeLines("!! Exported from R", con = fcon)
       }
     } else {
       # export comment argument
-      writeLines(paste(comment, collapse = "\t"), con = fcon)
+      comment <- paste(comment, collapse = "\t") # Format comment
+      if(!grepl("^\\!!.*", comment)){comment = paste("!!", comment)} # Add comment characters if they don't exist
+      writeLines(comment, con = fcon)
     }
     
     ## export variable line

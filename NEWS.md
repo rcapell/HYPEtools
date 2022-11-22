@@ -9,6 +9,7 @@
 * Add error message to CompareFiles() to handle if compare.order = FALSE and by = NULL.
 * Update ReadSubass() to be able to read Subass files with zero rows
 * Updated PlotMapPoints() to generate ggplot maps by default
+* Updated WriteXobs() to include !! at beginning of comment line
 
 ## HYPEtools 1.1.0
 *New functions and bug fixes*
