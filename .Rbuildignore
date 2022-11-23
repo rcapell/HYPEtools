@@ -11,3 +11,4 @@ data-raw
 ^CRAN-SUBMISSION$
 ^release_procedure\.R$
 ^man/figures/logo\.png$
+^CITATION\.cff$
