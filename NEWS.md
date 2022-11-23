@@ -11,7 +11,7 @@
 * Updated PlotMapPoints() to generate ggplot maps by default
 * Updated WriteXobs() to include !! at beginning of comment line
 
-## HYPEtools 1.1.0
+## HYPEtools 1.1.0 (2022-10-26)
 *New functions and bug fixes*
 
 #### Highlights
