@@ -10,6 +10,8 @@
 * Update ReadSubass() to be able to read Subass files with zero rows
 * Updated PlotMapPoints() to generate ggplot maps by default
 * Updated WriteXobs() to include !! at beginning of comment line
+* Added CITATION.cff file
+
 
 ## HYPEtools 1.1.0 (2022-10-26)
 *New functions and bug fixes*
