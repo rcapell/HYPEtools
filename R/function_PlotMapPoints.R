@@ -46,12 +46,14 @@
 #' @param bg.opacity Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
 #' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
 #' @param bg.fillOpacity Numeric in range 0-1, opacity of \code{bg} subbasin polygons in maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
-#' @param plot.label Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See [leaflet::addCircleMarkers()].
+#' @param plot.label Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over markers.
+#' See \code{\link{geom_sf_text}} for default maps and [leaflet::addCircleMarkers()] for Leaflet maps.
+#' @param plot.label.size Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.
 #' @param noHide Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See [leaflet::labelOptions()].
 #' @param textOnly Logical, set to \code{TRUE} to hide marker label background in Leaflet maps. See [leaflet::labelOptions()].
 #' @param font.size Numeric, font size (px) for marker labels in Leaflet maps.
 #' @param plot.bg.label String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
-#' labels for \code{bg} will be displayed in Leaflet maps.
+#' labels for \code{bg} will be displayed in Leaflet maps. If any string is specified, then background labels will be added to default static maps.
 #' @param file Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
 #' [mapview::mapshot()] for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs()].
 #' @param width Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
@@ -111,7 +113,7 @@
 #' }
 #' 
 #' @importFrom dplyr right_join %>% mutate filter across
-#' @importFrom ggplot2 aes geom_sf ggplot ggsave scale_color_manual scale_fill_manual theme element_text
+#' @importFrom ggplot2 aes_string geom_sf ggplot ggsave scale_color_manual scale_fill_manual theme element_text element_blank
 #' @importFrom ggspatial annotation_north_arrow annotation_scale
 #' @importFrom grDevices dev.list colorRampPalette
 #' @importFrom graphics par frame legend strwidth text plot.new
@@ -128,7 +130,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
                           # plot.searchbar = FALSE, # leaflet.extras searchbar currently doesn't work for CircleMarkers
-                          plot.label = FALSE, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL,
+                          plot.label = FALSE, plot.label.size = 2.5, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL,
                           file = "", width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300,
                           vwidth = 1424, vheight = 1000, html.name = "",
                           map.adj = 0, legend.outer = FALSE, legend.inset = c(0, 0), pt.cex = 1, par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE) {
@@ -611,7 +613,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     } else if (map.type %in% c("default", "leaflet")) {
       
       # Reproject if not a lat/long CRS
-      if(sf::st_is_longlat(x)==FALSE){
+      if(map.type == "leaflet" & sf::st_is_longlat(x)==FALSE){
         x <- x %>% sf::st_transform(sf::st_crs("+proj=longlat +datum=WGS84"))
       }
       if(!is.null(bg)){
@@ -654,8 +656,33 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         # Add points
         plot <- plot +
           geom_sf(data = x, aes_string(color = "color", fill = "color"), size = radius, show.legend = plot.legend) +
-          scale_color_manual(name = legend.title, values = lcol, labels = l.label) +
-          scale_fill_manual(name = legend.title, values = lcol, labels = l.label)
+          scale_color_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
+          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
+          theme(axis.title = element_blank())
+        
+        # Add background labels
+        if(!is.null(plot.bg.label)){
+          if(plot.label == FALSE){ # Add labels for all points
+            plot <- plot +
+              .geom_sf_text_repel(data = bg, aes_string(label = colnames(bg)[bg.label.column]), size = plot.label.size, fontface = "bold", fun.geometry = sf::st_centroid)
+          } else{ # Add labels for point that aren't already getting labeled
+            plot <- plot +
+              .geom_sf_text_repel(data = bg %>% filter(!.data[[colnames(bg)[bg.label.column]]] %in% x[[1]]), aes_string(label = colnames(bg)[bg.label.column]), size = plot.label.size, fontface = "bold", fun.geometry = sf::st_centroid)
+          }
+        }
+        
+        # Add labels
+        if(plot.label == TRUE){
+          
+          # Create labels
+          x <- x %>%
+            mutate(label = paste0("SUBID: ", .[[1]], "\n Value: ", .[[2]]))
+          
+          # Add labels to plot
+          plot <- plot +
+            .geom_sf_text_repel(data = x, aes_string(label = "label"), size = plot.label.size, fontface = "bold", fun.geometry = sf::st_centroid)
+          
+        }
         
         # Add legend
         if(plot.legend == TRUE){

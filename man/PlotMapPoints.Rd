@@ -32,6 +32,7 @@ PlotMapPoints(
   bg.fillColor = "#e5e5e5",
   bg.fillOpacity = 0.75,
   plot.label = FALSE,
+  plot.label.size = 2.5,
   noHide = FALSE,
   textOnly = FALSE,
   font.size = 10,
@@ -125,7 +126,10 @@ with 9 intervals, and an additional interval for negative values. This is suitab
 
 \item{bg.fillOpacity}{Numeric in range 0-1, opacity of \code{bg} subbasin polygons in maps. See \code{\link{geom_sf}} for static maps and \code{\link[leaflet:map-layers]{leaflet::addPolygons()}} for Leaflet maps.}
 
-\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over markers. See \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}}.}
+\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over markers.
+See \code{\link{geom_sf_text}} for default maps and \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}} for Leaflet maps.}
+
+\item{plot.label.size}{Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.}
 
 \item{noHide}{Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \code{\link[leaflet:map-options]{leaflet::labelOptions()}}.}
 
@@ -134,7 +138,7 @@ with 9 intervals, and an additional interval for negative values. This is suitab
 \item{font.size}{Numeric, font size (px) for marker labels in Leaflet maps.}
 
 \item{plot.bg.label}{String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
-labels for \code{bg} will be displayed in Leaflet maps.}
+labels for \code{bg} will be displayed in Leaflet maps. If any string is specified, then background labels will be added to default static maps.}
 
 \item{file}{Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
 \code{\link[mapview:mapshot]{mapview::mapshot()}} for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}}.}

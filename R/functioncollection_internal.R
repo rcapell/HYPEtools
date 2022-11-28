@@ -10,6 +10,9 @@
 #     - .FillWeek()
 #     - .makeTransparent()
 #     - .ExtractHeader()
+#     - .StatSfCoordinates()
+#     - .geom_sf_label_variants()
+#     - .geom_sf_text_repel()
 #     - 
 #
 #--------------------------------------------------------------------------------------------------------------------------------------
@@ -229,4 +232,59 @@
   te <- lapply(te, function(x) strsplit(x, split = "=")[[1]])
   res <- lapply(te, function(x) x[2])
   names(res) <- tolower(lapply(te, function(x) x[1]) )
+}
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# .geom_sf_text_repel
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+# Internal functions to plot text on geom_sf objects so that the text does not overlap
+# Reference: https://github.com/yutannihilation/ggsflabel
+
+.StatSfCoordinates <- ggplot2::ggproto(
+  "StatSfCoordinates", ggplot2::Stat,
+  compute_group = function(data, scales, fun.geometry) {
+    points_sfc <- fun.geometry(data$geometry)
+    coordinates <- sf::st_coordinates(points_sfc)
+    data <- cbind(data, coordinates)
+    
+    data
+  },
+  
+  default_aes = ggplot2::aes(x = stat(X), y = stat(Y)),
+  required_aes = c("geometry")
+)
+
+.geom_sf_label_variants <- function(mapping = NULL,
+                                   data = NULL,
+                                   fun.geometry,
+                                   geom_fun,
+                                   ...) {
+  if (is.null(mapping$geometry)) {
+    # geometry_col <- attr(data, "sf_column") %||% "geometry"
+    geometry_col <- attr(data, "sf_column")
+    if(is.null(geometry_col)){geometry_col <- "geometry"}
+    mapping$geometry <- as.name(geometry_col)
+  }
+  
+  geom_fun(
+    mapping = mapping,
+    data = data,
+    stat = .StatSfCoordinates,
+    fun.geometry = fun.geometry,
+    ...
+  )
+}
+
+.geom_sf_text_repel <- function(mapping = NULL,
+                               data = NULL,
+                               fun.geometry = sf::st_point_on_surface,
+                               ...) {
+  .geom_sf_label_variants(
+    mapping = mapping,
+    data = data,
+    fun.geometry = fun.geometry,
+    geom_fun = ggrepel::geom_text_repel,
+    ...
+  )
 }

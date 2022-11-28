@@ -10,33 +10,39 @@ PlotMapOutput(
   map.subid.column = 1,
   var.name = "",
   map.type = "default",
-  map.adj = 0,
   plot.legend = TRUE,
   legend.pos = "bottomright",
   legend.title = NULL,
-  legend.outer = FALSE,
-  legend.inset = c(0, 0),
   legend.signif = 2,
   col = "auto",
   col.ramp.fun,
   col.breaks = NULL,
   col.rev = FALSE,
   plot.scale = TRUE,
+  scale.pos = "br",
   plot.arrow = TRUE,
-  par.cex = 1,
-  par.mar = rep(0, 4) + 0.1,
-  add = FALSE,
-  graphics.off = TRUE,
+  arrow.pos = "tr",
   weight = 0.15,
   opacity = 0.75,
   fillOpacity = 0.5,
   na.color = "#808080",
   plot.searchbar = FALSE,
   plot.label = FALSE,
+  plot.label.size = 2.5,
   file = "",
+  width = NA,
+  height = NA,
+  units = c("in", "cm", "mm", "px"),
+  dpi = 300,
   vwidth = 1424,
   vheight = 1000,
-  html.name = ""
+  html.name = "",
+  map.adj = 0,
+  legend.outer = FALSE,
+  legend.inset = c(0, 0),
+  par.cex = 1,
+  par.mar = rep(0, 4) + 0.1,
+  add = FALSE
 )
 }
 \arguments{
@@ -52,23 +58,16 @@ files can take an excessive amount of time to render.}
 \item{var.name}{Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.}
 
-\item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.}
+\item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps. Use \code{"legacy"} for deprecated static plots.}
 
-\item{map.adj}{Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
-or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.}
+\item{plot.legend}{Logical, plot a legend along with the map.}
 
-\item{plot.legend}{Logical, plot a legend along with the map. Uses function \code{\link{legend}} for default maps.}
-
-\item{legend.pos}{Legend, scale, and north arrow position, keyword string. For static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
-\code{"right"}, \code{"bottomright"}, \code{"bottomleft"}. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}.}
+\item{legend.pos}{Keyword string for legend position. For static plots, one of: \code{"none"}, \code{"left"}, \code{"right"},
+\code{"bottom"}, \code{"top"}, or a two-element numeric vector. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}. For legacy static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
+\code{"right"}, \code{"bottomright"}, \code{"bottomleft"}.}
 
 \item{legend.title}{Character string or mathematical expression. An optional title for the legend. If none is provided here, \code{var.name}
 is used as legend title string. For select HYPE variables, pretty legend titles are in-built.}
-
-\item{legend.outer}{Logical. If \code{TRUE}, outer break point values will be plotted in legend.}
-
-\item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow.
-See \code{\link{legend}} and details below.}
 
 \item{legend.signif}{Integer, number of significant digits to display in legend labels.}
 
@@ -92,35 +91,39 @@ classification will be applied (see details).}
 
 \item{col.rev}{Logical, If \code{TRUE}, then color palette will be reversed.}
 
-\item{plot.scale}{Logical, plot a scale bar below legend (i.e. position defined by legend position). NOTE: works only with
-projected maps based on meter units, not geographical projections}
+\item{plot.scale}{Logical, plot a scale bar on map. NOTE: Scale bar may be inaccurate for geographic coordinate systems (Consider switching to projected coordinate system).}
 
-\item{plot.arrow}{Logical, plot a North arrow below legend for default maps (i.e. position defined by legend position).}
+\item{scale.pos}{Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_scale}}.}
 
-\item{par.cex}{Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}. Only used for default maps.}
+\item{plot.arrow}{Logical, plot a North arrow in static maps.}
 
-\item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
-In standard use cases of this function, plot margins do not need to be changed. Only used for default maps.}
+\item{arrow.pos}{Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_north_arrow}}.}
 
-\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.}
-
-\item{graphics.off}{Logical, default \code{TRUE}. If \code{TRUE}, HYPEtools will turn off any existing plotting devices before generating a map. Set this to \code{FALSE} when
-adding default maps to a plotting device. See \code{\link{graphics.off}}.}
-
-\item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{weight}{Numeric, weight of subbasin boundary lines. See \code{\link{geom_sf}} for static maps and \code{\link[leaflet:map-layers]{leaflet::addPolygons()}} for Leaflet maps.}
 
 \item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
 \item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{na.color}{Character string of color to use to symbolize subbasin polygons in Leaflet maps which correspond to \code{NA} values.}
+\item{na.color}{Character string of color to use to symbolize subbasin polygons in maps which correspond to \code{NA} values.}
 
 \item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \code{\link[leaflet.extras:search-features]{leaflet.extras::addSearchFeatures()}}.}
 
-\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed in Leaflet maps when the cursor hovers over subbasins. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over subbasins.
+See \code{\link{geom_sf_text}} for default maps and \code{\link[leaflet:map-layers]{leaflet::addPolygons()}} for Leaflet maps.}
 
-\item{file}{Save Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.
-You may need to run \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}} the first time you save a Leaflet map to an image file. See \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}}.}
+\item{plot.label.size}{Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.}
+
+\item{file}{Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
+\code{\link[mapview:mapshot]{mapview::mapshot()}} for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}}.}
+
+\item{width}{Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.}
+
+\item{height}{Numeric, height of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.}
+
+\item{units}{Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \code{\link{ggsave}}.}
+
+\item{dpi}{Interger, resolution to save static map. See \code{\link{ggsave}}.}
 
 \item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.}
 
@@ -128,11 +131,27 @@ You may need to run \code{\link[webshot:install_phantomjs]{webshot::install_phan
 
 \item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument.
 File extension must be specified. See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}.}
+
+\item{map.adj}{Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
+or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.}
+
+\item{legend.outer}{Logical. If \code{TRUE}, outer break point values will be plotted in legend.}
+
+\item{legend.inset}{Numeric, inset distance(s) from the margins as a fraction of the plot region for legend, scale and north arrow.
+See \code{\link{legend}} and details below.}
+
+\item{par.cex}{Numeric, character expansion factor. See description of \code{cex} in \code{\link{par}}. Only used for default maps.}
+
+\item{par.mar}{Plot margins as in \code{\link{par}} argument \code{mar}. Defaults to a nearly margin-less plot.
+In standard use cases of this function, plot margins do not need to be changed. Only used for default maps.}
+
+\item{add}{Logical, default \code{FALSE}. If \code{TRUE}, add to existing plot. In that case \code{map.adj} has no effect. Only used for default maps.}
 }
 \value{
-For static plots \code{PlotMapOutput} returns a plot to the currently active plot device, and invisibly an object of class \code{SpatialPolygonsDataFrame}
-as provided in argument \code{map}, with plotted values and color codes added as columns in the data slot. For interactive Leaflet maps, \code{PlotMapOutput} returns
-an object of class \code{leaflet}.
+For default static maps, \code{PlotMapOutput} returns an object of class \code{ggplot}. This plot can also be assigned to a variable in the environment.
+For interactive Leaflet maps, \code{PlotMapOutput} returns an object of class \code{leaflet}. For legacy static plots, \code{PlotMapOutput} returns a plot to the
+currently active plot device, and invisibly an object of class \code{SpatialPolygonsDataFrame} as provided in argument \code{map}, with plotted values and color codes added as columns
+in the data slot.
 }
 \description{
 Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables.
@@ -143,6 +162,10 @@ Draw HYPE map results, with pretty scale discretisations and color ramp defaults
 several time periods, pass index selections to \code{x}, e.g. \code{mymapresult[, c(1, 3)]}.
 
 \code{PlotMapOutput} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}.
+For backwards compatibility, legacy static plots can still be generated by setting \code{map.type} to \code{legacy}. For legacy plots, \code{legend.pos} and
+\code{map.adj} should be chosen so that legend and map do not overlap, and the legend position can be fine-tuned using
+argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. In order to move map and legend closer to each other, change the plot device width.
+For details on inset specification for the default maps, see \code{inset} in \code{\link{legend}}.
 
 Mapped variables are visualised using color-coded data intervals. \code{HYPEtools} provides a number of color ramps functions for HYPE variables,
 see \code{\link{CustomColors}}. These are either single-color ramps with less saturated colors for smaller values
@@ -159,14 +182,6 @@ For select common HYPE variables, given in argument \code{var.name}, an automati
 is built into \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword
 \code{"auto"} in \code{col}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points with
 \code{"auto"} color selection.
-
-\code{PlotMapOutput} per default works with a margin-less figure and positions map and legend items close to the plot boundaries.
-In order to move map and legend closer to each other, change the plot device width.
-
-Legends are positioned by keyword through argument \code{legend.pos}, defaulting to the bottom right side of the map. For static plots, \code{legend.pos} and
-\code{map.adj} should be chosen so that legend and map do not overlap, and the legend position can be fine-tuned using
-argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. For details on inset
-specification see \code{inset} in \code{\link{legend}}.
 }
 \examples{
 \donttest{
