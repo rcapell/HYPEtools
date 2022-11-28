@@ -134,6 +134,30 @@ references:
     email: alboukadel.kassambara@gmail.com
   year: '2022'
 - type: software
+  title: ggrepel
+  abstract: 'ggrepel: Automatically Position Non-Overlapping Text Labels with ''ggplot2'''
+  notes: Imports
+  url: https://github.com/slowkow/ggrepel
+  repository: https://CRAN.R-project.org/package=ggrepel
+  authors:
+  - family-names: Slowikowski
+    given-names: Kamil
+    email: kslowikowski@gmail.com
+    orcid: https://orcid.org/0000-0002-2843-6370
+  year: '2022'
+- type: software
+  title: ggspatial
+  abstract: 'ggspatial: Spatial Data Framework for ggplot2'
+  notes: Imports
+  url: https://paleolimbot.github.io/ggspatial/
+  repository: https://CRAN.R-project.org/package=ggspatial
+  authors:
+  - family-names: Dunnington
+    given-names: Dewey
+    email: dewey@fishandwhistle.net
+    orcid: https://orcid.org/0000-0002-9415-4582
+  year: '2022'
+- type: software
   title: grDevices
   abstract: 'R: A Language and Environment for Statistical Computing'
   notes: Imports
