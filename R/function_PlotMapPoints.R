@@ -156,6 +156,23 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     # Argument Verification
     units <- match.arg(units)
     
+    # Adjust legend position for leaflet
+    if(map.type == "leaflet"){
+      if(legend.pos == "top"){
+        warning(paste0('For Leaflet maps legend.pos must be one of "bottomright", "topright", "topleft", or "bottomleft", not "', legend.pos, '". Switching to "topright".'), call. = FALSE)
+        legend.pos <- "topright"
+      } else if(legend.pos == "left"){
+        warning(paste0('For Leaflet maps legend.pos must be one of "bottomright", "topright", "topleft", or "bottomleft", not "', legend.pos, '". Switching to "bottomleft".'), call. = FALSE)
+        legend.pos <- "bottomleft"
+      } else if(legend.pos == "right"){
+        warning(paste0('For Leaflet maps legend.pos must be one of "bottomright", "topright", "topleft", or "bottomleft", not "', legend.pos, '". Switching to "bottomright".'), call. = FALSE)
+        legend.pos <- "bottomright"
+      } else if(legend.pos == "bottom"){
+        warning(paste0('For Leaflet maps legend.pos must be one of "bottomright", "topright", "topleft", or "bottomleft", not "', legend.pos, '". Switching to "bottomright".'), call. = FALSE)
+        legend.pos <- "bottomright"
+      }
+    }
+    
     # input argument checks
     stopifnot(
       is.data.frame(x), dim(x)[2] == 2,
