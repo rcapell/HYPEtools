@@ -29,6 +29,7 @@ PlotMapOutput(
   plot.searchbar = FALSE,
   plot.label = FALSE,
   plot.label.size = 2.5,
+  plot.label.geometry = c("centroid", "surface"),
   file = "",
   width = NA,
   height = NA,
@@ -113,6 +114,8 @@ classification will be applied (see details).}
 See \code{\link{geom_sf_text}} for default maps and \code{\link[leaflet:map-layers]{leaflet::addPolygons()}} for Leaflet maps.}
 
 \item{plot.label.size}{Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.}
+
+\item{plot.label.geometry}{Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \code{sf::st_centroid} or \code{surface} to use \code{sf::st_point_on_surface}.}
 
 \item{file}{Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
 \code{\link[mapview:mapshot]{mapview::mapshot()}} for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}}.}

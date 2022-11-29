@@ -49,6 +49,7 @@
 #' @param plot.label Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over markers.
 #' See \code{\link{geom_sf_text}} for default maps and [leaflet::addCircleMarkers()] for Leaflet maps.
 #' @param plot.label.size Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.
+#' @param plot.label.geometry Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \code{sf::st_centroid} or \code{surface} to use \code{sf::st_point_on_surface}.
 #' @param noHide Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See [leaflet::labelOptions()].
 #' @param textOnly Logical, set to \code{TRUE} to hide marker label background in Leaflet maps. See [leaflet::labelOptions()].
 #' @param font.size Numeric, font size (px) for marker labels in Leaflet maps.
@@ -130,7 +131,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
                           # plot.searchbar = FALSE, # leaflet.extras searchbar currently doesn't work for CircleMarkers
-                          plot.label = FALSE, plot.label.size = 2.5, noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL,
+                          plot.label = FALSE, plot.label.size = 2.5, plot.label.geometry = c("centroid", "surface"), noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL,
                           file = "", width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300,
                           vwidth = 1424, vheight = 1000, html.name = "",
                           map.adj = 0, legend.outer = FALSE, legend.inset = c(0, 0), pt.cex = 1, par.cex = 1, par.mar = rep(0, 4) + .1, pch = 21, lwd = .8, add = FALSE) {
@@ -157,6 +158,14 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     
     # Argument Verification
     units <- match.arg(units)
+    plot.label.geometry <- match.arg(plot.label.geometry)
+    
+    # Get plot label geometry
+    if(plot.label.geometry == "centroid"){
+      plot.label.geometry <- sf::st_centroid
+    } else if(plot.label.geometry == "surface"){
+      plot.label.geometry <- sf::st_point_on_surface
+    }
     
     # Adjust legend position for leaflet
     if(map.type == "leaflet"){
@@ -664,10 +673,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         if(!is.null(plot.bg.label)){
           if(plot.label == FALSE){ # Add labels for all points
             plot <- plot +
-              .geom_sf_text_repel(data = bg, aes_string(label = colnames(bg)[bg.label.column]), size = plot.label.size, fontface = "bold", fun.geometry = sf::st_centroid)
+              .geom_sf_text_repel(data = bg, aes_string(label = colnames(bg)[bg.label.column]), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
           } else{ # Add labels for point that aren't already getting labeled
             plot <- plot +
-              .geom_sf_text_repel(data = bg %>% filter(!.data[[colnames(bg)[bg.label.column]]] %in% x[[1]]), aes_string(label = colnames(bg)[bg.label.column]), size = plot.label.size, fontface = "bold", fun.geometry = sf::st_centroid)
+              .geom_sf_text_repel(data = bg %>% filter(!.data[[colnames(bg)[bg.label.column]]] %in% x[[1]]), aes_string(label = colnames(bg)[bg.label.column]), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
           }
         }
         

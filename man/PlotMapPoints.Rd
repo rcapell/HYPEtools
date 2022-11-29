@@ -33,6 +33,7 @@ PlotMapPoints(
   bg.fillOpacity = 0.75,
   plot.label = FALSE,
   plot.label.size = 2.5,
+  plot.label.geometry = c("centroid", "surface"),
   noHide = FALSE,
   textOnly = FALSE,
   font.size = 10,
@@ -130,6 +131,8 @@ with 9 intervals, and an additional interval for negative values. This is suitab
 See \code{\link{geom_sf_text}} for default maps and \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}} for Leaflet maps.}
 
 \item{plot.label.size}{Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.}
+
+\item{plot.label.geometry}{Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \code{sf::st_centroid} or \code{surface} to use \code{sf::st_point_on_surface}.}
 
 \item{noHide}{Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \code{\link[leaflet:map-options]{leaflet::labelOptions()}}.}
 

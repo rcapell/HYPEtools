@@ -51,6 +51,7 @@
 #' @param plot.label Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over subbasins.
 #' See \code{\link{geom_sf_text}} for default maps and [leaflet::addPolygons()] for Leaflet maps.
 #' @param plot.label.size Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.
+#' @param plot.label.geometry Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \code{sf::st_centroid} or \code{surface} to use \code{sf::st_point_on_surface}.
 #' @param file Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
 #' [mapview::mapshot()] for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs()].
 #' @param width Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
@@ -136,7 +137,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                           legend.signif = 2, col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
-                          plot.searchbar = FALSE, plot.label = FALSE, plot.label.size = 2.5,
+                          plot.searchbar = FALSE, plot.label = FALSE, plot.label.size = 2.5, plot.label.geometry = c("centroid", "surface"),
                           file = "", width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300,
                           vwidth = 1424, vheight = 1000, html.name = "",
                           map.adj = 0, legend.outer = FALSE, legend.inset = c(0, 0), par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE) {
@@ -163,6 +164,14 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     
     # Argument Verification
     units <- match.arg(units)
+    plot.label.geometry <- match.arg(plot.label.geometry)
+    
+    # Get plot label geometry
+    if(plot.label.geometry == "centroid"){
+      plot.label.geometry <- sf::st_centroid
+    } else if(plot.label.geometry == "surface"){
+      plot.label.geometry <- sf::st_point_on_surface
+    }
     
     # Adjust legend position for leaflet
     if(map.type == "leaflet"){
@@ -730,7 +739,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
           
           # Add labels to plot
           plot <- plot +
-            .geom_sf_text_repel(data = x, aes_string(label = "label"), size = plot.label.size, fontface = "bold", fun.geometry = sf::st_centroid)
+            .geom_sf_text_repel(data = x, aes_string(label = "label"), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
           
         }
 
