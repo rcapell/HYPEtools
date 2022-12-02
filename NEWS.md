@@ -11,6 +11,7 @@
 * Updated PlotMapOutput() and PlotMapPoints() to generate ggplot maps by default
 * Updated WriteXobs() to include !! at beginning of comment line
 * Added CITATION.cff file
+* Updated WriteObs() to allow for appending data to existing file
 
 
 ## HYPEtools 1.1.0 (2022-10-26)
