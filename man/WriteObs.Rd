@@ -11,7 +11,8 @@ WriteObs(
   dt.format = "\%Y-\%m-\%d",
   round = NULL,
   signif = NULL,
-  obsid = NULL
+  obsid = NULL,
+  append = FALSE
 )
 
 WritePTQobs(
@@ -20,7 +21,8 @@ WritePTQobs(
   dt.format = "\%Y-\%m-\%d",
   round = NULL,
   signif = NULL,
-  obsid = NULL
+  obsid = NULL,
+  append = FALSE
 )
 }
 \arguments{
@@ -39,6 +41,8 @@ sequence. If \code{NULL} (default), the data to export is not touched.}
 \item{obsid}{Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header
 in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid}
 in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.}
+
+\item{append}{Logical, if \code{TRUE}, then table will be joined to the data in existing file and the output will be sorted by DATE (Rows will be added for any missing dates).}
 }
 \value{
 No return value, called for export to text files.

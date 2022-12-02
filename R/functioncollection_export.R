@@ -743,6 +743,7 @@ WritePmsf <- function(x, filename) {
 #' in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.
 #' @param round,signif Integer, number of decimal places and number of significant digits to export. See \code{\link{round}}. Applied in 
 #' sequence. If \code{NULL} (default), the data to export is not touched.
+#' @param append Logical, if \code{TRUE}, then table will be joined to the data in existing file and the output will be sorted by DATE (Rows will be added for any missing dates). 
 #'  
 #' @details
 #' \code{WriteObs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
@@ -768,10 +769,12 @@ WritePmsf <- function(x, filename) {
 #' WriteObs(x = te, filename = tempfile())
 #' 
 #' @importFrom data.table fwrite .SD
+#' @importFrom dplyr full_join arrange %>% everything rename_with
+#' @importFrom rlang .data
 #' @export
 
 
-WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif = NULL, obsid = NULL) {
+WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif = NULL, obsid = NULL, append = FALSE) {
   
   ## check if consistent header information is available, obsid arguments take precedence before attribute
   ## construct HYPE-conform header for export (violates R header rules)
@@ -789,6 +792,21 @@ WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif 
       }
   } else {
     stop("No information available from 'obsid' argument or 'obsid' attribute to construct export header.")
+  }
+  
+  # append to existing data
+  if(append == TRUE & file.exists(filename)){
+    
+    # Join Data
+    x <- ReadObs(filename) %>% # Read original file
+      rename_with(.cols = everything(), .fn = ~gsub("X", "", .x)) %>% # Rename columns to remove "X"
+      full_join(x) # Join to new data
+    
+    # Fill Gaps in Dates and arrange by DATE
+    x <- x %>%
+      full_join(data.frame(DATE = seq(min(x$DATE), max(x$DATE), by = '1 day')), by = "DATE") %>% # Fill gaps in dates
+      arrange(.data$DATE) # Sort by date
+    
   }
   
   # date conversion, conditional on that the date column is a posix class
@@ -815,8 +833,7 @@ WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif 
   }
   
   # export
- fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
-
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE)
 }
 
 # alias, for backwards compatibility
