@@ -12,7 +12,7 @@
 * Updated WriteXobs() to include !! at beginning of comment line
 * Added CITATION.cff file
 * Updated WriteObs() to allow for appending data to existing file
-
+* Fix bug in ignore.cols for WriteHarmonizedData() and WriteHarmonizedSpatialDescription() to allow for lower case values
 
 ## HYPEtools 1.1.0 (2022-10-26)
 *New functions and bug fixes*
