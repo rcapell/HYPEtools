@@ -46,7 +46,7 @@ df <- data.frame(
   "SRC_NAME" = "Example",
   "DOWNLOAD_DATE" = "2022-10-19",
   "SRC_STATNAME" = "Station",
-  "SRC_RIVNAME" = "River",
+  "SRC_WBNAME" = "River",
   "SRC_UAREA" = NA,
   "SRC_XCOORD" = 28.11831,
   "SRC_YCOORD" = -25.83053,

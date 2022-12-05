@@ -147,7 +147,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 #'   "SRC_NAME" = "Example",
 #'   "DOWNLOAD_DATE" = "2022-10-19",
 #'   "SRC_STATNAME" = "Station",
-#'   "SRC_RIVNAME" = "River",
+#'   "SRC_WBNAME" = "River",
 #'   "SRC_UAREA" = NA,
 #'   "SRC_XCOORD" = 28.11831,
 #'   "SRC_YCOORD" = -25.83053,
@@ -166,7 +166,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, ignore.cols = NULL, nThread = getDTthreads()) {
 
   # Required Column Names
-  required_cols <- c("STATION_ID", "SRC_NAME", "DOWNLOAD_DATE", "SRC_STATNAME", "SRC_RIVNAME", "SRC_UAREA", "SRC_XCOORD", "SRC_YCOORD", "SRC_EPSG", "ADJ_XCOORD", "ADJ_YCOORD", "ADJ_EPSG")
+  required_cols <- c("STATION_ID", "SRC_NAME", "DOWNLOAD_DATE", "SRC_STATNAME", "SRC_WBNAME", "SRC_UAREA", "SRC_XCOORD", "SRC_YCOORD", "SRC_EPSG", "ADJ_XCOORD", "ADJ_YCOORD", "ADJ_EPSG")
 
   # Check filename
   if (!filename == "") {
