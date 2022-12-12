@@ -7,7 +7,7 @@
 * Added AllSimToPar() and BestSimsToPar() functions to update a par.txt file with parameter values from an allsim.txt or bestsims.txt file
 * Updated CompareFiles() to include options for Simass and Subass files and to use ReadObs() instead of ReadPTQobs()
 * Add error message to CompareFiles() to handle if compare.order = FALSE and by = NULL.
-* Update ReadSubass() to be able to read Subass files with zero rows
+* Update ReadSubass() to be able to read Subass files with zero rows and add na.strings argument.
 * Updated PlotMapOutput() and PlotMapPoints() to generate ggplot maps by default
 * Updated WriteXobs() to include !! at beginning of comment line
 * Added CITATION.cff file

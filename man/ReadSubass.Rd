@@ -4,7 +4,12 @@
 \alias{ReadSubass}
 \title{Read a 'subassX.txt' file}
 \usage{
-ReadSubass(filename = "subass1.txt", nhour = NULL, check.names = FALSE)
+ReadSubass(
+  filename = "subass1.txt",
+  nhour = NULL,
+  check.names = FALSE,
+  na.strings = c("-9999", "****************")
+)
 }
 \arguments{
 \item{filename}{Path to and file name of the 'subassX.txt' file to import.}
@@ -12,6 +17,8 @@ ReadSubass(filename = "subass1.txt", nhour = NULL, check.names = FALSE)
 \item{nhour}{Integer, time step of sub-daily model results in hours. See details.}
 
 \item{check.names}{Logical. If \code{TRUE}, then the names of the variables are check to make sure they are syntactically valid.}
+
+\item{na.strings}{Vector of strings that should be read as NA.}
 }
 \value{
 \code{ReadSubass} returns a data frame with two additional attributes: \code{variables} contains a 2-element
