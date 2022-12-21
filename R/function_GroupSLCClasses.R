@@ -32,13 +32,15 @@
 #' GroupSLCClasses(gd = te1, gcl = te2, type = "s")
 #' 
 #' @importFrom pbapply pbapply
+#' @importFrom dplyr %>% full_join
+#' @importFrom purrr reduce
 #' @export
 
 
 GroupSLCClasses <- function(gd, gcl = NULL, type = c("landuse", "soil", "crop"), group = NULL, abs.area = FALSE, verbose = TRUE) {
   
   # input argument checks
-  type <- match.arg(type)
+  types <- match.arg(type, several.ok = TRUE)
   
   if (is.null(gcl) && is.null(group)) {
     stop("Neither GeoClass table nor user-defined grouping index provided.")
@@ -47,77 +49,89 @@ GroupSLCClasses <- function(gd, gcl = NULL, type = c("landuse", "soil", "crop"),
     stop("Both GeoClass table and user-defined grouping index provided. Please provide just one of them.")
   }
   
+  # Create vector to store results
+  results <- vector("list")
   
-  # local grouping index object, depending on input arguments
-  if (!is.null(gcl)) {
-    if (type == "landuse") {
-      lgroup <- gcl[, 2]
-      grname <- "landuse"
-    }
-    if (type == "soil") {
-      lgroup <- gcl[, 3]
-      grname <- "soil"
-    }
-    if (type == "crop") {
-      lgroup <- gcl[, 4]
-      grname <- "crop"
-    }
-  } else {
-    lgroup <- group
-    grname <- "group"
-  }
-  
-  # SLC positions
-  gdcols.slc <- which(substr(names(gd), 1, 4) == "SLC_")
-  # extract SLC numbers
-  suppressWarnings(n.s <- as.numeric(substr(names(gd)[gdcols.slc], 5, 99)))
-  # remove comment columns which happen to look like SLC columns, e.g. "SLC_98old"
-  gdcols.slc <- gdcols.slc[!is.na(n.s)]
-  
-  # extract slc class area fractions or absolute slc areas as working data frame
-  if (abs.area) {
-    # force conversion of areas in gd to numeric, to prevent integer overflow errors
-    area <- as.numeric(gd[, which(toupper(names(gd)) == "AREA")])
-    # calculate absolute areas from fractions and area sums provided in gd
-    if (verbose) {
-      cat("Calculating absolute areas.")
-      slc <- pbapply(gd[, gdcols.slc], 2, function(x, y) {x * y}, y = area)
+  # Loop through type
+  for(type in types){
+    # local grouping index object, depending on input arguments
+    if (!is.null(gcl)) {
+      if (type == "landuse") {
+        lgroup <- gcl[, 2]
+        grname <- "landuse"
+      }
+      if (type == "soil") {
+        lgroup <- gcl[, 3]
+        grname <- "soil"
+      }
+      if (type == "crop") {
+        lgroup <- gcl[, 4]
+        grname <- "crop"
+      }
     } else {
-      slc <- apply(gd[, gdcols.slc], 2, function(x, y) {x * y}, y = area)
+      lgroup <- group
+      grname <- "group"
     }
-    # convert to matrix if just one row in gd, would be a vector otherwise
-    if (nrow(gd) == 1) {
-      slc <- t(slc)
+    
+    # SLC positions
+    gdcols.slc <- which(substr(names(gd), 1, 4) == "SLC_")
+    # extract SLC numbers
+    suppressWarnings(n.s <- as.numeric(substr(names(gd)[gdcols.slc], 5, 99)))
+    # remove comment columns which happen to look like SLC columns, e.g. "SLC_98old"
+    gdcols.slc <- gdcols.slc[!is.na(n.s)]
+    
+    # extract slc class area fractions or absolute slc areas as working data frame
+    if (abs.area) {
+      # force conversion of areas in gd to numeric, to prevent integer overflow errors
+      area <- as.numeric(gd[, which(toupper(names(gd)) == "AREA")])
+      # calculate absolute areas from fractions and area sums provided in gd
+      if (verbose) {
+        cat("Calculating absolute areas.")
+        slc <- pbapply(gd[, gdcols.slc], 2, function(x, y) {x * y}, y = area)
+      } else {
+        slc <- apply(gd[, gdcols.slc], 2, function(x, y) {x * y}, y = area)
+      }
+      # convert to matrix if just one row in gd, would be a vector otherwise
+      if (nrow(gd) == 1) {
+        slc <- t(slc)
+      }
+    } else {
+      slc <- gd[, gdcols.slc]
     }
-  } else {
-    slc <- gd[, gdcols.slc]
+    
+    # number of slc classes in GeoData
+    nslc <- ncol(slc)
+    
+    # error check: number of SLCs in grouping index and gd must be identical
+    if (nslc != length(lgroup)) {
+      stop("Number of SLCs in 'GeoData'gd' and number of elements in grouping index do not match.")
+    }
+    
+    # print to screen if verbose
+    if (verbose) {
+      cat(paste("\nNumber of SLC classes in 'gd':", nslc, "\n"))
+    }
+    
+    # extract areas from gd if absolute areas are to be calculated
+    if (verbose) {
+      cat("\nCalculating grouped SLC sums.\n")
+      res <- pbapply(slc, MARGIN = 1, FUN = tapply, INDEX = lgroup, sum)
+    } else {
+      res <- apply(slc, MARGIN = 1, FUN = tapply, INDEX = lgroup, sum)
+    }
+    # formatting: transpose result and convert to dataframe
+    res <- as.data.frame(t(res))
+    res <- cbind(gd[, which(toupper(names(gd)) == "SUBID")], gd[, which(toupper(names(gd)) == "AREA")], res)
+    names(res) <- c("SUBID", "AREA", paste(grname, names(res)[-c(1:2)], sep = "_"))
+    
+    # save results to vector
+    results[[type]] <- res
   }
   
-  # number of slc classes in GeoData
-  nslc <- ncol(slc)
-  
-  # error check: number of SLCs in grouping index and gd must be identical
-  if (nslc != length(lgroup)) {
-    stop("Number of SLCs in 'GeoData'gd' and number of elements in grouping index do not match.")
-  }
-  
-  # print to screen if verbose
-  if (verbose) {
-    cat(paste("\nNumber of SLC classes in 'gd':", nslc, "\n"))
-  }
-  
-  # extract areas from gd if absolute areas are to be calculated
-  if (verbose) {
-    cat("\nCalculating grouped SLC sums.\n")
-    res <- pbapply(slc, MARGIN = 1, FUN = tapply, INDEX = lgroup, sum)
-  } else {
-    res <- apply(slc, MARGIN = 1, FUN = tapply, INDEX = lgroup, sum)
-  }
-  # formatting: transpose result and convert to dataframe
-  res <- as.data.frame(t(res))
-  res <- cbind(gd[, which(toupper(names(gd)) == "SUBID")], gd[, which(toupper(names(gd)) == "AREA")], res)
-  names(res) <- c("SUBID", "AREA", paste(grname, names(res)[-c(1:2)], sep = "_"))
+  # Merge results
+  results <- results %>%
+    reduce(full_join, by = c("SUBID", "AREA"))
   
   # return results
-  return(res)
+  return(results)
 }
