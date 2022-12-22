@@ -8,7 +8,7 @@
 #' File contents are compared to those of \code{x}.
 #' @param type Character string identifying the type of HYPE model file. Used to determine appropriate read function. One of
 #' \code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{GeoClass},
-#' \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointsourceData}, \code{Obs},
+#' \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointSourceData}, \code{Obs},
 #' \code{Simass}, \code{Subass}, \code{TimeOutput}, or \code{Xobs}.
 #' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See [dplyr::full_join()].
 #' @param compare.order Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
