@@ -11,6 +11,7 @@
 \alias{WriteMgmtData}
 \alias{WritePointSourceData}
 \alias{WriteForcKey}
+\alias{WriteGlacierData}
 \title{Write HYPE data files}
 \usage{
 WriteAquiferData(x, filename, verbose = TRUE)
@@ -30,6 +31,8 @@ WriteMgmtData(x, filename, verbose = TRUE)
 WritePointSourceData(x, filename, verbose = TRUE)
 
 WriteForcKey(x, filename)
+
+WriteGlacierData(x, filename, verbose = TRUE)
 }
 \arguments{
 \item{x}{The object to be written, a dataframe as returned from the \code{\link{HypeDataImport}} functions.}
@@ -56,6 +59,7 @@ specifications:
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
+\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
 \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}

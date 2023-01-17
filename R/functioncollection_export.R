@@ -13,7 +13,7 @@
 #     - WriteObs()
 #     - HypeDataExport:
 #         WriteAquiferData(), WriteBranchData(), WriteCropData(), WriteDamData(), WriteLakeData(), WriteMgmtData(), 
-#         WritePointSourceData()
+#         WritePointSourceData(), WriteForcKey(), WriteGlacierData()
 #     - WriteOptpar()
 #     - WriteInfo()
 #--------------------------------------------------------------------------------------------------------------------------------------
@@ -873,7 +873,7 @@ WritePTQobs <- WriteObs
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
-# NOT YET IMPLEMENTED #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
+#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
 #'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
@@ -1046,6 +1046,20 @@ WriteForcKey <- function(x, filename) {
   fwrite(x, file = filename, sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
 }
 
+#' @rdname HypeDataExport
+#' @importFrom data.table fwrite
+#' @export
+WriteGlacierData <- function(x, filename, verbose = TRUE) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
+  # warn if NAs in data, since HYPE does not allow empty values in 
+  te <- apply(x, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
+  # export
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+}
 
 
 
