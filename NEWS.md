@@ -14,6 +14,7 @@
 * Updated WriteObs() to allow for appending data to existing file
 * Fix bugs in ignore.cols for WriteHarmonizedData() and WriteHarmonizedSpatialDescription() to allow for lower case values and to format dates with times correctly
 * Update GroupSLCClasses() to allow for multiple values for type argument
+* Added WriteGlacierData()
 
 ## HYPEtools 1.1.0 (2022-10-26)
 *New functions and bug fixes*
