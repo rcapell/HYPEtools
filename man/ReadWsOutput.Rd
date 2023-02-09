@@ -2,7 +2,7 @@
 % Please edit documentation in R/function_ReadWsOutput.R
 \name{ReadWsOutput}
 \alias{ReadWsOutput}
-\title{Read optimisation simulation results}
+\title{Read optimization simulation results}
 \usage{
 ReadWsOutput(
   path,
@@ -72,11 +72,11 @@ values occur for the given SUBID/HYPE variable.}
 }
 }
 \description{
-Read and combine HYPE optimisation simulation output files, generated with 'task WS' during HYPE optimisation runs. Outputs can
+Read and combine HYPE optimization simulation output files, generated with 'task WS' during HYPE optimization runs. Outputs can
 consist of basin, time, or map output files.
 }
 \details{
-HYPE optimisation routines optionally allow for generation of simulation output files for each iteration in the optimisation routine.
+HYPE optimization routines optionally allow for generation of simulation output files for each iteration in the optimization routine.
 For further details see documentation on 'task WS' in the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
 

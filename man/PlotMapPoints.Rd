@@ -95,7 +95,7 @@ is used as legend title string.}
 \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 }}
 
-\item{col.breaks}{A numeric vector, specifying break points for discretisation of model result values into classes. Class boundaries will be
+\item{col.breaks}{A numeric vector, specifying break points for discretization of model result values into classes. Class boundaries will be
 interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
 Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
 unclassified white spots on the map plot. If \code{NULL} (the default), \code{col.breaks} covers a range from 0 to 1
@@ -152,7 +152,7 @@ labels for \code{bg} will be displayed in Leaflet maps. If any string is specifi
 
 \item{units}{Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \code{\link{ggsave}}.}
 
-\item{dpi}{Interger, resolution to save static map. See \code{\link{ggsave}}.}
+\item{dpi}{Integer, resolution to save static map. See \code{\link{ggsave}}.}
 
 \item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link[webshot:webshot]{webshot::webshot()}}.}
 

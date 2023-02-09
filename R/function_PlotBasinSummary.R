@@ -1,6 +1,6 @@
 #' Plot a summary of model results for a single sub-basin
 #' 
-#' Plot a standard suite of plots summarising properties of a sub-basin including upstream area and model performance 
+#' Plot a standard suite of plots summarizing properties of a sub-basin including upstream area and model performance 
 #' for discharge and concentrations of nutrients, sediment, and tracers.
 #' 
 #' @param x Data frame, with column-wise daily time series of HYPE variables. Date-times in 
@@ -43,12 +43,12 @@
 #' 
 #' @details
 #' \code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a 
-#' chosen sub-basin. Performance plots include discharge, HYPE-modelled nutrient species for nitrogen (total, inorganic, organic) 
-#' and phosphorus (total, particulate, soluble), and HYPE modelled suspended and total sediment concentrations.
+#' chosen sub-basin. Performance plots include discharge, HYPE-modeled nutrient species for nitrogen (total, inorganic, organic) 
+#' and phosphorus (total, particulate, soluble), and HYPE modeled suspended and total sediment concentrations.
 #' 
 #' Plotted panels show: 
 #' \itemize{
-#' \item{\emph{Summarised catchment characteristics as bar charts}: Upstream-averaged land use, soil, and crop group fractions; modelled nutrient 
+#' \item{\emph{Summarized catchment characteristics as bar charts}: Upstream-averaged land use, soil, and crop group fractions; modeled nutrient 
 #' loads in sub-basin outlet, and summed upstream gross loads from point sources and rural households (if necessary variables available, omitted 
 #' otherwise).}
 #' \item{\emph{Goodness-of-fit measures for discharge and concentrations}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS 

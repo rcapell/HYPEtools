@@ -1867,7 +1867,7 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 #' also argument description in \code{\link{scan}}.
 #' 
 #' @details 
-#' \code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimisation 
+#' \code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimization 
 #' and parameter value ranges, for details on the file format, see the
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' 
@@ -2163,7 +2163,7 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 #' 
 #' The function interprets character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions. 
 #' \strong{Sub-daily time steps are currently not treated} and will probably result in a warning during time step evaluation within the 
-#' function. Please update issue #106 on [github](https://github.com/rcapell/HYPEtools) if you need support for sub-daily time steps!
+#' function. Please contact the developers if you need support for sub-daily time steps!
 #' 
 #' @return
 #' \code{ReadSubass} returns a data frame with columns for HYPE variable names (observed, simulated), aggregation periods, and 

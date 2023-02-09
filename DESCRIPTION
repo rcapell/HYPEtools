@@ -1,6 +1,6 @@
 Package: HYPEtools
-Version: 1.1.0.9000
-Title: Tools for Processing and Analysing Files from the Hydrological
+Version: 1.2.0
+Title: Tools for Processing and Analyzing Files from the Hydrological
     Catchment Model HYPE
 Description: Work with model files (setup, input, output) from
     the hydrological catchment model HYPE: Streamlined file import and export, standard 
@@ -37,13 +37,13 @@ Imports:
     tidyselect,
     utils
 License: LGPL-3
-LazyData: true
+LazyData: false
 URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
 BugReports: https://github.com/rcapell/HYPEtools/issues
 RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
-Language: en-GB,en-US
+Language: en-US
 Suggests: 
     rmarkdown,
     knitr,

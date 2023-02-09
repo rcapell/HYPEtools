@@ -226,7 +226,7 @@ WriteGeoClass <- function(x, filename, use.comment = FALSE) {
 #' variables as \code{x}. If omitted or \code{NULL}, an attribute \code{variable} in \code{x} is mandatory.
 #' Will take precedence over a \code{variable} attribute of \code{x}. If \code{append} is \code{TRUE} the values are 
 #' used to test for consistency between export object and the existing file.
-#' @param subid Third row in Xobs, containing SUBIDs (integer). Behaviour otherwise as argument \code{variable}.
+#' @param subid Third row in Xobs, containing SUBIDs (integer). Behavior otherwise as argument \code{variable}.
 #' @param last.date Optional date-time of last observation in existing Xobs file as text string. Only relevant with \code{append = TRUE}. 
 #' Formatting depending on time step, e.g. \code{'2000-01-01'} (day) or \code{'2000-01-01 00:00'} (hour). Will be automatically read 
 #' from file per default, but can be provided to reduce execution time when appending to large files.
@@ -1072,7 +1072,7 @@ WriteGlacierData <- function(x, filename, verbose = TRUE) {
 
 #' Write an 'optpar.txt' File
 #'
-#' \code{WriteOptpar} prints a HYPE parameter optimisation list to a file.
+#' \code{WriteOptpar} prints a HYPE parameter optimization list to a file.
 #' 
 #' @param x The object to be written, a list with named elements, as an object returned from \code{\link{ReadOptpar}}.
 #' @param filename A character string naming a file to write to. Windows users: Note that 

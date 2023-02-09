@@ -1,4 +1,4 @@
-#' Functions to Manipuate HYPE Info Files
+#' Functions to Manipulate HYPE Info Files
 #'
 #' Add/Remove lines to HYPE info.txt files 
 #'

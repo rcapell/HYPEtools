@@ -14,7 +14,7 @@
 #' See details. 
 #' @param unit.area Logical, set to \code{FALSE} to calculate incoming load (leaching rates) in kg/year instead of kg/(ha year).
 #' @param par List, HYPE parameter list, typically an imported 'par.txt' file. Must contain parameter \emph{locsoil} (not case-sensitive). 
-#' @param nutrient Character keyword, one of the HYPE-modelled nutrient groups, for which to calculate groundwater retention. Not 
+#' @param nutrient Character keyword, one of the HYPE-modeled nutrient groups, for which to calculate groundwater retention. Not 
 #' case-sensitive. \emph{Currently, only \code{tn} {total nitrogen} is implemented.}
 #' 
 #' @details 

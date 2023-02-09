@@ -33,7 +33,7 @@ domain-wide performance measures for observed-simulated variable pairs as define
 
 The function interprets character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions.
 \strong{Sub-daily time steps are currently not treated} and will probably result in a warning during time step evaluation within the
-function. Please update issue #106 on \href{https://github.com/rcapell/HYPEtools}{github} if you need support for sub-daily time steps!
+function. Please contact the developers if you need support for sub-daily time steps!
 }
 \examples{
 te <- ReadSimass(filename = system.file("demo_model",

@@ -12,7 +12,7 @@
 
 \item{y}{Data frame, with mandatory \code{SUBID} column.}
 
-\item{all.x}{Logical, keep all rows from \code{x}. Defaults to \code{TRUE}, as opposed to default method, thus extending the GeData
+\item{all.x}{Logical, keep all rows from \code{x}. Defaults to \code{TRUE}, as opposed to default method, thus extending the GeoData
 table with columns in \code{y}.}
 
 \item{sort}{Logical, result sorting by \code{by} columns. In addition to the default method's choices \code{TRUE, FALSE}, a third

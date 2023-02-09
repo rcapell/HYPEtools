@@ -14,7 +14,7 @@
 #' is \code{NULL} or contains many SUBIDs.
 #' 
 #' @details
-#' \code{UpstreamPointSources} calculates summarised upstream point source emissions. For each sub-basin with at least one upstream 
+#' \code{UpstreamPointSources} calculates summarized upstream point source emissions. For each sub-basin with at least one upstream 
 #' point source (including the sub-basin itself), summed emission volumes and volume weighted emission concentrations are calculated. 
 #' HYPE point source types ('ps_type') are returned in separate rows. \code{UpstreamPointSources} requires point source types to be one of \code{-1, 0, 1, 2, 3}, 
 #' corresponding to water abstractions, no differentiation/tracer, and type 1 to 3 (e.g. wastewater treatment plants, industries, and urban stormwater). 

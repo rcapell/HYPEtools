@@ -8,7 +8,7 @@
 No return value, package documentation.
 }
 \description{
-This package contains functions to handle and analyse input and
+This package contains functions to handle and analyze input and
 output files from the conceptual rainfall-runoff model HYPE (HYdrological
 Predictions for the Environment).
 }

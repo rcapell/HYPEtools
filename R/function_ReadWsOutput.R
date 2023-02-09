@@ -1,7 +1,7 @@
 #' 
-#' Read optimisation simulation results
+#' Read optimization simulation results
 #'
-#' Read and combine HYPE optimisation simulation output files, generated with 'task WS' during HYPE optimisation runs. Outputs can 
+#' Read and combine HYPE optimization simulation output files, generated with 'task WS' during HYPE optimization runs. Outputs can 
 #' consist of basin, time, or map output files.
 #' 
 #' @param path Character string, path to the directory holding simulation output files to import. Windows users: Note that 
@@ -28,7 +28,7 @@
 #' import time for large simulation file sets.
 #' 
 #' @details
-#' HYPE optimisation routines optionally allow for generation of simulation output files for each iteration in the optimisation routine. 
+#' HYPE optimization routines optionally allow for generation of simulation output files for each iteration in the optimization routine. 
 #' For further details see documentation on 'task WS' in the 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' 

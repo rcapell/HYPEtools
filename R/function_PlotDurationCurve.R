@@ -25,7 +25,7 @@
 #' @details
 #' \code{PlotDurationCurve} plots a duration curve with pretty formatting defaults. The function sets \code{\link{par}} parameters \code{tcl} and \code{mgp} 
 #' internally and will override previously set values for the returned plot. It typically uses results from \code{\link{ExtractFreq}} as input data and via that 
-#' function it can be used to visualise and compare time series properties.
+#' function it can be used to visualize and compare time series properties.
 #' 
 #' @return
 #' \code{PlotDurationCurve} returns a plot to the currently active plot device.

@@ -1,7 +1,7 @@
 #'
 #' Plot function for HYPE map results.
 #'
-#' Draw HYPE map results, with pretty scale discretisations and color ramp defaults for select HYPE variables.
+#' Draw HYPE map results, with pretty scale discretizations and color ramp defaults for select HYPE variables.
 #'
 #' @param x HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and
 #' second column containing model results to plot. See details.
@@ -32,7 +32,7 @@
 #' \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 #' }
 #' @param col.ramp.fun DEPRECATED, for backwards compatibility only.
-#' @param col.breaks A numeric vector, specifying break points for discretisation of model result values into classes. Used if a color palette is specified with \code{col} argument.
+#' @param col.breaks A numeric vector, specifying break points for discretization of model result values into classes. Used if a color palette is specified with \code{col} argument.
 #' Class boundaries will be interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
 #' Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
 #' unclassified white spots on the map plot. Not mandatory, can optionally
@@ -57,7 +57,7 @@
 #' @param width Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
 #' @param height Numeric, height of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
 #' @param units Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \code{\link{ggsave}}.
-#' @param dpi Interger, resolution to save static map. See \code{\link{ggsave}}.
+#' @param dpi Integer, resolution to save static map. See \code{\link{ggsave}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [mapview::mapshot()].
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [mapview::mapshot()].
 #' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. 
@@ -83,7 +83,7 @@
 #' argument \code{legend.inset}. This is particularly useful for legend titles with more than one line. In order to move map and legend closer to each other, change the plot device width.
 #' For details on inset specification for the default maps, see \code{inset} in \code{\link{legend}}.
 #'
-#' Mapped variables are visualised using color-coded data intervals. \code{HYPEtools} provides a number of color ramps functions for HYPE variables,
+#' Mapped variables are visualized using color-coded data intervals. \code{HYPEtools} provides a number of color ramps functions for HYPE variables,
 #' see \code{\link{CustomColors}}. These are either single-color ramps with less saturated colors for smaller values
 #' and more saturated values for higher values, suitable for e.g. concentration or volume ranges, or multi-color ramps suitable for calculated
 #' differences, e.g. between two model runs.
@@ -95,7 +95,7 @@
 #' \code{x} ranges, centered around zero. For internal color ramp \code{ColDiffTemp}, they are breaks in an interval from -7.5 to 7.5 K.
 #'
 #' For select common HYPE variables, given in argument \code{var.name}, an automatic color ramp selection including pretty breaks and legend titles
-#' is built into \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by chosing keyword
+#' is built into \code{PlotMapOutput}. These are 'CCTN', 'CCTP', 'COUT', and 'TEMP'. Automatic selection is activated by choosing keyword
 #' \code{"auto"} in \code{col}. All other HYPE variables will be plotted using a generic color ramp palette and generic break points with
 #' \code{"auto"} color selection.
 #'

@@ -27,7 +27,7 @@
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param ignore.cols Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.
-#' @param nThread Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}
+#' @param nThread Integer, set number of threads to be used when writing file. See \code{\link{getDTthreads}}
 #'
 #' @details
 #' \code{WriteHarmonizedData} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized data in the HYPEObsMetadataTools Harmonized Data Format.
@@ -132,10 +132,10 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param ignore.cols Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.
-#' @param nThread Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}
+#' @param nThread Integer, set number of threads to be used when writing file. See \code{\link{getDTthreads}}
 #'
 #' @details
-#' \code{WriteHarmonizedSpatialDescrption} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized spatial description data in the HYPEObsMetadataTools Harmonized Spatial Descrption Format.
+#' \code{WriteHarmonizedSpatialDescription} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized spatial description data in the HYPEObsMetadataTools Harmonized Spatial Description Format.
 #' The function checks that all required columns are present, includes options to format strings, and exports data to output CSV files with the correct encoding and formatting.
 #'
 #' @return

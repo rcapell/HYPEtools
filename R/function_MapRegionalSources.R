@@ -6,7 +6,7 @@
 #' @param data Dataframe, containing a column \code{SUBID} and a column \code{REGSRCID} (not case-sensitive), which identify
 #' irrigation target and source sub-catchments, respectively. Typically a HYPE 'MgmtData.txt' file, imported with \code{\link{ReadMgmtData}}.
 #' @param map A \code{sf}, \code{SpatialPointsDataFrame}, or \code{SpatialPolygonsDataFrame} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
-#' centre-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link{st_centroid}}). Spatial data import requires additional packages, e.g. \code{sf}.
+#' center-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link{st_centroid}}). Spatial data import requires additional packages, e.g. \code{sf}.
 #' @param map.subid.column Integer, index of the column in the \code{map} column holding SUBIDs (sub-catchment IDs).
 #' @param digits Integer, number of digits to which irrigation connection lengths are rounded to.
 #' @param progbar Logical, display a progress bar while calculating.

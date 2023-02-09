@@ -4,7 +4,7 @@
 \alias{InfoManipulation}
 \alias{AddInfoLine}
 \alias{RemoveInfoLine}
-\title{Functions to Manipuate HYPE Info Files}
+\title{Functions to Manipulate HYPE Info Files}
 \usage{
 AddInfoLine(info, name, value, after = NULL)
 

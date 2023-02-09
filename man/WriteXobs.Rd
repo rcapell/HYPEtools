@@ -35,7 +35,7 @@ variables as \code{x}. If omitted or \code{NULL}, an attribute \code{variable} i
 Will take precedence over a \code{variable} attribute of \code{x}. If \code{append} is \code{TRUE} the values are
 used to test for consistency between export object and the existing file.}
 
-\item{subid}{Third row in Xobs, containing SUBIDs (integer). Behaviour otherwise as argument \code{variable}.}
+\item{subid}{Third row in Xobs, containing SUBIDs (integer). Behavior otherwise as argument \code{variable}.}
 
 \item{last.date}{Optional date-time of last observation in existing Xobs file as text string. Only relevant with \code{append = TRUE}.
 Formatting depending on time step, e.g. \code{'2000-01-01'} (day) or \code{'2000-01-01 00:00'} (hour). Will be automatically read

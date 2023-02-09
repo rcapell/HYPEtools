@@ -13,30 +13,41 @@ library(dplyr)
 # Run update code at bottom of VariableLookup.R
 
 # check example execution time
-devtools::check(incoming = T, args = "--timings")
-timing_df <- read.delim('/tmp/RtmppC2iwj/file361875b0996/HYPEtools-Ex.timings') %>%
+check_dir <- tempdir()
+devtools::check(incoming = T, args = "--timings", check_dir = check_dir)
+timing_df <- read.delim(file.path(check_dir,"HYPEtools.Rcheck", "HYPEtools-Ex.timings")) %>%
   mutate(cpu = user + system) %>% # Calculate CPU time (user + system)
   arrange(desc(cpu))
 
 any(timing_df$cpu > 5) # Check if any CPU times > 5s
 any(timing_df$elapsed > 5) # Check if any elapsed times >5s
 rm(timing_df)
+unlink(check_dir)
 
 # check for T/F instead of TRUE/FALSE
 lintr::lint_package(linters=list(lintr::T_and_F_symbol_linter()))
 
-# spelling errors
+# spelling errors - Note that this function does not support having multiple languages in the DESCRIPTION file
 devtools::spell_check()
 
+# Specify email to receive the results from the various checks
+email <- "conrad.brendel@smhi.se"
+
 # check in different environments
-devtools::check_rhub()
+# - You can stop the task in R or use interactive = F if you don't want to see the live output (the check will still be performed)
+# - This check takes several hours
+devtools::check_rhub(email = email)
 
 # check CRAN environment (may give notes which show not up otherwise)
-rhub::check_for_cran()
+# - You can stop the task in R or use show_status = F if you don't want to see the live output (the check will still be performed)
+# - This check takes several hours
+rhub::check_for_cran(email = email)
 
 # check and build windows binary
-devtools::check_win_release()
-devtools::check_win_devel()
+devtools::check_win_release(email = email)
+devtools::check_win_devel(email = email)
+
+# Commit any changes to GitHub
 
 # submit to CRAN, includes checks
 devtools::release()

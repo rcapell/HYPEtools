@@ -28,7 +28,7 @@
 #' \item A vector of colors. This can be a character vector of R's built-in color names or hexadecimal strings as returned by
 #' \code{\link{rgb}}, or an integer vector of current \code{\link{palette}} indices.
 #' }
-#' @param col.breaks A numeric vector, specifying break points for discretisation of model result values into classes. Class boundaries will be
+#' @param col.breaks A numeric vector, specifying break points for discretization of model result values into classes. Class boundaries will be
 #' interpreted as right-closed, i.e upper boundaries included in class. Lowest class boundary included in lowest class as well.
 #' Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
 #' unclassified white spots on the map plot. If \code{NULL} (the default), \code{col.breaks} covers a range from 0 to 1
@@ -60,7 +60,7 @@
 #' @param width Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
 #' @param height Numeric, height of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
 #' @param units Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \code{\link{ggsave}}.
-#' @param dpi Interger, resolution to save static map. See \code{\link{ggsave}}.
+#' @param dpi Integer, resolution to save static map. See \code{\link{ggsave}}.
 #' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [webshot::webshot()].
 #' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [webshot::webshot()].
 #' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. 

@@ -20,7 +20,7 @@ Paths are separated by '/', not '\\'.}
 No return value, called for export to text files.
 }
 \description{
-\code{WriteOptpar} prints a HYPE parameter optimisation list to a file.
+\code{WriteOptpar} prints a HYPE parameter optimization list to a file.
 }
 \examples{
 te <- ReadOptpar(filename = system.file("demo_model", "optpar.txt", package = "HYPEtools"))

@@ -8,7 +8,7 @@
 #' @param pars Character vector with HYPE parameter names to be included in optpar list. Parameters must 
 #' exist in \code{x}. Not case-sensitive. For a complete list of HYPE parameters, see the
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:par.txt}{par.txt online documentation}. 
-#' @param tasks Data frame with two columns providing optimisation tasks and settings (key-value pairs) as 
+#' @param tasks Data frame with two columns providing optimization tasks and settings (key-value pairs) as 
 #' described in the
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' Defaults to an empty task section.
@@ -16,8 +16,8 @@
 #' @param fun.ival Either \code{NULL} (default), or a function with a single argument. See Details.
 #' 
 #' @details 
-#' \code{CreateOptpar} makes it a bit more convenient to compose a HYPE optimisation file. The function creates a template 
-#' with all parameters to be included in an optimisation run.
+#' \code{CreateOptpar} makes it a bit more convenient to compose a HYPE optimization file. The function creates a template 
+#' with all parameters to be included in an optimization run.
 #' 
 #' Parameter boundaries for individual classes have to be adapted after creation of the template, the function takes the 
 #' existing parameter value(s) in \code{x} as upper and lower boundaries. 
@@ -43,7 +43,7 @@
 #' @examples
 #' # Import a HYPE parameter file
 #' te1 <- ReadPar(filename = system.file("demo_model", "par.txt", package = "HYPEtools"))
-#' # Create optimisation parameters for a Monte Carlo run with 1000 iterations
+#' # Create optimization parameters for a Monte Carlo run with 1000 iterations
 #' te2 <- data.frame(key = c("task", "num_mc", "task"), value = c("MC", 1000, "WS"))
 #' # Create an optpar file structure for HYPE recession coefficients
 #' te3 <- CreateOptpar(x = te1, pars = c("rrcs1", "rrcs2"), tasks = te2)

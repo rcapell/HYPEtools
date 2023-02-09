@@ -398,7 +398,7 @@ print.summaryHypeGeoData <- function(x, ...) {
 #' 
 #' @param x \code{\link{HypeGeoData}} data frame, HYPE GeoData table to be extended with new columns.
 #' @param y Data frame, with mandatory \code{SUBID} column.
-#' @param all.x Logical, keep all rows from \code{x}. Defaults to \code{TRUE}, as opposed to default method, thus extending the GeData 
+#' @param all.x Logical, keep all rows from \code{x}. Defaults to \code{TRUE}, as opposed to default method, thus extending the GeoData 
 #' table with columns in \code{y}.
 #' @param sort Logical, result sorting by \code{by} columns. In addition to the default method's choices \code{TRUE, FALSE}, a third 
 #' option \code{NA} (default) will use sorting of \code{x} for results. I.e. a sorted GeoData table will be runnable in HYPE even after 

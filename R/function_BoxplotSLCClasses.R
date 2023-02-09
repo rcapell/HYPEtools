@@ -31,7 +31,7 @@
 #' @param mar,mgp,tcl,xaxs,xpd Arguments passed to \code{\link{par}}. See documentation in there.
 #' 
 #' @details
-#' \code{BoxplotSLCClasses} allows to analyse the occurrence of individual SLCs in a given model set-up. both in terms of area fractions (SLC values) 
+#' \code{BoxplotSLCClasses} allows to analyze the occurrence of individual SLCs in a given model set-up. both in terms of area fractions (SLC values) 
 #' and absolute areas. The function uses \code{\link{boxplot}} to plot distributions of SLCs of all SUBIDs in a GeoData data frame. Land use classes 
 #' are color-coded, and soil classes marked by a point symbol below each box. Box whiskers extend to the data extremes.
 #' 

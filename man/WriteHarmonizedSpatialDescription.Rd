@@ -27,7 +27,7 @@ If \code{FALSE}, then strings will be left unmodified.}
 
 \item{ignore.cols}{Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.}
 
-\item{nThread}{Integer, set number of thereads to be used when writing file. See \code{\link{getDTthreads}}}
+\item{nThread}{Integer, set number of threads to be used when writing file. See \code{\link{getDTthreads}}}
 }
 \value{
 \code{WriteSpatialDescrption} exports a CSV file if \code{filename} is specified. Otherwise, the function outputs a data frame to the console.
@@ -37,7 +37,7 @@ This is a convenience wrapper function to export a data frame to the required Ha
 \href{https://git.smhi.se/fouh/hypeobsmetadatatools}{HYPEObsMetadataTools documentation}.
 }
 \details{
-\code{WriteHarmonizedSpatialDescrption} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized spatial description data in the HYPEObsMetadataTools Harmonized Spatial Descrption Format.
+\code{WriteHarmonizedSpatialDescription} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized spatial description data in the HYPEObsMetadataTools Harmonized Spatial Description Format.
 The function checks that all required columns are present, includes options to format strings, and exports data to output CSV files with the correct encoding and formatting.
 }
 \examples{

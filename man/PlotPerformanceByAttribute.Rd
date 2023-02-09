@@ -111,7 +111,7 @@ grouping variable (e.g. month).}
 
 \item{trendline.darken}{Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.}
 
-\item{density.plot}{Logical, if \code{TRUE}, then density plots will be addded to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.}
+\item{density.plot}{Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.}
 
 \item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.}
 
@@ -141,7 +141,7 @@ grouping variable (e.g. month).}
 
 \item{common.legend}{Specify if arranged plot should use a common legend. See \code{\link{ggarrange}}.}
 
-\item{legend.position}{Specify position of common legend for arragned plot. See \code{\link{ggarrange}}.}
+\item{legend.position}{Specify position of common legend for arranged plot. See \code{\link{ggarrange}}.}
 
 \item{summary.table}{Logical, if \code{TRUE}, then a table providing summary statistics will be included at the bottom of the output plot.}
 

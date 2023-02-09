@@ -27,7 +27,7 @@ Parameter names as list element names.
 This function imports an 'optpar.txt' into a list.
 }
 \details{
-\code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimisation
+\code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimization
 and parameter value ranges, for details on the file format, see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
 }

@@ -1,5 +1,5 @@
-## HYPEtools 1.1.0.9000
-*development version*
+## HYPEtools 1.2.0 (2023-02-09)
+*New functions and bug fixes*
 
 #### Highlights
 * Added "exact" mode to ReadInfo() to read info.txt files with exact info.txt file structure
@@ -143,7 +143,7 @@
 #### New Functions
 * BarplotUpstreamClasses: Plot upstream-averaged landscape property classes of one or several sub-basins as bar plots, e.g. land use or soils
 * PlotSimObsRegime: Combined plot for annual regimes with box plot elements for observed variables and ribbon elements for simulated variables
-* PlotBasinSummary: Plot a standard suite of plots summarising properties of a sub-basin including upstream area and model performance for discharge and concentrations of nutrients, sediment, and tracers
+* PlotBasinSummary: Plot a standard suite of plots summarizing properties of a sub-basin including upstream area and model performance for discharge and concentrations of nutrients, sediment, and tracers
 * CustomColors: Custom color ramp functions
 
 ## HYPEtools 0.4.0 (2016-06-12)
