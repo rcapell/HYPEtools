@@ -1,5 +1,5 @@
 # -----------------------------------------------------------
-# CITATION file created with {cffr} R package, v0.4.0
+# CITATION file created with {cffr} R package, v0.4.1
 # See also: https://docs.ropensci.org/cffr/
 # -----------------------------------------------------------
  
@@ -7,9 +7,9 @@ cff-version: 1.2.0
 message: 'To cite package "HYPEtools" in publications use:'
 type: software
 license: LGPL-3.0-only
-title: 'HYPEtools: Tools for Processing and Analysing Files from the Hydrological
+title: 'HYPEtools: Tools for Processing and Analyzing Files from the Hydrological
   Catchment Model HYPE'
-version: 1.1.0.9000
+version: 1.2.0
 abstract: 'Work with model files (setup, input, output) from the hydrological catchment
   model HYPE: Streamlined file import and export, standard evaluation plot routines,
   diverse post-processing and aggregation routines for hydrological model analysis.'
@@ -36,7 +36,7 @@ references:
   - name: R Core Team
   location:
     name: Vienna, Austria
-  year: '2022'
+  year: '2023'
   institution:
     name: R Foundation for Statistical Computing
   version: '>= 3.5.0'
@@ -51,7 +51,7 @@ references:
     given-names: Matthew
     email: matthew.d.lincoln@gmail.com
     orcid: https://orcid.org/0000-0002-4387-3384
-  year: '2022'
+  year: '2023'
 - type: software
   title: data.table
   abstract: 'data.table: Extension of `data.frame`'
@@ -65,7 +65,7 @@ references:
   - family-names: Srinivasan
     given-names: Arun
     email: asrini@pm.me
-  year: '2022'
+  year: '2023'
   version: '>= 1.9.8'
 - type: software
   title: dplyr
@@ -76,7 +76,7 @@ references:
   authors:
   - family-names: Wickham
     given-names: Hadley
-    email: hadley@rstudio.com
+    email: hadley@posit.co
     orcid: https://orcid.org/0000-0003-4757-117X
   - family-names: François
     given-names: Romain
@@ -86,7 +86,11 @@ references:
   - family-names: Müller
     given-names: Kirill
     orcid: https://orcid.org/0000-0002-1416-3412
-  year: '2022'
+  - family-names: Vaughan
+    given-names: Davis
+    email: davis@posit.co
+    orcid: https://orcid.org/0000-0003-4777-038X
+  year: '2023'
 - type: software
   title: ggplot2
   abstract: 'ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics'
@@ -121,7 +125,7 @@ references:
   - family-names: Dunnington
     given-names: Dewey
     orcid: https://orcid.org/0000-0002-9415-4582
-  year: '2022'
+  year: '2023'
 - type: software
   title: ggpubr
   abstract: 'ggpubr: ''ggplot2'' Based Publication Ready Plots'
@@ -132,7 +136,7 @@ references:
   - family-names: Kassambara
     given-names: Alboukadel
     email: alboukadel.kassambara@gmail.com
-  year: '2022'
+  year: '2023'
 - type: software
   title: ggrepel
   abstract: 'ggrepel: Automatically Position Non-Overlapping Text Labels with ''ggplot2'''
@@ -144,7 +148,7 @@ references:
     given-names: Kamil
     email: kslowikowski@gmail.com
     orcid: https://orcid.org/0000-0002-2843-6370
-  year: '2022'
+  year: '2023'
 - type: software
   title: ggspatial
   abstract: 'ggspatial: Spatial Data Framework for ggplot2'
@@ -156,7 +160,7 @@ references:
     given-names: Dewey
     email: dewey@fishandwhistle.net
     orcid: https://orcid.org/0000-0002-9415-4582
-  year: '2022'
+  year: '2023'
 - type: software
   title: grDevices
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -165,7 +169,7 @@ references:
   - name: R Core Team
   location:
     name: Vienna, Austria
-  year: '2022'
+  year: '2023'
   institution:
     name: R Foundation for Statistical Computing
 - type: software
@@ -176,7 +180,7 @@ references:
   - name: R Core Team
   location:
     name: Vienna, Austria
-  year: '2022'
+  year: '2023'
   institution:
     name: R Foundation for Statistical Computing
 - type: software
@@ -190,19 +194,19 @@ references:
   - name: Mauricio Zambrano-Bigiarini
     email: mzb.devel@gmail.com
     orcid: https://orcid.org/0000-0002-9536-643X
-  year: '2022'
+  year: '2023'
 - type: software
   title: ncdf4
   abstract: 'ncdf4: Interface to Unidata netCDF (Version 4 or Earlier) Format Data
     Files'
   notes: Imports
-  url: http://cirrus.ucsd.edu/~pierce/ncdf/
+  url: https://cirrus.ucsd.edu/~pierce/ncdf/
   repository: https://CRAN.R-project.org/package=ncdf4
   authors:
   - family-names: Pierce
     given-names: David
     email: dpierce@ucsd.edu
-  year: '2022'
+  year: '2023'
 - type: software
   title: parallel
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -211,7 +215,7 @@ references:
   - name: R Core Team
   location:
     name: Vienna, Austria
-  year: '2022'
+  year: '2023'
   institution:
     name: R Foundation for Statistical Computing
 - type: software
@@ -225,7 +229,7 @@ references:
     given-names: Thomas Lin
     email: thomasp85@gmail.com
     orcid: https://orcid.org/0000-0002-5147-4711
-  year: '2022'
+  year: '2023'
 - type: software
   title: pbapply
   abstract: 'pbapply: Adding Progress Bar to ''*apply'' Functions'
@@ -235,9 +239,12 @@ references:
   authors:
   - family-names: Solymos
     given-names: Peter
+    email: psolymos@gmail.com
+    orcid: https://orcid.org/0000-0001-7337-1740
   - family-names: Zawadzki
     given-names: Zygmunt
-  year: '2022'
+    email: zygmunt@zstat.pl
+  year: '2023'
 - type: software
   title: purrr
   abstract: 'purrr: Functional Programming Tools'
@@ -245,13 +252,14 @@ references:
   url: https://purrr.tidyverse.org/
   repository: https://CRAN.R-project.org/package=purrr
   authors:
-  - family-names: Henry
-    given-names: Lionel
-    email: lionel@rstudio.com
   - family-names: Wickham
     given-names: Hadley
     email: hadley@rstudio.com
-  year: '2022'
+    orcid: https://orcid.org/0000-0003-4757-117X
+  - family-names: Henry
+    given-names: Lionel
+    email: lionel@rstudio.com
+  year: '2023'
 - type: software
   title: rlang
   abstract: 'rlang: Functions for Base Types and Core R and ''Tidyverse'' Features'
@@ -265,7 +273,7 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@rstudio.com
-  year: '2022'
+  year: '2023'
 - type: software
   title: sf
   abstract: 'sf: Simple Features for R'
@@ -277,7 +285,7 @@ references:
     given-names: Edzer
     email: edzer.pebesma@uni-muenster.de
     orcid: https://orcid.org/0000-0001-8049-7069
-  year: '2022'
+  year: '2023'
 - type: software
   title: stats
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -286,7 +294,7 @@ references:
   - name: R Core Team
   location:
     name: Vienna, Austria
-  year: '2022'
+  year: '2023'
   institution:
     name: R Foundation for Statistical Computing
 - type: software
@@ -299,7 +307,7 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@rstudio.com
-  year: '2022'
+  year: '2023'
 - type: software
   title: tidyr
   abstract: 'tidyr: Tidy Messy Data'
@@ -309,10 +317,13 @@ references:
   authors:
   - family-names: Wickham
     given-names: Hadley
-    email: hadley@rstudio.com
+    email: hadley@posit.co
+  - family-names: Vaughan
+    given-names: Davis
+    email: davis@posit.co
   - family-names: Girlich
     given-names: Maximilian
-  year: '2022'
+  year: '2023'
 - type: software
   title: tidyselect
   abstract: 'tidyselect: Select from a Set of Strings'
@@ -326,7 +337,7 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@rstudio.com
-  year: '2022'
+  year: '2023'
 - type: software
   title: utils
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -335,7 +346,7 @@ references:
   - name: R Core Team
   location:
     name: Vienna, Austria
-  year: '2022'
+  year: '2023'
   institution:
     name: R Foundation for Statistical Computing
 - type: software
@@ -377,7 +388,7 @@ references:
     given-names: Richard
     email: rich@rstudio.com
     orcid: https://orcid.org/0000-0003-3925-190X
-  year: '2022'
+  year: '2023'
 - type: software
   title: knitr
   abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
@@ -389,7 +400,7 @@ references:
     given-names: Yihui
     email: xie@yihui.name
     orcid: https://orcid.org/0000-0003-0645-5666
-  year: '2022'
+  year: '2023'
 - type: software
   title: htmlwidgets
   abstract: 'htmlwidgets: HTML Widgets for R'
@@ -412,7 +423,7 @@ references:
     orcid: https://orcid.org/0000-0002-4958-2844
   - family-names: Russell
     given-names: Kenton
-  year: '2022'
+  year: '2023'
 - type: software
   title: leaflet
   abstract: 'leaflet: Create Interactive Web Maps with the JavaScript ''Leaflet''
@@ -428,7 +439,7 @@ references:
     given-names: Bhaskar
   - family-names: Xie
     given-names: Yihui
-  year: '2022'
+  year: '2023'
 - type: software
   title: leaflet.extras
   abstract: 'leaflet.extras: Extra Functionality for ''leaflet'' Package'
@@ -442,7 +453,7 @@ references:
   - family-names: Schloerke
     given-names: Barret
     email: barret@rstudio.com
-  year: '2022'
+  year: '2023'
 - type: software
   title: mapview
   abstract: 'mapview: Interactive Viewing of Spatial Data in R'
@@ -462,7 +473,7 @@ references:
   - family-names: Woellauer
     given-names: Stefan
     email: stephan.woellauer@geo.uni-marburg.de
-  year: '2022'
+  year: '2023'
 - type: software
   title: randomcoloR
   abstract: 'randomcoloR: Generate Attractive Random Colors'
@@ -472,7 +483,7 @@ references:
   authors:
   - family-names: Ammar
     given-names: Ron
-  year: '2022'
+  year: '2023'
 - type: software
   title: webshot
   abstract: 'webshot: Take Screenshots of Web Pages'
@@ -483,4 +494,4 @@ references:
   - family-names: Chang
     given-names: Winston
     email: winston@rstudio.com
-  year: '2022'
+  year: '2023'
