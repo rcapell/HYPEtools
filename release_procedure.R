@@ -59,6 +59,6 @@ usethis::use_github_release()
 # - Update version number in DESCRIPTION to *.9000
 # - Add version heading to NEWS.md:
 #     ## HYPEtools 1.0.0.9000
-#     *development version*
+#     *Development Version*
 #     #### Highlights
   
