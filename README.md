@@ -6,6 +6,7 @@
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/r-hypetools.svg)](https://anaconda.org/conda-forge/r-hypetools)
 [![R-CMD-check](https://github.com/rcapell/HYPEtools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/rcapell/HYPEtools/actions/workflows/R-CMD-check.yaml)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.7627955.svg)](https://doi.org/10.5281/zenodo.7627955)
 <!-- badges: end -->
 
 ## Summary
