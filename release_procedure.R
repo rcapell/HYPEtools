@@ -31,7 +31,7 @@ lintr::lint_package(linters=list(lintr::T_and_F_symbol_linter()))
 devtools::spell_check()
 
 # Specify email to receive the results from the various checks
-email <- "conrad.brendel@smhi.se"
+email <- "hypetools@smhi.se"
 
 # check in different environments
 # - You can stop the task in R or use interactive = F if you don't want to see the live output (the check will still be performed)
