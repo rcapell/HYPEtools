@@ -46,6 +46,5 @@ R can be found [here](https://github.com/rcapell/HYPEtools/wiki/Install-and-Upda
 Browse HYPEtools Vignettes with:
 
 ``` r
-library(HYPEtools)
 browseVignettes("HYPEtools")
 ```
