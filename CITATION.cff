@@ -16,17 +16,20 @@ abstract: 'Work with model files (setup, input, output) from the hydrological ca
 authors:
 - family-names: Capell
   given-names: Rene
-  email: rene.capell@smhi.se
+  email: hypetools@smhi.se
+  orcid: https://orcid.org/0000-0002-7784-1313
 - family-names: Brendel
   given-names: Conrad
   email: conrad.brendel@smhi.se
+  orcid: https://orcid.org/0000-0002-5199-0580
 repository: https://CRAN.R-project.org/package=HYPEtools
 repository-code: https://github.com/rcapell/HYPEtools
 url: https://hypeweb.smhi.se/
 contact:
 - family-names: Capell
   given-names: Rene
-  email: rene.capell@smhi.se
+  email: hypetools@smhi.se
+  orcid: https://orcid.org/0000-0002-7784-1313
 references:
 - type: software
   title: 'R: A Language and Environment for Statistical Computing'
@@ -100,7 +103,7 @@ references:
   authors:
   - family-names: Wickham
     given-names: Hadley
-    email: hadley@rstudio.com
+    email: hadley@posit.co
     orcid: https://orcid.org/0000-0003-4757-117X
   - family-names: Chang
     given-names: Winston
@@ -109,7 +112,7 @@ references:
     given-names: Lionel
   - family-names: Pedersen
     given-names: Thomas Lin
-    email: thomas.pedersen@rstudio.com
+    email: thomas.pedersen@posit.co
     orcid: https://orcid.org/0000-0002-5147-4711
   - family-names: Takahashi
     given-names: Kohske
