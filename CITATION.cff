@@ -16,7 +16,7 @@ abstract: 'Work with model files (setup, input, output) from the hydrological ca
 authors:
 - family-names: Capell
   given-names: Rene
-  email: hypetools@smhi.se
+  email: hypetools.rene@smhi.se
   orcid: https://orcid.org/0000-0002-7784-1313
 - family-names: Brendel
   given-names: Conrad
@@ -28,7 +28,7 @@ url: https://hypeweb.smhi.se/
 contact:
 - family-names: Capell
   given-names: Rene
-  email: hypetools@smhi.se
+  email: hypetools.rene@smhi.se
   orcid: https://orcid.org/0000-0002-7784-1313
 references:
 - type: software
