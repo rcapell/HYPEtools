@@ -192,6 +192,9 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     
     # input argument checks
     stopifnot(is.data.frame(x), dim(x)[2] == 2, is.null(col.breaks) || is.numeric(col.breaks), ("sf" %in% class(map) | "SpatialPolygonsDataFrame" %in% class(map)))
+    
+    x <- as.data.frame(x) # Force x to data.frame format from e.g. tibble or data.table
+    
     if (map.type == "legacy") {
       if ("sf" %in% class(map)) {
         map <- sf::as_Spatial(map)

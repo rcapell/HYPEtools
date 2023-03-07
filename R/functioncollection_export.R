@@ -813,7 +813,7 @@ WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif 
   if (any(class(x$DATE) == "POSIXt")) {
     x$DATE <- format(x$DATE, format = dt.format)
   } else {
-    warning("First column in export data frame is not of class 'POSIXt', will be exported unchanged.")
+    warning('First column in export data frame is not of class "POSIXt" and will be exported unchanged without applying "dt.format" formatting. If reformatting is desired, then try converting column to class "POSIXt" using as.POSIXlt()')
   }
   
   # round to user-specified number of decimals and significant digits

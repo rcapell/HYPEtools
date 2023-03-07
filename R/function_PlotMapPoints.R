@@ -191,6 +191,9 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       ("sf" %in% class(bg) | "SpatialPolygonsDataFrame" %in% class(bg) | is.null(bg)),
       is.null(col.breaks) || is.numeric(col.breaks)
     )
+    
+    x <- as.data.frame(x) # Force x to data.frame format from e.g. tibble or data.table
+    
     if (map.type == "legacy") {
       if ("sf" %in% class(sites)) {
         sites <- sf::as_Spatial(sites)
