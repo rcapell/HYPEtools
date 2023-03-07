@@ -296,7 +296,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     }
     
     # replace the factor levels with color codes using the color ramp function assigned above
-    if (map.type %in% c("default,", "leaflet") & any(is.na(x[[2]]))) {
+    if (map.type %in% c("default", "leaflet") & any(is.na(x[[2]]))) {
       levels(x[, 3]) <- c(col.class, na.color) # Add extra color for NA in leaflet maps
     } else {
       levels(x[, 3]) <- col.class
