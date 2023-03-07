@@ -741,16 +741,23 @@ WritePmsf <- function(x, filename) {
 #' @param obsid Integer vector containing observation IDs/SUBIDs in same order as columns in \code{x}. To be exported as header 
 #' in the obs file. Must contain the same number of IDs as observation series in \code{x}. If \code{NULL}, an attribute \code{obsid} 
 #' in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.
-#' @param round,signif Integer, number of decimal places and number of significant digits to export. See \code{\link{round}}. Applied in 
-#' sequence. If \code{NULL} (default), the data to export is not touched.
+#' @param round,signif Integer, number of decimal places and number of significant digits to export, respectively. See \code{\link{round}} and \code{\link{signif}}. Applied in 
+#' sequence (\code{round} first and \code{signif} second). If \code{NULL} (default), the data to export is not touched.
 #' @param append Logical, if \code{TRUE}, then table will be joined to the data in existing file and the output will be sorted by DATE (Rows will be added for any missing dates). 
 #'  
 #' @details
 #' \code{WriteObs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
-#' headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
+#' Headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
 #' 
 #' Observation IDs are SUBIDs or IDs connected to SUBIDs with a 
 #' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
+#' 
+#' If the first column in \code{x} contains dates of class \code{POSIXt}, then they will be formatted according to \code{dt.format} before writing the output file.
+#' 
+#' If \code{round} is specified, then \code{WriteObs()} will use \code{\link{round}} to round the observation values to a specified number of decimal places.
+#' Alternatively, \code{signif} can be used to round the observation values to a specified number of significant digits using \code{\link{signif}}.
+#' Finally, if both \code{round} and \code{signif} are specified, then the observation values will be first rounded to the number of decimal places specified
+#' with \code{round} and then rounded to the number of significant digits specified with \code{signif}.
 #' 
 # #' The exported dataframe is formatted using \code{\link{format}} prior to exporting. This because HYPE does not accept 
 # #' scientific numbers in '1e+1' notation and because it allows to fine-tune the number of digits to export. Besides user-changeable 
