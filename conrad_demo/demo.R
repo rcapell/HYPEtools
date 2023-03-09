@@ -8,7 +8,7 @@ library(plotly)
 hype_gis <- sf::st_read("//winfs-proj/data/proj/Fouh/Global/SouthAfrica/Model/GIS/gumhype_subbasins.shp")
 
 # Read MapOutput
-mapCOUT <- ReadMapOutput("conrad_demo/mapCOUT.txt")
+mapCOUT <- ReadMapOutput("mapCOUT.txt")
 
 ### I can edit/run app from the server.R and ui.R files in ./conrad_demo/ folder!! Maybe need to set path to conrad_demo folder?
 
