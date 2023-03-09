@@ -4,14 +4,13 @@
 #'
 #' @return shiny application object
 #'
-#' @example \dontrun {launchApp()}
 #'
 #' @import shiny
 #'
 
 
 # wrapper for shiny::shinyApp()
-launchApp <- function(option.x, option.map, option.var.name) {
+launchApp <- function(option.x = NULL, option.map = NULL, option.var.name = NULL) {
   
   # Search for App Directory
   appDir <- system.file("shiny", package = "HYPEtools")

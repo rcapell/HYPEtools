@@ -9,12 +9,43 @@ option.x <- getShinyOption("option.x", default = NULL)
 option.map <- getShinyOption("option.map", default = NULL)
 option.var.name <- getShinyOption("option.var.name", default = NULL)
 
-# Define server logic required to draw a histogram
-shinyAppServer <- function(input, output) {
+# Define server logic
+shinyAppServer <- function(input, output, session) {
+  
+  # Get Available File Volumes
+  volumes = getVolumes()
+  volumes <- c(Home = fs::path_home(), getVolumes()())
+  
+  # Get Paths to Model Files
+  model_files <- reactive({
+    shinyFileChoose(input, "button_model", roots = volumes, session = session)
 
+    if (is.null(input$button_model)){
+      files <- data.frame("Files" = NA)
+    } else{
+      files <- data.frame("Files" = parseFilePaths(volumes, input$button_model)$datapath)
+    }
+  })
+  
+  output$path_mf <- DT::renderDataTable(model_files())
+  
+  # Get Paths to Results Files
+  results_files <- reactive({
+    shinyFileChoose(input, "button_result", roots = volumes, session = session)
+
+    if (is.null(input$button_result)){
+      files <- data.frame("Files" = NA)
+    } else{
+      files <- data.frame("Files" = parseFilePaths(volumes, input$button_result)$datapath)
+    }
+  })
+  
+  output$path_results <- DT::renderDataTable(results_files())
+  
   # Get Data
   data <- reactive({
-    option.x[, c(1, input$slider + 1)] # Subset to first column and then column from slider
+    req(!all(is.na(results_files()$Files)))
+    ReadMapOutput(results_files()$Files)[, c(1, input$slider + 1)]
   })
 
   # Render Data Table
