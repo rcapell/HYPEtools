@@ -51,6 +51,19 @@ Suggests:
     leaflet,
     leaflet.extras,
     mapview,
+<<<<<<< HEAD
     randomcoloR,
     webshot
 VignetteBuilder: knitr
+=======
+    ncdf4,
+    pbapply,
+    sf,
+    shiny
+License: LGPL-3
+LazyData: true
+URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
+BugReports: https://github.com/rcapell/HYPEtools/issues
+RoxygenNote: 7.1.1
+Encoding: UTF-8
+>>>>>>> 6f33300bea3a81bb3e8164ab7000355bfc5a20bc
