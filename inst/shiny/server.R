@@ -14,7 +14,7 @@ shinyAppServer <- function(input, output, session) {
   
   # Get Available File Volumes
   volumes = getVolumes()
-  volumes <- c(Home = fs::path_home(), getVolumes()())
+  volumes <- c("HYPEtools Demo Model" = system.file("demo_model", package = "HYPEtools"), Home = fs::path_home(), getVolumes()())
   
   # Get Paths to Model Files
   model_files <- reactive({
