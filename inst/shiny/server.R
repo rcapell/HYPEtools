@@ -5,7 +5,8 @@
 #'
 
 # Get values passed to app
-option.x <- getShinyOption("option.x", default = NULL)
+model.dir <- getShinyOption("model.dir", default = NULL)
+results.dir <- getShinyOption("results.dir", default = NULL)
 option.map <- getShinyOption("option.map", default = NULL)
 option.var.name <- getShinyOption("option.var.name", default = NULL)
 
@@ -13,33 +14,50 @@ option.var.name <- getShinyOption("option.var.name", default = NULL)
 shinyAppServer <- function(input, output, session) {
   
   # Get Available File Volumes
-  volumes = getVolumes()
   volumes <- c("HYPEtools Demo Model" = system.file("demo_model", package = "HYPEtools"), Home = fs::path_home(), getVolumes()())
+  
+  # Add Directories specified with shiny arguments
+  if(!is.null(results.dir)){
+    volumes <- c("Results Directory" = results.dir, volumes)
+  }
+  if(!is.null(model.dir)){
+    volumes <- c("Model Directory" = model.dir, volumes)
+  }
   
   # Get Paths to Model Files
   model_files <- reactive({
     shinyFileChoose(input, "button_model", roots = volumes, session = session)
 
-    if (is.null(input$button_model)){
-      files <- data.frame("Files" = NA)
+    # If button hasn't been used to select files, then return default value/provided with shiny arguments
+    if (!typeof(input$button_model) == "list"){
+      if(is.null(model.dir)){
+        files <- data.frame("Files" = character())
+      } else{
+        files <- data.frame("Files" = list.files(model.dir, full.names = T))
+      }
     } else{
       files <- data.frame("Files" = parseFilePaths(volumes, input$button_model)$datapath)
     }
   })
-  
-  output$path_mf <- DT::renderDataTable(model_files())
-  
+
   # Get Paths to Results Files
   results_files <- reactive({
-    shinyFileChoose(input, "button_result", roots = volumes, session = session)
+    shinyFileChoose(input, "button_results", roots = volumes, session = session)
 
-    if (is.null(input$button_result)){
-      files <- data.frame("Files" = NA)
+    # If button hasn't been used to select files, then return default value/provided with shiny arguments
+    if (!typeof(input$button_results) == "list"){
+      if(is.null(results.dir)){
+        files <- data.frame("Files" = character())
+      } else{
+        files <- data.frame("Files" = list.files(results.dir, full.names = T))
+      }
     } else{
-      files <- data.frame("Files" = parseFilePaths(volumes, input$button_result)$datapath)
+      files <- data.frame("Files" = parseFilePaths(volumes, input$button_results)$datapath)
     }
   })
   
+  # Create outputs
+  output$path_mf <- DT::renderDataTable(model_files())
   output$path_results <- DT::renderDataTable(results_files())
   
   # Get Data

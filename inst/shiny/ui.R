@@ -17,7 +17,7 @@ shinyAppUI <- fluidPage(
       dataTableOutput("path_mf")
     ),
     div(style = "display: inline-block; width = 50%",
-      shinyFilesButton("button_result", "Select Result Files" , title = "Please select files:", buttonType = "default", class = NULL, multiple = T),
+      shinyFilesButton("button_results", "Select Result Files" , title = "Please select files:", buttonType = "default", class = NULL, multiple = T),
       dataTableOutput("path_results")
     )
   ),

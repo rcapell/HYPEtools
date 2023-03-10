@@ -4,7 +4,12 @@
 \alias{launchApp}
 \title{launches the shinyAppDemo app}
 \usage{
-launchApp(option.x = NULL, option.map = NULL, option.var.name = NULL)
+launchApp(
+  model.dir = NULL,
+  results.dir = NULL,
+  option.map = NULL,
+  option.var.name = NULL
+)
 }
 \value{
 shiny application object
