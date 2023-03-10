@@ -13,6 +13,11 @@ option.var.name <- getShinyOption("option.var.name", default = NULL)
 # Define server logic
 shinyAppServer <- function(input, output, session) {
   
+  # _____________________________________________________________________________________________________________________________________
+  # File Management #####
+  # _____________________________________________________________________________________________________________________________________
+  
+  
   # Get Available File Volumes
   volumes <- c("HYPEtools Demo Model" = system.file("demo_model", package = "HYPEtools"), Home = fs::path_home(), getVolumes()())
   
@@ -60,38 +65,23 @@ shinyAppServer <- function(input, output, session) {
   output$path_mf <- DT::renderDataTable(model_files())
   output$path_results <- DT::renderDataTable(results_files())
   
+  # _____________________________________________________________________________________________________________________________________
+  # Process MapOutput Data #####
+  # _____________________________________________________________________________________________________________________________________
+  
   # Get Data
   data <- reactive({
     req(!all(is.na(results_files()$Files)))
     ReadMapOutput(results_files()$Files)[, c(1, input$slider + 1)]
   })
-
+  
   # Render Data Table
   output$table <- renderDataTable(data())
-
-  # Render Map
-  # It's probably better to switch to creating a map item and then using leafletProxy to update the map with the new data instead of regerenating the entire map
-  output$map <- renderLeaflet({
-    PlotMapOutput(
-      x = data(),
-      map = option.map,
-      var.name = option.var.name,
-      map.type = "leaflet",
-      map.subid.column = 2,
-      legend.pos = "bottomleft", # Specify legend position
-      legend.title = option.var.name, # Specify legend title
-      col.rev = FALSE, # Set to TRUE if you want to reverse the color palette
-      legend.signif = 2, # Specify number of significant digits to include in map legend
-      plot.searchbar = TRUE, # Add searchbar to search for and zoom to specific subbasins
-      plot.label = TRUE, # Display label with subbasin name and parameter values when hovering over subbasins in map
-      plot.scale = TRUE, # Add scalebar to map
-      weight = 0.15, # Set line weight of subbasin polygons
-      opacity = 0.75, # Set opacity of subbasin polygons boundaries
-      fillOpacity = 0.5, # Set opacity of subbasin polygons
-      na.color = "#808080"
-    ) # Specify color for NA values
-  })
-
+  
+  # _____________________________________________________________________________________________________________________________________
+  # Create Plotly BoxPlot #####
+  # _____________________________________________________________________________________________________________________________________
+  
   # Render Plot
   output$plot <- renderPlotly(
     ggplotly(
@@ -99,4 +89,95 @@ shinyAppServer <- function(input, output, session) {
         geom_boxplot(aes_string(y = colnames(data())[2]))
     )
   )
+  
+  # _____________________________________________________________________________________________________________________________________
+  # Create Leaflet Map #####
+  # _____________________________________________________________________________________________________________________________________
+
+  # Create reactive value to store basemap
+  leaf <- reactiveVal()
+
+  # Update basemap when button clicked - UPDATE THIS TO BE WHEN SELECTED MAPOUTPUT FILE CHANGES
+  observeEvent(input$button_results,{
+    leaf(PlotMapOutput(
+      x = data(),
+      map = option.map,
+      var.name = option.var.name,
+      map.type = "leaflet",
+      map.subid.column = 2,
+      basemap.only = TRUE
+    ) %>% suppressMessages())
+  })
+  
+  # Render Map
+  output$map <- renderLeaflet({leaf()})
+  
+  # Update map when data changes
+  observe({
+    
+    # Get Data
+    data <- PlotMapOutput(
+      x = data(),
+      map = option.map,
+      var.name = option.var.name,
+      map.type = "leaflet",
+      map.subid.column = 2,
+      legend.signif = 2, # Specify number of significant digits to include in map legend
+      na.color = "#808080", # Specify color for NA values
+      data.only = TRUE
+    ) %>%
+      suppressMessages()
+    
+    # Parse Data
+    x <- data$x
+    lcol <- data$lcol
+    l.label <- data$l.label
+    
+    # Get Bounds of Data
+    bounds <- x %>%
+      sf::st_bbox() %>%
+      as.character()
+
+    # Update Map
+    proxy <- leafletProxy("map", data = x) %>%
+      clearControls() %>%
+      addPolygons(
+        group = "Subbasins",
+        data = x,
+        color = "black",
+        weight = 0.15,
+        opacity = 0.75,
+        fillColor = ~color,
+        fillOpacity = 0.5,
+        label = ~label
+      ) %>%
+      
+      # Zoom to Layer
+      fitBounds(bounds[1], bounds[2], bounds[3], bounds[4]) %>%
+      
+      # Add overlay group
+      leaflet::addLayersControl(
+        baseGroups = c("Map", "Street", "Topo", "Satellite"),
+        overlayGroups = c("Subbasins"),
+        options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
+      ) %>%
+      
+      # Add search features
+      leaflet.extras::addSearchFeatures(
+        targetGroups = "Subbasins",
+        options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
+      ) %>%
+      
+      # Add legend
+      leaflet::addLegend(
+        group = "Subbasins",
+        position = "bottomleft",
+        title = option.var.name,
+        colors = lcol,
+        labels = l.label,
+        values = data()[[2]],
+        opacity = 1
+      )
+  })
+  
 }

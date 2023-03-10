@@ -12,6 +12,8 @@
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 #' HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.
 #' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps. Use \code{"legacy"} for deprecated static plots.
+#' @param basemap.only Logical, if \code{map.type} is \code{"leaflet"}, then should the output be only the basemap without any polygons? Typically set to \code{FALSE} unless using \code{PlotMapOutput} to create custom Leaflet maps. 
+#' @param data.only Logical, if \code{map.type} is \code{"leaflet"}, then should the output be a list containing the formatted data, legend colors, and legend labels? Typically set to \code{FALSE} unless using \code{PlotMapOutput} to create custom Leaflet maps. 
 #' @param plot.legend Logical, plot a legend along with the map.
 #' @param legend.pos Keyword string for legend position. For static plots, one of: \code{"none"}, \code{"left"}, \code{"right"},
 #' \code{"bottom"}, \code{"top"}, or a two-element numeric vector. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}. For legacy static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
@@ -132,7 +134,7 @@
 #' @export
 
 
-PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default",
+PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", basemap.only = FALSE, data.only = FALSE,
                           plot.legend = TRUE, legend.pos = "bottomright", legend.title = NULL,
                           legend.signif = 2, col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
@@ -775,99 +777,117 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
       # Create Leaflet Map
       } else if(map.type == "leaflet"){
         
-        message("Generating Map")
-        leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
-          leaflet::addTiles() %>%
-          leaflet::addLayersControl(
-            baseGroups = c("Map", "Street", "Topo", "Satellite"),
-            overlayGroups = c("Subbasins"),
-            options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
-          ) %>%
-          leaflet.extras::addResetMapButton()
+        # Create labels
+        x <- x %>%
+          mutate(label = paste0("SUBID: ", .[[1]], " --- ", ifelse(var.name == "", "Value", var.name), ": ", .[[2]]))
         
-        if (plot.label == TRUE) { # Create polygons with labels
+        if(data.only == TRUE){
+          return(list("x" = x, "lcol" = lcol, "l.label" = l.label))
+        } else{
+          message("Generating Map")
+          leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
+            leaflet::addTiles() %>%
+            leaflet.extras::addResetMapButton()
           
-          # Create labels
-          x <- x %>%
-            mutate(label = paste0("SUBID: ", .[[1]], " --- ", ifelse(var.name == "", "Value", var.name), ": ", .[[2]]))
+          # Create basemap only
+          if(basemap.only == TRUE){
+            leafmap <- leafmap %>%
+              leaflet::addLayersControl(
+                baseGroups = c("Map", "Street", "Topo", "Satellite"),
+                options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
+              )
+            
+            # Add map elements
+          } else{
+            
+            leafmap <- leafmap %>%
+              leaflet::addLayersControl(
+                baseGroups = c("Map", "Street", "Topo", "Satellite"),
+                overlayGroups = c("Subbasins"),
+                options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
+              )
+            
+            if (plot.label == TRUE) { # Create polygons with labels
+              
+              leafmap <- leafmap %>%
+                leaflet::addPolygons(
+                  group = "Subbasins",
+                  data = x,
+                  color = "black",
+                  weight = weight,
+                  opacity = opacity,
+                  fillColor = ~color,
+                  fillOpacity = fillOpacity,
+                  label = ~label
+                )
+            }
+            else { # Create polygons without labels
+              leafmap <- leafmap %>%
+                leaflet::addPolygons(
+                  group = "Subbasins",
+                  data = x,
+                  color = "black",
+                  weight = weight,
+                  opacity = opacity,
+                  fillColor = x$color,
+                  fillOpacity = fillOpacity
+                )
+            }
+            
+            # Add searchbar to map
+            if (plot.searchbar == TRUE) {
+              leafmap <- leafmap %>%
+                leaflet.extras::addSearchFeatures(
+                  targetGroups = "Subbasins",
+                  options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
+                )
+            }
+            
+            # Add legend to map
+            if (plot.legend == TRUE) {
+              leafmap <- leafmap %>%
+                leaflet::addLegend(
+                  group = "Subbasins",
+                  position = legend.pos,
+                  title = ifelse(legend.title == "", "Legend", legend.title),
+                  colors = lcol,
+                  labels = l.label,
+                  values = x[[2]],
+                  opacity = 1
+                )
+            }
+          }
           
+          # Add scalebar to map
+          if (plot.scale == TRUE) {
+            leafmap <- leafmap %>%
+              leaflet::addScaleBar(position = "bottomright")
+          }
+          
+          # Add various basemaps
           leafmap <- leafmap %>%
-            leaflet::addPolygons(
-              group = "Subbasins",
-              data = x,
-              color = "black",
-              weight = weight,
-              opacity = opacity,
-              fillColor = ~color,
-              fillOpacity = fillOpacity,
-              label = ~label
-            )
+            leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
+            leaflet::addTiles(group = "Street") %>%
+            leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
+            leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
+            leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
+          
+          # Save Image
+          if (!file == "") {
+            message("Saving Image")
+            mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
+          }
+          
+          # Save HTML
+          if (!html.name == "") {
+            message("Saving HTML")
+            temp <- file.path(tempdir(), basename(html.name))
+            htmlwidgets::saveWidget(leafmap, file = temp, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to temp directory so selfcontained=T works
+            file.rename(temp, html.name) # Rename/Move HTML file to desired file
+          }
+          
+          return(leafmap)
         }
-        else { # Create polygons without labels
-          leafmap <- leafmap %>%
-            leaflet::addPolygons(
-              group = "Subbasins",
-              data = x,
-              color = "black",
-              weight = weight,
-              opacity = opacity,
-              fillColor = x$color,
-              fillOpacity = fillOpacity
-            )
-        }
-        
-        # Add searchbar to map
-        if (plot.searchbar == TRUE) {
-          leafmap <- leafmap %>%
-            leaflet.extras::addSearchFeatures(
-              targetGroups = "Subbasins",
-              options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
-            )
-        }
-        
-        # Add scalebar to map
-        if (plot.scale == TRUE) {
-          leafmap <- leafmap %>%
-            leaflet::addScaleBar(position = "bottomright")
-        }
-        
-        # Add legend to map
-        if (plot.legend == TRUE) {
-          leafmap <- leafmap %>%
-            leaflet::addLegend(
-              group = "Subbasins",
-              position = legend.pos,
-              title = ifelse(legend.title == "", "Legend", legend.title),
-              colors = lcol,
-              labels = l.label,
-              values = x[[2]],
-              opacity = 1
-            )
-        }
-        
-        # Add various basemaps
-        leafmap <- leafmap %>%
-          leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
-          leaflet::addTiles(group = "Street") %>%
-          leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
-          leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
-          leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
-        
-        # Save Image
-        if (!file == "") {
-          message("Saving Image")
-          mapview::mapshot(leafmap, file = file, vwidth = vwidth, vheight = vheight, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
-        }
-        
-        # Save HTML
-        if (!html.name == "") {
-          message("Saving HTML")
-          temp <- file.path(tempdir(), basename(html.name))
-          htmlwidgets::saveWidget(leafmap, file = temp, title = sub(pattern = "(.*)\\..*$", replacement = "\\1", basename(html.name)), selfcontained = TRUE) # Save HTML file to temp directory so selfcontained=T works
-          file.rename(temp, html.name) # Rename/Move HTML file to desired file
-        }
-        
-        return(leafmap)
       }
     }
   }

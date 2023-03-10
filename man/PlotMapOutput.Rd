@@ -10,6 +10,8 @@ PlotMapOutput(
   map.subid.column = 1,
   var.name = "",
   map.type = "default",
+  basemap.only = FALSE,
+  data.only = FALSE,
   plot.legend = TRUE,
   legend.pos = "bottomright",
   legend.title = NULL,
@@ -60,6 +62,10 @@ files can take an excessive amount of time to render.}
 HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.}
 
 \item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps. Use \code{"legacy"} for deprecated static plots.}
+
+\item{basemap.only}{Logical, if \code{map.type} is \code{"leaflet"}, then should the output be only the basemap without any polygons? Typically set to \code{FALSE} unless using \code{PlotMapOutput} to create custom Leaflet maps.}
+
+\item{data.only}{Logical, if \code{map.type} is \code{"leaflet"}, then should the output be a list containing the formatted data, legend colors, and legend labels? Typically set to \code{FALSE} unless using \code{PlotMapOutput} to create custom Leaflet maps.}
 
 \item{plot.legend}{Logical, plot a legend along with the map.}
 
