@@ -72,7 +72,6 @@ shinyAppServer <- function(input, output, session) {
   output$result_file <- renderText(paste("Selected Result File:", results_files()$Files[result_file()]))
   
   output$path_mf <- DT::renderDataTable(gis(), options = list(scrollX = TRUE))
-  # output$path_results <- DT::renderDataTable(results_files(), options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Process GIS Data #####
@@ -85,7 +84,7 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Input to select SUBID column in GIS file
-  output$input_column <- renderUI({selectInput("column", "Select SUBID Column", choices = colnames(gis()), selected = colnames(gis())[map.subid.column])})
+  output$input_column <- renderUI({selectInput("column", "Select SUBID Column", choices = colnames(gis())[which(!colnames(gis()) %in% attr(gis(), "sf_column"))], selected = colnames(gis())[map.subid.column])})
   
   # Get column index of SUBID column in GIS file
   gis.subid <- reactive({which(colnames(gis()) == input$column)})
@@ -97,25 +96,22 @@ shinyAppServer <- function(input, output, session) {
   # Read Data
   data_in <- reactive({
     req(!all(is.na(results_files()$Files)), result_file())
-    ReadMapOutput(results_files()$Files[result_file()])
+    
+    # Safely read file and return NA if any error
+    read_data <- possibly(~ReadMapOutput(results_files()$Files[result_file()]), otherwise = NA)
+    read_data()
+    
   })
   
-  # Input to select time period column
-  output$input_slider <- renderUI({
+  # Update time period slider based on input data
+  observe({
     req(data_in())
-    
-    sliderInput("slider",
-                "Column:",
-                min = 2,
-                max = ncol(data_in()),
-                step = 1,
-                value = 2,
-                animate = TRUE)
+    updateSliderInput(session, "slider", max = ncol(data_in()))
   })
   
   # Data used for app
   data <- reactive({
-    req(input$slider)
+    req(!is.na(data_in()),input$slider)
     data_in()[, c(1, input$slider)]
   })
   
@@ -138,9 +134,6 @@ shinyAppServer <- function(input, output, session) {
   # Create Leaflet Map #####
   # _____________________________________________________________________________________________________________________________________
 
-  # Create reactive value to store basemap
-  leaf <- reactiveVal()
-  
   # Check that data can be joined
   leaf_check <- reactive({
     
@@ -153,21 +146,21 @@ shinyAppServer <- function(input, output, session) {
     return(!all(sf::st_is_empty(check[[attr(check, "sf_column")]])))
   })
 
-  # Update basemap when button clicked
-  observeEvent(c(gis(), gis.subid(), result_file()),{
-    
+  # Create basemap
+  leaf <- eventReactive(c(gis(), gis.subid(), result_file()),{
+
     # Require valid data
     req(leaf_check() == TRUE)
     
     # Create basemap
-    leaf(PlotMapOutput(
+    PlotMapOutput(
       x = data(),
       map = gis(),
       # var.name = var.name,
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       basemap.only = TRUE
-    ) %>% suppressMessages())
+    ) %>% suppressMessages()
   })
   
   # Render Map

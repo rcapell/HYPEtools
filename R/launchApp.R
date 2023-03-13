@@ -22,7 +22,6 @@ launchApp <- function(results.dir = NULL, map = NULL, map.subid.column = 1, ...)
   shinyOptions(results.dir = results.dir,
                map = map,
                map.subid.column = map.subid.column,
-               var.name = var.name,
                ...)
   
   # Run Shiny App

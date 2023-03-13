@@ -31,7 +31,7 @@ shinyAppUI <- fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      uiOutput("input_slider"),
+      sliderInput("slider", "Column:", min = 2, max = 2, step = 1, value = 2, animate = TRUE),
       hr(),
       dataTableOutput("table")
     ),
