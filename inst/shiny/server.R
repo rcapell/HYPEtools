@@ -156,7 +156,6 @@ shinyAppServer <- function(input, output, session) {
     PlotMapOutput(
       x = data(),
       map = gis(),
-      # var.name = var.name,
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       basemap.only = TRUE
@@ -176,7 +175,6 @@ shinyAppServer <- function(input, output, session) {
     data <- PlotMapOutput(
       x = data(),
       map = gis(),
-      # var.name = var.name,
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       legend.signif = 2, # Specify number of significant digits to include in map legend
