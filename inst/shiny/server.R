@@ -75,7 +75,16 @@ shinyAppServer <- function(input, output, session) {
     sf::st_read(gis_file()$Files[1])
   })
   
-  gis.subid <- reactive({2})
+  output$input_column <- renderUI({
+    req()
+    selectInput("column", "Select SUBID Column", choices = colnames(gis()))
+  })
+  
+  gis.subid <- reactive({
+    which(colnames(gis()) == input$column)
+  })
+  
+  output$test <- renderText(gis.subid())
   
   # _____________________________________________________________________________________________________________________________________
   # Process MapOutput Data #####
@@ -110,7 +119,7 @@ shinyAppServer <- function(input, output, session) {
   leaf <- reactiveVal()
 
   # Update basemap when button clicked - UPDATE THIS TO BE WHEN SELECTED MAPOUTPUT FILE CHANGES
-  observeEvent(input$button_results,{
+  observeEvent(c(gis(),results_files()),{
     leaf(PlotMapOutput(
       x = data(),
       map = gis(),
