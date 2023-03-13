@@ -5,10 +5,10 @@
 #'
 
 # Get values passed to app
-model.dir <- getShinyOption("model.dir", default = NULL)
 results.dir <- getShinyOption("results.dir", default = NULL)
-option.map <- getShinyOption("option.map", default = NULL)
-option.var.name <- getShinyOption("option.var.name", default = NULL)
+map <- getShinyOption("map", default = NULL)
+map.subid.column <- getShinyOption("map.subid.column", default = NULL)
+var.name <- getShinyOption("var.name", default = NULL)
 
 # Define server logic
 shinyAppServer <- function(input, output, session) {
@@ -25,23 +25,24 @@ shinyAppServer <- function(input, output, session) {
   if(!is.null(results.dir)){
     volumes <- c("Results Directory" = results.dir, volumes)
   }
-  if(!is.null(model.dir)){
-    volumes <- c("Model Directory" = model.dir, volumes)
+  if(!is.null(map)){
+    volumes <- c("GIS Directory" = dirname(map), volumes)
   }
   
-  # Get Paths to Model Files
-  model_files <- reactive({
-    shinyFileChoose(input, "button_model", roots = volumes, session = session)
+  # Get Path to GIS File
+  gis_file <- reactive({
+    shinyFileChoose(input, "button_gis", roots = volumes, session = session)
 
     # If button hasn't been used to select files, then return default value/provided with shiny arguments
-    if (!typeof(input$button_model) == "list"){
-      if(is.null(model.dir)){
+    if (!typeof(input$button_gis) == "list"){
+      if(is.null(map)){
         files <- data.frame("Files" = character())
       } else{
-        files <- data.frame("Files" = list.files(model.dir, full.names = T))
+        # files <- data.frame("Files" = list.files(map, full.names = T))
+        files <- data.frame("Files" = map)
       }
     } else{
-      files <- data.frame("Files" = parseFilePaths(volumes, input$button_model)$datapath)
+      files <- data.frame("Files" = parseFilePaths(volumes, input$button_gis)$datapath)
     }
   })
 
@@ -62,8 +63,19 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Create outputs
-  output$path_mf <- DT::renderDataTable(model_files())
+  output$path_mf <- DT::renderDataTable(gis())
   output$path_results <- DT::renderDataTable(results_files())
+  
+  # _____________________________________________________________________________________________________________________________________
+  # Process GIS Data #####
+  # _____________________________________________________________________________________________________________________________________
+  
+  gis <- reactive({
+    req(!all(is.na(gis_file()$Files)))
+    sf::st_read(gis_file()$Files[1])
+  })
+  
+  gis.subid <- reactive({2})
   
   # _____________________________________________________________________________________________________________________________________
   # Process MapOutput Data #####
@@ -101,10 +113,10 @@ shinyAppServer <- function(input, output, session) {
   observeEvent(input$button_results,{
     leaf(PlotMapOutput(
       x = data(),
-      map = option.map,
-      var.name = option.var.name,
+      map = gis(),
+      var.name = var.name,
       map.type = "leaflet",
-      map.subid.column = 2,
+      map.subid.column = gis.subid(),
       basemap.only = TRUE
     ) %>% suppressMessages())
   })
@@ -118,10 +130,10 @@ shinyAppServer <- function(input, output, session) {
     # Get Data
     data <- PlotMapOutput(
       x = data(),
-      map = option.map,
-      var.name = option.var.name,
+      map = gis(),
+      var.name = var.name,
       map.type = "leaflet",
-      map.subid.column = 2,
+      map.subid.column = gis.subid(),
       legend.signif = 2, # Specify number of significant digits to include in map legend
       na.color = "#808080", # Specify color for NA values
       data.only = TRUE
@@ -172,7 +184,7 @@ shinyAppServer <- function(input, output, session) {
       leaflet::addLegend(
         group = "Subbasins",
         position = "bottomleft",
-        title = option.var.name,
+        title = var.name,
         colors = lcol,
         labels = l.label,
         values = data()[[2]],

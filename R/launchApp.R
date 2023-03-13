@@ -10,7 +10,7 @@
 
 
 # wrapper for shiny::shinyApp()
-launchApp <- function(model.dir = NULL, results.dir = NULL, option.map = NULL, option.var.name = NULL) {
+launchApp <- function(results.dir = NULL, map = NULL, map.subid.column = 1, var.name = "", ...) {
   
   # Search for App Directory
   appDir <- system.file("shiny", package = "HYPEtools")
@@ -19,10 +19,11 @@ launchApp <- function(model.dir = NULL, results.dir = NULL, option.map = NULL, o
   }
   
   # Pass options to Shiny
-  shinyOptions(model.dir = model.dir,
-               results.dir = results.dir,
-               option.map = option.map,
-               option.var.name = option.var.name)
+  shinyOptions(results.dir = results.dir,
+               map = map,
+               map.subid.column = map.subid.column,
+               var.name = var.name,
+               ...)
   
   # Run Shiny App
   runApp(appDir)

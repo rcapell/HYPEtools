@@ -13,7 +13,7 @@ shinyAppUI <- fluidPage(
   # Create button to select directories for model files and results files
   div(
     div(style = "display: inline-block; width = 50%; padding-right: 50px",
-      shinyFilesButton("button_model", "Select Model Files" , title = "Please select files:", buttonType = "default", class = NULL, multiple = T),
+      shinyFilesButton("button_gis", "Select GIS File" , title = "Please select files:", buttonType = "default", class = NULL, multiple = F, filetype = c(".shp", ".gpkg")),
       dataTableOutput("path_mf")
     ),
     div(style = "display: inline-block; width = 50%",
