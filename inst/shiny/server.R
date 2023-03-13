@@ -62,8 +62,11 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Create outputs
-  output$path_mf <- DT::renderDataTable(gis())
-  output$path_results <- DT::renderDataTable(results_files())
+  output$gis_file <- renderText(paste("Selected GIS File:", gis_file()$Files[1]))
+  output$result_file <- renderText(paste("Selected Result File:", results_files()$Files[1]))
+  
+  output$path_mf <- DT::renderDataTable(gis(), options = list(scrollX = TRUE))
+  output$path_results <- DT::renderDataTable(results_files(), options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Process GIS Data #####
@@ -82,7 +85,7 @@ shinyAppServer <- function(input, output, session) {
     which(colnames(gis()) == input$column)
   })
   
-  output$test <- renderText(gis.subid())
+  output$test <- renderText(paste("TEST:", gis.subid()))
   
   # _____________________________________________________________________________________________________________________________________
   # Process MapOutput Data #####
