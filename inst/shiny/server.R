@@ -8,7 +8,6 @@
 results.dir <- getShinyOption("results.dir", default = NULL)
 map <- getShinyOption("map", default = NULL)
 map.subid.column <- getShinyOption("map.subid.column", default = NULL)
-var.name <- getShinyOption("var.name", default = NULL)
 
 # Define server logic
 shinyAppServer <- function(input, output, session) {
@@ -16,7 +15,6 @@ shinyAppServer <- function(input, output, session) {
   # _____________________________________________________________________________________________________________________________________
   # File Management #####
   # _____________________________________________________________________________________________________________________________________
-  
   
   # Get Available File Volumes
   volumes <- c("HYPEtools Demo Model" = system.file("demo_model", package = "HYPEtools"), Home = fs::path_home(), getVolumes()())
@@ -29,7 +27,7 @@ shinyAppServer <- function(input, output, session) {
     volumes <- c("GIS Directory" = dirname(map), volumes)
   }
   
-  # Get Path to GIS File
+  # Get Path to GIS Files
   gis_file <- reactive({
     shinyFileChoose(input, "button_gis", roots = volumes, session = session)
 
@@ -61,40 +59,64 @@ shinyAppServer <- function(input, output, session) {
     }
   })
   
-  # Create outputs
+  # Input to select result file
+  output$input_result <- renderUI({selectInput("result", "Select Result File To Display", choices = basename(results_files()$Files))})
+  
+  # Get selected result file
+  result_file <- reactive({
+    which(basename(results_files()$Files) == input$result)
+  })
+  
+  # Create outputs for selected file
   output$gis_file <- renderText(paste("Selected GIS File:", gis_file()$Files[1]))
-  output$result_file <- renderText(paste("Selected Result File:", results_files()$Files[1]))
+  output$result_file <- renderText(paste("Selected Result File:", results_files()$Files[result_file()]))
   
   output$path_mf <- DT::renderDataTable(gis(), options = list(scrollX = TRUE))
-  output$path_results <- DT::renderDataTable(results_files(), options = list(scrollX = TRUE))
+  # output$path_results <- DT::renderDataTable(results_files(), options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Process GIS Data #####
   # _____________________________________________________________________________________________________________________________________
   
+  # Read GIS Data
   gis <- reactive({
     req(!all(is.na(gis_file()$Files)))
     sf::st_read(gis_file()$Files[1])
   })
   
-  output$input_column <- renderUI({
-    selectInput("column", "Select SUBID Column", choices = colnames(gis()), selected = colnames(gis())[map.subid.column])
-  })
+  # Input to select SUBID column in GIS file
+  output$input_column <- renderUI({selectInput("column", "Select SUBID Column", choices = colnames(gis()), selected = colnames(gis())[map.subid.column])})
   
-  gis.subid <- reactive({
-    which(colnames(gis()) == input$column)
-  })
-  
-  output$test <- renderText(paste("TEST:", gis.subid()))
+  # Get column index of SUBID column in GIS file
+  gis.subid <- reactive({which(colnames(gis()) == input$column)})
   
   # _____________________________________________________________________________________________________________________________________
   # Process MapOutput Data #####
   # _____________________________________________________________________________________________________________________________________
   
-  # Get Data
+  # Read Data
+  data_in <- reactive({
+    req(!all(is.na(results_files()$Files)), result_file())
+    ReadMapOutput(results_files()$Files[result_file()])
+  })
+  
+  # Input to select time period column
+  output$input_slider <- renderUI({
+    req(data_in())
+    
+    sliderInput("slider",
+                "Column:",
+                min = 2,
+                max = ncol(data_in()),
+                step = 1,
+                value = 2,
+                animate = TRUE)
+  })
+  
+  # Data used for app
   data <- reactive({
-    req(!all(is.na(results_files()$Files)))
-    ReadMapOutput(results_files()$Files)[, c(1, input$slider + 1)]
+    req(input$slider)
+    data_in()[, c(1, input$slider)]
   })
   
   # Render Data Table
@@ -118,13 +140,30 @@ shinyAppServer <- function(input, output, session) {
 
   # Create reactive value to store basemap
   leaf <- reactiveVal()
+  
+  # Check that data can be joined
+  leaf_check <- reactive({
+    
+    # Requirements
+    req(gis(), gis.subid(), data())
 
-  # Update basemap when button clicked - UPDATE THIS TO BE WHEN SELECTED MAPOUTPUT FILE CHANGES
-  observeEvent(c(gis(),results_files()),{
+    # Test join data
+    check <- right_join(gis()[, gis.subid()]%>%mutate(across(1,~as.character(.x))), data()%>%mutate(across(1,~as.character(.x))), by = setNames(nm = colnames(gis())[gis.subid()], colnames(data())[1]))
+    
+    return(!all(sf::st_is_empty(check[[attr(check, "sf_column")]])))
+  })
+
+  # Update basemap when button clicked
+  observeEvent(c(gis(), gis.subid(), result_file()),{
+    
+    # Require valid data
+    req(leaf_check() == TRUE)
+    
+    # Create basemap
     leaf(PlotMapOutput(
       x = data(),
       map = gis(),
-      var.name = var.name,
+      # var.name = var.name,
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       basemap.only = TRUE
@@ -137,11 +176,14 @@ shinyAppServer <- function(input, output, session) {
   # Update map when data changes
   observe({
     
+    # Require valid data
+    req(leaf_check() == TRUE)
+    
     # Get Data
     data <- PlotMapOutput(
       x = data(),
       map = gis(),
-      var.name = var.name,
+      # var.name = var.name,
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       legend.signif = 2, # Specify number of significant digits to include in map legend
@@ -194,7 +236,7 @@ shinyAppServer <- function(input, output, session) {
       leaflet::addLegend(
         group = "Subbasins",
         position = "bottomleft",
-        title = var.name,
+        title = "TEST",
         colors = lcol,
         labels = l.label,
         values = data()[[2]],

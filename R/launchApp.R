@@ -10,7 +10,7 @@
 
 
 # wrapper for shiny::shinyApp()
-launchApp <- function(results.dir = NULL, map = NULL, map.subid.column = 1, var.name = "", ...) {
+launchApp <- function(results.dir = NULL, map = NULL, map.subid.column = 1, ...) {
   
   # Search for App Directory
   appDir <- system.file("shiny", package = "HYPEtools")

@@ -14,13 +14,12 @@ PlotMapOutput()
 HYPEtools::launchApp()
 
 # Launch Shiny App with default paths provided in arguments - for now, need to click on result file button in order to get map to load
-HYPEtools::launchApp(#results.dir = "C:/GIT_SVN/4_HYPEtools_Shiny_App/conrad_demo/demo_result",
+HYPEtools::launchApp(results.dir = "//winfs-proj/data/proj/Fouh/Global/SouthAfrica/Model/ref_runs/2023-02-09_v1.0.6_GFD2b",
                      map = "//winfs-proj/data/proj/Fouh/Global/SouthAfrica/Model/GIS/gumhype_subbasins.shp",
-                     # map.subid.column = 2,
-                     var.name = "COUT")
+                     map.subid.column = 2)
 
-# Require that map and data can be joined before allowing app to generate graphs
-
+# fix map reset button
+# set title based on filename instead of var.name
 
 
 

@@ -8,8 +8,7 @@
 shinyAppUI <- fluidPage(
 
   # Application title
-  titlePanel("Ugly Shiny App"),
-  textOutput("test"),
+  titlePanel("Ugly Shiny App - VisualizeMapOutput"),
   hr(),
   
   # Create button to select directories for model files and results files
@@ -24,7 +23,7 @@ shinyAppUI <- fluidPage(
       div(style = "width: 50%; padding-left: 25px",
           shinyFilesButton("button_results", "Select Result Files" , title = "Please select files:", buttonType = "default", class = NULL, multiple = T),
           textOutput("result_file"),
-          dataTableOutput("path_results")
+          uiOutput("input_result")
       )
     )
   ),
@@ -32,11 +31,7 @@ shinyAppUI <- fluidPage(
   # Sidebar with a slider input for number of bins
   sidebarLayout(
     sidebarPanel(
-      sliderInput("slider",
-                  "Period:",
-                  min = 1,
-                  max = 312,
-                  value = 1),
+      uiOutput("input_slider"),
       hr(),
       dataTableOutput("table")
     ),
