@@ -38,7 +38,6 @@ shinyAppServer <- function(input, output, session) {
       if(is.null(map)){
         files <- data.frame("Files" = character())
       } else{
-        # files <- data.frame("Files" = list.files(map, full.names = T))
         files <- data.frame("Files" = map)
       }
     } else{
@@ -76,8 +75,7 @@ shinyAppServer <- function(input, output, session) {
   })
   
   output$input_column <- renderUI({
-    req()
-    selectInput("column", "Select SUBID Column", choices = colnames(gis()))
+    selectInput("column", "Select SUBID Column", choices = colnames(gis()), selected = colnames(gis())[map.subid.column])
   })
   
   gis.subid <- reactive({
