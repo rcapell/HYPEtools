@@ -148,34 +148,37 @@ shinyAppServer <- function(input, output, session) {
     req(!all(is.na(results_files()$Files)), result_file())
     
     # Safely read file and return NA if any error
-    read_data <- possibly(~ReadMapOutput(results_files()$Files[result_file()], col.prefix = NULL), otherwise = NA)
+    read_data <- possibly(~ReadMapOutput(results_files()$Files[result_file()], col.prefix = "X"), otherwise = NA)
     read_data()
-    
   })
   
   # Update time period slider based on input data
   observe({
     req(data_in())
-    updateSliderTextInput(session, "slider", choices = colnames(data_in())[2:ncol(data_in())])
+    if(ncol(data_in()) > 2){ # If more than 1 time period
+      updateSliderTextInput(session, "slider", choices = colnames(data_in()[2:ncol(data_in())]))
+    } else{ # If only one time period
+      updateSliderTextInput(session, "slider", choices = rep(colnames(data_in()[2:ncol(data_in())]), 2))
+    }
   })
   
   # Check if time period slider has loaded
   slider_loaded <- reactiveVal(FALSE)
   
   observe({
-    if(!input$slider == "loading"){
+    if(!input$slider == "NA"){
       slider_loaded(TRUE)
     }
   })
 
   # Data used for app
   data <- reactive({
-    req(!is.na(data_in()), !input$slider == "loading")
+    req(!is.na(data_in()), !input$slider == "NA", input$slider %in% colnames(data_in()))
     data_in()[, c(1, which(colnames(data_in()) == input$slider))]
   })
   
   # Render Data Table
-  output$table <- renderDataTable(data(), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  output$table <- renderDataTable(data() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
@@ -186,7 +189,7 @@ shinyAppServer <- function(input, output, session) {
     ggplotly(
       ggplot(data = data()) +
         geom_boxplot(aes_(y = as.name(input$slider))) +
-        xlab(colnames(data())[2]) +
+        xlab(gsub("^X", "", colnames(data())[2])) +
         ylab(gsub("map", "", tools::file_path_sans_ext(input$result)))+
         theme(axis.ticks.x = element_blank(),
               axis.text.x = element_blank(),

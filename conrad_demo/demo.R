@@ -23,6 +23,7 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      map.subid.column = 2)
 
 ### Extra Features:
+# add option for log scale to plotly
 # Use data table filters to select subbasins that are shown in map??
 # button to export mapoutput image file
 
