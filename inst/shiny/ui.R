@@ -6,8 +6,12 @@ shinyAppUI <- fluidPage(
   # Head
   tags$head(
     tags$title("VisualizeMapOutput"),
+    
     tags$style(HTML("h5 {font-weight: bold; margin-bottom:0px}", # Set style for H5
-                    "hr {margin-bottom:0px}" # Set style for hr
+                    "hr {margin-bottom:0px}", # Set style for hr
+                    ".help-button {color:black;}", # Text Color for help buttons on tabs
+                    ".help-button:hover {color:gray;}", #Hover Text Color for help buttons on tabs
+                    ".help-button:focus {color:black;outline:0;}" #Changes help buttons back to black after clicking on them
     ))
   ),
   
@@ -17,23 +21,23 @@ shinyAppUI <- fluidPage(
         h2(tags$b("VisualizeMapOutput")),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Select GIS File:"))),div(style="display:inline-block",actionButton("help_gis",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        shinyFilesButton("button_gis", "Select GIS File" , title = "Please Select File:", buttonType = "default", class = NULL, multiple = F, filetype = c(".shp", ".gpkg")),
+        shinyFilesButton("button_gis", "Select GIS File" , title = "Please Select File:", buttonType = "default", class = NULL, multiple = F),
         h5("Selected GIS File:"),
         div(style = "max-width: 23em; padding-bottom: 10px; overflow-wrap: break-word; font-size: 0.8em", textOutput("gis_file")),
         uiOutput("input_column"),
         div(style = "display:inline-block",
-            h5("Join Status:"),
-            textOutput("join_status")
+            div(style = "display: inline-block", h5("Join Status:")),
+            div(style = "display:inline-block", uiOutput("join_status"))
             ),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Select MapOutput Files:"))),div(style="display:inline-block",actionButton("help_result",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        shinyFilesButton("button_results", "Select MapOutput Files" , title = "Please Select Files:", buttonType = "default", class = NULL, multiple = T, filetype = c(".txt", ".csv")),
+        shinyFilesButton("button_results", "Select MapOutput Files" , title = "Please Select Files:", buttonType = "default", class = NULL, multiple = T),
         h5("Selected Result Directory:"),
         div(style = "max-width: 23em; padding-bottom: 10px; overflow-wrap: break-word; font-size: 0.8em", textOutput("result_file")),
         uiOutput("input_result"),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Select Time Period:"))),div(style="display:inline-block",actionButton("help_slider",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        sliderInput("slider", "", min = 2, max = 2, step = 1, value = 2, animate = TRUE)
+        sliderInput("slider", "", min = 2, max = 2, step = 1, value = 2, animate = animationOptions(interval = 750, loop = TRUE))
     ),
     div(style="display:table-cell; width: calc(100vw - 27em); min-width:400px;", # Set Width to 100% of View Width -27em
         div(style = "display:flex; margin-top: 20px;align-items:stretch",

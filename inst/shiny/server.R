@@ -12,6 +12,57 @@ map.subid.column <- getShinyOption("map.subid.column", default = NULL)
 shinyAppServer <- function(input, output, session) {
   
   # _____________________________________________________________________________________________________________________________________
+  # Help Buttons #####
+  # _____________________________________________________________________________________________________________________________________
+  
+  # Help message for selecting GIS File
+  observeEvent(input$help_gis, {
+    shinyalert(
+      title = "Select GIS File:",
+      type = "info",
+      text = 'Use the button to select a GIS file (.shp or .gpkg) containing the polygon geometry of the model subbasins. Then, use the dropdown menu to select the name of the column containing the subbasin SUBIDs.
+      
+      If "Join Status: FAIL" is displayed, then the MapOutput file could not be joined to the GIS data using the selected SUBID column, and a different column should be selected.'
+    )
+  })
+  
+  # Help message for selecting mapoutput files
+  observeEvent(input$help_result, {
+    shinyalert(
+      title = "Select MapOutput Files:",
+      type = "info",
+      text = 'Use the button to select the HYPE MapOutput files (.txt or .csv) that should be imported. Multiple files may be selected at one time. Use the dropdown menu to select the name of file that should be visualized.'
+    )
+  })
+  
+  # Help message for selecting time period
+  observeEvent(input$help_slider, {
+    shinyalert(
+      title = "Select Time Period:",
+      type = "info",
+      text = 'Use the slider to select the time period in the MapOutput file that should be visualized. The "play" button can be used to animate the visualizations by stepping through the time periods automatically.'
+    )
+  })
+  
+  # Help message for GIS data table
+  observeEvent(input$help_gis_df, {
+    shinyalert(
+      title = "GIS Data:",
+      type = "info",
+      text = 'This table displays the attribute table for the selected GIS file. Columns can be sorted and filtered.'
+    )
+  })
+  
+  # Help message for MapOutput data table
+  observeEvent(input$help_data_df, {
+    shinyalert(
+      title = "MapOutput Data:",
+      type = "info",
+      text = 'This table displays the data for the selected MapOutput file. Columns can be sorted and filtered.'
+    )
+  })
+  
+  # _____________________________________________________________________________________________________________________________________
   # File Management #####
   # _____________________________________________________________________________________________________________________________________
   
@@ -115,7 +166,7 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Render Data Table
-  output$table <- renderDataTable(data(), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  output$table <- renderDataTable(data() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
@@ -126,7 +177,7 @@ shinyAppServer <- function(input, output, session) {
     ggplotly(
       ggplot(data = data()) +
         geom_boxplot(aes_string(y = colnames(data())[2])) +
-        xlab(colnames(data())[2]) +
+        xlab(gsub("^X", "", colnames(data())[2])) +
         ylab(gsub("map", "", tools::file_path_sans_ext(input$result)))+
         theme(axis.ticks.x = element_blank(),
               axis.text.x = element_blank(),
@@ -151,7 +202,14 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Output for leaf_check
-  output$join_status <- renderText(leaf_check())
+  output$join_status <- renderUI({
+    
+    if(leaf_check() == TRUE){
+      div(style = "display: inline-block; font-weight: bold; color: limegreen", "PASS")
+    } else{
+      div(style = "display: inline-block; font-weight: bold; color: red","FAIL")
+    }
+  })
 
   # Create basemap
   leaf <- eventReactive(c(gis(), gis.subid(), result_file()),{
@@ -176,7 +234,9 @@ shinyAppServer <- function(input, output, session) {
       legend.signif = 2, # Specify number of significant digits to include in map legend
       na.color = "#808080", # Specify color for NA values
       shiny.data = TRUE
-    ) %>% suppressMessages()
+    ) %>% 
+      suppressMessages() %>%
+      suppressWarnings()
     
     # Parse Data
     leaf <- data$basemap
