@@ -148,7 +148,7 @@ shinyAppServer <- function(input, output, session) {
     req(!all(is.na(results_files()$Files)), result_file())
     
     # Safely read file and return NA if any error
-    read_data <- possibly(~ReadMapOutput(results_files()$Files[result_file()]), otherwise = NA)
+    read_data <- possibly(~ReadMapOutput(results_files()$Files[result_file()], col.prefix = NULL), otherwise = NA)
     read_data()
     
   })
@@ -175,7 +175,7 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Render Data Table
-  output$table <- renderDataTable(data() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  output$table <- renderDataTable(data(), rownames = F, filter = "top", options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
@@ -185,8 +185,8 @@ shinyAppServer <- function(input, output, session) {
   output$plot <- renderPlotly(
     ggplotly(
       ggplot(data = data()) +
-        geom_boxplot(aes_string(y = colnames(data())[2])) +
-        xlab(gsub("^X", "", colnames(data())[2])) +
+        geom_boxplot(aes_(y = as.name(input$slider))) +
+        xlab(colnames(data())[2]) +
         ylab(gsub("map", "", tools::file_path_sans_ext(input$result)))+
         theme(axis.ticks.x = element_blank(),
               axis.text.x = element_blank(),
@@ -224,7 +224,7 @@ shinyAppServer <- function(input, output, session) {
   leaf <- eventReactive(c(gis(), gis.subid(), result_file(), slider_loaded()),{
 
     # Require valid data
-    req(leaf_check() == TRUE, loaded() == TRUE)
+    req(leaf_check() == TRUE, slider_loaded() == TRUE)
     
     # Parse full mapoutput file
     mapdata <- data_in() %>%
@@ -278,6 +278,7 @@ shinyAppServer <- function(input, output, session) {
 
     # Update Map
     proxy <- leafletProxy("map", data = x) %>%
+      clearGroup("Subbasins") %>%
       addPolygons(
         group = "Subbasins",
         data = x,

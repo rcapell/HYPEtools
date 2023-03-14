@@ -22,9 +22,6 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      map = "//winfs-proj/data/proj/Fouh/Global/SouthAfrica/Model/GIS/gumhype_subbasins.shp",
                      map.subid.column = 2)
 
-### To Do:
-# Get slider to show dates instead of numbers
-
 ### Extra Features:
 # Use data table filters to select subbasins that are shown in map??
 # button to export mapoutput image file

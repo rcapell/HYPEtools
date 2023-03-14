@@ -780,6 +780,7 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return a \code{\link{HypeSingleVar}} array.
 #' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
 #' a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.
+#' @param col.prefix String, prefix added to mapoutput column names. Default is \code{X}. Set to \code{NULL} to ignore. 
 #' 
 #' @details
 #' \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
@@ -811,7 +812,7 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' @importFrom stats na.fail
 #' @export
 
-ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c("df", "dt", "hsv"), warn.nan = FALSE) {
+ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c("df", "dt", "hsv"), warn.nan = FALSE, col.prefix = "X") {
   
   # input argument checks
   type <- match.arg(type)
@@ -837,7 +838,12 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
   xd <- strsplit(xattr[2], split = ",")[[1]][-1]
   
   # create column names
-  names(x) <- c("SUBID", paste0("X", gsub(pattern = "-", replacement = ".", x = xd)))
+  if(!is.null(col.prefix)){
+    names(x) <- c("SUBID", paste0("X", gsub(pattern = "-", replacement = ".", x = xd)))
+  } else{
+    names(x) <- c("SUBID", gsub(pattern = "-", replacement = ".", x = xd))
+  }
+  
   
   ## update with new attributes to hold POSIX dates and timestep keyword, create from column names
   
