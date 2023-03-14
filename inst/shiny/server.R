@@ -2,7 +2,6 @@
 #'
 #' @param input provided by shiny
 #' @param output provided by shiny
-#'
 
 # Get values passed to app
 results.dir <- getShinyOption("results.dir", default = NULL)
@@ -152,14 +151,29 @@ shinyAppServer <- function(input, output, session) {
     # Require valid data
     req(leaf_check() == TRUE)
     
-    # Create basemap
-    PlotMapOutput(
-      x = data(),
+    # Parse full mapoutput file
+    mapdata <- data_in() %>%
+      pivot_longer(cols = 2:ncol(.)) %>%
+      select(1, "value")
+    
+    # Create basemap and get data
+    data <- PlotMapOutput(
+      x = mapdata,
       map = gis(),
       map.type = "leaflet",
       map.subid.column = gis.subid(),
-      basemap.only = TRUE
+      plot.searchbar = TRUE,
+      legend.pos = "bottomleft",
+      legend.title = tools::file_path_sans_ext(input$result),
+      legend.signif = 2, # Specify number of significant digits to include in map legend
+      na.color = "#808080", # Specify color for NA values
+      shiny.data = TRUE
     ) %>% suppressMessages()
+    
+    # Parse Data
+    leaf <- data$basemap
+    
+    return(leaf)
   })
   
   # Render Map
@@ -177,25 +191,15 @@ shinyAppServer <- function(input, output, session) {
       map = gis(),
       map.type = "leaflet",
       map.subid.column = gis.subid(),
-      legend.signif = 2, # Specify number of significant digits to include in map legend
-      na.color = "#808080", # Specify color for NA values
-      data.only = TRUE
+      shiny.data = TRUE
     ) %>%
       suppressMessages()
-    
+
     # Parse Data
     x <- data$x
-    lcol <- data$lcol
-    l.label <- data$l.label
-    
-    # Get Bounds of Data
-    bounds <- x %>%
-      sf::st_bbox() %>%
-      as.character()
 
     # Update Map
     proxy <- leafletProxy("map", data = x) %>%
-      clearControls() %>%
       addPolygons(
         group = "Subbasins",
         data = x,
@@ -205,33 +209,6 @@ shinyAppServer <- function(input, output, session) {
         fillColor = ~color,
         fillOpacity = 0.5,
         label = ~label
-      ) %>%
-      
-      # Zoom to Layer
-      fitBounds(bounds[1], bounds[2], bounds[3], bounds[4]) %>%
-      
-      # Add overlay group
-      leaflet::addLayersControl(
-        baseGroups = c("Map", "Street", "Topo", "Satellite"),
-        overlayGroups = c("Subbasins"),
-        options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
-      ) %>%
-      
-      # Add search features
-      leaflet.extras::addSearchFeatures(
-        targetGroups = "Subbasins",
-        options = leaflet.extras::searchFeaturesOptions(zoom = 10, hideMarkerOnCollapse = TRUE)
-      ) %>%
-      
-      # Add legend
-      leaflet::addLegend(
-        group = "Subbasins",
-        position = "bottomleft",
-        title = "TEST",
-        colors = lcol,
-        labels = l.label,
-        values = data()[[2]],
-        opacity = 1
       )
   })
   

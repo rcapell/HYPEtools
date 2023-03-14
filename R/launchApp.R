@@ -6,8 +6,8 @@
 #'
 #'
 #' @import shiny
-#'
-
+#' @import shinyFiles
+#' @importFrom graphics hist
 
 # wrapper for shiny::shinyApp()
 launchApp <- function(results.dir = NULL, map = NULL, map.subid.column = 1, ...) {
