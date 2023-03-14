@@ -156,13 +156,22 @@ shinyAppServer <- function(input, output, session) {
   # Update time period slider based on input data
   observe({
     req(data_in())
-    updateSliderInput(session, "slider", max = ncol(data_in()))
+    updateSliderTextInput(session, "slider", choices = colnames(data_in())[2:ncol(data_in())])
   })
   
+  # Check if time period slider has loaded
+  slider_loaded <- reactiveVal(FALSE)
+  
+  observe({
+    if(!input$slider == "loading"){
+      slider_loaded(TRUE)
+    }
+  })
+
   # Data used for app
   data <- reactive({
-    req(!is.na(data_in()),input$slider)
-    data_in()[, c(1, input$slider)]
+    req(!is.na(data_in()), !input$slider == "loading")
+    data_in()[, c(1, which(colnames(data_in()) == input$slider))]
   })
   
   # Render Data Table
@@ -212,10 +221,10 @@ shinyAppServer <- function(input, output, session) {
   })
 
   # Create basemap
-  leaf <- eventReactive(c(gis(), gis.subid(), result_file()),{
+  leaf <- eventReactive(c(gis(), gis.subid(), result_file(), slider_loaded()),{
 
     # Require valid data
-    req(leaf_check() == TRUE)
+    req(leaf_check() == TRUE, loaded() == TRUE)
     
     # Parse full mapoutput file
     mapdata <- data_in() %>%

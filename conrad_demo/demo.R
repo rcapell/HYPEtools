@@ -10,6 +10,7 @@ library(tidyr)
 library(dplyr)
 library(sf)
 library(shinyalert)
+library(shinyWidgets)
 
 # Build HYPEtools!
 
