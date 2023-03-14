@@ -23,8 +23,7 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      map.subid.column = 2)
 
 ### Extra Features:
-# add option for log scale to plotly: https://stackoverflow.com/questions/60551262/interactively-change-axis-scale-linear-log-in-plotly-image-using-r
-# reduce font size for plotly axes
+# get selected log/linear to continue to show when selecting new time period?
 # Use data table filters to select subbasins that are shown in map??
 # button to export mapoutput image file
 
