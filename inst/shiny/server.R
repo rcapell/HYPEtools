@@ -51,7 +51,7 @@ shinyAppServer <- function(input, output, session) {
       if(is.null(results.dir)){
         files <- data.frame("Files" = character())
       } else{
-        files <- data.frame("Files" = list.files(results.dir, full.names = T))
+        files <- data.frame("Files" = list.files(results.dir, full.names = T, pattern = ".*\\.(txt|csv)$"))
       }
     } else{
       files <- data.frame("Files" = parseFilePaths(volumes, input$button_results)$datapath)
@@ -67,10 +67,10 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Create outputs for selected file
-  output$gis_file <- renderText(paste("Selected GIS File:", gis_file()$Files[1]))
-  output$result_file <- renderText(paste("Selected Result File:", results_files()$Files[result_file()]))
-  
-  output$path_mf <- DT::renderDataTable(gis(), options = list(scrollX = TRUE))
+  output$gis_file <- renderText(gis_file()$Files[1])
+  output$result_file <- renderText(dirname(results_files()$Files[result_file()]))
+  output$gis <- DT::renderDataTable(gis() %>% st_drop_geometry(), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  # output$gis <- DT::renderDataTable(datatable(gis() %>% st_drop_geometry(), rownames = F, options = list(scrollX = TRUE)) %>% formatRound(unlist(lapply(gis() %>% st_drop_geometry, is.numeric), use.names = FALSE), 3)) # Use this to round numeric columns, but then this affects columns like SUBID 
   
   # _____________________________________________________________________________________________________________________________________
   # Process GIS Data #####
@@ -115,7 +115,7 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Render Data Table
-  output$table <- renderDataTable(data())
+  output$table <- renderDataTable(data(), rownames = F, filter = "top", options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
@@ -125,7 +125,12 @@ shinyAppServer <- function(input, output, session) {
   output$plot <- renderPlotly(
     ggplotly(
       ggplot(data = data()) +
-        geom_boxplot(aes_string(y = colnames(data())[2]))
+        geom_boxplot(aes_string(y = colnames(data())[2])) +
+        xlab(colnames(data())[2]) +
+        ylab(gsub("map", "", tools::file_path_sans_ext(input$result)))+
+        theme(axis.ticks.x = element_blank(),
+              axis.text.x = element_blank(),
+              axis.title = element_text(face = "bold"))
     )
   )
   
@@ -144,6 +149,9 @@ shinyAppServer <- function(input, output, session) {
     
     return(!all(sf::st_is_empty(check[[attr(check, "sf_column")]])))
   })
+  
+  # Output for leaf_check
+  output$join_status <- renderText(leaf_check())
 
   # Create basemap
   leaf <- eventReactive(c(gis(), gis.subid(), result_file()),{
@@ -164,7 +172,7 @@ shinyAppServer <- function(input, output, session) {
       map.subid.column = gis.subid(),
       plot.searchbar = TRUE,
       legend.pos = "bottomleft",
-      legend.title = tools::file_path_sans_ext(input$result),
+      var.name = gsub("map", "", tools::file_path_sans_ext(input$result)),
       legend.signif = 2, # Specify number of significant digits to include in map legend
       na.color = "#808080", # Specify color for NA values
       shiny.data = TRUE
@@ -191,6 +199,7 @@ shinyAppServer <- function(input, output, session) {
       map = gis(),
       map.type = "leaflet",
       map.subid.column = gis.subid(),
+      var.name = gsub("map", "", tools::file_path_sans_ext(input$result)),
       shiny.data = TRUE
     ) %>%
       suppressMessages()
