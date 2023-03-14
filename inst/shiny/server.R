@@ -147,7 +147,7 @@ shinyAppServer <- function(input, output, session) {
   data_in <- reactive({
     req(!all(is.na(results_files()$Files)), result_file())
     
-    # Safely read file and return NA if any error
+    # Safely read file and return NA if any error - leave col.prefix because without the prefix the SliderText Input changes the choices for e.g. "1988.10" to "1988.1" and then it doesn't work
     read_data <- possibly(~ReadMapOutput(results_files()$Files[result_file()], col.prefix = "X"), otherwise = NA)
     read_data()
   })
@@ -185,17 +185,41 @@ shinyAppServer <- function(input, output, session) {
   # _____________________________________________________________________________________________________________________________________
   
   # Render Plot
-  output$plot <- renderPlotly(
+  output$plot <- renderPlotly({
     ggplotly(
       ggplot(data = data()) +
         geom_boxplot(aes_(y = as.name(input$slider))) +
-        xlab(gsub("^X", "", colnames(data())[2])) +
-        ylab(gsub("map", "", tools::file_path_sans_ext(input$result)))+
         theme(axis.ticks.x = element_blank(),
-              axis.text.x = element_blank(),
-              axis.title = element_text(face = "bold"))
-    )
-  )
+              axis.text.x = element_blank())
+    ) %>%
+      layout(
+        xaxis = list(title = paste0("<b>", gsub("^X", "", colnames(data())[2]), "</b>"), showticklabels = FALSE),
+        yaxis = list(title = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>")),
+        updatemenus = list(list(
+          active = 0,
+          buttons = list(
+            list(
+              label = "linear",
+              method = "update",
+              args = list(list(visible = c(T, F)), list(yaxis = list(title = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), type = "linear")))
+            ),
+            list(
+              label = "log",
+              method = "update",
+              args = list(list(visible = c(F, T)), list(yaxis = list(title = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), type = "log")))
+            )
+          )
+        ))
+      )
+
+    # Create Plot
+    # plot_ly(test) %>%
+    #   add_trace(y = ~X1988.01, type = "box", name = "linear") %>% # Trace for linear y-axis
+    #   add_trace(y = ~X1988.01, type = "box", name = "log", visible = F) %>% # Trace for log y-axis
+    #   layout(xaxis = list(title = paste0("<b>", gsub("^X", "", colnames(data())[2]), "</b>"), showticklabels = FALSE),
+    #          yaxis = list(title = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>")))
+    
+  })
   
   # _____________________________________________________________________________________________________________________________________
   # Create Leaflet Map #####

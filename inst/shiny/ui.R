@@ -9,6 +9,8 @@ shinyAppUI <- fluidPage(
     
     tags$style(HTML("h5 {font-weight: bold; margin-bottom:0px}", # Set style for H5
                     "hr {margin-bottom:0px}", # Set style for hr
+                    ".selectize-control {margin-bottom: 0px}",
+                    ".form-group {margin-bottom: 0px}",
                     ".help-button {color:black;}", # Text Color for help buttons on tabs
                     ".help-button:hover {color:gray;}", #Hover Text Color for help buttons on tabs
                     ".help-button:focus {color:black;outline:0;}" #Changes help buttons back to black after clicking on them
