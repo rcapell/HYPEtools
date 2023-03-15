@@ -191,16 +191,19 @@ shinyAppServer <- function(input, output, session) {
   # Data used for app
   data <- reactive({
     req(!is.na(data_in()), !input$slider == "NA", input$slider %in% colnames(data_in()))
-    data_in()[, c(1, which(colnames(data_in()) == input$slider))]
+    
+    # Get SUBIDs
+    gis_data <- gis_filtered() %>% st_drop_geometry()
+    gis_filtered_subids <- unlist(gis_data[,gis.subid()])
+    
+    # Filter Data
+    filtered_data <- data_in()[, c(1, which(colnames(data_in()) == input$slider))]
+    filtered_data <- filtered_data[which(filtered_data[,1] %in% gis_filtered_subids),]
+    
   })
   
   # Render Data Table
   output$table <- renderDataTable(data() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
-  
-  # mapoutput data filtered by data tables
-  data_filtered <- reactive({
-    data()[input$table_rows_all,]
-  })
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
