@@ -24,6 +24,7 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
 
 ### Extra Features:
 # get selected log/linear to continue to show when selecting new time period?
+
 # Use data table filters to select subbasins that are shown in map??
 # button to export mapoutput image file
 

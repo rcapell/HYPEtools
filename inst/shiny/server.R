@@ -184,9 +184,9 @@ shinyAppServer <- function(input, output, session) {
   # Create Plotly BoxPlot #####
   # _____________________________________________________________________________________________________________________________________
   
-  # Render Plot
-  output$plot <- renderPlotly({
-    
+  # Generate Boxplot
+  boxplot <- eventReactive(gis.subid(),{
+
     # Create plot first with ggplot
     ggplotly(
       ggplot(data = data()) +
@@ -194,9 +194,9 @@ shinyAppServer <- function(input, output, session) {
         theme(axis.ticks.x = element_blank(),
               axis.text.x = element_blank())
     ) %>%
-      
+
       # Update plot with plotly
-      add_trace(y = data()[[input$slider]], type = "box", name = "log", visible = F) %>% # Trace for log y-axis
+      add_trace(y = data()[[input$slider]], type = "box", name = "log", visible = F, hoverinfo = "y") %>% # Trace for log y-axis
       layout(
         xaxis = list(title = list(text = paste0("<b>", gsub("^X", "", colnames(data())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
         yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear"),
@@ -217,6 +217,17 @@ shinyAppServer <- function(input, output, session) {
         ))
       )
   })
+  
+  # Update Boxplot
+  observe({
+    plotlyProxy("plot", session) %>%
+      plotlyProxyInvoke("deleteTraces", list(as.integer(1))) %>%
+      # plotlyProxyInvoke("addTraces", list(x = NA, y = data()[[input$slider]], type = "box", name = "y", hoverinfo = "y")) %>%
+      plotlyProxyInvoke("addTraces", list(x = NA, y = data()[[input$slider]], type = "box", name = "log", hoverinfo = "y"))
+  })
+  
+  # Render Plot
+  output$plot <- renderPlotly({boxplot()})
   
   # _____________________________________________________________________________________________________________________________________
   # Create Leaflet Map #####
