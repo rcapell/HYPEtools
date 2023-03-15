@@ -184,9 +184,21 @@ shinyAppServer <- function(input, output, session) {
   # Create Plotly BoxPlot #####
   # _____________________________________________________________________________________________________________________________________
   
+  # Reactive value to generate boxplot
+  boxplot_load <- reactiveVal(0)
+  
+  # Update reactive value when new data is available
+  observeEvent(c(data_in(), slider_loaded()),{
+    req(slider_loaded() == T)
+    i = boxplot_load() + 1
+    boxplot_load(i)
+  })
+  
   # Generate Boxplot
-  boxplot <- eventReactive(gis.subid(),{
-
+  boxplot <- eventReactive(boxplot_load(),{
+    
+    req(boxplot_load() > 0)
+    
     # Create plot first with ggplot
     ggplotly(
       ggplot(data = data()) +
@@ -196,7 +208,7 @@ shinyAppServer <- function(input, output, session) {
     ) %>%
 
       # Update plot with plotly
-      add_trace(y = data()[[input$slider]], type = "box", name = "log", visible = F, hoverinfo = "y") %>% # Trace for log y-axis
+      add_trace(y = data()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
       layout(
         xaxis = list(title = list(text = paste0("<b>", gsub("^X", "", colnames(data())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
         yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear"),
@@ -221,9 +233,9 @@ shinyAppServer <- function(input, output, session) {
   # Update Boxplot
   observe({
     plotlyProxy("plot", session) %>%
-      plotlyProxyInvoke("deleteTraces", list(as.integer(1))) %>%
-      # plotlyProxyInvoke("addTraces", list(x = NA, y = data()[[input$slider]], type = "box", name = "y", hoverinfo = "y")) %>%
-      plotlyProxyInvoke("addTraces", list(x = NA, y = data()[[input$slider]], type = "box", name = "log", hoverinfo = "y"))
+      plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
+      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
+      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "log", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
   })
   
   # Render Plot

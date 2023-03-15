@@ -23,7 +23,8 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      map.subid.column = 2)
 
 ### Extra Features:
-# get selected log/linear to continue to show when selecting new time period?
+# get plot to autoscale
+# fix plotly creating double plot - is it problem with x-axis or with creating visible/nonvisible traces?
 
 # Use data table filters to select subbasins that are shown in map??
 # button to export mapoutput image file
