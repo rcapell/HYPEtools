@@ -387,18 +387,6 @@ shinyAppServer <- function(input, output, session) {
       setView(lng = input$map_center$lng, lat = input$map_center$lat, zoom = input$map_zoom)
   })
   
-  # # Get Output Path
-  # test <- reactive({
-  #   shinyFileChoose(input, "button_save", roots = volumes, session = session)
-  #   
-  #   parseFilePaths(volumes, input$button_save)$datapath
-  #   
-  # })
-  # 
-  # output$check <- renderText(test())
-  
-  # output$test <- renderText(test())
-  
   # Get Paths to output directory
   output_dir <- reactive({
   
@@ -416,6 +404,7 @@ shinyAppServer <- function(input, output, session) {
     }
   })
   
+  # Text output for output directory
   output$output_dir <- renderText(output_dir())
   
   # Save map when button clicked

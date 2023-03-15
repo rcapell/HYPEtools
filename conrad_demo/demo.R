@@ -25,14 +25,14 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      )
 
 ### Bugs:
-# change search box style??
+# Add progress popup while saving -- get from puffin
+# adjust height of leaflet
+# set searchbox border color to match
 
 ### Extra Features:
 # Use data table filters to select subbasins that are shown in map??
 
-
 ### Final Steps:
 # Add input argument checks to launchApp() script... not in shiny section!!
 # Setup HYPEtools to do "suggests" for the dependencies and setup input check/warning for packages
-# Test if passing extra arguments to function will work (e.g. var.name) <-- maybe remove the ...'s
 # Merge my fork into main hypetools
