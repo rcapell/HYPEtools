@@ -24,11 +24,6 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      output.dir = "C:/Users/a002416/Desktop/"
                      )
 
-### Bugs:
-# Add progress popup while saving -- get from puffin
-# adjust height of leaflet
-# set searchbox border color to match
-
 ### Extra Features:
 # Use data table filters to select subbasins that are shown in map??
 

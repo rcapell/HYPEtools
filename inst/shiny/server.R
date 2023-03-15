@@ -224,12 +224,12 @@ shinyAppServer <- function(input, output, session) {
           active = 0,
           buttons = list(
             list(
-              label = "linear",
+              label = "Linear",
               method = "update",
               args = list(list(visible = c(T, F)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear")))
             ),
             list(
-              label = "log",
+              label = "Log",
               method = "update",
               args = list(list(visible = c(F, T)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "log")))
             )
@@ -424,7 +424,10 @@ shinyAppServer <- function(input, output, session) {
       file <- file.path(output_dir(), paste0(tools::file_path_sans_ext(input$result), "_", gsub("^X", "", input$slider), ".png"))
       
       # Save Image
-      mapview::mapshot(leaf_save(), file = file, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
+      withProgress(value = 0, message = "Saving Map",{
+        mapview::mapshot(leaf_save(), file = file, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
+      })
+      incProgress(1)
       
       # Confirm success
       if(file.exists(file)){

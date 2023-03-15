@@ -14,7 +14,7 @@ shinyAppUI <- fluidPage(
                     ".help-button {color:black;}", # Text Color for help buttons on tabs
                     ".help-button:hover {color:gray;}", #Hover Text Color for help buttons on tabs
                     ".help-button:focus {color:black;outline:0;}", #Changes help buttons back to black after clicking on them
-                    ".leaflet-control-search .search-button {border: 2px solid rgba(0,0,0,0.2) !important; width:35px !important; height:35px !important; background-size: 20px !important; background-position-x: 5px !important; background-position-y: 6px !important;}",
+                    ".leaflet-control-search .search-button {border: 2px solid rgba(0,0,0,0.2) !important; width:34px !important; height:34px !important; background-size: 20px !important; background-position-x: 5px !important; background-position-y: 6px !important;}",
                     ".leaflet-container .leaflet-control-search {box-shadow: none !important}"
     ))
   ),
@@ -50,7 +50,7 @@ shinyAppUI <- fluidPage(
     ),
     div(style="display:table-cell; width: calc(100vw - 27em); min-width:400px;", # Set Width to 100% of View Width -27em
         div(style = "display:flex; margin-top: 20px;align-items:stretch",
-            div(style = "width:70%; min-width:300px", leafletOutput("map", height = "80vh")),
+            div(style = "width:70%; min-width:300px", leafletOutput("map", height = "800px")),
             div(style = "width: 30%; min-width:100px", plotlyOutput("plot", height = "100%"))
         )
     )
