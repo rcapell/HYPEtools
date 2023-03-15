@@ -130,8 +130,6 @@ shinyAppServer <- function(input, output, session) {
   # Create outputs for selected file
   output$gis_file <- renderText(gis_file()$Files[1])
   output$result_file <- renderText(dirname(results_files()$Files[result_file()]))
-  output$gis <- DT::renderDataTable(gis() %>% st_drop_geometry(), rownames = F, filter = "top", options = list(scrollX = TRUE))
-  # output$gis <- DT::renderDataTable(datatable(gis() %>% st_drop_geometry(), rownames = F, options = list(scrollX = TRUE)) %>% formatRound(unlist(lapply(gis() %>% st_drop_geometry, is.numeric), use.names = FALSE), 3)) # Use this to round numeric columns, but then this affects columns like SUBID 
   
   # _____________________________________________________________________________________________________________________________________
   # Process GIS Data #####
@@ -148,6 +146,15 @@ shinyAppServer <- function(input, output, session) {
   
   # Get column index of SUBID column in GIS file
   gis.subid <- reactive({which(colnames(gis()) == input$column)})
+  
+  # Output table for GIS
+  output$gis <- DT::renderDataTable(gis() %>% st_drop_geometry(), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  # output$gis <- DT::renderDataTable(datatable(gis() %>% st_drop_geometry(), rownames = F, options = list(scrollX = TRUE)) %>% formatRound(unlist(lapply(gis() %>% st_drop_geometry, is.numeric), use.names = FALSE), 3)) # Use this to round numeric columns, but then this affects columns like SUBID
+  
+  # GIS Data filtered by data table
+  gis_filtered <- reactive({
+    gis()[input$gis_rows_all,]
+  })
   
   # _____________________________________________________________________________________________________________________________________
   # Process MapOutput Data #####
@@ -189,6 +196,11 @@ shinyAppServer <- function(input, output, session) {
   
   # Render Data Table
   output$table <- renderDataTable(data() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  
+  # mapoutput data filtered by data tables
+  data_filtered <- reactive({
+    data()[input$table_rows_all,]
+  })
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
@@ -258,10 +270,10 @@ shinyAppServer <- function(input, output, session) {
   leaf_check <- reactive({
     
     # Requirements
-    req(gis(), gis.subid(), data())
+    req(gis_filtered(), gis.subid(), data())
 
     # Test join data
-    check <- right_join(gis()[, gis.subid()]%>%mutate(across(1,~as.character(.x))), data()%>%mutate(across(1,~as.character(.x))), by = setNames(nm = colnames(gis())[gis.subid()], colnames(data())[1]))
+    check <- right_join(gis_filtered()[, gis.subid()]%>%mutate(across(1,~as.character(.x))), data()%>%mutate(across(1,~as.character(.x))), by = setNames(nm = colnames(gis_filtered())[gis.subid()], colnames(data())[1]))
     
     return(!all(sf::st_is_empty(check[[attr(check, "sf_column")]])))
   })
@@ -277,7 +289,7 @@ shinyAppServer <- function(input, output, session) {
   })
 
   # Create basemap
-  leaf <- eventReactive(c(gis(), gis.subid(), result_file(), slider_loaded()),{
+  leaf <- eventReactive(c(gis_filtered(), gis.subid(), result_file(), slider_loaded()),{
 
     # Require valid data
     req(leaf_check() == TRUE, slider_loaded() == TRUE)
@@ -290,7 +302,7 @@ shinyAppServer <- function(input, output, session) {
     # Create basemap and get data
     data <- PlotMapOutput(
       x = mapdata,
-      map = gis(),
+      map = gis_filtered(),
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       plot.searchbar = TRUE,
@@ -328,7 +340,7 @@ shinyAppServer <- function(input, output, session) {
     # Get Data
     data <- PlotMapOutput(
       x = data(),
-      map = gis(),
+      map = gis_filtered(),
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       var.name = gsub("map", "", tools::file_path_sans_ext(input$result)),
@@ -360,7 +372,7 @@ shinyAppServer <- function(input, output, session) {
     # Get Data
     data <- PlotMapOutput(
       x = data(),
-      map = gis(),
+      map = gis_filtered(),
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       var.name = gsub("map", "", tools::file_path_sans_ext(input$result)),
