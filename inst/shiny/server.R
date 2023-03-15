@@ -190,16 +190,8 @@ shinyAppServer <- function(input, output, session) {
 
   # Data used for app
   data <- reactive({
-    req(!is.na(data_in()), !input$slider == "NA", input$slider %in% colnames(data_in()))
-    
-    # Get SUBIDs
-    gis_data <- gis_filtered() %>% st_drop_geometry()
-    gis_filtered_subids <- unlist(gis_data[,gis.subid()])
-    
-    # Filter Data
+    req(!is.na(data_in()), slider_loaded() == T, input$slider %in% colnames(data_in()))
     filtered_data <- data_in()[, c(1, which(colnames(data_in()) == input$slider))]
-    filtered_data <- filtered_data[which(filtered_data[,1] %in% gis_filtered_subids),]
-    
   })
   
   # Render Data Table
@@ -223,7 +215,7 @@ shinyAppServer <- function(input, output, session) {
   boxplot <- eventReactive(boxplot_load(),{
     
     req(boxplot_load() > 0)
-    
+
     # Create plot first with ggplot
     ggplotly(
       ggplot(data = data()) +
