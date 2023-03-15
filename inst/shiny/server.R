@@ -210,8 +210,8 @@ shinyAppServer <- function(input, output, session) {
       # Update plot with plotly
       add_trace(y = data()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
       layout(
-        xaxis = list(title = list(text = paste0("<b>", gsub("^X", "", colnames(data())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
-        yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear"),
+        xaxis = list(autorange = TRUE, title = list(text = paste0("<b>", gsub("^X", "", colnames(data())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
+        yaxis = list(autorange = TRUE, tickmode = "auto", title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear"),
         updatemenus = list(list(
           active = 0,
           buttons = list(
@@ -234,8 +234,8 @@ shinyAppServer <- function(input, output, session) {
   observe({
     plotlyProxy("plot", session) %>%
       plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
-      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "x+y")) %>%
-      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "x+y"))
+      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
+      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
   })
   
   # Render Plot

@@ -23,8 +23,6 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      map.subid.column = 2)
 
 ### Extra Features:
-# get plot to autoscale
-
 # Use data table filters to select subbasins that are shown in map??
 # button to export mapoutput image file
 
