@@ -234,8 +234,8 @@ shinyAppServer <- function(input, output, session) {
   observe({
     plotlyProxy("plot", session) %>%
       plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
-      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
-      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "log", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
+      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "x+y")) %>%
+      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "x+y"))
   })
   
   # Render Plot

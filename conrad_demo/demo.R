@@ -24,7 +24,6 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
 
 ### Extra Features:
 # get plot to autoscale
-# fix plotly creating double plot - is it problem with x-axis or with creating visible/nonvisible traces?
 
 # Use data table filters to select subbasins that are shown in map??
 # button to export mapoutput image file
