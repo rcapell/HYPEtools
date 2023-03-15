@@ -39,7 +39,12 @@ shinyAppUI <- fluidPage(
         uiOutput("input_result"),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Select Time Period:"))),div(style="display:inline-block",actionButton("help_slider",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        sliderTextInput("slider", label = NULL, choices = "NA", animate = animationOptions(interval = 750, loop = TRUE))
+        sliderTextInput("slider", label = NULL, choices = "NA", animate = animationOptions(interval = 750, loop = TRUE)),
+        hr(),
+        div(div(style="display:inline-block",h4(tags$b("Options:"))),div(style="display:inline-block",actionButton("help_options",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
+        shinyDirButton("button_save", "Select Output Directory", title = "Save"),
+        h5("Selected Output Directory:"),
+        div(style = "max-width: 23em; padding-bottom: 10px; overflow-wrap: break-word; font-size: 0.8em", textOutput("output_dir"))
     ),
     div(style="display:table-cell; width: calc(100vw - 27em); min-width:400px;", # Set Width to 100% of View Width -27em
         div(style = "display:flex; margin-top: 20px;align-items:stretch",

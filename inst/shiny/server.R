@@ -7,6 +7,7 @@
 results.dir <- getShinyOption("results.dir", default = NULL)
 map <- getShinyOption("map", default = NULL)
 map.subid.column <- getShinyOption("map.subid.column", default = NULL)
+output.dir <- getShinyOption("output.dir", default = NULL)
 
 # Define server logic
 shinyAppServer <- function(input, output, session) {
@@ -41,6 +42,15 @@ shinyAppServer <- function(input, output, session) {
       title = "Select Time Period:",
       type = "info",
       text = 'Use the slider to select the time period in the MapOutput file that should be visualized. The "play" button can be used to animate the visualizations by stepping through the time periods automatically.'
+    )
+  })
+  
+  # Help message for MapOutput data table
+  observeEvent(input$help_options, {
+    shinyalert(
+      title = "Options:",
+      type = "info",
+      text = 'Use the button to select the output directory for saved map images.'
     )
   })
   
@@ -294,8 +304,15 @@ shinyAppServer <- function(input, output, session) {
       suppressMessages() %>%
       suppressWarnings()
     
-    # Parse Data
-    leaf <- data$basemap
+    # Parse Data and add button to save map
+    leaf <- data$basemap %>%
+      addEasyButton(easyButton(states = list(
+        easyButtonState(
+          stateName = "onestate",
+          icon = "fa-camera", title = "Save Map",
+          onClick = JS(" function(btn, map) {Shiny.onInputChange('leaf_save_button', 'save'); Shiny.onInputChange('leaf_save_button', 'reset')}") # The "reset" state is so that the input resets after it's clicked so you can click the button again
+        )
+      )))
     
     return(leaf)
   })
@@ -336,6 +353,107 @@ shinyAppServer <- function(input, output, session) {
         fillOpacity = 0.5,
         label = ~label
       )
+  })
+
+  # Emulated map for downloading
+  leaf_save <- reactive({
+    
+    # Get Data
+    data <- PlotMapOutput(
+      x = data(),
+      map = gis(),
+      map.type = "leaflet",
+      map.subid.column = gis.subid(),
+      var.name = gsub("map", "", tools::file_path_sans_ext(input$result)),
+      shiny.data = TRUE
+    ) %>%
+      suppressMessages()
+    
+    # Parse Data
+    x <- data$x
+    
+    # Recreate map
+    map <- leaf() %>%
+      clearGroup("Subbasins") %>%
+      addPolygons(
+        group = "Subbasins",
+        data = x,
+        color = "black",
+        weight = 0.15,
+        opacity = 0.75,
+        fillColor = ~color,
+        fillOpacity = 0.5,
+        label = ~label
+      ) %>%
+      setView(lng = input$map_center$lng, lat = input$map_center$lat, zoom = input$map_zoom)
+  })
+  
+  # # Get Output Path
+  # test <- reactive({
+  #   shinyFileChoose(input, "button_save", roots = volumes, session = session)
+  #   
+  #   parseFilePaths(volumes, input$button_save)$datapath
+  #   
+  # })
+  # 
+  # output$check <- renderText(test())
+  
+  # output$test <- renderText(test())
+  
+  # Get Paths to output directory
+  output_dir <- reactive({
+  
+    shinyDirChoose(input, "button_save", roots = volumes, session = session)
+
+    # If button hasn't been used to select files, then return default value/provided with shiny arguments
+    if (!typeof(input$button_save) == "list"){
+      if(is.null(output.dir)){
+        dir <- NULL
+      } else{
+        dir <- output.dir
+      }
+    } else{
+      dir <- parseDirPath(volumes, input$button_save)
+    }
+  })
+  
+  output$output_dir <- renderText(output_dir())
+  
+  # Save map when button clicked
+  observeEvent(input$leaf_save_button,{
+    
+    # Send warning if no output directory selected
+    if(is.null(output_dir())){
+      shinyalert(
+        title = "Save Map:",
+        type = "error",
+        text = 'No output directory specified. Please click the "Select Output Directory" button and specify a directory.'
+      )
+    
+    # Save map
+    } else{
+      # Get filename
+      file <- file.path(output_dir(), paste0(tools::file_path_sans_ext(input$result), "_", gsub("^X", "", input$slider), ".png"))
+      
+      # Save Image
+      mapview::mapshot(leaf_save(), file = file, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
+      
+      # Confirm success
+      if(file.exists(file)){
+        shinyalert(
+          title = "Save Map:",
+          type = "success",
+          text = paste0('File saved successfully as: \n', file),
+          time = 5000
+        )
+      } else{
+        shinyalert(
+          title = "Save Map:",
+          type = "error",
+          text = paste0('File not saved to: \n', file)
+        )
+      }
+    }
   })
   
 }

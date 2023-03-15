@@ -10,7 +10,7 @@
 #' @importFrom graphics hist
 
 # wrapper for shiny::shinyApp()
-launchApp <- function(results.dir = NULL, map = NULL, map.subid.column = 1, ...) {
+launchApp <- function(results.dir = NULL, map = NULL, map.subid.column = 1, output.dir = NULL, ...) {
   
   # Search for App Directory
   appDir <- system.file("shiny", package = "HYPEtools")
@@ -22,6 +22,7 @@ launchApp <- function(results.dir = NULL, map = NULL, map.subid.column = 1, ...)
   shinyOptions(results.dir = results.dir,
                map = map,
                map.subid.column = map.subid.column,
+               output.dir = output.dir,
                ...)
   
   # Run Shiny App

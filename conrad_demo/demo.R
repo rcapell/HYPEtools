@@ -20,11 +20,13 @@ HYPEtools::launchApp()
 # Launch Shiny App with default paths provided in arguments for GuM-HYPE
 HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      map = "//winfs-proj/data/proj/Fouh/Global/SouthAfrica/Model/GIS/gumhype_subbasins.shp",
-                     map.subid.column = 2)
+                     map.subid.column = 2
+                     # output.dir = "C:/Users/a002416/Desktop/"
+                     )
 
 ### Extra Features:
 # Use data table filters to select subbasins that are shown in map??
-# button to export mapoutput image file
+
 
 ### Final Steps:
 # Add input argument checks to launchApp() script... not in shiny section!!
