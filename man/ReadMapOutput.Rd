@@ -9,7 +9,8 @@ ReadMapOutput(
   dt.format = NULL,
   hype.var = NULL,
   type = c("df", "dt", "hsv"),
-  warn.nan = FALSE
+  warn.nan = FALSE,
+  col.prefix = "X"
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return 
 
 \item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found,
 a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.}
+
+\item{col.prefix}{String, prefix added to mapoutput column names. Default is \code{X}. Set to \code{NULL} to ignore.}
 }
 \value{
 \code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array.
