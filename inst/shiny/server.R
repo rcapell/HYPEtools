@@ -70,7 +70,7 @@ shinyAppServer <- function(input, output, session) {
     shinyalert(
       title = "MapOutput Data:",
       type = "info",
-      text = 'This table displays the data for the selected MapOutput file. Columns can be sorted and filtered. Filters applied to this table do not affect the other outputs. However, if the MapOutput data has been successfully joined to the GIS data (Join Status: CHECK or PASS), then filters applied to the "GIS Data" table will also filter the data displayed in this table.'
+      text = 'This table displays the data for the selected MapOutput file. Columns can be sorted and filtered. Filters applied to this table do not affect the other outputs. However, if the MapOutput data has been successfully joined to the GIS data (Join Status: CHECK or PASS), then filters applied to the "GIS Data" table will also filter the data displayed in this table. If the GIS Data table filters are set such that all SUBIDs are excluded, then the table will reset to show all available MapOutput data.'
     )
   })
   
@@ -223,12 +223,11 @@ shinyAppServer <- function(input, output, session) {
     
     # Format table
     df %>%
-      rename_with(~gsub("^X", "", .), .cols = 2) %>% # Remove column prefix
       arrange(desc(.[[2]])) # Arrange column
   })
   
   # Render Data Table
-  output$table <- renderDataTable(data_out(), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  output$table <- renderDataTable(data_out() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
@@ -251,14 +250,14 @@ shinyAppServer <- function(input, output, session) {
 
     # Create plot first with ggplot
     ggplotly(
-      ggplot(data = data()) +
+      ggplot(data = data_out()) +
         geom_boxplot(aes_(y = as.name(input$slider)))
     ) %>%
 
       # Update plot with plotly
-      add_trace(y = data()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
+      add_trace(y = data_out()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
       layout(
-        xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
+        xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
         yaxis = list(autorange = TRUE, tickmode = "auto", title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear"),
         updatemenus = list(list(
           active = 0,
@@ -282,9 +281,9 @@ shinyAppServer <- function(input, output, session) {
   observe({
     plotlyProxy("plot", session) %>%
       plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
-      plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
-      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
-      plotlyProxyInvoke("addTraces", list(x = 0, y = data()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
+      plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
+      plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
+      plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
   })
   
   # Render Plot
@@ -470,8 +469,9 @@ shinyAppServer <- function(input, output, session) {
       # Save Image
       withProgress(value = 0, message = "Saving Map",{
         mapview::mapshot(leaf_save(), file = file, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
+        incProgress(1)
       })
-      incProgress(1)
+      
       
       # Confirm success
       if(file.exists(file)){
