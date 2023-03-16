@@ -237,7 +237,7 @@ shinyAppServer <- function(input, output, session) {
   boxplot_load <- reactiveVal(0)
   
   # Update reactive value when new data is available
-  observeEvent(c(data_in(), slider_loaded()),{
+  observeEvent(c(data_in(), slider_loaded(), gis_filtered_subids()),{
     req(slider_loaded() == T)
     i = boxplot_load() + 1
     boxplot_load(i)
@@ -247,34 +247,49 @@ shinyAppServer <- function(input, output, session) {
   boxplot <- eventReactive(boxplot_load(),{
     
     req(boxplot_load() > 0)
+    
+    # Get plot data
+    plot_data <- data_out() %>% na.omit()
+    
+    # Create template plot if all data is NA
+    if(nrow(plot_data) == 0){
+      plot <- ggplotly(
+        ggplot() +
+          geom_boxplot(aes(y = NA))
+      )
+    # Create plot with available data
+    } else{
+      plot <- ggplotly(
+        ggplot(data = plot_data) +
+          geom_boxplot(aes_(y = as.name(input$slider)))
+      )
+    }
 
-    # Create plot first with ggplot
-    ggplotly(
-      ggplot(data = data_out()) +
-        geom_boxplot(aes_(y = as.name(input$slider)))
-    ) %>%
-
-      # Update plot with plotly
-      add_trace(y = data_out()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
+    # Update plot with plotly
+    plot <- plot %>%
+      add_trace(y = plot_data[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
       layout(
-        xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
-        yaxis = list(autorange = TRUE, tickmode = "auto", title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear"),
+        xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(plot_data)[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
+        yaxis = list(autorange = TRUE, tickmode = "auto", title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE)), # Show tick labels only if data isn't all NA
         updatemenus = list(list(
           active = 0,
           buttons = list(
             list(
               label = "Linear",
               method = "update",
-              args = list(list(visible = c(T, F)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear")))
+              args = list(list(visible = c(T, F)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE))))
             ),
             list(
               label = "Log",
               method = "update",
-              args = list(list(visible = c(F, T)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "log")))
+              args = list(list(visible = c(F, T)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "log", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE))))
             )
           )
         ))
       )
+    
+    # Return plot
+    return(plot)
   })
   
   # Update Boxplot

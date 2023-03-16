@@ -24,9 +24,6 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      output.dir = "C:/Users/a002416/Desktop/"
                      )
 
-### Extra Features:
-# Update plotly to filter to data
-
 ### Final Steps:
 # Add input argument checks to launchApp() script... not in shiny section!!
 # Setup HYPEtools to do "suggests" for the dependencies and setup input check/warning for packages
