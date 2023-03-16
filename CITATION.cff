@@ -563,6 +563,20 @@ references:
     given-names: Barbara
   year: '2023'
 - type: software
+  title: shinyalert
+  abstract: 'shinyalert: Easily Create Pretty Popup Messages (Modals) in ''Shiny'''
+  notes: Suggests
+  url: https://daattali.com/shiny/shinyalert-demo/
+  repository: https://CRAN.R-project.org/package=shinyalert
+  authors:
+  - family-names: Attali
+    given-names: Dean
+    email: daattali@gmail.com
+    orcid: https://orcid.org/0000-0002-5645-3493
+  - family-names: Edwards
+    given-names: Tristan
+  year: '2023'
+- type: software
   title: shinyFiles
   abstract: 'shinyFiles: A Server-Side File System Viewer for Shiny'
   notes: Suggests
