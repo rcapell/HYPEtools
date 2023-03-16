@@ -2,12 +2,18 @@
 #'
 #' @param input provided by shiny
 #' @param output provided by shiny
+#' @param session provided by shiny
+
+# Import required dependencies
+library(dplyr)
+# library(tidyr)
 
 # Get values passed to app
-results.dir <- getShinyOption("results.dir", default = NULL)
-map <- getShinyOption("map", default = NULL)
-map.subid.column <- getShinyOption("map.subid.column", default = NULL)
-output.dir <- getShinyOption("output.dir", default = NULL)
+results.dir <- shiny::getShinyOption("results.dir")
+file.pattern <- shiny::getShinyOption("file.pattern")
+map <- shiny::getShinyOption("map")
+map.subid.column <- shiny::getShinyOption("map.subid.column")
+output.dir <- shiny::getShinyOption("output.dir")
 
 # Define server logic
 shinyAppServer <- function(input, output, session) {
@@ -17,8 +23,8 @@ shinyAppServer <- function(input, output, session) {
   # _____________________________________________________________________________________________________________________________________
   
   # Help message for selecting GIS File
-  observeEvent(input$help_gis, {
-    shinyalert(
+  shiny::observeEvent(input$help_gis, {
+    shinyalert::shinyalert(
       title = "Select GIS File:",
       type = "info",
       text = 'Use the button to select a GIS file (.shp or .gpkg) containing the polygon geometry of the model subbasins. Then, use the dropdown menu to select the name of the column containing the subbasin SUBIDs.
@@ -30,8 +36,8 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Help message for selecting mapoutput files
-  observeEvent(input$help_result, {
-    shinyalert(
+  shiny::observeEvent(input$help_result, {
+    shinyalert::shinyalert(
       title = "Select MapOutput Files:",
       type = "info",
       text = 'Use the button to select the HYPE MapOutput files (.txt or .csv) that should be imported. Multiple files may be selected at one time. Use the dropdown menu to select the name of file that should be visualized.'
@@ -39,8 +45,8 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Help message for selecting time period
-  observeEvent(input$help_slider, {
-    shinyalert(
+  shiny::observeEvent(input$help_slider, {
+    shinyalert::shinyalert(
       title = "Select Time Period:",
       type = "info",
       text = 'Use the slider to select the time period in the MapOutput file that should be visualized. The "play" button can be used to animate the visualizations by stepping through the time periods automatically.'
@@ -48,8 +54,8 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Help message for MapOutput data table
-  observeEvent(input$help_options, {
-    shinyalert(
+  shiny::observeEvent(input$help_options, {
+    shinyalert::shinyalert(
       title = "Options:",
       type = "info",
       text = 'Use the button to select the output directory for saved map images.'
@@ -57,8 +63,8 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Help message for GIS data table
-  observeEvent(input$help_gis_df, {
-    shinyalert(
+  shiny::observeEvent(input$help_gis_df, {
+    shinyalert::shinyalert(
       title = "GIS Data:",
       type = "info",
       text = 'This table displays the attribute table for the selected GIS file. Columns can be sorted and filtered. If the GIS data has been successfully joined to the MapOutput data (Join Status: CHECK or PASS), then filters applied to this table will also filter the data displayed in the "MapOutput Data" table and the boxplot.'
@@ -66,8 +72,8 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Help message for MapOutput data table
-  observeEvent(input$help_data_df, {
-    shinyalert(
+  shiny::observeEvent(input$help_data_df, {
+    shinyalert::shinyalert(
       title = "MapOutput Data:",
       type = "info",
       text = 'This table displays the data for the selected MapOutput file. Columns can be sorted and filtered. Filters applied to this table do not affect the other outputs. However, if the MapOutput data has been successfully joined to the GIS data (Join Status: CHECK or PASS), then filters applied to the "GIS Data" table will also filter the data displayed in this table. If the GIS Data table filters are set such that all SUBIDs are excluded, then the table will reset to show all available MapOutput data.'
@@ -79,7 +85,7 @@ shinyAppServer <- function(input, output, session) {
   # _____________________________________________________________________________________________________________________________________
   
   # Get Available File Volumes
-  volumes <- c("HYPEtools Demo Model" = system.file("demo_model", package = "HYPEtools"), Home = fs::path_home(), getVolumes()())
+  volumes <- c("HYPEtools Demo Model" = system.file("demo_model", package = "HYPEtools"), Home = fs::path_home(), shinyFiles::getVolumes()())
   
   # Add Directories specified with shiny arguments
   if(!is.null(results.dir)){
@@ -90,8 +96,8 @@ shinyAppServer <- function(input, output, session) {
   }
   
   # Get Path to GIS Files
-  gis_file <- reactive({
-    shinyFileChoose(input, "button_gis", roots = volumes, session = session)
+  gis_file <- shiny::reactive({
+    shinyFiles::shinyFileChoose(input, "button_gis", roots = volumes, session = session)
 
     # If button hasn't been used to select files, then return default value/provided with shiny arguments
     if (!typeof(input$button_gis) == "list"){
@@ -101,68 +107,68 @@ shinyAppServer <- function(input, output, session) {
         files <- data.frame("Files" = map)
       }
     } else{
-      files <- data.frame("Files" = parseFilePaths(volumes, input$button_gis)$datapath)
+      files <- data.frame("Files" = shinyFiles::parseFilePaths(volumes, input$button_gis)$datapath)
     }
   })
 
   # Get Paths to Results Files
-  results_files <- reactive({
-    shinyFileChoose(input, "button_results", roots = volumes, session = session)
+  results_files <- shiny::reactive({
+    shinyFiles::shinyFileChoose(input, "button_results", roots = volumes, session = session)
 
     # If button hasn't been used to select files, then return default value/provided with shiny arguments
     if (!typeof(input$button_results) == "list"){
       if(is.null(results.dir)){
         files <- data.frame("Files" = character())
       } else{
-        files <- data.frame("Files" = list.files(results.dir, full.names = T, pattern = ".*\\.(txt|csv)$"))
+        files <- data.frame("Files" = list.files(results.dir, full.names = T, pattern = file.pattern))
       }
     } else{
-      files <- data.frame("Files" = parseFilePaths(volumes, input$button_results)$datapath)
+      files <- data.frame("Files" = shinyFiles::parseFilePaths(volumes, input$button_results)$datapath)
     }
   })
   
   # Input to select result file
-  output$input_result <- renderUI({selectInput("result", "Select Result File To Display", choices = basename(results_files()$Files))})
+  output$input_result <- shiny::renderUI({shiny::selectInput("result", "Select Result File To Display", choices = basename(results_files()$Files))})
   
   # Get selected result file
-  result_file <- reactive({
+  result_file <- shiny::reactive({
     which(basename(results_files()$Files) == input$result)
   })
   
   # Create outputs for selected file
-  output$gis_file <- renderText(gis_file()$Files[1])
-  output$result_file <- renderText(dirname(results_files()$Files[result_file()]))
+  output$gis_file <- shiny::renderText(gis_file()$Files[1])
+  output$result_file <- shiny::renderText(dirname(results_files()$Files[result_file()]))
   
   # _____________________________________________________________________________________________________________________________________
   # Process GIS Data #####
   # _____________________________________________________________________________________________________________________________________
   
   # Read GIS Data
-  gis <- reactive({
-    req(!all(is.na(gis_file()$Files)))
+  gis <- shiny::reactive({
+    shiny::req(!all(is.na(gis_file()$Files)))
     sf::st_read(gis_file()$Files[1])
   })
   
   # Input to select SUBID column in GIS file
-  output$input_column <- renderUI({selectInput("column", "Select SUBID Column", choices = colnames(gis())[which(!colnames(gis()) %in% attr(gis(), "sf_column"))], selected = colnames(gis())[map.subid.column])})
+  output$input_column <- shiny::renderUI({shiny::selectInput("column", "Select SUBID Column", choices = colnames(gis())[which(!colnames(gis()) %in% attr(gis(), "sf_column"))], selected = colnames(gis())[map.subid.column])})
   
   # Get column index of SUBID column in GIS file
-  gis.subid <- reactive({which(colnames(gis()) == input$column)})
+  gis.subid <- shiny::reactive({which(colnames(gis()) == input$column)})
   
   # Output table for GIS
-  output$gis <- DT::renderDataTable(gis() %>% st_drop_geometry(), rownames = F, filter = "top", options = list(scrollX = TRUE))
-  # output$gis <- DT::renderDataTable(datatable(gis() %>% st_drop_geometry(), rownames = F, options = list(scrollX = TRUE)) %>% formatRound(unlist(lapply(gis() %>% st_drop_geometry, is.numeric), use.names = FALSE), 3)) # Use this to round numeric columns, but then this affects columns like SUBID
+  output$gis <- DT::renderDataTable(gis() %>% sf::st_drop_geometry(), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  # output$gis <- DT::renderDataTable(datatable(gis() %>% sf::st_drop_geometry(), rownames = F, options = list(scrollX = TRUE)) %>% formatRound(unlist(lapply(gis() %>% sf::st_drop_geometry, is.numeric), use.names = FALSE), 3)) # Use this to round numeric columns, but then this affects columns like SUBID
   
   # GIS Data filtered by data table
-  gis_filtered <- reactive({
+  gis_filtered <- shiny::reactive({
     gis()[input$gis_rows_all,]
   })
   
   # Get filtered GIS subids
-  gis_filtered_subids <- reactive({
-    get_subids <- possibly(~{
+  gis_filtered_subids <- shiny::reactive({
+    get_subids <- purrr::possibly(~{
       gis()[input$gis_rows_all,gis.subid()] %>%
-        st_drop_geometry() %>%
+        sf::st_drop_geometry() %>%
         unlist()
     }, otherwise = c())
     get_subids()
@@ -173,48 +179,48 @@ shinyAppServer <- function(input, output, session) {
   # _____________________________________________________________________________________________________________________________________
   
   # Read Data
-  data_in <- reactive({
-    req(!all(is.na(results_files()$Files)), result_file())
+  data_in <- shiny::reactive({
+    shiny::req(!all(is.na(results_files()$Files)), result_file())
     
     # Safely read file and return NA if any error - leave col.prefix because without the prefix the SliderText Input changes the choices for e.g. "1988.10" to "1988.1" and then it doesn't work
-    read_data <- possibly(~ReadMapOutput(results_files()$Files[result_file()], col.prefix = "X"), otherwise = NA)
+    read_data <- purrr::possibly(~ReadMapOutput(results_files()$Files[result_file()], col.prefix = "X"), otherwise = NA)
     read_data()
   })
   
   # Update time period slider based on input data
-  observe({
-    req(data_in())
+  shiny::observe({
+    shiny::req(data_in())
     if(ncol(data_in()) > 2){ # If more than 1 time period
-      updateSliderTextInput(session, "slider", choices = colnames(data_in()[2:ncol(data_in())]))
+      shinyWidgets::updateSliderTextInput(session, "slider", choices = colnames(data_in()[2:ncol(data_in())]))
     } else{ # If only one time period
-      updateSliderTextInput(session, "slider", choices = rep(colnames(data_in()[2:ncol(data_in())]), 2))
+      shinyWidgets::updateSliderTextInput(session, "slider", choices = rep(colnames(data_in()[2:ncol(data_in())]), 2))
     }
   })
   
   # Check if time period slider has loaded
-  slider_loaded <- reactiveVal(FALSE)
+  slider_loaded <- shiny::reactiveVal(FALSE)
   
-  observe({
+  shiny::observe({
     if(!input$slider == "NA"){
       slider_loaded(TRUE)
     }
   })
 
   # Data used for app
-  data <- reactive({
-    req(!is.na(data_in()), slider_loaded() == T, input$slider %in% colnames(data_in()))
+  data <- shiny::reactive({
+    shiny::req(!is.na(data_in()), slider_loaded() == T, input$slider %in% colnames(data_in()))
     filtered_data <- data_in()[, c(1, which(colnames(data_in()) == input$slider))]
   })
   
   # Data displayed in table
-  data_out <- reactive({
+  data_out <- shiny::reactive({
     
     # Get data
     df <- data()
     
     # Check if GIS data available
-    check <- possibly(~leaf_check(), otherwise = FALSE)
-    subids <- possibly(~gis_filtered_subids(), otherwise = c())
+    check <- purrr::possibly(~leaf_check(), otherwise = FALSE)
+    subids <- purrr::possibly(~gis_filtered_subids(), otherwise = c())
     
     # Filter data to GIS
     if(check() == TRUE & length(subids()) > 0){
@@ -227,39 +233,39 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Render Data Table
-  output$table <- renderDataTable(data_out() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  output$table <- DT::renderDataTable(data_out() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
   # _____________________________________________________________________________________________________________________________________
   
   # Reactive value to generate boxplot
-  boxplot_load <- reactiveVal(0)
+  boxplot_load <- shiny::reactiveVal(0)
   
   # Update reactive value when new data is available
-  observeEvent(c(data_in(), slider_loaded(), gis_filtered_subids()),{
-    req(slider_loaded() == T)
+  shiny::observeEvent(c(data_in(), slider_loaded(), gis_filtered_subids()),{
+    shiny::req(slider_loaded() == T)
     i = boxplot_load() + 1
     boxplot_load(i)
   })
   
   # Generate Boxplot
-  boxplot <- eventReactive(boxplot_load(),{
+  boxplot <- shiny::eventReactive(boxplot_load(),{
     
-    req(boxplot_load() > 0)
+    shiny::req(boxplot_load() > 0)
     
     # Get plot data
     plot_data <- data_out() %>% na.omit()
     
     # Create template plot if all data is NA
     if(nrow(plot_data) == 0){
-      plot <- ggplotly(
+      plot <- plotly::ggplotly(
         ggplot() +
           geom_boxplot(aes(y = NA))
       )
     # Create plot with available data
     } else{
-      plot <- ggplotly(
+      plot <- plotly::ggplotly(
         ggplot(data = plot_data) +
           geom_boxplot(aes_(y = as.name(input$slider)))
       )
@@ -268,7 +274,7 @@ shinyAppServer <- function(input, output, session) {
     # Update plot with plotly
     plot <- plot %>%
       add_trace(y = plot_data[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
-      layout(
+      plotly::layout(
         xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(plot_data)[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
         yaxis = list(autorange = TRUE, tickmode = "auto", title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE)), # Show tick labels only if data isn't all NA
         updatemenus = list(list(
@@ -293,26 +299,26 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Update Boxplot
-  observe({
-    plotlyProxy("plot", session) %>%
-      plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
-      plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
-      plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
-      plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
+  shiny::observe({
+    plotly::plotlyProxy("plot", session) %>%
+      plotly::plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
+      plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
+      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
+      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
   })
   
   # Render Plot
-  output$plot <- renderPlotly({boxplot()})
+  output$plot <- plotly::renderPlotly({boxplot()})
   
   # _____________________________________________________________________________________________________________________________________
   # Create Leaflet Map #####
   # _____________________________________________________________________________________________________________________________________
 
   # Check that data can be joined
-  leaf_check <- reactive({
+  leaf_check <- shiny::reactive({
     
     # Requirements
-    req(gis_filtered(), gis.subid(), data())
+    shiny::req(gis_filtered(), gis.subid(), data())
 
     # Test join data
     check <- right_join(gis_filtered()[, gis.subid()]%>%mutate(across(1,~as.character(.x))), data()%>%mutate(across(1,~as.character(.x))), by = setNames(nm = colnames(gis_filtered())[gis.subid()], colnames(data())[1]))
@@ -321,28 +327,28 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Output for leaf_check
-  output$join_status <- renderUI({
+  output$join_status <- shiny::renderUI({
     
     if(leaf_check() == TRUE){
       if(nrow(gis_filtered()) == nrow(data_out())){
-        div(style = "display: inline-block; font-weight: bold; color: limegreen", "PASS")
+        shiny::div(style = "display: inline-block; font-weight: bold; color: limegreen", "PASS")
       } else{
-        div(style = "display: inline-block; font-weight: bold; color: orange", "CHECK")
+        shiny::div(style = "display: inline-block; font-weight: bold; color: orange", "CHECK")
       }
     } else{
-      div(style = "display: inline-block; font-weight: bold; color: red","FAIL")
+      shiny::div(style = "display: inline-block; font-weight: bold; color: red","FAIL")
     }
   })
 
   # Create basemap
-  leaf <- eventReactive(c(gis_filtered(), gis.subid(), result_file(), slider_loaded()),{
+  leaf <- shiny::eventReactive(c(gis_filtered(), gis.subid(), result_file(), slider_loaded()),{
 
     # Require valid data
-    req(leaf_check() == TRUE, slider_loaded() == TRUE)
+    shiny::req(leaf_check() == TRUE, slider_loaded() == TRUE)
     
     # Parse full mapoutput file
     mapdata <- data_in() %>%
-      pivot_longer(cols = 2:ncol(.)) %>%
+      tidyr::pivot_longer(cols = 2:ncol(.)) %>%
       select(1, "value")
     
     # Create basemap and get data
@@ -363,8 +369,8 @@ shinyAppServer <- function(input, output, session) {
     
     # Parse Data and add button to save map
     leaf <- data$basemap %>%
-      addEasyButton(easyButton(states = list(
-        easyButtonState(
+      leaflet::addEasyButton(leaflet::easyButton(states = list(
+        leaflet::easyButtonState(
           stateName = "onestate",
           icon = "fa-camera", title = "Save Map",
           onClick = JS(" function(btn, map) {Shiny.onInputChange('leaf_save_button', 'save'); Shiny.onInputChange('leaf_save_button', 'reset')}") # The "reset" state is so that the input resets after it's clicked so you can click the button again
@@ -375,13 +381,13 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Render Map
-  output$map <- renderLeaflet({leaf()})
+  output$map <- leaflet::renderLeaflet({leaf()})
   
   # Update map when data changes
-  observe({
+  shiny::observe({
     
     # Require valid data
-    req(leaf_check() == TRUE)
+    shiny::req(leaf_check() == TRUE)
     
     # Get Data
     data <- PlotMapOutput(
@@ -398,9 +404,9 @@ shinyAppServer <- function(input, output, session) {
     x <- data$x
 
     # Update Map
-    proxy <- leafletProxy("map", data = x) %>%
-      clearGroup("Subbasins") %>%
-      addPolygons(
+    proxy <- leaflet::leafletProxy("map", data = x) %>%
+      leaflet::clearGroup("Subbasins") %>%
+      leaflet::addPolygons(
         group = "Subbasins",
         data = x,
         color = "black",
@@ -413,7 +419,7 @@ shinyAppServer <- function(input, output, session) {
   })
 
   # Emulated map for downloading
-  leaf_save <- reactive({
+  leaf_save <- shiny::reactive({
     
     # Get Data
     data <- PlotMapOutput(
@@ -431,8 +437,8 @@ shinyAppServer <- function(input, output, session) {
     
     # Recreate map
     map <- leaf() %>%
-      clearGroup("Subbasins") %>%
-      addPolygons(
+      leaflet::clearGroup("Subbasins") %>%
+      leaflet::addPolygons(
         group = "Subbasins",
         data = x,
         color = "black",
@@ -442,13 +448,13 @@ shinyAppServer <- function(input, output, session) {
         fillOpacity = 0.5,
         label = ~label
       ) %>%
-      setView(lng = input$map_center$lng, lat = input$map_center$lat, zoom = input$map_zoom)
+      leaflet::setView(lng = input$map_center$lng, lat = input$map_center$lat, zoom = input$map_zoom)
   })
   
   # Get Paths to output directory
-  output_dir <- reactive({
+  output_dir <- shiny::reactive({
   
-    shinyDirChoose(input, "button_save", roots = volumes, session = session)
+    shinyFiles::shinyDirChoose(input, "button_save", roots = volumes, session = session)
 
     # If button hasn't been used to select files, then return default value/provided with shiny arguments
     if (!typeof(input$button_save) == "list"){
@@ -458,19 +464,19 @@ shinyAppServer <- function(input, output, session) {
         dir <- output.dir
       }
     } else{
-      dir <- parseDirPath(volumes, input$button_save)
+      dir <- shinyFiles::parseDirPath(volumes, input$button_save)
     }
   })
   
   # Text output for output directory
-  output$output_dir <- renderText(output_dir())
+  output$output_dir <- shiny::renderText(output_dir())
   
   # Save map when button clicked
-  observeEvent(input$leaf_save_button,{
+  shiny::observeEvent(input$leaf_save_button,{
     
     # Send warning if no output directory selected
     if(is.null(output_dir())){
-      shinyalert(
+      shinyalert::shinyalert(
         title = "Save Map:",
         type = "error",
         text = 'No output directory specified. Please click the "Select Output Directory" button and specify a directory.'
@@ -482,22 +488,22 @@ shinyAppServer <- function(input, output, session) {
       file <- file.path(output_dir(), paste0(tools::file_path_sans_ext(input$result), "_", gsub("^X", "", input$slider), ".png"))
       
       # Save Image
-      withProgress(value = 0, message = "Saving Map",{
+      shiny::withProgress(value = 0, message = "Saving Map",{
         mapview::mapshot(leaf_save(), file = file, remove_controls = c("zoomControl", "layersControl", "homeButton", "drawToolbar", "easyButton"), selfcontained = FALSE)
-        incProgress(1)
+        shiny::incProgress(1)
       })
       
       
       # Confirm success
       if(file.exists(file)){
-        shinyalert(
+        shinyalert::shinyalert(
           title = "Save Map:",
           type = "success",
           text = paste0('File saved successfully as: \n', file),
           time = 5000
         )
       } else{
-        shinyalert(
+        shinyalert::shinyalert(
           title = "Save Map:",
           type = "error",
           text = paste0('File not saved to: \n', file)

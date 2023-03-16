@@ -1,30 +1,24 @@
 library(HYPEtools)
-library(leaflet)
-library(ggplot2)
-library(plotly)
-library(shiny)
-library(shinyFiles)
-library(DT)
-library(purrr)
-library(tidyr)
-library(dplyr)
-library(sf)
-library(shinyalert)
-library(shinyWidgets)
-
 # Build HYPEtools!
 
-# Launch Shiny App with no default paths - select demo model files
-HYPEtools::launchApp()
+# Launch Shiny App with no arguments
+VisualizeMapOutput()
+
+# Launch Shiny App for demo model
+VisualizeMapOutput(
+  results.dir = system.file("demo_model", "results", package = "HYPEtools"),
+  map = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"),
+  map.subid.column = 25
+)
 
 # Launch Shiny App with default paths provided in arguments for GuM-HYPE
-HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
-                     map = "//winfs-proj/data/proj/Fouh/Global/SouthAfrica/Model/GIS/gumhype_subbasins.shp",
-                     map.subid.column = 2,
-                     output.dir = "C:/Users/a002416/Desktop/"
-                     )
+VisualizeMapOutput(
+  results.dir = "C:/Users/a002416/Desktop/",
+  map = "//winfs-proj/data/proj/Fouh/Global/SouthAfrica/Model/GIS/gumhype_subbasins.shp",
+  map.subid.column = 2,
+  output.dir = "C:/Users/a002416/Desktop/"
+)
 
 ### Final Steps:
-# Add input argument checks to launchApp() script... not in shiny section!!
-# Setup HYPEtools to do "suggests" for the dependencies and setup input check/warning for packages
+# Setup HYPEtools to do "suggests" for the dependencies and update warning text
 # Merge my fork into main hypetools

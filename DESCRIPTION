@@ -30,7 +30,6 @@ Imports:
     pbapply,
     purrr,
     rlang,
-    sf,
     stats,
     stringr,
     tidyr,
@@ -47,10 +46,16 @@ Language: en-US
 Suggests: 
     rmarkdown,
     knitr,
+    DT,
     htmlwidgets,
     leaflet,
     leaflet.extras,
     mapview,
+    plotly,
+    sf,
+    shiny,
+    shinyFiles,
+    shinyWidgets,
     randomcoloR,
     webshot
 VignetteBuilder: knitr

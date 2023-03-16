@@ -1,5 +1,11 @@
 #' Shiny app server object
 
+# Import required dependencies
+library(shinyFiles)
+library(shinyWidgets)
+library(leaflet)
+library(plotly)
+
 # create the shiny application user interface
 shinyAppUI <- fluidPage(
 
