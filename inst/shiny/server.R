@@ -23,7 +23,9 @@ shinyAppServer <- function(input, output, session) {
       type = "info",
       text = 'Use the button to select a GIS file (.shp or .gpkg) containing the polygon geometry of the model subbasins. Then, use the dropdown menu to select the name of the column containing the subbasin SUBIDs.
       
-      If "Join Status: FAIL" is displayed, then the MapOutput file could not be joined to the GIS data using the selected SUBID column, and a different column should be selected.'
+      If "Join Status: CHECK" is displayed, then the MapOutput file was joined to the GIS data, but there may be duplicate SUBIDS in the selected SUBID column or other potential problems that require checking. Ensure that the correct SUBID column is selected.
+      
+      If Join Status: FAIL" is displayed, then the MapOutput file could not be joined to the GIS data using the selected SUBID column, and a different column should be selected.'
     )
   })
   
@@ -59,7 +61,7 @@ shinyAppServer <- function(input, output, session) {
     shinyalert(
       title = "GIS Data:",
       type = "info",
-      text = 'This table displays the attribute table for the selected GIS file. Columns can be sorted and filtered.'
+      text = 'This table displays the attribute table for the selected GIS file. Columns can be sorted and filtered. If the GIS data has been successfully joined to the MapOutput data (Join Status: CHECK or PASS), then filters applied to this table will also filter the data displayed in the "MapOutput Data" table and the boxplot.'
     )
   })
   
@@ -68,7 +70,7 @@ shinyAppServer <- function(input, output, session) {
     shinyalert(
       title = "MapOutput Data:",
       type = "info",
-      text = 'This table displays the data for the selected MapOutput file. Columns can be sorted and filtered.'
+      text = 'This table displays the data for the selected MapOutput file. Columns can be sorted and filtered. Filters applied to this table do not affect the other outputs. However, if the MapOutput data has been successfully joined to the GIS data (Join Status: CHECK or PASS), then filters applied to the "GIS Data" table will also filter the data displayed in this table.'
     )
   })
   
@@ -156,6 +158,16 @@ shinyAppServer <- function(input, output, session) {
     gis()[input$gis_rows_all,]
   })
   
+  # Get filtered GIS subids
+  gis_filtered_subids <- reactive({
+    get_subids <- possibly(~{
+      gis()[input$gis_rows_all,gis.subid()] %>%
+        st_drop_geometry() %>%
+        unlist()
+    }, otherwise = c())
+    get_subids()
+  })
+  
   # _____________________________________________________________________________________________________________________________________
   # Process MapOutput Data #####
   # _____________________________________________________________________________________________________________________________________
@@ -194,8 +206,29 @@ shinyAppServer <- function(input, output, session) {
     filtered_data <- data_in()[, c(1, which(colnames(data_in()) == input$slider))]
   })
   
+  # Data displayed in table
+  data_out <- reactive({
+    
+    # Get data
+    df <- data()
+    
+    # Check if GIS data available
+    check <- possibly(~leaf_check(), otherwise = FALSE)
+    subids <- possibly(~gis_filtered_subids(), otherwise = c())
+    
+    # Filter data to GIS
+    if(check() == TRUE & length(subids()) > 0){
+      df <- df[which(df[,1] %in% subids()),]
+    }
+    
+    # Format table
+    df %>%
+      rename_with(~gsub("^X", "", .), .cols = 2) %>% # Remove column prefix
+      arrange(desc(.[[2]])) # Arrange column
+  })
+  
   # Render Data Table
-  output$table <- renderDataTable(data() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  output$table <- renderDataTable(data_out(), rownames = F, filter = "top", options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
@@ -277,7 +310,11 @@ shinyAppServer <- function(input, output, session) {
   output$join_status <- renderUI({
     
     if(leaf_check() == TRUE){
-      div(style = "display: inline-block; font-weight: bold; color: limegreen", "PASS")
+      if(nrow(gis_filtered()) == nrow(data_out())){
+        div(style = "display: inline-block; font-weight: bold; color: limegreen", "PASS")
+      } else{
+        div(style = "display: inline-block; font-weight: bold; color: orange", "CHECK")
+      }
     } else{
       div(style = "display: inline-block; font-weight: bold; color: red","FAIL")
     }

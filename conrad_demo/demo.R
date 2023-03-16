@@ -25,7 +25,7 @@ HYPEtools::launchApp(results.dir = "C:/Users/a002416/Desktop/",
                      )
 
 ### Extra Features:
-# Use data table filters to select subbasins that are shown in map??
+# Update plotly to filter to data
 
 ### Final Steps:
 # Add input argument checks to launchApp() script... not in shiny section!!
