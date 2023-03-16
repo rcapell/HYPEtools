@@ -44,7 +44,7 @@ The app can be launched with or without the input arguments. All necessary input
 app with desired settings.
 }
 \examples{
-\donttest{
+\dontrun{
 VisualizeMapOutput(results.dir = system.file("demo_model", "results", package = "HYPEtools"),
 map = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"),
 map.subid.column = 25)

@@ -54,6 +54,7 @@ Suggests:
     plotly,
     sf,
     shiny,
+    shinyalert,
     shinyFiles,
     shinyWidgets,
     randomcoloR,

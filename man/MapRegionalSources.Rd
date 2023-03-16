@@ -31,7 +31,7 @@ MapRegionalSources(
 irrigation target and source sub-catchments, respectively. Typically a HYPE 'MgmtData.txt' file, imported with \code{\link{ReadMgmtData}}.}
 
 \item{map}{A \code{sf}, \code{SpatialPointsDataFrame}, or \code{SpatialPolygonsDataFrame} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
-center-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link{st_centroid}}). Spatial data import requires additional packages, e.g. \code{sf}.}
+center-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link[sf:geos_unary]{sf::st_centroid()}}). Spatial data import requires additional packages, e.g. \code{sf}.}
 
 \item{map.subid.column}{Integer, index of the column in the \code{map} column holding SUBIDs (sub-catchment IDs).}
 

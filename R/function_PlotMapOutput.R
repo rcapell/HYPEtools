@@ -801,7 +801,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
           
           # Zoom to layer
           leafmap <- leafmap %>%
-            fitBounds(bounds[1], bounds[2], bounds[3], bounds[4])
+            leaflet::fitBounds(bounds[1], bounds[2], bounds[3], bounds[4])
 
         # Add polygons to map
         } else{

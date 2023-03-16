@@ -1,12 +1,11 @@
 #' Shiny app server function
-#'
+#' 
 #' @param input provided by shiny
 #' @param output provided by shiny
 #' @param session provided by shiny
 
 # Import required dependencies
 library(dplyr)
-# library(tidyr)
 
 # Get values passed to app
 results.dir <- shiny::getShinyOption("results.dir")
