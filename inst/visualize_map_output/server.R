@@ -145,7 +145,15 @@ shinyAppServer <- function(input, output, session) {
   # Read GIS Data
   gis <- shiny::reactive({
     shiny::req(!all(is.na(gis_file()$Files)))
-    sf::st_read(gis_file()$Files[1])
+    gis <- sf::st_read(gis_file()$Files[1])
+    geo_type <- sf::st_geometry_type(gis, by_geometry = F) # Get geometry type
+    
+    # Send warning if GIS file is not polygon type
+    if(!geo_type == "POLYGON"){
+      shinyalert::shinyalert(title = "Select GIS File", text = "Selected GIS file does not have POLYGON geometry.", type = "error")
+    }
+    req(geo_type == "POLYGON")
+    return(gis)
   })
   
   # Input to select SUBID column in GIS file
@@ -266,7 +274,7 @@ shinyAppServer <- function(input, output, session) {
     } else{
       plot <- plotly::ggplotly(
         ggplot(data = plot_data) +
-          geom_boxplot(aes_(y = as.name(input$slider)))
+          geom_boxplot(aes(y = .data[[input$slider]]))
       )
     }
 
