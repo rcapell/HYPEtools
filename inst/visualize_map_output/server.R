@@ -307,11 +307,11 @@ shinyAppServer <- function(input, output, session) {
   
   # Update Boxplot
   shiny::observe({
-    plotly::plotlyProxy("plot", session) #%>%
-      # plotly::plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
-      # plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
-      # plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
-      # plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = FALSE, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
+    plotly::plotlyProxy("plot", session) %>%
+      plotly::plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
+      plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
+      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
+      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = FALSE, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
   })
   
   # Render Plot
