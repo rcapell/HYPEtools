@@ -65,7 +65,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     requireNamespace("randomcoloR", quietly = TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop("To use this function, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets, randomcoloR", call.=FALSE)
+    stop('To use this function, please ensure that the following packages are installed: c("sf", "leaflet", "leaflet.extras", "mapview", "htmlwidgets", "randomcoloR")', call.=FALSE)
 
     # Perform function
   } else {

@@ -1,11 +1,5 @@
 #' Shiny app server object
 
-# Import required dependencies
-library(shinyFiles)
-library(shinyWidgets)
-library(leaflet)
-library(plotly)
-
 # create the shiny application user interface
 shinyAppUI <- fluidPage(
 
@@ -31,7 +25,7 @@ shinyAppUI <- fluidPage(
         h2(tags$b("VisualizeMapOutput")),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Select GIS File:"))),div(style="display:inline-block",actionButton("help_gis",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        shinyFilesButton("button_gis", "Select GIS File" , title = "Please Select File:", buttonType = "default", class = NULL, multiple = F),
+        shinyFiles::shinyFilesButton("button_gis", "Select GIS File" , title = "Please Select File:", buttonType = "default", class = NULL, multiple = FALSE),
         h5("Selected GIS File:"),
         div(style = "max-width: 23em; padding-bottom: 10px; overflow-wrap: break-word; font-size: 0.8em", textOutput("gis_file")),
         uiOutput("input_column"),
@@ -41,23 +35,23 @@ shinyAppUI <- fluidPage(
             ),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Select MapOutput Files:"))),div(style="display:inline-block",actionButton("help_result",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        shinyFilesButton("button_results", "Select MapOutput Files" , title = "Please Select Files:", buttonType = "default", class = NULL, multiple = T),
+        shinyFiles::shinyFilesButton("button_results", "Select MapOutput Files" , title = "Please Select Files:", buttonType = "default", class = NULL, multiple = TRUE),
         h5("Selected Result Directory:"),
         div(style = "max-width: 23em; padding-bottom: 10px; overflow-wrap: break-word; font-size: 0.8em", textOutput("result_file")),
         uiOutput("input_result"),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Select Time Period:"))),div(style="display:inline-block",actionButton("help_slider",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        sliderTextInput("slider", label = NULL, choices = "NA", animate = animationOptions(interval = 750, loop = TRUE)),
+        shinyWidgets::sliderTextInput("slider", label = NULL, choices = "NA", animate = animationOptions(interval = 750, loop = TRUE)),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Options:"))),div(style="display:inline-block",actionButton("help_options",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        shinyDirButton("button_save", "Select Output Directory", title = "Save"),
+        shinyFiles::shinyDirButton("button_save", "Select Output Directory", title = "Save"),
         h5("Selected Output Directory:"),
         div(style = "max-width: 23em; padding-bottom: 10px; overflow-wrap: break-word; font-size: 0.8em", textOutput("output_dir"))
     ),
     div(style="display:table-cell; width: calc(100vw - 27em); min-width:400px;", # Set Width to 100% of View Width -27em
         div(style = "display:flex; margin-top: 20px;align-items:stretch",
-            div(style = "width:70%; min-width:300px", leafletOutput("map", height = "800px")),
-            div(style = "width: 30%; min-width:100px", plotlyOutput("plot", height = "100%"))
+            div(style = "width:70%; min-width:300px", leaflet::leafletOutput("map", height = "800px")),
+            div(style = "width: 30%; min-width:100px", plotly::plotlyOutput("plot", height = "100%"))
         )
     )
   ),

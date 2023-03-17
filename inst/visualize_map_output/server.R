@@ -5,7 +5,7 @@
 #' @param session provided by shiny
 
 # Import required dependencies
-library(dplyr)
+require(dplyr)
 
 # Get values passed to app
 results.dir <- shiny::getShinyOption("results.dir")
@@ -119,7 +119,7 @@ shinyAppServer <- function(input, output, session) {
       if(is.null(results.dir)){
         files <- data.frame("Files" = character())
       } else{
-        files <- data.frame("Files" = list.files(results.dir, full.names = T, pattern = file.pattern))
+        files <- data.frame("Files" = list.files(results.dir, full.names = TRUE, pattern = file.pattern))
       }
     } else{
       files <- data.frame("Files" = shinyFiles::parseFilePaths(volumes, input$button_results)$datapath)
@@ -146,13 +146,13 @@ shinyAppServer <- function(input, output, session) {
   gis <- shiny::reactive({
     shiny::req(!all(is.na(gis_file()$Files)))
     gis <- sf::st_read(gis_file()$Files[1])
-    geo_type <- sf::st_geometry_type(gis, by_geometry = F) # Get geometry type
+    geo_type <- sf::st_geometry_type(gis, by_geometry = FALSE) # Get geometry type
     
     # Send warning if GIS file is not polygon type
-    if(!geo_type == "POLYGON"){
+    if(!geo_type %in% c("POLYGON", "MULTIPOLYGON")){
       shinyalert::shinyalert(title = "Select GIS File", text = "Selected GIS file does not have POLYGON geometry.", type = "error")
     }
-    req(geo_type == "POLYGON")
+    req(geo_type %in% c("POLYGON", "MULTIPOLYGON"))
     return(gis)
   })
   
@@ -163,8 +163,8 @@ shinyAppServer <- function(input, output, session) {
   gis.subid <- shiny::reactive({which(colnames(gis()) == input$column)})
   
   # Output table for GIS
-  output$gis <- DT::renderDataTable(gis() %>% sf::st_drop_geometry(), rownames = F, filter = "top", options = list(scrollX = TRUE))
-  # output$gis <- DT::renderDataTable(datatable(gis() %>% sf::st_drop_geometry(), rownames = F, options = list(scrollX = TRUE)) %>% formatRound(unlist(lapply(gis() %>% sf::st_drop_geometry, is.numeric), use.names = FALSE), 3)) # Use this to round numeric columns, but then this affects columns like SUBID
+  output$gis <- DT::renderDataTable(gis() %>% sf::st_drop_geometry(), rownames = FALSE, filter = "top", options = list(scrollX = TRUE))
+  # output$gis <- DT::renderDataTable(datatable(gis() %>% sf::st_drop_geometry(), rownames = FALSE, options = list(scrollX = TRUE)) %>% formatRound(unlist(lapply(gis() %>% sf::st_drop_geometry, is.numeric), use.names = FALSE), 3)) # Use this to round numeric columns, but then this affects columns like SUBID
   
   # GIS Data filtered by data table
   gis_filtered <- shiny::reactive({
@@ -215,7 +215,7 @@ shinyAppServer <- function(input, output, session) {
 
   # Data used for app
   data <- shiny::reactive({
-    shiny::req(!is.na(data_in()), slider_loaded() == T, input$slider %in% colnames(data_in()))
+    shiny::req(!is.na(data_in()), slider_loaded() == TRUE, input$slider %in% colnames(data_in()))
     filtered_data <- data_in()[, c(1, which(colnames(data_in()) == input$slider))]
   })
   
@@ -240,7 +240,7 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Render Data Table
-  output$table <- DT::renderDataTable(data_out() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = F, filter = "top", options = list(scrollX = TRUE))
+  output$table <- DT::renderDataTable(data_out() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = FALSE, filter = "top", options = list(scrollX = TRUE))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
@@ -251,7 +251,7 @@ shinyAppServer <- function(input, output, session) {
   
   # Update reactive value when new data is available
   shiny::observeEvent(c(data_in(), slider_loaded(), gis_filtered_subids()),{
-    shiny::req(slider_loaded() == T)
+    shiny::req(slider_loaded() == TRUE)
     i = boxplot_load() + 1
     boxplot_load(i)
   })
@@ -267,20 +267,20 @@ shinyAppServer <- function(input, output, session) {
     # Create template plot if all data is NA
     if(nrow(plot_data) == 0){
       plot <- plotly::ggplotly(
-        ggplot() +
-          geom_boxplot(aes(y = NA))
+        ggplot2::ggplot() +
+          ggplot2::geom_boxplot(ggplot2::aes(y = NA))
       )
     # Create plot with available data
     } else{
       plot <- plotly::ggplotly(
-        ggplot(data = plot_data) +
-          geom_boxplot(aes(y = .data[[input$slider]]))
+        ggplot2::ggplot(data = plot_data) +
+          ggplot2::geom_boxplot(ggplot2::aes(y = .data[[input$slider]]))
       )
     }
 
     # Update plot with plotly
     plot <- plot %>%
-      add_trace(y = plot_data[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
+      plotly::add_trace(y = plot_data[[input$slider]], type = "box", name = "log", visible = FALSE, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y") %>% # Trace for log y-axis
       plotly::layout(
         xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(plot_data)[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE),
         yaxis = list(autorange = TRUE, tickmode = "auto", title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE)), # Show tick labels only if data isn't all NA
@@ -290,12 +290,12 @@ shinyAppServer <- function(input, output, session) {
             list(
               label = "Linear",
               method = "update",
-              args = list(list(visible = c(T, F)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE))))
+              args = list(list(visible = c(TRUE, FALSE)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "linear", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE))))
             ),
             list(
               label = "Log",
               method = "update",
-              args = list(list(visible = c(F, T)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "log", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE))))
+              args = list(list(visible = c(FALSE, TRUE)), list(yaxis = list(title = list(text = paste0("<b>", gsub("map", "", tools::file_path_sans_ext(input$result)), "</b>"), font = list(size = 16)), type = "log", showticklabels = ifelse(nrow(plot_data) == 0, FALSE, TRUE))))
             )
           )
         ))
@@ -307,11 +307,11 @@ shinyAppServer <- function(input, output, session) {
   
   # Update Boxplot
   shiny::observe({
-    plotly::plotlyProxy("plot", session) %>%
-      plotly::plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
-      plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
-      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
-      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = F, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
+    plotly::plotlyProxy("plot", session) #%>%
+      # plotly::plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
+      # plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
+      # plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
+      # plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = FALSE, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
   })
   
   # Render Plot
@@ -380,7 +380,7 @@ shinyAppServer <- function(input, output, session) {
         leaflet::easyButtonState(
           stateName = "onestate",
           icon = "fa-camera", title = "Save Map",
-          onClick = JS(" function(btn, map) {Shiny.onInputChange('leaf_save_button', 'save'); Shiny.onInputChange('leaf_save_button', 'reset')}") # The "reset" state is so that the input resets after it's clicked so you can click the button again
+          onClick = leaflet::JS(" function(btn, map) {Shiny.onInputChange('leaf_save_button', 'save'); Shiny.onInputChange('leaf_save_button', 'reset')}") # The "reset" state is so that the input resets after it's clicked so you can click the button again
         )
       )))
     

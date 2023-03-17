@@ -54,9 +54,9 @@ VisualizeMapOutput <- function(results.dir = NULL, file.pattern = "^map.*\\.(txt
     requireNamespace("shinyWidgets", quietly = TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop("To use the Shiny app features, please ensure that the following packages are installed: DT, htmlwidgets, leaflet, leaflet.extras, mapview, plotly, shiny, shinyalert, shinyFiles, shinyWidgets", call.=FALSE)
+    stop('To use the Shiny app features, please ensure that the following packages are installed: c("DT", "htmlwidgets", "leaflet", "leaflet.extras", "mapview", "plotly", "sf", "shiny", "shinyalert", "shinyFiles", "shinyWidgets")', call.=FALSE)
   }
-  
+
   # Pass options to Shiny
   shiny::shinyOptions(results.dir = results.dir,
                file.pattern = file.pattern,

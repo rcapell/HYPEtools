@@ -59,7 +59,7 @@ devtools::spell_check()
 # _____________________________________________________________________________________________________________________________________
 
 # Specify email to receive the results from the various checks
-email <- "hypetools@smhi.se"
+email <- "hypetools.rene@smhi.se"
 
 # check in different environments
 # - You can stop the task in R or use interactive = F if you don't want to see the live output (the check will still be performed)

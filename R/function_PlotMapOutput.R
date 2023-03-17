@@ -156,7 +156,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     requireNamespace("htmlwidgets", quietly = TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop("To use the interactive mapping features, please ensure that the following packages are installed: sf, leaflet, leaflet.extras, mapview, htmlwidgets", call.=FALSE)
+    stop('To use the interactive mapping features, please ensure that the following packages are installed: c("sf", "leaflet", "leaflet.extras", "mapview," "htmlwidgets")', call.=FALSE)
     
     # Perform function
   } else {
