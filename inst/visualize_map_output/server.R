@@ -156,9 +156,6 @@ shinyAppServer <- function(input, output, session) {
     return(gis)
   })
   
-  # Input to select SUBID column in GIS file
-  output$input_column <- shiny::renderUI({shiny::selectInput("column", "Select SUBID Column", choices = colnames(gis())[which(!colnames(gis()) %in% attr(gis(), "sf_column"))], selected = colnames(gis())[map.subid.column])})
-  
   # Get column index of SUBID column in GIS file
   gis.subid <- shiny::reactive({which(colnames(gis()) == input$column)})
   
@@ -180,6 +177,9 @@ shinyAppServer <- function(input, output, session) {
     }, otherwise = c())
     get_subids()
   })
+  
+  # Input to select SUBID column in GIS file
+  output$input_column <- shiny::renderUI({shiny::selectInput("column", "Select SUBID Column", choices = colnames(gis())[which(!colnames(gis()) %in% attr(gis(), "sf_column"))], selected = colnames(gis())[map.subid.column])})
   
   # _____________________________________________________________________________________________________________________________________
   # Process MapOutput Data #####
