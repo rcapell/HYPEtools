@@ -32,6 +32,8 @@ VisualiseMapPoints(
 
 \item{sites.subid.column}{Optional integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs) that should be used on app intialization.}
 
+\item{bg}{Optional string, path to GIS file with polygon geometry to plot in the background. Typically an imported sub-basin vector polygon file.}
+
 \item{output.dir}{Optional string, path to a default output directory to save captured map images.}
 }
 \value{
