@@ -146,4 +146,5 @@ VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description",
 # # Save Data to package sysdata
 # load("R/sysdata.rda") # Load existing data in R/sysdata.rda
 # INTERNAL.hype.vars.info <- vars.info # Update with new vars.info
+# INTERNAL.hype.vars <- unique(c(INTERNAL.hype.vars, toupper(vars.info$ID))) # Update with new vars.info
 # save(INTERNAL.hype.vars.info,INTERNAL.hype.vars, file = "R/sysdata.rda") # Save data from environment to sysdata
