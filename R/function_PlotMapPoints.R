@@ -15,6 +15,7 @@
 #' For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.
 #' @param bg.label.column Integer, column index in the \code{bg} 'data' \code{\link{slot}} holding labels (e.g. SUBIDs) to use for plotting.
 #' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps. Use \code{"legacy"} for deprecated static plots.
+#' @param shiny.data Logical, if \code{map.type} is \code{"leaflet"}, then should the output be a list containing the basemap, formatted data, legend colors, and legend labels? Typically set to \code{FALSE} unless using \code{PlotMapOutput} to create Shiny apps or custom Leaflet maps. 
 #' @param plot.legend Logical, plot a legend along with the map.
 #' @param legend.pos Keyword string for legend position. For static plots, one of: \code{"none"}, \code{"left"}, \code{"right"},
 #' \code{"bottom"}, \code{"top"}, or a two-element numeric vector. For interactive Leaflet maps, one of: \code{"topleft"}, \code{"topright"}, \code{"bottomright"}, \code{"bottomleft"}. For legacy static plots, one of: \code{"left"}, \code{"topleft"}, \code{"topright"},
@@ -124,7 +125,7 @@
 #' 
 
 
-PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL, bg = NULL, bg.label.column = 1, map.type = "default",
+PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL, bg = NULL, bg.label.column = 1, map.type = "default", shiny.data = FALSE,
                           plot.legend = TRUE, legend.pos = "right", legend.title = NULL, 
                           legend.signif = 2, col = NULL, col.breaks = NULL,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
@@ -725,7 +726,13 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       # Create Leaflet Map
       } else if (map.type == "leaflet"){
         
+        # Create labels
+        x <- x %>%
+          mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
+        
         message("Generating Map")
+        
+        # Setup map
         leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
           leaflet::addTiles() %>%
           leaflet.extras::addResetMapButton()
@@ -745,7 +752,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
             leafmap <-  leafmap %>%
               leaflet::addLayersControl(
                 baseGroups = c("Map", "Street", "Topo", "Satellite"),
-                overlayGroups = c("Points"),
+                overlayGroups = c("Legend", "Points"),
                 options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
               )
             # No Background + point groups
@@ -753,7 +760,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
             leafmap <-  leafmap %>%
               leaflet::addLayersControl(
                 baseGroups = c("Map", "Street", "Topo", "Satellite"),
-                overlayGroups = c(names(sites.groups)),
+                overlayGroups = c("Legend", names(sites.groups)),
                 options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
               )
           }
@@ -763,7 +770,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
             leafmap <-  leafmap %>%
               leaflet::addLayersControl(
                 baseGroups = c("Map", "Street", "Topo", "Satellite"),
-                overlayGroups = c("Points", "Subbasins"),
+                overlayGroups = c("Legend", "Points", "Subbasins"),
                 options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
               )
             # Background + point groups
@@ -771,7 +778,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
             leafmap <-  leafmap %>%
               leaflet::addLayersControl(
                 baseGroups = c("Map", "Street", "Topo", "Satellite"),
-                overlayGroups = c("Subbasins", names(sites.groups)),
+                overlayGroups = c("Legend", "Subbasins", names(sites.groups)),
                 options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
               )
           }
@@ -837,100 +844,112 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
           }
         }
         
-        # Plot points without groups
-        if(is.null(sites.groups)){
-          if (plot.label == TRUE) { # Create points with labels
-            
-            # Create labels
-            x <- x %>%
-              mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
-            
-            leafmap <- leafmap %>%
-              leaflet::addCircleMarkers(
-                group = "Points",
-                data = x,
-                color = "black",
-                radius = radius,
-                weight = weight,
-                opacity = opacity,
-                fillColor = x$color,
-                fillOpacity = fillOpacity,
-                label = ~label,
-                labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
-              )
-          } else { # Create points without labels
-            leafmap <- leafmap %>%
-              leaflet::addCircleMarkers(
-                group = "Points",
-                data = x,
-                color = "black",
-                radius = radius,
-                weight = weight,
-                opacity = opacity,
-                fillColor = x$color,
-                fillOpacity = fillOpacity
-              )
-          }
+        # Create basemap only
+        if(shiny.data == TRUE){
           
-          # Plot points with groups
+          # Get Bounds of Data
+          bounds <- x %>%
+            sf::st_bbox() %>%
+            as.character()
+          
+          # Zoom to layer
+          leafmap <- leafmap %>%
+            leaflet::fitBounds(bounds[1], bounds[2], bounds[3], bounds[4])
+          
+          # Add points to map
         } else{
           
-          if (plot.label == TRUE) { # Create points with labels
-            
-            # Create labels
-            x <- x %>%
-              mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
-            
-            # Add points for individual groups
-            for(i in 1:length(sites.groups)){
+          # Plot points without groups
+          if(is.null(sites.groups)){
+            if (plot.label == TRUE) { # Create points with labels
               
-              # Get data for group
-              x_group <- x %>% filter(.data$SUBID %in% sites.groups[[i]])
+              # Create labels
+              x <- x %>%
+                mutate(label = paste0("SUBID: ", .[[1]], " --- Value: ", .[[2]]))
               
-              # Add points
-              if(nrow(x_group) > 0){
-                leafmap <- leafmap %>%
-                  leaflet::addCircleMarkers(
-                    group = names(sites.groups)[i],
-                    data = x_group,
-                    color = "black",
-                    radius = radius,
-                    weight = weight,
-                    opacity = opacity,
-                    fillColor = x_group$color,
-                    fillOpacity = fillOpacity,
-                    label = ~label,
-                    labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
-                  )
-              }
-              
+              leafmap <- leafmap %>%
+                leaflet::addCircleMarkers(
+                  group = "Points",
+                  data = x,
+                  color = "black",
+                  radius = radius,
+                  weight = weight,
+                  opacity = opacity,
+                  fillColor = x$color,
+                  fillOpacity = fillOpacity,
+                  label = ~label,
+                  labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
+                )
+            } else { # Create points without labels
+              leafmap <- leafmap %>%
+                leaflet::addCircleMarkers(
+                  group = "Points",
+                  data = x,
+                  color = "black",
+                  radius = radius,
+                  weight = weight,
+                  opacity = opacity,
+                  fillColor = x$color,
+                  fillOpacity = fillOpacity
+                )
             }
-          } else { # Create points without labels
             
-            # Add points for individual groups
-            for(i in 1:length(sites.groups)){
+            # Plot points with groups
+          } else{
+            
+            if (plot.label == TRUE) { # Create points with labels
               
-              # Get data for group
-              x_group <- x%>% filter(.data$SUBID%in%sites.groups[[i]])
+              # Add points for individual groups
+              for(i in 1:length(sites.groups)){
+                
+                # Get data for group
+                x_group <- x %>% filter(.data$SUBID %in% sites.groups[[i]])
+                
+                # Add points
+                if(nrow(x_group) > 0){
+                  leafmap <- leafmap %>%
+                    leaflet::addCircleMarkers(
+                      group = names(sites.groups)[i],
+                      data = x_group,
+                      color = "black",
+                      radius = radius,
+                      weight = weight,
+                      opacity = opacity,
+                      fillColor = x_group$color,
+                      fillOpacity = fillOpacity,
+                      label = ~label,
+                      labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
+                    )
+                }
+                
+              }
+            } else { # Create points without labels
               
-              # Add points
-              if(nrow(x_group) > 0){
-                leafmap <- leafmap %>%
-                  leaflet::addCircleMarkers(
-                    group = names(sites.groups)[i],
-                    data = x_group,
-                    color = "black",
-                    radius = radius,
-                    weight = weight,
-                    opacity = opacity,
-                    fillColor = x_group$color,
-                    fillOpacity = fillOpacity
-                  )
+              # Add points for individual groups
+              for(i in 1:length(sites.groups)){
+                
+                # Get data for group
+                x_group <- x%>% filter(.data$SUBID%in%sites.groups[[i]])
+                
+                # Add points
+                if(nrow(x_group) > 0){
+                  leafmap <- leafmap %>%
+                    leaflet::addCircleMarkers(
+                      group = names(sites.groups)[i],
+                      data = x_group,
+                      color = "black",
+                      radius = radius,
+                      weight = weight,
+                      opacity = opacity,
+                      fillColor = x_group$color,
+                      fillOpacity = fillOpacity
+                    )
+                }
               }
             }
           }
         }
-        
+
         # # Add searchbar to map
         # if (plot.searchbar == TRUE) {
         #   leafmap <- leafmap %>%
@@ -950,7 +969,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         if (plot.legend == TRUE) {
           leafmap <- leafmap %>%
             leaflet::addLegend(
-              group = "Points",
+              group = "Legend",
               position = legend.pos,
               title = ifelse(legend.title == "", "Legend", legend.title),
               colors = lcol,
@@ -982,7 +1001,12 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
           file.rename(temp, html.name) # Rename/Move HTML file to desired file
         }
         
-        return(leafmap)
+        # Return values
+        if(shiny.data == TRUE){
+          return(list("basemap" = leafmap, "x" = x, "lcol" = lcol, "l.label" = l.label))
+        } else{
+          return(leafmap)
+        }
       }
     }
   }
