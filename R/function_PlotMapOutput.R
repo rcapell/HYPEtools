@@ -799,9 +799,16 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
             sf::st_bbox() %>%
             as.character()
           
-          # Zoom to layer
-          leafmap <- leafmap %>%
-            leaflet::fitBounds(bounds[1], bounds[2], bounds[3], bounds[4])
+          # Check if only one point (probably shouldn't happen with polygon data)
+          if(bounds[1] == bounds[3] & bounds[2] == bounds[4]){
+            leafmap <- leafmap %>%
+              leaflet::setView(bounds[1], bounds[2], zoom = 14)
+            
+            # Zoom to layer
+          } else{
+            leafmap <- leafmap %>%
+              leaflet::fitBounds(bounds[1], bounds[2], bounds[3], bounds[4])
+          }
 
         # Add polygons to map
         } else{

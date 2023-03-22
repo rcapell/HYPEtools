@@ -852,9 +852,16 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
             sf::st_bbox() %>%
             as.character()
           
+          # Check if only one point
+          if(bounds[1] == bounds[3] & bounds[2] == bounds[4]){
+            leafmap <- leafmap %>%
+              leaflet::setView(bounds[1], bounds[2], zoom = 14)
+            
           # Zoom to layer
-          leafmap <- leafmap %>%
-            leaflet::fitBounds(bounds[1], bounds[2], bounds[3], bounds[4])
+          } else{
+            leafmap <- leafmap %>%
+                leaflet::fitBounds(bounds[1], bounds[2], bounds[3], bounds[4])
+          }
           
           # Add points to map
         } else{

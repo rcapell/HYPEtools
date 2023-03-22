@@ -225,15 +225,6 @@ shinyAppServer <- function(input, output, session) {
       gis <- NULL
     }
     
-    # shiny::req(!all(is.na(bg_file()$Files)))
-    # gis <- sf::st_read(bg_file()$Files[1])
-    # geo_type <- sf::st_geometry_type(gis, by_geometry = FALSE) # Get geometry type
-    # 
-    # # Send warning if GIS file is not point type
-    # if(!geo_type %in% c("POLYGON", "MULTIPOLYGON")){
-    #   shinyalert::shinyalert(title = "Select GIS File", text = "Selected GIS file does not have POLYGON geometry.", type = "error")
-    # }
-    # req(geo_type %in% c("POLYGON", "MULTIPOLYGON"))
     return(gis)
   })
   
@@ -467,7 +458,7 @@ shinyAppServer <- function(input, output, session) {
           onClick = leaflet::JS(" function(btn, map) {Shiny.onInputChange('leaf_save_button', 'save'); Shiny.onInputChange('leaf_save_button', 'reset')}") # The "reset" state is so that the input resets after it's clicked so you can click the button again
         )
       )))
-    
+
     return(leaf)
   })
   
@@ -476,13 +467,13 @@ shinyAppServer <- function(input, output, session) {
   
   # Update map when data changes
   shiny::observe({
-    
+
     # Call background to trigger update if new basemap created
     gis_bg()
-    
+
     # Require valid data
     shiny::req(leaf_check() == TRUE)
-    
+
     # Get Data
     data <- PlotMapPoints(
       x = data(),
