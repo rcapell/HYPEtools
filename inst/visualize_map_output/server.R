@@ -52,7 +52,7 @@ shinyAppServer <- function(input, output, session) {
     )
   })
   
-  # Help message for MapOutput data table
+  # Help message for output directory
   shiny::observeEvent(input$help_options, {
     shinyalert::shinyalert(
       title = "Options:",

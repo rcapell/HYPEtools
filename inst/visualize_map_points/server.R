@@ -40,22 +40,22 @@ shinyAppServer <- function(input, output, session) {
   # Help message for selecting mapoutput files
   shiny::observeEvent(input$help_result, {
     shinyalert::shinyalert(
-      title = "Select MapOutput Files:",
+      title = "Select Results Files:",
       type = "info",
-      text = 'Use the button to select the HYPE MapOutput files (.txt or .csv) that should be imported. Multiple files may be selected at one time. Use the dropdown menu to select the name of file that should be visualized.'
+      text = 'Use the button to select the HYPE MapOutput or Subass files (.txt or .csv) that should be imported. Multiple files may be selected at one time. Use the dropdown menu to select the name of file that should be visualized.'
     )
   })
   
   # Help message for selecting time period
   shiny::observeEvent(input$help_slider, {
     shinyalert::shinyalert(
-      title = "Select Time Period:",
+      title = "Select Time Period/Statistic:",
       type = "info",
-      text = 'Use the slider to select the time period in the MapOutput file that should be visualized. The "play" button can be used to animate the visualizations by stepping through the time periods automatically.'
+      text = 'Use the slider to select the time period (MapOutput files) or statistic (subass files) that should be visualized. The "play" button can be used to animate the visualizations by stepping through the periods/statistics automatically.'
     )
   })
   
-  # Help message for MapOutput data table
+  # Help message for output directory
   shiny::observeEvent(input$help_options, {
     shinyalert::shinyalert(
       title = "Options:",
@@ -73,12 +73,12 @@ shinyAppServer <- function(input, output, session) {
     )
   })
   
-  # Help message for MapOutput data table
+  # Help message for Results data table
   shiny::observeEvent(input$help_data_df, {
     shinyalert::shinyalert(
-      title = "MapOutput Data:",
+      title = "Results Data:",
       type = "info",
-      text = 'This table displays the data for the selected MapOutput file. Columns can be sorted and filtered. Filters applied to this table do not affect the other outputs. However, if the MapOutput data has been successfully joined to the GIS data (Join Status: CHECK or PASS), then filters applied to the "GIS Data" table will also filter the data displayed in this table. If the GIS Data table filters are set such that all SUBIDs are excluded, then the table will reset to show all available MapOutput data.'
+      text = 'This table displays the data for the selected MapOutput or Subass file. Columns can be sorted and filtered. Filters applied to this table do not affect the other outputs. However, if the results data has been successfully joined to the GIS data (Join Status: CHECK or PASS), then filters applied to the "GIS Data" table will also filter the data displayed in this table. If the GIS Data table filters are set such that all SUBIDs are excluded, then the table will reset to show all available result data.'
     )
   })
   
@@ -269,13 +269,19 @@ shinyAppServer <- function(input, output, session) {
     }
   })
   
-  # Check if time period slider has loaded
+  # Check if slider has loaded
   slider_loaded <- shiny::reactiveVal(FALSE)
   
+  # Set to TRUE if slider has initialized
   shiny::observe({
     if(!input$slider == "NA"){
       slider_loaded(TRUE)
     }
+  })
+  
+  # Reset if the result type changes and the slider values also change
+  shiny::observeEvent(result_type(),{
+    slider_loaded(FALSE)
   })
 
   # Data used for app
@@ -413,7 +419,7 @@ shinyAppServer <- function(input, output, session) {
   })
 
   # Create basemap
-  leaf <- shiny::eventReactive(c(gis_filtered(), gis_bg(), gis.subid(), result_file(), slider_loaded()),{
+  leaf <- shiny::eventReactive(c(gis_filtered(), gis_bg(), gis.subid(), result_file(), slider_loaded(), result_type()),{
 
     # Require valid data
     shiny::req(leaf_check() == TRUE, slider_loaded() == TRUE)

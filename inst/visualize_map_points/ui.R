@@ -39,13 +39,13 @@ shinyAppUI <- fluidPage(
             div(style = "display:inline-block", uiOutput("join_status"))
             ),
         hr(),
-        div(div(style="display:inline-block",h4(tags$b("Select MapOutput Files:"))),div(style="display:inline-block",actionButton("help_result",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
-        shinyFiles::shinyFilesButton("button_results", "Select MapOutput Files" , title = "Please Select Files:", buttonType = "default", class = NULL, multiple = TRUE),
+        div(div(style="display:inline-block",h4(tags$b("Select Results Files:"))),div(style="display:inline-block",actionButton("help_result",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
+        shinyFiles::shinyFilesButton("button_results", "Select Results Files" , title = "Please Select Files:", buttonType = "default", class = NULL, multiple = TRUE),
         h5("Selected Result Directory:"),
         div(style = "max-width: 23em; padding-bottom: 10px; overflow-wrap: break-word; font-size: 0.8em", textOutput("result_file")),
         uiOutput("input_result"),
         hr(),
-        div(div(style="display:inline-block",h4(tags$b("Select Time Period:"))),div(style="display:inline-block",actionButton("help_slider",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
+        div(div(style="display:inline-block",h4(tags$b("Select Time Period/Statistic:"))),div(style="display:inline-block",actionButton("help_slider",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
         shinyWidgets::sliderTextInput("slider", label = NULL, choices = "NA", animate = animationOptions(interval = 750, loop = TRUE)),
         hr(),
         div(div(style="display:inline-block",h4(tags$b("Options:"))),div(style="display:inline-block",actionButton("help_options",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
@@ -67,7 +67,7 @@ shinyAppUI <- fluidPage(
         DT::dataTableOutput("gis")
     ),
     div(style = "width: 25%; padding:10px",
-        div(div(style="display:inline-block",h4(tags$b("MapOutput Data:"))),div(style="display:inline-block",actionButton("help_data_df",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
+        div(div(style="display:inline-block",h4(tags$b("Result Data:"))),div(style="display:inline-block",actionButton("help_data_df",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
         DT::dataTableOutput("table")
     )
   )

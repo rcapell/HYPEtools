@@ -3,7 +3,7 @@
 #'
 #' Interactive maps and plots for visualizing mapped point information, e.g. HYPE MapOutput files or model performances at observation sites.
 #' 
-#' @param results.dir Optional string, path to a directory containing e.g. MapOutput files that should be loaded on app initialization.
+#' @param results.dir Optional string, path to a directory containing e.g. MapOutput or Subass files that should be loaded on app initialization.
 #' @param file.pattern Optional string, filename pattern to select files in \code{results.dir} that should be loaded on app initialization. See \code{\link{list.files}}.
 #' @param sites Optional string, path to GIS file for outlet points that should be loaded on app initialization. Typically a GeoPackage (.gpkg) or Shapefile (.shp).
 #' @param sites.subid.column Optional integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs) that should be used on app intialization.
@@ -34,7 +34,7 @@
 #' @export
 
 # wrapper for shiny::shinyApp()
-VisualizeMapPoints<- function(results.dir = NULL, file.pattern = "^map.*\\.(txt|csv)$", sites = NULL, sites.subid.column = 1, bg = NULL, output.dir = NULL) {
+VisualizeMapPoints<- function(results.dir = NULL, file.pattern = "^(map|subass).*\\.(txt|csv)$", sites = NULL, sites.subid.column = 1, bg = NULL, output.dir = NULL) {
   
   # Search for App Directory
   appDir <- system.file("visualize_map_points", package = "HYPEtools")

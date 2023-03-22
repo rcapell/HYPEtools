@@ -7,7 +7,7 @@
 \usage{
 VisualizeMapPoints(
   results.dir = NULL,
-  file.pattern = "^map.*\\\\.(txt|csv)$",
+  file.pattern = "^(map|subass).*\\\\.(txt|csv)$",
   sites = NULL,
   sites.subid.column = 1,
   bg = NULL,
@@ -16,7 +16,7 @@ VisualizeMapPoints(
 
 VisualiseMapPoints(
   results.dir = NULL,
-  file.pattern = "^map.*\\\\.(txt|csv)$",
+  file.pattern = "^(map|subass).*\\\\.(txt|csv)$",
   sites = NULL,
   sites.subid.column = 1,
   bg = NULL,
@@ -24,7 +24,7 @@ VisualiseMapPoints(
 )
 }
 \arguments{
-\item{results.dir}{Optional string, path to a directory containing e.g. MapOutput files that should be loaded on app initialization.}
+\item{results.dir}{Optional string, path to a directory containing e.g. MapOutput or Subass files that should be loaded on app initialization.}
 
 \item{file.pattern}{Optional string, filename pattern to select files in \code{results.dir} that should be loaded on app initialization. See \code{\link{list.files}}.}
 
