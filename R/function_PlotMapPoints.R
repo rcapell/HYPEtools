@@ -316,6 +316,16 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         } else if(!toupper(var.name) == ""){
           crfun <- ColDiffGeneric
           cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = TRUE)
+          
+          # in variables with large numbers of "0" values, the lower 10%-percentiles can be repeatedly "0", which leads to an error with cut,
+          # so cbrks is shortened to unique values (this affects only the automatic quantile-based breaks)
+          # if just one value remains (or was requested by user), replace crbks by minmax-based range (this also resolves unexpected behaviour
+          # with single-value cbrks in 'cut' below).
+          cbrks <- unique(cbrks)
+          if (length(cbrks) == 1) {
+            cbrks <- range(cbrks) + c(-1, 1)
+          }
+          
           col.class <- crfun(length(cbrks) - 1)
           if(is.null(legend.title)){
             legend.title = var.name
