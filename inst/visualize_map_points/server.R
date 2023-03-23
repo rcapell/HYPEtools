@@ -442,6 +442,13 @@ shinyAppServer <- function(input, output, session) {
     
     # Require data
     shiny::req(!all(is.na(mapdata$value)))
+    
+    # Get variable name
+    if(result_type() == "Subass"){
+      var.name <- ""
+    } else{
+      var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
+    }
 
     # Create basemap and get data
     data <- PlotMapPoints(
@@ -452,7 +459,7 @@ shinyAppServer <- function(input, output, session) {
       bg = gis_bg(),
       plot.label = TRUE,
       legend.pos = "bottomleft",
-      legend.title = gsub("map", "", tools::file_path_sans_ext(input$result)),
+      var.name = var.name,
       legend.signif = 2, # Specify number of significant digits to include in map legend
       na.color = "#808080", # Specify color for NA values
       shiny.data = TRUE
@@ -488,6 +495,13 @@ shinyAppServer <- function(input, output, session) {
 
     # Require valid data
     shiny::req(leaf_check() == TRUE, lcol(), cbrks())
+    
+    # Get variable name
+    if(result_type() == "Subass"){
+      var.name <- ""
+    } else{
+      var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
+    }
 
     # Get Data
     data <- PlotMapPoints(
@@ -496,7 +510,7 @@ shinyAppServer <- function(input, output, session) {
       map.type = "leaflet",
       sites.subid.column = gis.subid(),
       plot.label = TRUE,
-      legend.title = gsub("map", "", tools::file_path_sans_ext(input$result)),
+      var.name = var.name,
       legend.pos = "bottomleft",
       col = if(length(lcol())==length(cbrks())){lcol()[1:length(lcol())-1]}else{lcol()}, # Remove NA color since this should get added back in
       col.breaks = cbrks(),
@@ -528,6 +542,13 @@ shinyAppServer <- function(input, output, session) {
   # Emulated map for downloading
   leaf_save <- shiny::reactive({
     
+    # Get variable name
+    if(result_type() == "Subass"){
+      var.name <- ""
+    } else{
+      var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
+    }
+    
     # Get Data
     data <- PlotMapPoints(
       x = data(),
@@ -535,7 +556,7 @@ shinyAppServer <- function(input, output, session) {
       map.type = "leaflet",
       sites.subid.column = gis.subid(),
       plot.label = TRUE,
-      legend.title = gsub("map", "", tools::file_path_sans_ext(input$result)),
+      var.name = var.name,
       legend.pos = "bottomleft",
       col = if(length(lcol())==length(cbrks())){lcol()[1:length(lcol())-1]}else{lcol()}, # Remove NA color since this should get added back in
       col.breaks = cbrks(),

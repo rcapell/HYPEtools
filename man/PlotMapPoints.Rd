@@ -11,6 +11,7 @@ PlotMapPoints(
   sites.groups = NULL,
   bg = NULL,
   bg.label.column = 1,
+  var.name = "",
   map.type = "default",
   shiny.data = FALSE,
   plot.legend = TRUE,
@@ -75,6 +76,9 @@ Example: \code{sites.groups = list("GROUP 1" = c(1, 2, 3), "GROUP 2" = c(4, 5, 6
 For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.}
 
 \item{bg.label.column}{Integer, column index in the \code{bg} 'data' \code{\link{slot}} holding labels (e.g. SUBIDs) to use for plotting.}
+
+\item{var.name}{Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
+HYPE variables (\code{col = "auto"}). Not case-sensitive.}
 
 \item{map.type}{Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps. Use \code{"legacy"} for deprecated static plots.}
 

@@ -14,6 +14,8 @@
 #' @param bg A \code{SpatialPolygonsDataFrame} or \code{sf} object to plot in the background. Typically an imported sub-basin vector polygon file.
 #' For default maps with several background layers, use \code{add = TRUE} and plot background layer(s) first.
 #' @param bg.label.column Integer, column index in the \code{bg} 'data' \code{\link{slot}} holding labels (e.g. SUBIDs) to use for plotting.
+#' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
+#' HYPE variables (\code{col = "auto"}). Not case-sensitive.
 #' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps. Use \code{"legacy"} for deprecated static plots.
 #' @param shiny.data Logical, if \code{map.type} is \code{"leaflet"}, then should the output be a list containing the basemap, formatted data, legend colors, and legend labels? Typically set to \code{FALSE} unless using \code{PlotMapOutput} to create Shiny apps or custom Leaflet maps. 
 #' @param plot.legend Logical, plot a legend along with the map.
@@ -125,7 +127,7 @@
 #' 
 
 
-PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL, bg = NULL, bg.label.column = 1, map.type = "default", shiny.data = FALSE,
+PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL, bg = NULL, bg.label.column = 1, var.name = "", map.type = "default", shiny.data = FALSE,
                           plot.legend = TRUE, legend.pos = "right", legend.title = NULL, 
                           legend.signif = 2, col = NULL, col.breaks = NULL,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
@@ -267,12 +269,66 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         crfun <- col
         col.class <- crfun(length(cbrks) - 1)
       } else {
-        # no color ramp function supplied, create default, add purple for negative values if they exist in x
-        crfun <- colorRampPalette(c("#e81515", "#EEEE00", "#2892c7"))
-        if (mnx < 0) {
-          col.class <- c("purple", crfun(length(cbrks) - 2))
-        } else {
+        if (toupper(var.name) == "CCTN") {
+          crfun <- ColNitr
+          cbrks <- c(0, 10, 50, 100, 250, 500, 1000, 2500, 5000, ifelse(max(x[, 2], na.rm = TRUE) > 5000, max(x[, 2], na.rm = TRUE) + 1, 10000))
           col.class <- crfun(length(cbrks) - 1)
+          if (is.null(legend.title)) {
+            if (map.type == "default") {
+              legend.title <- expression(paste("Total N (", mu, "g l"^"-1", ")"))
+            } else if (map.type == "leaflet") {
+              legend.title <- paste("Total N (ug/L)")
+            }
+          }
+        } else if (toupper(var.name) == "CCTP") {
+          crfun <- ColPhos
+          cbrks <- c(0, 5, 10, 25, 50, 100, 150, 200, 250, ifelse(max(x[, 2], na.rm = TRUE) > 250, max(x[, 2], na.rm = TRUE) + 1, 1000))
+          col.class <- crfun(length(cbrks) - 1)
+          if (is.null(legend.title)) {
+            if (map.type == "default") {
+              legend.title <- expression(paste("Total P (", mu, "g l"^"-1", ")"))
+            } else if (map.type == "leaflet") {
+              legend.title <- paste("Total P (ug/L)")
+            }
+          }
+        } else if (toupper(var.name) == "COUT") {
+          crfun <- ColQ
+          cbrks <- c(0, .5, 1, 5, 10, 50, 100, 500, ifelse(max(x[, 2], na.rm = TRUE) > 500, max(x[, 2], na.rm = TRUE) + 1, 2000))
+          col.class <- crfun(length(cbrks) - 1)
+          if (is.null(legend.title)) {
+            if (map.type == "default") {
+              legend.title <- expression(paste("Q (m"^3, "s"^"-1", ")"))
+            } else if (map.type == "leaflet") {
+              legend.title <- paste("Q (m3/s)")
+            }
+          }
+        } else if (toupper(var.name) == "TEMP") {
+          crfun <- ColTemp
+          cbrks <- c(ifelse(min(x[, 2]) < -7.5, min(x[, 2]) - 1, -30), -7.5, -5, -2.5, -1, 0, 1, 2.5, 5, 7.5, ifelse(max(x[, 2], na.rm = TRUE) > 7.5, max(x[, 2], na.rm = TRUE) + 1, 30))
+          col.class <- crfun(length(cbrks) - 1)
+          if (is.null(legend.title)) {
+            if (map.type == "default") {
+              legend.title <- expression(paste("Air Temp. (" * degree, "C)"))
+            } else if (map.type == "leaflet") {
+              legend.title <- paste("Air Temp. (C)")
+            }
+          }
+        } else if(!toupper(var.name) == ""){
+          crfun <- ColDiffGeneric
+          cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = TRUE)
+          col.class <- crfun(length(cbrks) - 1)
+          if(is.null(legend.title)){
+            legend.title = var.name
+          }
+          
+        } else{
+          # no color ramp function supplied, create default, add purple for negative values if they exist in x
+          crfun <- colorRampPalette(c("#e81515", "#EEEE00", "#2892c7"))
+          if (mnx < 0) {
+            col.class <- c("purple", crfun(length(cbrks) - 2))
+          } else {
+            col.class <- crfun(length(cbrks) - 1)
+          }
         }
       }
     } else if (is.vector(col)) {
