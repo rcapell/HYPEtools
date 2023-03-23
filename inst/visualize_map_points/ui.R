@@ -55,8 +55,8 @@ shinyAppUI <- fluidPage(
     ),
     div(style="display:table-cell; width: calc(100vw - 27em); min-width:400px;", # Set Width to 100% of View Width -27em
         div(style = "display:flex; margin-top: 20px;align-items:stretch",
-            div(style = "width:70%; min-width:300px", leaflet::leafletOutput("map", height = "850px"))
-            # div(style = "width: 30%; min-width:100px", plotly::plotlyOutput("plot", height = "100%"))
+            div(style = "width:70%; min-width:300px", leaflet::leafletOutput("map", height = "850px")),
+            div(style = "width: 30%; min-width:100px", plotly::plotlyOutput("plot", height = "100%"))
         )
     )
   ),

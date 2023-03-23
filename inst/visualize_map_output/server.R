@@ -369,6 +369,9 @@ shinyAppServer <- function(input, output, session) {
       tidyr::pivot_longer(cols = 2:ncol(.)) %>%
       select(1, "value")
     
+    # Require data
+    shiny::req(!all(is.na(mapdata$value)))
+    
     # Create basemap and get data
     data <- PlotMapOutput(
       x = mapdata,

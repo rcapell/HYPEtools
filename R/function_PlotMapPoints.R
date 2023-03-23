@@ -882,7 +882,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
                   radius = radius,
                   weight = weight,
                   opacity = opacity,
-                  fillColor = x$color,
+                  fillColor = ~color,
                   fillOpacity = fillOpacity,
                   label = ~label,
                   labelOptions = leaflet::labelOptions(noHide = noHide, direction = "auto", textOnly = textOnly, style = list("font-size" = paste0(font.size, "px")))
@@ -896,7 +896,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
                   radius = radius,
                   weight = weight,
                   opacity = opacity,
-                  fillColor = x$color,
+                  fillColor = ~color,
                   fillOpacity = fillOpacity
                 )
             }
@@ -1010,7 +1010,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         
         # Return values
         if(shiny.data == TRUE){
-          return(list("basemap" = leafmap, "x" = x, "lcol" = lcol, "l.label" = l.label))
+          return(list("basemap" = leafmap, "x" = x, "cbrks" = cbrks, "lcol" = lcol, "l.label" = l.label))
         } else{
           return(leafmap)
         }

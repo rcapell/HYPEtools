@@ -241,7 +241,7 @@ shinyAppServer <- function(input, output, session) {
     
     # Safely read file and return NA if any error - leave col.prefix because without the prefix the SliderText Input changes the choices for e.g. "1988.10" to "1988.1" and then it doesn't work
     read_data_map <- purrr::possibly(~ReadMapOutput(results_files()$Files[result_file()], col.prefix = "X"), otherwise = NA)
-    read_data_subass <- purrr::possibly(~ReadSubass(results_files()$Files[result_file()], check.names = TRUE), otherwise = NA)
+    read_data_subass <- purrr::possibly(~ReadSubass(results_files()$Files[result_file()], check.names = TRUE, na.strings = c("****************", -9999)), otherwise = NA)
     
     # Try reading as MapOutput first
     data_in <- read_data_map()
@@ -378,11 +378,18 @@ shinyAppServer <- function(input, output, session) {
   
   # Update Boxplot
   shiny::observe({
+
+    # Get Data
+    data <- data_out()
+
+    # Duplicate data if there is only data for one point so that the boxplot can get generated
+    if (nrow(data) == 1) {data <- rbind(data, data)}
+
     plotly::plotlyProxy("plot", session) %>%
       plotly::plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
-      plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
-      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
-      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = FALSE, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
+      plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data)[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
+      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
+      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data[[input$slider]], type = "box", name = "log", visible = FALSE, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
   })
   
   # Render Plot
@@ -417,6 +424,10 @@ shinyAppServer <- function(input, output, session) {
       shiny::div(style = "display: inline-block; font-weight: bold; color: red","FAIL")
     }
   })
+  
+  # Reactive values to store stuff for legend
+  lcol <- reactiveVal()
+  cbrks <- reactiveVal()
 
   # Create basemap
   leaf <- shiny::eventReactive(c(gis_filtered(), gis_bg(), gis.subid(), result_file(), slider_loaded(), result_type()),{
@@ -426,17 +437,11 @@ shinyAppServer <- function(input, output, session) {
     
     # Parse full mapoutput file
     mapdata <- data_in() %>%
-      tidyr::pivot_longer(cols = 2:ncol(.))
+      tidyr::pivot_longer(cols = 2:ncol(.)) %>%
+      select(1, "value")
     
-    # Select Columns
-    if(result_type() == "MapOutput"){
-      mapdata <- mapdata %>%
-        select(1, "value")
-    } else if(result_type() == "Subass"){
-      mapdata <- mapdata %>%
-        filter(name == input$slider) %>%
-        select(1, "value")
-    }
+    # Require data
+    shiny::req(!all(is.na(mapdata$value)))
 
     # Create basemap and get data
     data <- PlotMapPoints(
@@ -454,6 +459,10 @@ shinyAppServer <- function(input, output, session) {
     ) %>% 
       suppressMessages() %>%
       suppressWarnings()
+    
+    # Save function and breaks used to create legend
+    lcol(data$lcol)
+    cbrks(data$cbrks)
     
     # Parse Data and add button to save map
     leaf <- data$basemap %>%
@@ -478,7 +487,7 @@ shinyAppServer <- function(input, output, session) {
     gis_bg()
 
     # Require valid data
-    shiny::req(leaf_check() == TRUE)
+    shiny::req(leaf_check() == TRUE, lcol(), cbrks())
 
     # Get Data
     data <- PlotMapPoints(
@@ -489,9 +498,12 @@ shinyAppServer <- function(input, output, session) {
       plot.label = TRUE,
       legend.title = gsub("map", "", tools::file_path_sans_ext(input$result)),
       legend.pos = "bottomleft",
+      col = if(length(lcol())==length(cbrks())){lcol()[1:length(lcol())-1]}else{lcol()}, # Remove NA color since this should get added back in
+      col.breaks = cbrks(),
       shiny.data = TRUE
     ) %>%
-      suppressMessages()
+      suppressMessages() %>%
+      suppressWarnings()
 
     # Parse Data
     x <- data$x
@@ -525,9 +537,12 @@ shinyAppServer <- function(input, output, session) {
       plot.label = TRUE,
       legend.title = gsub("map", "", tools::file_path_sans_ext(input$result)),
       legend.pos = "bottomleft",
+      col = if(length(lcol())==length(cbrks())){lcol()[1:length(lcol())-1]}else{lcol()}, # Remove NA color since this should get added back in
+      col.breaks = cbrks(),
       shiny.data = TRUE
     ) %>%
-      suppressMessages()
+      suppressMessages() %>%
+      suppressWarnings()
     
     # Parse Data
     x <- data$x
