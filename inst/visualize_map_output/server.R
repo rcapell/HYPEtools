@@ -307,11 +307,18 @@ shinyAppServer <- function(input, output, session) {
   
   # Update Boxplot
   shiny::observe({
+    
+    # Get Data
+    data <- data_out()
+    
+    # Duplicate data if there is only data for one point so that the boxplot can get generated
+    if (nrow(data) == 1) {data <- rbind(data, data)}
+    
     plotly::plotlyProxy("plot", session) %>%
       plotly::plotlyProxyInvoke("deleteTraces", list(as.integer(0), as.integer(1))) %>%
-      plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data_out())[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
-      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
-      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data_out()[[input$slider]], type = "box", name = "log", visible = FALSE, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
+      plotly::plotlyProxyInvoke("relayout", list(xaxis = list(autorange = TRUE, ticks = "", title = list(text = paste0("<b>", gsub("^X", "", colnames(data)[2]), "</b>"), font = list(size = 14)), showticklabels = FALSE))) %>%
+      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data[[input$slider]], type = "box", name = "linear", marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y")) %>%
+      plotly::plotlyProxyInvoke("addTraces", list(x = 0, y = data[[input$slider]], type = "box", name = "log", visible = FALSE, marker = list(color = "black"), line = list(color = "black"), fillcolor = "white", hoverinfo = "y"))
   })
   
   # Render Plot
@@ -346,6 +353,10 @@ shinyAppServer <- function(input, output, session) {
       shiny::div(style = "display: inline-block; font-weight: bold; color: red","FAIL")
     }
   })
+  
+  # Reactive values to store stuff for legend
+  lcol <- reactiveVal()
+  cbrks <- reactiveVal()
 
   # Create basemap
   leaf <- shiny::eventReactive(c(gis_filtered(), gis.subid(), result_file(), slider_loaded()),{
@@ -374,6 +385,10 @@ shinyAppServer <- function(input, output, session) {
       suppressMessages() %>%
       suppressWarnings()
     
+    # Save function and breaks used to create legend
+    lcol(data$lcol)
+    cbrks(data$cbrks)
+    
     # Parse Data and add button to save map
     leaf <- data$basemap %>%
       leaflet::addEasyButton(leaflet::easyButton(states = list(
@@ -394,7 +409,7 @@ shinyAppServer <- function(input, output, session) {
   shiny::observe({
     
     # Require valid data
-    shiny::req(leaf_check() == TRUE)
+    shiny::req(leaf_check() == TRUE, lcol(), cbrks())
     
     # Get Data
     data <- PlotMapOutput(
@@ -403,9 +418,12 @@ shinyAppServer <- function(input, output, session) {
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       var.name = gsub("map", "", tools::file_path_sans_ext(input$result)),
+      col = if(length(lcol())<length(cbrks())){c(lcol(),"black")}else{lcol()}, # Add extra color if color breaks longer than colors (this color should get ignored by PlotMapOutput)
+      col.breaks = cbrks(),
       shiny.data = TRUE
     ) %>%
-      suppressMessages()
+      suppressMessages() %>%
+      suppressWarnings()
 
     # Parse Data
     x <- data$x
@@ -435,9 +453,12 @@ shinyAppServer <- function(input, output, session) {
       map.type = "leaflet",
       map.subid.column = gis.subid(),
       var.name = gsub("map", "", tools::file_path_sans_ext(input$result)),
+      col = if(length(lcol())<length(cbrks())){c(lcol(),"black")}else{lcol()}, # Add extra color if color breaks longer than colors (this color will get removed by PlotMapOutput)
+      col.breaks = cbrks(),
       shiny.data = TRUE
     ) %>%
-      suppressMessages()
+      suppressMessages() %>%
+      suppressWarnings()
     
     # Parse Data
     x <- data$x

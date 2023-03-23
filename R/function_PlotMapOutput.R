@@ -835,7 +835,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                 color = "black",
                 weight = weight,
                 opacity = opacity,
-                fillColor = x$color,
+                fillColor = ~color,
                 fillOpacity = fillOpacity
               )
           }
@@ -898,7 +898,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         
         # Return values
         if(shiny.data == TRUE){
-          return(list("basemap" = leafmap, "x" = x, "lcol" = lcol, "l.label" = l.label))
+          return(list("basemap" = leafmap, "x" = x, "cbrks" = cbrks, "lcol" = lcol, "l.label" = l.label))
         } else{
           return(leafmap)
         }
