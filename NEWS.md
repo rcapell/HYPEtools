@@ -7,7 +7,7 @@
 * Fix bug in PlotMapPoints() and PlotMapOutput() that would prevent plots from being generated if "x" was e.g. a tibble
 * Fix bug in PlotMapPoints() that would prevent plots from being generated with user defined color scale if NA values were present
 * Update warning text in WriteObs()
-* Add VisualizeMapOutput() Shiny app
+* Add VisualizeMapOutput() and VisualizeMapPoints() Shiny apps
 
 ## HYPEtools 1.2.0 (2023-02-10)
 *New functions and bug fixes*
