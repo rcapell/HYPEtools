@@ -25,9 +25,9 @@ can be abbreviated.}
 
 \item{group}{Integer vector, of same length as number of SLC classes in \code{gd}. Alternative grouping index specification to \code{gcl} + \code{type}.}
 
-\item{abs.area}{Logical, if \code{TRUE}, absolute areas will be calculated for each group, rather than area fractions.}
+\item{abs.area}{Logical, if \code{TRUE}, then absolute areas will be calculated for each group, rather than area fractions.}
 
-\item{verbose}{Logical, if \code{TRUE} information and progress bar will be printed.}
+\item{verbose}{Logical, if \code{TRUE} then information and progress bar will be printed.}
 }
 \value{
 \code{GroupSLClasses} returns the data frame with SUBIDs, SUBID areas, and grouped SLC class columns.

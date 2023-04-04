@@ -8,6 +8,8 @@
 * Fix bug in PlotMapPoints() that would prevent plots from being generated with user defined color scale if NA values were present
 * Update warning text in WriteObs()
 * Add VisualizeMapOutput() and VisualizeMapPoints() Shiny apps
+* Add ScalePar()
+* Add comparison threshold for numeric values in CompareFiles()
 
 ## HYPEtools 1.2.0 (2023-02-10)
 *New functions and bug fixes*

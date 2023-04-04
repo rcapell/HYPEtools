@@ -31,7 +31,7 @@ File contents are compared to those of \code{x}.}
 \item{compare.order}{Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
 will also be joined by row number. See \code{\link{full_join}}.}
 
-\item{threshold}{Numeric, threshold difference for which two numeric values are considered equal. Useful for when R reads numeric values with long decimals.}
+\item{threshold}{Numeric, threshold difference for comparison of numeric values. Set to 0 to only accept identical values.}
 
 \item{...}{Other arguments passed on to functions to read the files to compare (e.g. \code{\link{ReadGeoData}}, \code{\link{ReadPar}}, etc.).}
 }
@@ -45,7 +45,9 @@ Compare HYPE model files to identify any differences, typically used to check th
 \details{
 \code{CompareFiles} compares two HYPE model files and identifies any differences in values. The function reads two model files, compares
 the values in columns with corresponding names, and returns a data frame consisting of rows/columns with any differences. Values that are
-the same in both files are set to \code{NA}. The function is primarily intended as a check to ensure that no unintended changes were made when writing
+the same in both files are set to \code{NA}. If numeric values in two columns aren't exactly the same, then the difference between the values will be taken
+and compare to \code{theshold}. If the difference is <= \code{theshold}, then the values will be considered the equal and set to \code{NA}.
+The function is primarily intended as a check to ensure that no unintended changes were made when writing
 model files using the various HYPEtools write functions. However, it can also be used to e.g. compare files between different model versions.
 }
 \examples{

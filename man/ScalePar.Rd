@@ -13,6 +13,8 @@ ScalePar(x, sfac = 1/24, digits = 3, verbose = TRUE, print.par = FALSE)
 
 \item{digits}{Integer, number of significant digits \emph{in SLC class columns} to export. See \code{\link[=signif]{signif()}}.}
 
+\item{verbose}{Logical, if \code{TRUE}, then information will be printed.}
+
 \item{print.par}{Logical, print known time-scale dependent parameters instead of scaling a par list.}
 }
 \value{

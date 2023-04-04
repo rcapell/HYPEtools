@@ -7,6 +7,7 @@
 #' @param x List containing HYPE parameters. Typically imported with [ReadPar()].
 #' @param sfac Numeric, scale factor. Defaults to scaling from daily to hourly time steps.
 #' @param digits Integer, number of significant digits *in SLC class columns* to export. See [signif()].
+#' @param verbose Logical, if \code{TRUE}, then information will be printed.
 #' @param print.par Logical, print known time-scale dependent parameters instead of scaling a par list.
 #' 
 #' @details
