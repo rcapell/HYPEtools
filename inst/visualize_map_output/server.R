@@ -412,7 +412,7 @@ shinyAppServer <- function(input, output, session) {
   shiny::observe({
     
     # Require valid data
-    shiny::req(leaf_check() == TRUE, lcol(), cbrks())
+    shiny::req(leaf_check() == TRUE, lcol(), cbrks(), !all(is.na(data()[2])))
     
     # Get Data
     data <- PlotMapOutput(

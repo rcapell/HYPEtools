@@ -502,6 +502,9 @@ shinyAppServer <- function(input, output, session) {
     } else{
       var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
     }
+    
+    # Require at least some data
+    req(!all(is.na(data()[2])))
 
     # Get Data
     data <- PlotMapPoints(
