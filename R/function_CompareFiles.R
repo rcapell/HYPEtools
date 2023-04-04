@@ -13,6 +13,7 @@
 #' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See [dplyr::full_join()].
 #' @param compare.order Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
 #' will also be joined by row number. See \code{\link{full_join}}.
+#' @param threshold Numeric, threshold difference for which two numeric values are considered equal. Useful for when R reads numeric values with long decimals.
 #' @param ... Other arguments passed on to functions to read the files to compare (e.g. \code{\link{ReadGeoData}}, \code{\link{ReadPar}}, etc.).
 #'
 #' @details
@@ -39,7 +40,7 @@
 #' @importFrom rlang .data
 #' @export
 
-CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE, ...) {
+CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE, threshold = 1E-10, ...) {
 
   # Create function to read files
   ReadFile <- function(file, type, ...) {
@@ -191,6 +192,20 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE, ...) {
     # Set values to NA if they are the same
     compare[which(same == TRUE), paste0(col, ".x")] <- NA
     compare[which(same == TRUE), paste0(col, ".y")] <- NA
+
+    # If columns are numeric type, then check if values that aren't the same are within specified threshold of eachother
+    if(class(compare[[paste0(col, ".x")]]) == "numeric" & class(compare[[paste0(col, ".y")]]) == "numeric"){
+      
+      # Check if values are within threshold of eachother
+      close <- abs(compare[paste0(col, ".x")] - compare[paste0(col, ".y")]) <= threshold
+      
+      # Set values to TRUE if they were identical above
+      close[which(same == TRUE)] <- TRUE
+
+      # Set values to NA if they are within specified threshold of eachother
+      compare[which(close == TRUE), paste0(col, ".x")] <- NA
+      compare[which(close == TRUE), paste0(col, ".y")] <- NA
+    }
   }
 
   # Remove columns and rows that are all NA

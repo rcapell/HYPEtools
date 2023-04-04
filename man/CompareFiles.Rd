@@ -4,7 +4,15 @@
 \alias{CompareFiles}
 \title{Compare HYPE model files to identify any differences.}
 \usage{
-CompareFiles(x, y, type, by = NULL, compare.order = TRUE, ...)
+CompareFiles(
+  x,
+  y,
+  type,
+  by = NULL,
+  compare.order = TRUE,
+  threshold = 1e-10,
+  ...
+)
 }
 \arguments{
 \item{x}{Path to a HYPE model file to read, or an existing list/data frame object for a HYPE model file.
@@ -22,6 +30,8 @@ File contents are compared to those of \code{x}.}
 
 \item{compare.order}{Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
 will also be joined by row number. See \code{\link{full_join}}.}
+
+\item{threshold}{Numeric, threshold difference for which two numeric values are considered equal. Useful for when R reads numeric values with long decimals.}
 
 \item{...}{Other arguments passed on to functions to read the files to compare (e.g. \code{\link{ReadGeoData}}, \code{\link{ReadPar}}, etc.).}
 }
