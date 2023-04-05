@@ -196,7 +196,7 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE, threshold 
     compare[which(same == TRUE), paste0(col, ".y")] <- NA
 
     # If columns are numeric type, then check if values that aren't the same are within specified threshold of eachother
-    if(class(compare[[paste0(col, ".x")]]) == "numeric" & class(compare[[paste0(col, ".y")]]) == "numeric"){
+    if(inherits(compare[[paste0(col, ".x")]], "numeric") & inherits(compare[[paste0(col, ".y")]], "numeric")){
       
       # Check if values are within threshold of eachother
       close <- abs(compare[paste0(col, ".x")] - compare[paste0(col, ".y")]) <= threshold

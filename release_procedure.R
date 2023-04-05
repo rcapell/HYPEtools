@@ -16,7 +16,7 @@ library(dplyr)
 
 # Update DESCRIPTION
 # - Package version
-# - Package dependencies (cross-check with NAMESPACE)
+# - Package dependencies (cross-check with NAMESPACE - note that ggrepel is called in R/functioncollection_internal.R but doesn't show up in NAMESPACE)
 # - Read through all sections and check validity
 
 # Update NEWS.md
