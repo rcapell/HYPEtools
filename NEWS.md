@@ -1,14 +1,14 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.2.0.9000
-*Development Version*
+## HYPEtools 1.3.0
+*New functions and bug fixes*
 
 #### Highlights
 * Fix bug in PlotMapPoints() and PlotMapOutput() that would prevent plots from being generated if "x" was e.g. a tibble
 * Fix bug in PlotMapPoints() that would prevent plots from being generated with user defined color scale if NA values were present
 * Update warning text in WriteObs()
 * Add VisualizeMapOutput() and VisualizeMapPoints() Shiny apps
-* Add ScalePar()
+* Add ScalePar() to scale par files to different model time steps
 * Add comparison threshold for numeric values in CompareFiles()
 
 ## HYPEtools 1.2.0 (2023-02-10)

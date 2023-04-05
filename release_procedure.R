@@ -66,7 +66,7 @@ email <- "hypetools.rene@smhi.se"
 # - This check takes several hours
 devtools::check_rhub(email = email)
 
-# check CRAN environment (may give notes which show not up otherwise)
+# check CRAN environment (may give notes which do not show up otherwise)
 # - You can stop the task in R or use show_status = F if you don't want to see the live output (the check will still be performed)
 # - This check takes several hours
 rhub::check_for_cran(email = email)
@@ -89,7 +89,10 @@ usethis::use_github_release()
 
 # After successful release
 # - Update version number in DESCRIPTION to *.9000
-# - Add version heading to NEWS.md:
-#     ## HYPEtools 1.0.0.9000
+# - Add date to release heading in NEWS.md:
+#     ## HYPEtools 1.2.0 (2023-02-10)
+# - Add development version heading to NEWS.md:
+#     ## HYPEtools 1.4.0.9000
 #     *Development Version*
+#
 #     #### Highlights

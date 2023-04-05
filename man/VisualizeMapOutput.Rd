@@ -28,7 +28,7 @@ VisualiseMapOutput(
 
 \item{map}{Optional string, path to GIS file for subbasin polygons that should be loaded on app initialization. Typically a GeoPackage (.gpkg) or Shapefile (.shp).}
 
-\item{map.subid.column}{Optional integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs) that should be used on app intialization.}
+\item{map.subid.column}{Optional integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs) that should be used on app initialization.}
 
 \item{output.dir}{Optional string, path to a default output directory to save captured map images.}
 }

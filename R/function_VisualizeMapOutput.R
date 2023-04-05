@@ -6,7 +6,7 @@
 #' @param results.dir Optional string, path to a directory containing MapOutput files that should be loaded on app initialization.
 #' @param file.pattern Optional string, filename pattern to select files in \code{results.dir} that should be loaded on app initialization. See \code{\link{list.files}}.
 #' @param map Optional string, path to GIS file for subbasin polygons that should be loaded on app initialization. Typically a GeoPackage (.gpkg) or Shapefile (.shp).
-#' @param map.subid.column Optional integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs) that should be used on app intialization.
+#' @param map.subid.column Optional integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs) that should be used on app initialization.
 #' @param output.dir Optional string, path to a default output directory to save captured map images.
 #' 
 #' @details

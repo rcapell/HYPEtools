@@ -30,7 +30,7 @@ VisualiseMapPoints(
 
 \item{sites}{Optional string, path to GIS file for outlet points that should be loaded on app initialization. Typically a GeoPackage (.gpkg) or Shapefile (.shp).}
 
-\item{sites.subid.column}{Optional integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs) that should be used on app intialization.}
+\item{sites.subid.column}{Optional integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs) that should be used on app initialization.}
 
 \item{bg}{Optional string, path to GIS file with polygon geometry to plot in the background. Typically an imported sub-basin vector polygon file.}
 
