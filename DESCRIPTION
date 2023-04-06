@@ -6,8 +6,8 @@ Description: Work with model files (setup, input, output) from
     the hydrological catchment model HYPE: Streamlined file import and export, standard 
     evaluation plot routines, diverse post-processing and aggregation routines 
     for hydrological model analysis.
-Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email = "hypetools.rene@smhi.se", comment = c(orcid = "0000-0002-7784-1313")), 
-    person("Conrad", "Brendel", role = "aut", email = "conrad.brendel@smhi.se", comment = c(orcid = "0000-0002-5199-0580")),
+Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email = "hypetools.rene@smhi.se", comment = c(ORCID = "0000-0002-7784-1313")), 
+    person("Conrad", "Brendel", role = "aut", email = "conrad.brendel@smhi.se", comment = c(ORCID = "0000-0002-5199-0580")),
     person("Jafet", "Andersson", role = "ctb"),
     person("David", "Gustafsson", role = "ctb"),
     person("Jude", list("Musuuza", "Lubega"), role = "ctb"))
