@@ -125,3 +125,20 @@ PlotMapOutput(mcrun, map = map.subid, map.subid.column = 25, var.name = "CRUN", 
 
 ```
 
+## Plot Map Outputs in an Interactive Shiny App
+```{r plotmappoints-shiny, message=FALSE}
+# Start App - Symbolize with points
+# VisualizeMapPoints(
+#   results.dir = system.file("demo_model", "results", package = "HYPEtools"),
+#   sites = system.file("demo_model", "gis", "Nytorp_centroids.gpkg", package = "HYPEtools"),
+#   sites.subid.column = 25,
+#   bg = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools")
+# )
+
+# Start App - Symbolize with polygons
+# VisualizeMapOutput(
+#   results.dir = system.file("demo_model", "results", package = "HYPEtools"),
+#   map = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"),
+#   map.subid.column = 25
+# )
+```
