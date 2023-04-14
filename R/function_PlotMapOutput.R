@@ -175,7 +175,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     }
     
     # Adjust legend position for leaflet
-    if(map.type == "leaflet"){
+    if(map.type == "leaflet" & plot.legend == TRUE){
       if(legend.pos == "top"){
         warning(paste0('For Leaflet maps legend.pos must be one of "bottomright", "topright", "topleft", or "bottomleft", not "', legend.pos, '". Switching to "topright".'), call. = FALSE)
         legend.pos <- "topright"
@@ -207,11 +207,13 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     }
     
     stopifnot(map.adj %in% c(0, .5, 1))
-    if (map.type == "default") {
+    
+    if (map.type == "default" & plot.legend == TRUE) {
       stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
-    } else if (map.type == "leaflet") {
+    } else if (map.type == "leaflet" & plot.legend == TRUE) {
       stopifnot(legend.pos %in% c("bottomright", "topright", "topleft", "bottomleft"))
     }
+    
     if (length(col.breaks) == 1) {
       col.breaks <- range(x[, 2], na.rm = TRUE)
       warning("Just one value in user-provided argument 'col.breaks', set to range of 'x[, 2]'.")

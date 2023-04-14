@@ -171,7 +171,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     }
     
     # Adjust legend position for leaflet
-    if(map.type == "leaflet"){
+    if(map.type == "leaflet" & plot.legend == TRUE){
       if(legend.pos == "top"){
         warning(paste0('For Leaflet maps legend.pos must be one of "bottomright", "topright", "topleft", or "bottomleft", not "', legend.pos, '". Switching to "topright".'), call. = FALSE)
         legend.pos <- "topright"
@@ -213,11 +213,12 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       }
     }
     stopifnot(map.adj %in% c(0, .5, 1))
+    
     if (map.type == "legacy") {
       stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
-    } else if (map.type == "default"){
+    } else if (map.type == "default" & plot.legend == TRUE){
       stopifnot(legend.pos %in% c("none", "left", "right", "bottom", "top"))
-    } else if (map.type == "leaflet") {
+    } else if (map.type == "leaflet" & plot.legend == TRUE) {
       stopifnot(legend.pos %in% c("bottomright", "topright", "topleft", "bottomleft"))
     }
     # if (length(col.breaks) == 1) {
