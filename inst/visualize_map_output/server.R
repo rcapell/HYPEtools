@@ -160,7 +160,7 @@ shinyAppServer <- function(input, output, session) {
   gis.subid <- shiny::reactive({which(colnames(gis()) == input$column)})
   
   # Output table for GIS
-  output$gis <- DT::renderDataTable(gis() %>% sf::st_drop_geometry(), rownames = FALSE, filter = "top", options = list(scrollX = TRUE))
+  output$gis <- DT::renderDataTable(gis() %>% sf::st_drop_geometry(), rownames = FALSE, filter = "top", options = list(scrollX = TRUE, lengthMenu = c(5, 10, 25, 50, 100)))
   # output$gis <- DT::renderDataTable(datatable(gis() %>% sf::st_drop_geometry(), rownames = FALSE, options = list(scrollX = TRUE)) %>% formatRound(unlist(lapply(gis() %>% sf::st_drop_geometry, is.numeric), use.names = FALSE), 3)) # Use this to round numeric columns, but then this affects columns like SUBID
   
   # GIS Data filtered by data table
@@ -240,7 +240,7 @@ shinyAppServer <- function(input, output, session) {
   })
   
   # Render Data Table
-  output$table <- DT::renderDataTable(data_out() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = FALSE, filter = "top", options = list(scrollX = TRUE))
+  output$table <- DT::renderDataTable(data_out() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = FALSE, filter = "top", options = list(scrollX = TRUE, lengthMenu = c(5, 10, 25, 50, 100)))
   
   # _____________________________________________________________________________________________________________________________________
   # Create Plotly BoxPlot #####
