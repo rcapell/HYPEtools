@@ -4,6 +4,7 @@
 *Development Version*
 
 #### Highlights
+* Fix bug in checking of PlotMapPoints() and PlotMapOutput() legend positions
 
 ## HYPEtools 1.3.0 (2023-04-05)
 *New functions and bug fixes*
