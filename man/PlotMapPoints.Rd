@@ -20,6 +20,7 @@ PlotMapPoints(
   legend.signif = 2,
   col = NULL,
   col.breaks = NULL,
+  col.rev = FALSE,
   plot.scale = TRUE,
   scale.pos = "br",
   plot.arrow = TRUE,
@@ -107,6 +108,8 @@ interpreted as right-closed, i.e upper boundaries included in class. Lowest clas
 Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
 unclassified white spots on the map plot. If \code{NULL} (the default), \code{col.breaks} covers a range from 0 to 1
 with 9 intervals, and an additional interval for negative values. This is suitable for e.g. NSE performances.}
+
+\item{col.rev}{Logical, If \code{TRUE}, then color palette will be reversed.}
 
 \item{plot.scale}{Logical, plot a scale bar on map. NOTE: Scale bar may be inaccurate for geographic coordinate systems (Consider switching to projected coordinate system).}
 

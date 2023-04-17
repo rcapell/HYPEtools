@@ -36,6 +36,7 @@
 #' Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
 #' unclassified white spots on the map plot. If \code{NULL} (the default), \code{col.breaks} covers a range from 0 to 1
 #' with 9 intervals, and an additional interval for negative values. This is suitable for e.g. NSE performances.
+#' @param col.rev Logical, If \code{TRUE}, then color palette will be reversed.
 #' @param plot.scale Logical, plot a scale bar on map. NOTE: Scale bar may be inaccurate for geographic coordinate systems (Consider switching to projected coordinate system).
 #' @param scale.pos Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_scale}}.
 #' @param plot.arrow Logical, plot a North arrow in static maps.
@@ -129,7 +130,7 @@
 
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL, bg = NULL, bg.label.column = 1, var.name = "", map.type = "default", shiny.data = FALSE,
                           plot.legend = TRUE, legend.pos = "right", legend.title = NULL, 
-                          legend.signif = 2, col = NULL, col.breaks = NULL,
+                          legend.signif = 2, col = NULL, col.breaks = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
@@ -316,8 +317,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
           }
         } else if(!toupper(var.name) == ""){
           crfun <- ColDiffGeneric
-          cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = TRUE)
-          
+          if(is.null(col.breaks)){
+            cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = TRUE)
+          }
+
           # in variables with large numbers of "0" values, the lower 10%-percentiles can be repeatedly "0", which leads to an error with cut,
           # so cbrks is shortened to unique values (this affects only the automatic quantile-based breaks)
           # if just one value remains (or was requested by user), replace crbks by minmax-based range (this also resolves unexpected behaviour
@@ -365,9 +368,17 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
     
     # replace the factor levels with color codes using the color ramp function assigned above
     if (map.type %in% c("default", "leaflet") & any(is.na(x[[2]]))) {
-      levels(x[, 3]) <- c(col.class, na.color) # Add extra color for NA in leaflet maps
+      if(col.rev == FALSE){
+        levels(x[, 3]) <- c(col.class, na.color) # Add extra color for NA in leaflet maps
+      } else{
+        levels(x[, 3]) <- c(rev(col.class), na.color) # Reorder colors so that NA color is still last
+      }
     } else {
-      levels(x[, 3]) <- col.class
+      if(col.rev == FALSE){
+        levels(x[, 3]) <- col.class
+      } else{
+        levels(x[, 3]) <- rev(col.class)
+      }
     }
     
     # Leaflet Legend Colors
