@@ -209,7 +209,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     stopifnot(map.adj %in% c(0, .5, 1))
     
     if (map.type == "default" & plot.legend == TRUE) {
-      stopifnot(legend.pos %in% c("bottomright", "right", "topright", "topleft", "left", "bottomleft"))
+      stopifnot(legend.pos %in% c("none", "left", "right", "bottom", "top"))
     } else if (map.type == "leaflet" & plot.legend == TRUE) {
       stopifnot(legend.pos %in% c("bottomright", "topright", "topleft", "bottomleft"))
     }
