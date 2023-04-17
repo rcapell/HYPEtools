@@ -12,7 +12,7 @@ PlotMapOutput(
   map.type = "default",
   shiny.data = FALSE,
   plot.legend = TRUE,
-  legend.pos = "bottomright",
+  legend.pos = "right",
   legend.title = NULL,
   legend.signif = 2,
   col = "auto",
