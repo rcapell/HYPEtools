@@ -134,7 +134,7 @@
 
 
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", shiny.data = FALSE,
-                          plot.legend = TRUE, legend.pos = "bottomright", legend.title = NULL,
+                          plot.legend = TRUE, legend.pos = "right", legend.title = NULL,
                           legend.signif = 2, col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
