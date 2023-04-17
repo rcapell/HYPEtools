@@ -7,25 +7,18 @@
 # Created: 2023-04-14
 
 # _____________________________________________________________________________________________________________________________________
-# Setup #####
-# _____________________________________________________________________________________________________________________________________
-
-# Install Package (Latest version is v1.3.0)
-install.packages("HYPEtools")
-
-# Import Package
-library(HYPEtools)
-
-# _____________________________________________________________________________________________________________________________________
 # Resources #####
 # _____________________________________________________________________________________________________________________________________
 
 # HYPEtools Reference Manual: https://cran.r-project.org/web/packages/HYPEtools/HYPEtools.pdf
-# Vignettes Online: https://cran.r-project.org/web/packages/HYPEtools/vignettes/
+# Browse Vignettes Online: https://cran.r-project.org/web/packages/HYPEtools/vignettes/
 
 # _____________________________________________________________________________________________________________________________________
-# Basic Exercise: Browse Vignettes #####
+# Basic Exercise: Browse Vignettes in R #####
 # _____________________________________________________________________________________________________________________________________
+
+# Install Package (Latest version is v1.3.0)
+install.packages("HYPEtools")
 
 # Browse Vignettes
 browseVignettes("HYPEtools")
@@ -39,14 +32,36 @@ browseVignettes("HYPEtools")
 # - Modify a HYPE Parameter File
 
 # _____________________________________________________________________________________________________________________________________
-# Advanced Exercise: Run Vignette Code Yourself #####
+# Advanced Exercises: #####
 # _____________________________________________________________________________________________________________________________________
-
-# Open the vignette ".Rmd" files in RStudio and run the code for yourself!
-# You can also modify the code to create different outputs etc.
 
 # Some additional R packages are needed for the interactive visualization features:
 install.packages(c("DT", "htmlwidgets", "leaflet", "leaflet.extras", "mapview", "plotly", "sf", "shiny", "shinyalert", "shinyFiles", "shinyWidgets", "randomcoloR", "webshot"))
+
+# Load Package
+library(HYPEtools)
+
+# Visualize Model Outputs with Shiny app --------------------------------------------------------------------------------------------------------------------
+
+# Start App - Symbolize with polygons
+VisualizeMapOutput(
+  results.dir = system.file("demo_model", "results", package = "HYPEtools"),
+  map = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"),
+  map.subid.column = 25
+)
+
+# Start App - Symbolize with points
+VisualizeMapPoints(
+  results.dir = system.file("demo_model", "results", package = "HYPEtools"),
+  sites = system.file("demo_model", "gis", "Nytorp_centroids.gpkg", package = "HYPEtools"),
+  sites.subid.column = 25,
+  bg = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools")
+)
+
+# Run Vignette Code Yourself  --------------------------------------------------------------------------------------------------------------------
+
+# Open the vignette ".Rmd" files in e.g. RStudio and run the code for yourself!
+# You can also modify the code to create different outputs etc.
 
 # Recommended order:
 # - import_files.Rmd
@@ -55,3 +70,17 @@ install.packages(c("DT", "htmlwidgets", "leaflet", "leaflet.extras", "mapview", 
 # - basin_characteristics.Rmd
 # - basin_network.Rmd
 # - modify_par.Rmd
+
+# _____________________________________________________________________________________________________________________________________
+# Run HYPE model:  #####
+# _____________________________________________________________________________________________________________________________________
+
+# Copy the HYPE model setup from the following path to a desired working directory
+mypath <- "" # Copy files to this directory
+file.copy(from = system.file("demo_model", package = "HYPEtools"), to = mypath, recursive = TRUE)
+
+# Download the HYPE executable for your system from: https://sourceforge.net/projects/hype/files/
+# - Extract the executable and save it to the "mypath" directory you specified above.
+# - Run HYPE:
+#   - Windows: Click on the HYPE.exe to run it
+#   - Linux: Enter "./hype" in the command line
