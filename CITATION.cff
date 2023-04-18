@@ -278,6 +278,19 @@ references:
     email: hadley@posit.co
   year: '2023'
 - type: software
+  title: scales
+  abstract: 'scales: Scale Functions for Visualization'
+  notes: Imports
+  url: https://scales.r-lib.org
+  repository: https://CRAN.R-project.org/package=scales
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@rstudio.com
+  - family-names: Seidel
+    given-names: Dana
+  year: '2023'
+- type: software
   title: stats
   abstract: 'R: A Language and Environment for Statistical Computing'
   notes: Imports
