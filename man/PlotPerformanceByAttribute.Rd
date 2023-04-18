@@ -113,9 +113,9 @@ grouping variable (e.g. month).}
 
 \item{density.plot}{Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.}
 
-\item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.}
+\item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.}
 
-\item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.}
+\item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.}
 
 \item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.}
 

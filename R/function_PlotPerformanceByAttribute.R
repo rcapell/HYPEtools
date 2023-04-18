@@ -20,8 +20,8 @@
 #' @param trendline.alpha Numeric value to set transparency of trendlines in output plots. Should be in the range 0-1.
 #' @param trendline.darken Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.
 #' @param density.plot Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.
-#' @param scale.x.log Vector describing if output plots should use a log scale on the x-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.
-#' @param scale.y.log Vector describing if output plots should use a log scale on the y-axis. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.
+#' @param scale.x.log Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.
+#' @param scale.y.log Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.
 #' @param xlimits Vector containing minimum and maximum values for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
 #' @param xbreaks Vector containing the break values used for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
 #' @param xlabels Vector containing the labels for each break value used for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.
@@ -209,14 +209,22 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     
     # Scale x axis
     if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
-      plot <- plot + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
+      if(any(plotdata[[col]] <= 0)){
+        plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=scales::pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
+      } else{
+        plot <- plot + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
+      }
     } else{ # Normal scale
       plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels)
     }
     
     # Scale y axis
     if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
-      plot <- plot + scale_y_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
+      if(any(plotdata[[colnames(subass)[subass.column]]] <= 0)){
+        plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=scales::pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
+      } else{
+        plot <- plot + scale_y_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
+      }
     } else{ # Normal scale
       plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels)
     }
@@ -274,14 +282,22 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       
       # Scale x axis
       if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
-        densx <- densx + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
+        if(any(plotdata[[col]] <= 0)){
+          densx <- densx + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=scales::pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
+        } else{
+          densx <- densx + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
+        }
       } else{ # Normal scale
         densx <- densx + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels)
       }
       
       # Scale y axis
       if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
-        densy <- densy + scale_x_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
+        if(any(plotdata[[colnames(subass)[subass.column]]] <= 0)){
+          densy <- densy + scale_x_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=scales::pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
+        } else{
+          densy <- densy + scale_x_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
+        }
       } else{ # Normal scale
         densy <- densy + scale_x_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels)
       }
@@ -312,6 +328,12 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   # Determine if ncol and nrow should be automatically calculated
   if (is.null(ncol) & is.null(nrow)) {
     override <- TRUE
+  } else if(is.null(ncol)){
+    override <- FALSE
+    ncol <- ceiling(length(plots)/nrow)
+  } else if(is.null(nrow)){
+    override <- FALSE
+    nrow <- ceiling(length(plots)/ncol)
   } else if ((ncol * nrow) < length(plots)) {
     warning("ncol * nrow is less than the number of generated plots. Overriding ncol and nrow values.", call. = FALSE)
     override <- TRUE

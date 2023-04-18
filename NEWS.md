@@ -7,6 +7,8 @@
 * Fix bug in checking of PlotMapPoints() and PlotMapOutput() legend positions
 * Fix bug in PlotMapPoints() where custom color breaks were ignored
 * Add option to reverse color palette in PlotMapPoints()
+* Add pseudo-log scale to PlotPerformanceByAttribute() if any zero or negative values exist
+* Allow for specifying only number of rows or columns in PlotPerformanceByAttribute()
 
 ## HYPEtools 1.3.0 (2023-04-05)
 *New functions and bug fixes*
