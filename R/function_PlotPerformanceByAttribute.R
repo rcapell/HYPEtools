@@ -92,6 +92,7 @@
 #' @importFrom patchwork plot_layout plot_spacer
 #' @importFrom stats median
 #' @importFrom rlang .data
+#' @importFrom scales pseudo_log_trans
 #' @export
 
 PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
@@ -210,7 +211,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Scale x axis
     if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
       if(any(plotdata[[col]] <= 0)){
-        plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=scales::pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
+        plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
       } else{
         plot <- plot + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
       }
@@ -221,7 +222,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Scale y axis
     if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
       if(any(plotdata[[colnames(subass)[subass.column]]] <= 0)){
-        plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=scales::pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
+        plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
       } else{
         plot <- plot + scale_y_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
       }
@@ -283,7 +284,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       # Scale x axis
       if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
         if(any(plotdata[[col]] <= 0)){
-          densx <- densx + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=scales::pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
+          densx <- densx + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
         } else{
           densx <- densx + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
         }
@@ -294,7 +295,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       # Scale y axis
       if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
         if(any(plotdata[[colnames(subass)[subass.column]]] <= 0)){
-          densy <- densy + scale_x_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=scales::pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
+          densy <- densy + scale_x_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=pseudo_log_trans(base = 10)) # Psuedo-log if 0 or negative values
         } else{
           densy <- densy + scale_x_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
         }

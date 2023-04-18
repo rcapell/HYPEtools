@@ -30,6 +30,7 @@ Imports:
     pbapply,
     purrr,
     rlang,
+    scales,
     stats,
     stringr,
     tidyr,
