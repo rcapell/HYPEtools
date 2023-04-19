@@ -70,17 +70,3 @@ VisualizeMapPoints(
 # - basin_characteristics.Rmd
 # - basin_network.Rmd
 # - modify_par.Rmd
-
-# _____________________________________________________________________________________________________________________________________
-# Run HYPE model:  #####
-# _____________________________________________________________________________________________________________________________________
-
-# Copy the HYPE model setup from the following path to a desired working directory
-mypath <- "" # Copy files to this directory
-file.copy(from = system.file("demo_model", package = "HYPEtools"), to = mypath, recursive = TRUE)
-
-# Download the HYPE executable for your system from: https://sourceforge.net/projects/hype/files/
-# - Extract the executable and save it to the "mypath" directory you specified above.
-# - Run HYPE:
-#   - Windows: Click on the HYPE.exe to run it
-#   - Linux: Enter "./hype" in the command line
