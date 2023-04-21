@@ -18,7 +18,9 @@ knitr::opts_chunk$set(
 ```
 
 ## Setup
+
 Load packages and import HYPE model files.
+
 ```{r setup, message=FALSE}
 # Load Packages
 library(HYPEtools)
@@ -37,6 +39,7 @@ mcrun <- ReadMapOutput(file.path(model_path,"results","mapCRUN.txt"))
 ```
 
 ## Read GIS Files
+
 ```{r readGIS}
 # Read GIS Files
 map.subid <- st_read(file.path(model_path, "gis","Nytorp_map.gpkg"))
@@ -52,6 +55,7 @@ plot(map.subid)
 ```
 
 ## Plot Model Performance on a Static Map
+
 ```{r plotperformance-static}
 # Show the column names of imported subbasin performance file
 names(stats.cout)
@@ -67,6 +71,7 @@ PlotMapPoints(x = stats.cout[, c(1,stat.col.plot)],
 ```
 
 ## Plot Model Performance on an Interactive Leaflet Map
+
 ```{r plotperformance-leaflet, message=FALSE}
 # Generate Plot - There is only one observation station, so only one point appears on the map
 # PlotMapPoints(map.type = "leaflet",
@@ -78,6 +83,7 @@ PlotMapPoints(x = stats.cout[, c(1,stat.col.plot)],
 ```
 
 ## Plot Simulated Runoff on a Static Map
+
 ```{r plotrunoff-static}
 # Show the column names of imported GIS file
 names(map.subid)
@@ -89,6 +95,7 @@ PlotMapOutput(mcrun, map = map.subid, map.subid.column = 25, var.name = "CRUN", 
 ```
 
 ## Plot Simulated Runoff on an Interactive Leaflet Map
+
 ```{r plotrunoff-leaflet, message=FALSE}
 # Generate Plot
 # PlotMapOutput(mcrun, map.type = "leaflet", map = map.subid, map.subid.column = 25, var.name = "CRUN", legend.title = "Runoff (mm/d)",
@@ -97,6 +104,7 @@ PlotMapOutput(mcrun, map = map.subid, map.subid.column = 25, var.name = "CRUN", 
 ```
 
 ## Create Leaflet Map with Additional Bling
+
 ```{r bling, message=FALSE}
 # Generate leaflet map with additional bling
 # leafmap <- PlotMapOutput(mcrun, map.type = "leaflet", map = map.subid, map.subid.column = 25, var.name = "CRUN", legend.title = "Runoff (mm/d)",
@@ -126,6 +134,7 @@ PlotMapOutput(mcrun, map = map.subid, map.subid.column = 25, var.name = "CRUN", 
 ```
 
 ## Plot Map Outputs in an Interactive Shiny App
+
 ```{r plotmappoints-shiny, message=FALSE}
 # Start App - Symbolize with points
 # VisualizeMapPoints(
@@ -134,7 +143,9 @@ PlotMapOutput(mcrun, map = map.subid, map.subid.column = 25, var.name = "CRUN", 
 #   sites.subid.column = 25,
 #   bg = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools")
 # )
+```
 
+```{r plotmapoutput-shiny, message=FALSE}
 # Start App - Symbolize with polygons
 # VisualizeMapOutput(
 #   results.dir = system.file("demo_model", "results", package = "HYPEtools"),
