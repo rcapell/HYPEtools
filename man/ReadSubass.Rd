@@ -8,7 +8,7 @@ ReadSubass(
   filename = "subass1.txt",
   nhour = NULL,
   check.names = FALSE,
-  na.strings = c("****************")
+  na.strings = c("****************", "-9999")
 )
 }
 \arguments{

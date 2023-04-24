@@ -1980,7 +1980,7 @@ ReadOptpar <- function(filename = "optpar.txt", encoding = c("unknown", "UTF-8",
 #' @export 
 
 
-ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FALSE, na.strings = c("****************")) {
+ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FALSE, na.strings = c("****************", "-9999")) {
   x <- read.table(file = filename, header = TRUE, sep = "\t", skip = 1, na.strings = na.strings)
   te <- readLines(filename, n = 2)
   names(x) <- strsplit(te[2], split = "\t")[[1]]
