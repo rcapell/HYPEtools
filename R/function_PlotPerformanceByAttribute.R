@@ -110,6 +110,11 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   } else if (trendline.darken > 100) {
     warning("trendline.darken set must be in range 1-100. Setting to 100")
   }
+  
+  # Convert group IDs to string if numeric
+  if(is.numeric(groups[[2]])){
+    groups[[2]] <- as.character(groups[[2]])
+  }
 
   # Create dataframe to store plot data
   plotdata <- subass
