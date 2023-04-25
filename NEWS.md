@@ -10,6 +10,7 @@
 * Add pseudo-log scale to PlotPerformanceByAttribute() if any zero or negative values exist
 * Allow for specifying only number of rows or columns in PlotPerformanceByAttribute()
 * Add "-9999" as NA string in ReadSubass()
+* Fix bug in PlotBasinOutput() where line plots would not get generated if NA values were present
 
 ## HYPEtools 1.3.0 (2023-04-05)
 *New functions and bug fixes*
