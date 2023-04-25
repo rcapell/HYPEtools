@@ -403,7 +403,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'lines(date, temp, col = "red")')
+    list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(temp)], temp[!is.na(temp)], col = "red")')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext(" Air temp. at outlet", side=3, adj= 0, line=-1.1, cex = .8)')
     
@@ -442,12 +442,12 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["rout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, rout, col = "royalblue4")')
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(rout)], rout[!is.na(rout)], col = "royalblue4")')
     }
     
     if (exi.t["cout"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, cout, col = "orangered3")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(cout)], cout[!is.na(cout)], col = "orangered3")')  
     }
     
     cp <- cp + 1
@@ -486,12 +486,12 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["wstr"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, wstr, col = "black")')
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(wstr)], wstr[!is.na(wstr)], col = "black")')
     }
     
     if (exi.t["wcom"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, wcom, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(wcom)], wcom[!is.na(wcom)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -530,12 +530,12 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["ret2"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, ret2, col = "steelblue4")')
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ret2)], ret2[!is.na(ret2)], col = "steelblue4")')
     }
     
     if (exi.t["cct2"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, cct2, col = "violetred")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(cct2)], cct2[!is.na(cct2)], col = "violetred")')  
     }
     
     cp <- cp + 1
@@ -575,11 +575,11 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["upepot"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, upepot, col = "green3", lty = 3)')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(upepot)], upepot[!is.na(upepot)], col = "green3", lty = 3)')  
     }
     if (exi.t["upevap"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, upevap, col = "green4")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(upevap)], upevap[!is.na(upevap)], col = "green4")')  
     }
     
     cp <- cp + 1
@@ -605,7 +605,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'lines(date, snow, col = "deepskyblue3")')
+    list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(snow)], snow[!is.na(snow)], col = "deepskyblue3")')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext(" Snow water equivalent", side=3, adj= 0, line=-1.1, cex = .8)')
     
@@ -633,7 +633,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'lines(date, accvolerr, col = "seagreen")')
+    list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(accvolerr)], accvolerr[!is.na(accvolerr)], col = "seagreen")')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext(" Accumulated volume error", side=3, adj= 0, line=-1.1, cex = .8)')
     
@@ -665,21 +665,21 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     if (!exi.t["soim"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, sm13, col = "springgreen4")')
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(sm13)], sm13[!is.na(sm13)], col = "springgreen4")')
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), "pore water", lty = 1, 
                                    col = "springgreen4", bty = "n", cex = 1.2, horiz = TRUE)')
     } else if (!exi.t["sm13"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, soim, col = "springgreen4")')
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(soim)], soim[!is.na(soim)], col = "springgreen4")')
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), " pore and surface water", 
                                    lty = 1, col = "springgreen4", bty = "n", cex = 1.2, horiz = TRUE)')
     } else {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, soim, col = "firebrick3")')
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(soim)], soim[!is.na(soim)], col = "firebrick3")')
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, sm13, col = "springgreen4")')
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(sm13)], sm13[!is.na(sm13)], col = "springgreen4")')
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("pore water", "surface water"), 
                                    lty = 1, col = c("springgreen4", "firebrick3"), bty = "n", cex = 1.2, horiz = TRUE)')
@@ -705,7 +705,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
     cp <- cp + 1
-    list.plotexpr[[cp]] <- parse(text = 'lines(date, upsmfp, col = "chocolate3")')
+    list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(upsmfp)], upsmfp[!is.na(upsmfp)], col = "chocolate3")')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext(" Rel. soil moisture", side=3, adj= 0, line=-1.1, cex = .8)')
     
@@ -746,7 +746,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["cctn"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, cctn, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(cctn)], cctn[!is.na(cctn)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -790,7 +790,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["ccin"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccin, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccin)], ccin[!is.na(ccin)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -834,7 +834,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["ccon"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccon, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccon)], ccon[!is.na(ccon)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -878,7 +878,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["cctp"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, cctp, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(cctp)], cctp[!is.na(cctp)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -922,7 +922,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["ccpp"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccpp, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccpp)], ccpp[!is.na(ccpp)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -966,7 +966,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["ccsp"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccsp, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccsp)], ccsp[!is.na(ccsp)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -1013,7 +1013,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["ccss"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccss, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccss)], ccss[!is.na(ccss)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -1060,7 +1060,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["ccts"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, ccts, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccts)], ccts[!is.na(ccts)], col = "red")')  
     }
     
     cp <- cp + 1
@@ -1108,7 +1108,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["cct1"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date, cct1, col = "red")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(cct1)], cct1[!is.na(cct1)], col = "red")')  
     }
     
     cp <- cp + 1
