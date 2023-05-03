@@ -20,6 +20,7 @@ PlotPerformanceByAttribute(
   trendline.alpha = 0.5,
   trendline.darken = 15,
   density.plot = FALSE,
+  density.plot.type = c("density", "boxplot"),
   scale.x.log = FALSE,
   scale.y.log = FALSE,
   xsigma = 1,
@@ -60,6 +61,7 @@ PlotJohan(
   trendline.alpha = 0.5,
   trendline.darken = 15,
   density.plot = FALSE,
+  density.plot.type = c("density", "boxplot"),
   scale.x.log = FALSE,
   scale.y.log = FALSE,
   xsigma = 1,
@@ -115,7 +117,9 @@ grouping variable (e.g. month).}
 
 \item{trendline.darken}{Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.}
 
-\item{density.plot}{Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.}
+\item{density.plot}{Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots.}
+
+\item{density.plot.type}{String, type of plot geometry to use for density plots: \code{"density"} for \code{\link{geom_density}} or \code{"boxplot"} for \code{\link{geom_boxplot}}.}
 
 \item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.}
 

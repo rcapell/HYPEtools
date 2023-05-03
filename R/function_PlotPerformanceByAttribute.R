@@ -19,7 +19,8 @@
 #' @param trendline.formula Specify formula used to create trendlines. See \code{\link{geom_smooth}}.
 #' @param trendline.alpha Numeric value to set transparency of trendlines in output plots. Should be in the range 0-1.
 #' @param trendline.darken Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.
-#' @param density.plot Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots. See \code{\link{geom_density}}.
+#' @param density.plot Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots.
+#' @param density.plot.type String, type of plot geometry to use for density plots: \code{"density"} for \code{\link{geom_density}} or \code{"boxplot"} for \code{\link{geom_boxplot}}.
 #' @param scale.x.log Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.
 #' @param scale.y.log Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.
 #' @param xsigma Numeric, scaling factor for the linear part of psuedo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \code{\link{pseudo_log_trans}}.
@@ -87,7 +88,7 @@
 #' }
 #' 
 #' @importFrom dplyr group_by sym left_join n rename select summarize
-#' @importFrom ggplot2 aes aes_string coord_flip element_text geom_density geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
+#' @importFrom ggplot2 aes aes_string coord_flip element_text geom_density geom_boxplot geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
 #' scale_y_continuous theme theme_void unit waiver xlab ylab scale_x_log10 scale_y_log10
 #' @importFrom ggpubr colnames_style get_legend ggarrange ggtexttable tab_add_title tbody_style ttheme
 #' @importFrom grDevices colorRampPalette hcl
@@ -98,13 +99,14 @@
 #' @export
 
 PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
-                                       trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15, density.plot = FALSE,
+                                       trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15, density.plot = FALSE, density.plot.type = c("density", "boxplot"),
                                        scale.x.log = FALSE, scale.y.log = FALSE, xsigma = 1, ysigma = 1, xlimits = c(NA, NA), ylimits = c(NA, NA), xbreaks = waiver(), ybreaks = waiver(), xlabels = waiver(), ylabels = waiver(),
                                        xlab = NULL, ylab = NULL, ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", summary.table = FALSE,
                                        filename = NULL, width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300) {
 
-  # Check join type
+  # Check join type and density plot type
   join.type <- match.arg(join.type)
+  density.plot.type <- match.arg(density.plot.type)
 
   # Check trendline.darken value
   if (trendline.darken < 1) {
@@ -247,45 +249,90 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       
       if(!is.null(groups)){
         if (!is.null(groups.color.pal)) { # If custom colors exist
-          # Create density plot for x-axis
-          densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
-            geom_density(size = 0.2, alpha = 0.4) +
-            scale_fill_manual(values = groups.color.pal, name = "Group") +
-            theme_void()+
-            theme(legend.position = "none")
-          
-          # Create density plot for y-a.xis
-          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
-            geom_density(size = 0.2, alpha = 0.4) +
-            scale_fill_manual(values = groups.color.pal, name = "Group") +
-            theme_void()+
-            theme(legend.position = "none") +
-            coord_flip()
+          if(density.plot.type == "density"){
+            # Create density plot for x-axis
+            densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
+              geom_density(size = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = groups.color.pal, name = "Group") +
+              theme_void()+
+              theme(legend.position = "none")
+            
+            # Create density plot for y-a.xis
+            densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
+              geom_density(size = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = groups.color.pal, name = "Group") +
+              theme_void()+
+              theme(legend.position = "none") +
+              coord_flip()
+          } else if(density.plot.type == "boxplot"){
+            # Create density plot for x-axis
+            densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
+              geom_boxplot(size = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = groups.color.pal, name = "Group") +
+              theme_void()+
+              theme(legend.position = "none")
+            
+            # Create density plot for y-a.xis
+            densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
+              geom_boxplot(size = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = groups.color.pal, name = "Group") +
+              theme_void()+
+              theme(legend.position = "none") +
+              coord_flip()
+          }
         } else{ # Use default colors
-          # Create density plot for x-axis
-          densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
-            geom_density(size = 0.2, alpha = 0.4) +
-            theme_void()+
-            theme(legend.position = "none")
-          
-          # Create density plot for y-axis
-          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
-            geom_density(size = 0.2, alpha = 0.4) +
-            theme_void()+
-            theme(legend.position = "none") +
-            coord_flip()
+          if(density.plot.type == "density"){
+            # Create density plot for x-axis
+            densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
+              geom_density(size = 0.2, alpha = 0.4) +
+              theme_void()+
+              theme(legend.position = "none")
+            
+            # Create density plot for y-axis
+            densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
+              geom_density(size = 0.2, alpha = 0.4) +
+              theme_void()+
+              theme(legend.position = "none") +
+              coord_flip()
+          } else if(density.plot.type == "boxplot"){
+            # Create density plot for x-axis
+            densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
+              geom_boxplot(size = 0.2, alpha = 0.4) +
+              theme_void()+
+              theme(legend.position = "none")
+            
+            # Create density plot for y-axis
+            densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
+              geom_boxplot(size = 0.2, alpha = 0.4) +
+              theme_void()+
+              theme(legend.position = "none") +
+              coord_flip()
+          }
         }
       } else{
-        # Create density plot for x-axis
-        densx <- ggplot(plotdata, aes(x = !!sym(col))) +
-          geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
-          theme_void()
-        
-        # Create density plot for y-axis
-        densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
-          geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
-          theme_void() +
-          coord_flip()
+        if(density.plot.type == "density"){
+          # Create density plot for x-axis
+          densx <- ggplot(plotdata, aes(x = !!sym(col))) +
+            geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
+            theme_void()
+          
+          # Create density plot for y-axis
+          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
+            geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
+            theme_void() +
+            coord_flip()
+        } else if(density.plot.type == "boxplot"){
+          # Create density plot for x-axis
+          densx <- ggplot(plotdata, aes(x = !!sym(col))) +
+            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1) +
+            theme_void()
+          
+          # Create density plot for y-axis
+          densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
+            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1) +
+            theme_void() +
+            coord_flip()
+        }
       }
       
       # Scale x axis
