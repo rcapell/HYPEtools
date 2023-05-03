@@ -22,6 +22,8 @@ PlotPerformanceByAttribute(
   density.plot = FALSE,
   scale.x.log = FALSE,
   scale.y.log = FALSE,
+  xsigma = 1,
+  ysigma = 1,
   xlimits = c(NA, NA),
   ylimits = c(NA, NA),
   xbreaks = waiver(),
@@ -60,6 +62,8 @@ PlotJohan(
   density.plot = FALSE,
   scale.x.log = FALSE,
   scale.y.log = FALSE,
+  xsigma = 1,
+  ysigma = 1,
   xlimits = c(NA, NA),
   ylimits = c(NA, NA),
   xbreaks = waiver(),
@@ -116,6 +120,10 @@ grouping variable (e.g. month).}
 \item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.}
 
 \item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.}
+
+\item{xsigma}{Numeric, scaling factor for the linear part of psuedo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \code{\link{pseudo_log_trans}}.}
+
+\item{ysigma}{Numeric, scaling factor for the linear part of psuedo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See \code{\link{pseudo_log_trans}}.}
 
 \item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.}
 
