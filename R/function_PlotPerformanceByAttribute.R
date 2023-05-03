@@ -20,7 +20,7 @@
 #' @param trendline.alpha Numeric value to set transparency of trendlines in output plots. Should be in the range 0-1.
 #' @param trendline.darken Numeric value to make the trendlines darker color shades of their corresponding scatterplot points. Should be in the range 1-100.
 #' @param density.plot Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots.
-#' @param density.plot.type String, type of plot geometry to use for density plots: \code{"density"} for \code{\link{geom_density}} or \code{"boxplot"} for \code{\link{geom_boxplot}}.
+#' @param density.plot.type String, type of plot geometry to use for density plots: \code{"density"} for \code{\link{geom_density}} or \code{"boxplot"} for \code{\link{geom_boxplot}}. Outliers are hidden from the boxplots.
 #' @param scale.x.log Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.
 #' @param scale.y.log Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.
 #' @param xsigma Numeric, scaling factor for the linear part of psuedo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \code{\link{pseudo_log_trans}}.
@@ -267,14 +267,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
           } else if(density.plot.type == "boxplot"){
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
-              geom_boxplot(size = 0.2, alpha = 0.4) +
+              geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
               scale_fill_manual(values = groups.color.pal, name = "Group") +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-a.xis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
-              geom_boxplot(size = 0.2, alpha = 0.4) +
+              geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
               scale_fill_manual(values = groups.color.pal, name = "Group") +
               theme_void()+
               theme(legend.position = "none") +
@@ -297,13 +297,13 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
           } else if(density.plot.type == "boxplot"){
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
-              geom_boxplot(size = 0.2, alpha = 0.4) +
+              geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
-              geom_boxplot(size = 0.2, alpha = 0.4) +
+              geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -324,12 +324,12 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         } else if(density.plot.type == "boxplot"){
           # Create density plot for x-axis
           densx <- ggplot(plotdata, aes(x = !!sym(col))) +
-            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1) +
+            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1, outlier.shape = NA) +
             theme_void()
           
           # Create density plot for y-axis
           densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
-            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1) +
+            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1, outlier.shape = NA) +
             theme_void() +
             coord_flip()
         }

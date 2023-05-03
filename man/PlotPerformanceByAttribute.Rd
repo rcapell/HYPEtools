@@ -119,7 +119,7 @@ grouping variable (e.g. month).}
 
 \item{density.plot}{Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots.}
 
-\item{density.plot.type}{String, type of plot geometry to use for density plots: \code{"density"} for \code{\link{geom_density}} or \code{"boxplot"} for \code{\link{geom_boxplot}}.}
+\item{density.plot.type}{String, type of plot geometry to use for density plots: \code{"density"} for \code{\link{geom_density}} or \code{"boxplot"} for \code{\link{geom_boxplot}}. Outliers are hidden from the boxplots.}
 
 \item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.}
 
