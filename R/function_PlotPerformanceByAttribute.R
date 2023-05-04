@@ -123,7 +123,8 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   }
 
   # Create dataframe to store plot data
-  plotdata <- subass
+  plotdata <- subass %>%
+    filter(!is.na(!!sym(colnames(subass)[subass.column]))) # Remove NA values from y-axis plotting column
 
   # Join subass data to groups if they are given
   if (!is.null(groups)) {
@@ -506,7 +507,8 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       }
     }
     
-    arrangeplot <- ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, widths = arrange_width, common.legend = common.legend, legend = legend.position, legend.grob = legend.grob)
+    # Arrange plot and suppress warning about alignment
+    arrangeplot <- suppressWarnings(ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, widths = arrange_width, common.legend = common.legend, legend = legend.position, legend.grob = legend.grob))
   } else{
     arrangeplot <- ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, widths = arrange_width, common.legend = common.legend, legend = legend.position)
   }
