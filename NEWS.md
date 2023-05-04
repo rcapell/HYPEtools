@@ -8,7 +8,7 @@
 * Fix bug in PlotMapPoints() where custom color breaks were ignored
 * Add option to reverse color palette in PlotMapPoints()
 * Add pseudo-log scale to PlotPerformanceByAttribute() if any zero or negative values exist
-* Add option for boxplot density plots in PlotPerformanceByAttribute()
+* Add options for boxplot density plots and common y-axis in PlotPerformanceByAttribute()
 * Allow for specifying only number of rows or columns in PlotPerformanceByAttribute()
 * Add "-9999" as NA string in ReadSubass()
 * Fix bug in PlotBasinOutput() where line plots would not get generated if NA values were present
