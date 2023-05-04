@@ -118,7 +118,7 @@
 #' }
 #' 
 #' @importFrom dplyr right_join %>% mutate filter across
-#' @importFrom ggplot2 aes_string geom_sf ggplot ggsave scale_color_manual scale_fill_manual theme element_text element_blank
+#' @importFrom ggplot2 aes geom_sf ggplot ggsave scale_color_manual scale_fill_manual theme element_text element_blank
 #' @importFrom ggspatial annotation_north_arrow annotation_scale
 #' @importFrom grDevices dev.list colorRampPalette
 #' @importFrom graphics par frame legend strwidth text plot.new
@@ -746,7 +746,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
 
         # Add points
         plot <- plot +
-          geom_sf(data = x, aes_string(color = "color", fill = "color"), size = radius, show.legend = plot.legend) +
+          geom_sf(data = x, aes(color = .data[["color"]], fill = .data[["color"]]), size = radius, show.legend = plot.legend) +
           scale_color_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
           scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
           theme(axis.title = element_blank())
@@ -755,10 +755,10 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         if(!is.null(plot.bg.label)){
           if(plot.label == FALSE){ # Add labels for all points
             plot <- plot +
-              .geom_sf_text_repel(data = bg, aes_string(label = colnames(bg)[bg.label.column]), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
+              .geom_sf_text_repel(data = bg, aes(label = .data[[colnames(bg)[bg.label.column]]]), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
           } else{ # Add labels for point that aren't already getting labeled
             plot <- plot +
-              .geom_sf_text_repel(data = bg %>% filter(!.data[[colnames(bg)[bg.label.column]]] %in% x[[1]]), aes_string(label = colnames(bg)[bg.label.column]), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
+              .geom_sf_text_repel(data = bg %>% filter(!.data[[colnames(bg)[bg.label.column]]] %in% x[[1]]), aes(label = .data[[colnames(bg)[bg.label.column]]]), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
           }
         }
         
@@ -771,7 +771,7 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
           
           # Add labels to plot
           plot <- plot +
-            .geom_sf_text_repel(data = x, aes_string(label = "label"), size = plot.label.size, fontface = "bold", fun.geometry = sf::st_centroid)
+            .geom_sf_text_repel(data = x, aes(label = .data[["label"]]), size = plot.label.size, fontface = "bold", fun.geometry = sf::st_centroid)
           
         }
         

@@ -124,7 +124,7 @@
 #' 
 #'
 #' @importFrom dplyr right_join %>% mutate filter across
-#' @importFrom ggplot2 aes_string geom_sf ggplot ggsave scale_fill_manual theme element_text element_blank
+#' @importFrom ggplot2 aes geom_sf ggplot ggsave scale_fill_manual theme element_text element_blank
 #' @importFrom ggspatial annotation_north_arrow annotation_scale
 #' @importFrom grDevices dev.list
 #' @importFrom graphics par frame legend strwidth text
@@ -732,7 +732,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         
         # Create plot and add polygons
         plot <- ggplot() +
-          geom_sf(data = x, aes_string(fill = "color"), color = "black", size = weight, show.legend = plot.legend) +
+          geom_sf(data = x, aes(fill = .data[["color"]]), color = "black", size = weight, show.legend = plot.legend) +
           scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
           theme(axis.title = element_blank())
         
@@ -745,7 +745,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
           
           # Add labels to plot
           plot <- plot +
-            .geom_sf_text_repel(data = x, aes_string(label = "label"), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
+            .geom_sf_text_repel(data = x, aes(label = .data[["label"]]), size = plot.label.size, fontface = "bold", fun.geometry = plot.label.geometry)
           
         }
 

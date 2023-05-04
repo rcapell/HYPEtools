@@ -12,6 +12,7 @@
 * Allow for specifying only number of rows or columns in PlotPerformanceByAttribute()
 * Add "-9999" as NA string in ReadSubass()
 * Fix bug in PlotBasinOutput() where line plots would not get generated if NA values were present
+* Update plotting functions to replace usage of deprecated ggplot2 aes_string() function
 
 ## HYPEtools 1.3.0 (2023-04-05)
 *New functions and bug fixes*
