@@ -205,8 +205,23 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     if (trendline == TRUE) {
       if (!is.null(groups)) {
         plot <- plot + geom_smooth(aes(color = .data[["Group"]]), method = trendline.method, formula = trendline.formula)
+        
+        # Identify which groups have unique values and thus trendlines
+        if(drop == TRUE){
+          trendline_groups <- plotdata %>%
+            group_by(Group) %>%
+            summarize(unique = n_distinct(!!sym(col))) %>%
+            filter(unique > 1) %>%
+            select(Group) %>%
+            unlist() %>%
+            as.numeric()
+        } else{
+          trendline_groups <- 1:length(unique(groups[[2]]))
+        }
+        
       } else {
         plot <- plot + geom_smooth(method = trendline.method, formula = trendline.formula)
+        trendline_groups = 1 # Specify color group for trendline
       }
     }
 
@@ -223,18 +238,20 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Format colors if color palette specified
     if (!is.null(groups.color.pal)) {
       
+      manual_colors <- groups.color.pal[which(unique(groups[[2]]) %in% unique(plotdata$Group))]
+      
       if(drop == TRUE){
-        manual_colors <- groups.color.pal[which(unique(groups[[2]]) %in% unique(plotdata$Group))]
+        legend_colors <- manual_colors
       } else{
-        manual_colors <- groups.color.pal
+        legend_colors <- groups.color.pal
       }
       
       plot <- plot +
-        scale_fill_manual(values = manual_colors, name = "Group", drop = drop) +
-        scale_color_manual(values = unlist(lapply(manual_colors, function(X) {
+        scale_fill_manual(values = legend_colors, name = "Group", drop = drop) +
+        scale_color_manual(values = unlist(lapply(groups.color.pal[trendline_groups], function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
         })), name = "Group", drop = drop) + 
-        guides(color = guide_legend(override.aes = list(color = manual_colors))) # Override colors in legend to be the original colors
+        guides(color = guide_legend(override.aes = list(color = groups.color.pal[trendline_groups]))) # Override colors in legend to be the original colors
 
       # Format colors if no color palette specified
     } else {
@@ -246,19 +263,21 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       }
 
       # Get colors for ggplot
+      gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(unique(groups[[2]]) %in% unique(plotdata$Group))]
+      
       if(drop == TRUE){
-        gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(unique(groups[[2]]) %in% unique(plotdata$Group))]
+        legend_colors <- gg_colors
       } else{
-        gg_colors <- gg_color_hue(length(unique(groups[[2]])))
+        legend_colors <- gg_color_hue(length(unique(groups[[2]])))
       }
 
       # Adjust colors
       plot <- plot +
-        scale_fill_discrete(name = "Group", drop = drop) + # Assign name to pallette for points
-        scale_color_manual(values = unlist(lapply(gg_colors, function(X) {
+        scale_fill_manual(values = legend_colors, name = "Group", drop = drop) + # Assign name to palette for points
+        scale_color_manual(values = unlist(lapply(gg_color_hue(length(unique(groups[[2]])))[trendline_groups], function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
         })), name = "Group", drop = drop) + 
-        guides(color = guide_legend(override.aes = list(color = gg_colors))) # Override colors in legend to be the original colors
+        guides(color = guide_legend(override.aes = list(color = gg_color_hue(length(unique(groups[[2]])))[trendline_groups]))) # Override colors in legend to be the original colors
     }
     
     # Scale x axis
@@ -467,7 +486,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   #   A potential fix to this would be to add plot spacers to all of the plots in that column and then adjust the arrange_widths to be 5 for that column instead of 4, but then there will be 
   #   unequal amounts of white space between the different columns
   if(density.plot == TRUE & common.y.axis == TRUE){
-    arrange_width = c(rep(4,(ncol-1)), 5) # Need to have wider last plot because it contains the denisty plot
+    arrange_width = c(rep(4,(ncol-1)), 5) # Need to have wider last plot because it contains the density plot
   } else{
     arrange_width = 1
   }
