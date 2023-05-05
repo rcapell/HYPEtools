@@ -38,6 +38,7 @@
 #' @param align Specify how output plots should be arranged. See \code{\link{ggarrange}}.
 #' @param common.legend Specify if arranged plot should use a common legend. See \code{\link{ggarrange}}.
 #' @param legend.position Specify position of common legend for arranged plot. See \code{\link{ggarrange}}.
+#' @param group.legend.title String, title for plot legend when generating plots with \code{groups}.
 #' @param common.y.axis Logical, if \code{TRUE}, then only one y-axis label and marginal density plot will be provided. If \code{FALSE}, then separate y-axis labels and marginal density plots will be included for each subplot.
 #' @param summary.table Logical, if \code{TRUE}, then a table providing summary statistics will be included at the bottom of the output plot.
 #' @param filename String, filename used to save plot. File extension must be specified. See \code{\link{ggsave}}.
@@ -103,7 +104,7 @@
 PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
                                        trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15, density.plot = FALSE, density.plot.type = c("density", "boxplot"),
                                        scale.x.log = FALSE, scale.y.log = FALSE, xsigma = 1, ysigma = 1, xlimits = c(NA, NA), ylimits = c(NA, NA), xbreaks = waiver(), ybreaks = waiver(), xlabels = waiver(), ylabels = waiver(),
-                                       xlab = NULL, ylab = NULL, ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", common.y.axis = FALSE, summary.table = FALSE,
+                                       xlab = NULL, ylab = NULL, ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", group.legend.title = "Group", common.y.axis = FALSE, summary.table = FALSE,
                                        filename = NULL, width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300) {
 
   # Check join type and density plot type
@@ -248,10 +249,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       }
       
       plot <- plot +
-        scale_fill_manual(values = legend_colors, name = "Group", drop = drop) +
+        scale_fill_manual(values = legend_colors, name = group.legend.title, drop = drop) +
         scale_color_manual(values = unlist(lapply(groups.color.pal[trendline_groups], function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = "Group", drop = drop) + 
+        })), name = group.legend.title, drop = drop) + 
         guides(color = guide_legend(override.aes = list(color = groups.color.pal[trendline_groups]))) # Override colors in legend to be the original colors
 
       # Format colors if no color palette specified
@@ -274,10 +275,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
       # Adjust colors
       plot <- plot +
-        scale_fill_manual(values = legend_colors, name = "Group", drop = drop) + # Assign name to palette for points
+        scale_fill_manual(values = legend_colors, name = group.legend.title, drop = drop) + # Assign name to palette for points
         scale_color_manual(values = unlist(lapply(gg_color_hue(length(unique(groups[[2]])))[trendline_groups], function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = "Group", drop = drop) + 
+        })), name = group.legend.title, drop = drop) + 
         guides(color = guide_legend(override.aes = list(color = gg_color_hue(length(unique(groups[[2]])))[trendline_groups]))) # Override colors in legend to be the original colors
     }
     
@@ -317,14 +318,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = manual_colors, name = "Group") +
+              scale_fill_manual(values = manual_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-a.xis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
               geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = manual_colors, name = "Group") +
+              scale_fill_manual(values = manual_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -332,14 +333,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = manual_colors, name = "Group") +
+              scale_fill_manual(values = manual_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-a.xis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = manual_colors, name = "Group") +
+              scale_fill_manual(values = manual_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -349,14 +350,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = gg_colors, name = "Group") +
+              scale_fill_manual(values = gg_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
               geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = gg_colors, name = "Group") +
+              scale_fill_manual(values = gg_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -364,14 +365,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = gg_colors, name = "Group") +
+              scale_fill_manual(values = gg_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = gg_colors, name = "Group") +
+              scale_fill_manual(values = gg_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -426,7 +427,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       }
       
       # Backup legend
-      plot_legends[[col]] <- plot
+      plot_legends[[col]] <- plot + theme(legend.title = element_text(face = "bold"))
       
       # Remove legend from plot
       plot <- plot + theme(legend.position = "none")
