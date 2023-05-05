@@ -38,6 +38,7 @@ PlotPerformanceByAttribute(
   align = "hv",
   common.legend = TRUE,
   legend.position = "bottom",
+  group.legend.title = "Group",
   common.y.axis = FALSE,
   summary.table = FALSE,
   filename = NULL,
@@ -80,6 +81,7 @@ PlotJohan(
   align = "hv",
   common.legend = TRUE,
   legend.position = "bottom",
+  group.legend.title = "Group",
   common.y.axis = FALSE,
   summary.table = FALSE,
   filename = NULL,
@@ -156,6 +158,8 @@ grouping variable (e.g. month).}
 \item{common.legend}{Specify if arranged plot should use a common legend. See \code{\link{ggarrange}}.}
 
 \item{legend.position}{Specify position of common legend for arranged plot. See \code{\link{ggarrange}}.}
+
+\item{group.legend.title}{String, title for plot legend when generating plots with \code{groups}.}
 
 \item{common.y.axis}{Logical, if \code{TRUE}, then only one y-axis label and marginal density plot will be provided. If \code{FALSE}, then separate y-axis labels and marginal density plots will be included for each subplot.}
 
