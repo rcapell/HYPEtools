@@ -213,7 +213,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             group_by(.data[["Group"]]) %>%
             summarize(unique = n_distinct(!!sym(col))) %>%
             filter(unique > 1) %>%
-            select(.data[["Group"]]) %>%
+            select(all_of("Group")) %>%
             unlist() %>%
             as.numeric()
         } else{
@@ -239,7 +239,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Format colors if color palette specified
     if (!is.null(groups.color.pal)) {
       
-      manual_colors <- groups.color.pal[which(unique(groups[[2]]) %in% unique(plotdata$Group))]
+      manual_colors <- groups.color.pal[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
       
       if(drop == TRUE){
         legend_colors <- manual_colors
@@ -264,7 +264,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       }
 
       # Get colors for ggplot
-      gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(unique(groups[[2]]) %in% unique(plotdata$Group))]
+      gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
       
       if(drop == TRUE){
         legend_colors <- gg_colors
@@ -349,12 +349,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_density(size = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = gg_colors, name = "Group") +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
               geom_density(size = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = gg_colors, name = "Group") +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -362,12 +364,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
+              scale_fill_manual(values = gg_colors, name = "Group") +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
+              scale_fill_manual(values = gg_colors, name = "Group") +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
