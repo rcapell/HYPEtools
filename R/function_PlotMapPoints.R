@@ -315,6 +315,20 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
               legend.title <- paste("Air Temp. (C)")
             }
           }
+        } else if(toupper(var.name) == "NSE") {
+          crfun <- colorRampPalette(c("#e81515", "#EEEE00", "#2892c7"))
+          cbrks <- c(-Inf, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+          col.class <- c("purple", crfun(length(cbrks) - 2))
+          legend.title <- "NSE"
+        } else if(toupper(var.name) == "CC") {
+          crfun <- ColDiffGeneric
+          cbrks <- c(-1, -0.50, -0.25, -0.1, 0.1, 0.25, 0.50, 1)
+          col.class <- crfun(length(cbrks) - 1)
+          if(map.type == "default"){
+            legend.title <- "Pearsons\nCorrelation\nCoefficient"
+          } else if(map.type == "leaflet"){
+            legend.title <- "Pearsons<br>Correlation<br>Coefficient"
+          }
         } else if(toupper(var.name) == "RE") {
           crfun <- ColDiffGeneric
           cbrks <- c(-Inf, -100, -50, -25, -10, 10, 25, 50, 100, Inf)
@@ -324,12 +338,16 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
           crfun <- ColDiffGeneric
           cbrks <- c(-Inf, -100, -50, -25, -10, 10, 25, 50, 100, Inf)
           col.class <- crfun(length(cbrks) - 1)
-          legend.title <- "Relative Error in Standard Deviation (%)"
-        } else if(toupper(var.name) == "CC") {
-          crfun <- ColDiffGeneric
-          cbrks <- seq(-1, 1, 0.2)
-          col.class <- crfun(length(cbrks) - 1)
-          legend.title <- "Pearsons Correlation Coefficient"
+          if (map.type == "default") {
+            legend.title <- "Relative Error in\nStandard Deviation (%)"
+          } else if (map.type == "leaflet"){
+            legend.title <- "Relative Error in<br>Standard Deviation (%)"
+          }
+        } else if(toupper(var.name) == "KGE") {
+          crfun <- colorRampPalette(c("#e81515", "#EEEE00", "#2892c7"))
+          cbrks <- c(-Inf, -0.41, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+          col.class <- c("purple", crfun(length(cbrks) - 2))
+          legend.title <- "KGE"
         } else if(!toupper(var.name) == ""){
           crfun <- ColDiffGeneric
           if(is.null(col.breaks)){

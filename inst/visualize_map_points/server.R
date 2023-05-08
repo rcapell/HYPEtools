@@ -428,9 +428,19 @@ shinyAppServer <- function(input, output, session) {
   # Reactive values to store stuff for legend
   lcol <- reactiveVal()
   cbrks <- reactiveVal()
+  
+  # Update legend if slider changes for subass file
+  slider_legend_update <- reactiveVal(0)
+  observeEvent(input$slider,{
+    req(result_type())
+    val = slider_legend_update()
+    if(result_type() == "Subass"){
+      slider_legend_update(val + 1)
+    }
+  })
 
   # Create basemap
-  leaf <- shiny::eventReactive(c(gis_filtered(), gis_bg(), gis.subid(), result_file(), slider_loaded(), result_type()),{
+  leaf <- shiny::eventReactive(c(gis_filtered(), gis_bg(), gis.subid(), result_file(), slider_loaded(), result_type(), slider_legend_update()),{
 
     # Require valid data
     shiny::req(leaf_check() == TRUE, slider_loaded() == TRUE)
@@ -445,10 +455,16 @@ shinyAppServer <- function(input, output, session) {
     
     # Get variable name
     if(result_type() == "Subass"){
-      var.name <- ""
+      if(input$slider %in% c("NSE", "CC", "RE", "RSDE", "KGE")){
+        var.name <- input$slider
+      } else{
+        var.name <- ""
+      }
     } else{
       var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
     }
+    
+    tester<<-result_type()
 
     # Create basemap and get data
     data <- PlotMapPoints(
@@ -492,13 +508,18 @@ shinyAppServer <- function(input, output, session) {
 
     # Call background to trigger update if new basemap created
     gis_bg()
+    slider_legend_update()
 
     # Require valid data
     shiny::req(leaf_check() == TRUE, lcol(), cbrks())
     
     # Get variable name
     if(result_type() == "Subass"){
-      var.name <- ""
+      if(input$slider %in% c("NSE", "CC", "RE", "RSDE", "KGE")){
+        var.name <- input$slider
+      } else{
+        var.name <- ""
+      }
     } else{
       var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
     }
@@ -547,7 +568,11 @@ shinyAppServer <- function(input, output, session) {
     
     # Get variable name
     if(result_type() == "Subass"){
-      var.name <- ""
+      if(input$slider %in% c("NSE", "CC", "RE", "RSDE", "KGE")){
+        var.name <- input$slider
+      } else{
+        var.name <- ""
+      }
     } else{
       var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
     }
