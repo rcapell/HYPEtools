@@ -455,11 +455,7 @@ shinyAppServer <- function(input, output, session) {
     
     # Get variable name
     if(result_type() == "Subass"){
-      if(input$slider %in% c("NSE", "CC", "RE", "RSDE", "KGE")){
-        var.name <- input$slider
-      } else{
-        var.name <- ""
-      }
+      var.name <- input$slider
     } else{
       var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
     }
@@ -515,11 +511,7 @@ shinyAppServer <- function(input, output, session) {
     
     # Get variable name
     if(result_type() == "Subass"){
-      if(input$slider %in% c("NSE", "CC", "RE", "RSDE", "KGE")){
-        var.name <- input$slider
-      } else{
-        var.name <- ""
-      }
+      var.name <- input$slider
     } else{
       var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
     }
@@ -568,11 +560,7 @@ shinyAppServer <- function(input, output, session) {
     
     # Get variable name
     if(result_type() == "Subass"){
-      if(input$slider %in% c("NSE", "CC", "RE", "RSDE", "KGE")){
-        var.name <- input$slider
-      } else{
-        var.name <- ""
-      }
+      var.name <- input$slider
     } else{
       var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
     }
