@@ -315,6 +315,21 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
               legend.title <- paste("Air Temp. (C)")
             }
           }
+        } else if(toupper(var.name) == "RE") {
+          crfun <- ColDiffGeneric
+          cbrks <- c(-Inf, -100, -50, -25, -10, 10, 25, 50, 100, Inf)
+          col.class <- crfun(length(cbrks) - 1)
+          legend.title <- "Relative Error (%)"
+        } else if(toupper(var.name) == "RSDE") {
+          crfun <- ColDiffGeneric
+          cbrks <- c(-Inf, -100, -50, -25, -10, 10, 25, 50, 100, Inf)
+          col.class <- crfun(length(cbrks) - 1)
+          legend.title <- "Relative Error in Standard Deviation (%)"
+        } else if(toupper(var.name) == "CC") {
+          crfun <- ColDiffGeneric
+          cbrks <- seq(-1, 1, 0.2)
+          col.class <- crfun(length(cbrks) - 1)
+          legend.title <- "Pearsons Correlation Coefficient"
         } else if(!toupper(var.name) == ""){
           crfun <- ColDiffGeneric
           if(is.null(col.breaks)){
