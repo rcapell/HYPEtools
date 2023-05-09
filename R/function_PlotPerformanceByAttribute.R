@@ -37,7 +37,7 @@
 #' @param nrow Integer, number of rows to use in the output arranged plot. See \code{\link{ggarrange}}.
 #' @param align Specify how output plots should be arranged. See \code{\link{ggarrange}}.
 #' @param common.legend Specify if arranged plot should use a common legend. See \code{\link{ggarrange}}.
-#' @param legend.position Specify position of common legend for arranged plot. See \code{\link{ggarrange}}.
+#' @param legend.position Specify position of common legend for arranged plot. See \code{\link{ggarrange}}. Use \code{"none"} to hide legend.
 #' @param group.legend.title String, title for plot legend when generating plots with \code{groups}.
 #' @param common.y.axis Logical, if \code{TRUE}, then only one y-axis label and marginal density plot will be provided. If \code{FALSE}, then separate y-axis labels and marginal density plots will be included for each subplot.
 #' @param summary.table Logical, if \code{TRUE}, then a table providing summary statistics will be included at the bottom of the output plot.
@@ -124,8 +124,12 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   }
 
   # Create dataframe to store plot data
-  plotdata <- subass %>%
-    filter(!is.na(!!sym(colnames(subass)[subass.column]))) # Remove NA values from y-axis plotting column
+  if (join.type == "join") {
+    plotdata <- subass %>%
+      filter(!is.na(!!sym(colnames(subass)[subass.column]))) # Remove NA values from y-axis plotting column
+  } else{
+    plotdata <- subass
+  }
 
   # Join subass data to groups if they are given
   if (!is.null(groups)) {
@@ -513,7 +517,11 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     }
     
     # Arrange plot and suppress warning about alignment
-    arrangeplot <- suppressWarnings(ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, widths = arrange_width, common.legend = common.legend, legend = legend.position, legend.grob = legend.grob))
+    if(legend.position == "none"){
+      arrangeplot <- ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, widths = arrange_width, common.legend = common.legend, legend = legend.position)
+    } else{
+      arrangeplot <- suppressWarnings(ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, widths = arrange_width, common.legend = common.legend, legend = legend.position, legend.grob = legend.grob))
+    }
   } else{
     arrangeplot <- ggarrange(plotlist = plots, ncol = ncol, nrow = nrow, align = align, widths = arrange_width, common.legend = common.legend, legend = legend.position)
   }

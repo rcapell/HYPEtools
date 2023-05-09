@@ -157,7 +157,7 @@ grouping variable (e.g. month).}
 
 \item{common.legend}{Specify if arranged plot should use a common legend. See \code{\link{ggarrange}}.}
 
-\item{legend.position}{Specify position of common legend for arranged plot. See \code{\link{ggarrange}}.}
+\item{legend.position}{Specify position of common legend for arranged plot. See \code{\link{ggarrange}}. Use \code{"none"} to hide legend.}
 
 \item{group.legend.title}{String, title for plot legend when generating plots with \code{groups}.}
 
