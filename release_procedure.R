@@ -20,6 +20,7 @@ library(dplyr)
 # - Read through all sections and check validity
 
 # Update NEWS.md
+# - Remove development version tag from header
 
 # Add release comments to cran-comments.md
 
