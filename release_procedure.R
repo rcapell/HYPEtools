@@ -93,7 +93,7 @@ usethis::use_github_release()
 # - Add date to release heading in NEWS.md:
 #     ## HYPEtools 1.2.0 (2023-02-10)
 # - Add development version heading to NEWS.md:
-#     ## HYPEtools 1.4.0.9000
+#     ## HYPEtools 1.5.0.9000
 #     *Development Version*
 #
 #     #### Highlights
