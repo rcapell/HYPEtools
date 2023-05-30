@@ -5,12 +5,13 @@
 \title{Summarize subbasin attributes}
 \usage{
 SubidAttributeSummary(
-  subids,
+  subids = NULL,
   gd,
   bd = NULL,
   gc = NULL,
   desc = NULL,
   group = NULL,
+  group.upstream = TRUE,
   signif.digits = NULL,
   progbar = FALSE,
   summarize.landuse = TRUE,
@@ -36,6 +37,9 @@ SubidAttributeSummary(
 \item{desc}{Optional, Imported HYPE Description file. If provided, then dataframe columns will be renamed using the short names in the description file. See \code{\link{ReadDescription}}.}
 
 \item{group}{Optional, Integer vector of same length as number of SLC classes in gd. Alternative grouping index specification to gcl + type for \code{\link{UpstreamGroupSLCClasses}}.}
+
+\item{group.upstream}{Logical, if \code{TRUE}, then SLC fractions will be summarized for upstream areas using \code{\link{UpstreamGroupSLCClasses}}.
+If \code{FALSE}, then SLC fractions will be summarized for subbasin area only using \code{\link{GroupSLCClasses}}.}
 
 \item{signif.digits}{Optional, Integer specifying number of significant digits to round outputs to. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{link{UpstreamGeoData}}.}
 

@@ -9,6 +9,8 @@
 #' @param gc Imported HYPE GeoClass.txt file. See \code{\link{ReadGeoClass}}.
 #' @param desc Optional, Imported HYPE Description file. If provided, then dataframe columns will be renamed using the short names in the description file. See \code{\link{ReadDescription}}.
 #' @param group Optional, Integer vector of same length as number of SLC classes in gd. Alternative grouping index specification to gcl + type for \code{\link{UpstreamGroupSLCClasses}}.
+#' @param group.upstream Logical, if \code{TRUE}, then SLC fractions will be summarized for upstream areas using \code{\link{UpstreamGroupSLCClasses}}.
+#' If \code{FALSE}, then SLC fractions will be summarized for subbasin area only using \code{\link{GroupSLCClasses}}.
 #' @param signif.digits Optional, Integer specifying number of significant digits to round outputs to. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{link{UpstreamGeoData}}.
 #' @param progbar Logical, display a progress bar while calculating summary information. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{link{UpstreamGeoData}}.
 #' @param summarize.landuse Logical, specify whether or not subbasin upstream landuse fractions should be calculated.
@@ -61,7 +63,7 @@
 #' @export
 
 # Create Johan summary dataframe
-SubidAttributeSummary <- function(subids, gd, bd = NULL, gc = NULL, desc = NULL, group = NULL, signif.digits = NULL, progbar = FALSE,
+SubidAttributeSummary <- function(subids = NULL, gd, bd = NULL, gc = NULL, desc = NULL, group = NULL, group.upstream = TRUE, signif.digits = NULL, progbar = FALSE,
                                   summarize.landuse = TRUE, summarize.soil = TRUE, summarize.crop = TRUE,
                                   summarize.upstreamarea = TRUE, unweighted.gd.cols = NULL, upstream.gd.cols = NULL, olake.slc = NULL, bd.weight = FALSE,
                                   mapoutputs = NULL) {
@@ -83,14 +85,23 @@ SubidAttributeSummary <- function(subids, gd, bd = NULL, gc = NULL, desc = NULL,
     type <- append(type, "crop")
   }
 
-  # Summarize upstream SLC fractions
+  # Summarize SLC fractions
   if (any(summarize.landuse, summarize.soil, summarize.crop)) {
-    slc <- UpstreamGroupSLCClasses(
-      subid = subids,
-      gd = gd, bd = bd, gcl = gc,
-      type = type, group = group,
-      signif.digits = signif.digits, progbar = progbar
-    )
+    # Upstream fractions
+    if(group.upstream == TRUE){
+      slc <- UpstreamGroupSLCClasses(
+        subid = subids,
+        gd = gd, bd = bd, gcl = gc,
+        type = type, group = group,
+        signif.digits = signif.digits, progbar = progbar
+      )
+    # Subbasin fractions
+    } else{
+      slc <- GroupSLCClasses(
+        gd = gd, gcl = gc,
+        type = type, group = group, verbose = progbar
+      )
+    }
 
     # Rename columns if given a description file
     if (!is.null(desc)) {
