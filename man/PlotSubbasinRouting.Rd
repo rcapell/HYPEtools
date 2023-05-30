@@ -76,7 +76,7 @@ to be provided if the \code{map} GIS data does not include SUBID and/or MAINDOWN
 BranchData.txt file. Subbasin routing lines are randomly assigned a color using \code{\link[randomcoloR:distinctColorPalette]{randomcoloR::distinctColorPalette()}}.
 }
 \examples{
-\donttest{
+\dontrun{
 # Import GeoData and subbasin polygons
 require(sf);require(leaflet.extras);require(leaflet);require(mapview)
 te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
