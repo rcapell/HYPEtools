@@ -98,5 +98,5 @@ SubidAttributeSummary(subids <- subass$SUBID,
 
 }
 \seealso{
-\code{\link{UpstreamGroupSLCClasses}}, \code{\link{UpstreamGeoData}}, \code{\link{ReadMapOutput}} for subbasin attribute summary functions; \code{\link{PlotPerformanceByAttribute}} for related plotting function.
+\code{\link{UpstreamGroupSLCClasses}}, \code{\link{GroupSLCClasses}}, \code{\link{UpstreamGeoData}}, \code{\link{ReadMapOutput}} for subbasin attribute summary functions; \code{\link{PlotPerformanceByAttribute}} for related plotting function.
 }
