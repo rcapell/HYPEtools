@@ -96,7 +96,7 @@ SubidAttributeSummary <- function(subids = NULL, gd, bd = NULL, gc = NULL, desc 
         signif.digits = signif.digits, progbar = progbar
       )
     # Subbasin fractions
-    } else{
+    } else if(group.upstream == FALSE){
       slc <- GroupSLCClasses(
         gd = gd, gcl = gc,
         type = type, group = group, verbose = progbar
