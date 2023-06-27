@@ -2,7 +2,7 @@
 #'
 #' Creates a Party Parrot.
 #' 
-#' @param sound Character string or number specifying which sound to play when showing the Party Parrot. See \code{\link{beep}} in the \code{beepr} package.
+#' @param sound Character string or number specifying which sound to play when showing the Party Parrot. See the \code{beep} function in the \code{beepr} package.
 #'
 #' @details
 #' \code{PartyParrot} generates a Party Parrot. Uses for Party Parrots include, for example, celebrating the successful execution of a script.

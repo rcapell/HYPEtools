@@ -7,7 +7,7 @@
 PartyParrot(sound = 8)
 }
 \arguments{
-\item{sound}{Character string or number specifying which sound to play when showing the Party Parrot. See \code{\link{beep}} in the \code{beepr} package.}
+\item{sound}{Character string or number specifying which sound to play when showing the Party Parrot. See the \code{beep} function in the \code{beepr} package.}
 }
 \value{
 Returns a Party Parrot to the Console.
