@@ -5,6 +5,7 @@
 
 #### Highlights
 * Add option in SubidAttributeSummary() to summarize landuse, soil, and crop fractions for just subbasin areas (not upstream areas)
+* Add PartyParrot() Easter Egg
 
 ## HYPEtools 1.4.0 (2023-05-17)
 *New functions and bug fixes*

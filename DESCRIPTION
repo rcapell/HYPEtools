@@ -47,6 +47,7 @@ Language: en-US
 Suggests: 
     rmarkdown,
     knitr,
+    beepr,
     DT,
     htmlwidgets,
     leaflet,
