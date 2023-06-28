@@ -1,11 +1,12 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.4.0.9000
-*Development Version*
+## HYPEtools 1.4.1
+*Enhancements and bug fixes*
 
 #### Highlights
 * Add option in SubidAttributeSummary() to summarize landuse, soil, and crop fractions for just subbasin areas (not upstream areas)
 * Add PartyParrot() Easter Egg
+* Fix example for PlotSubbasinRouting() which was not working
 
 ## HYPEtools 1.4.0 (2023-05-17)
 *New functions and bug fixes*

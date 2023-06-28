@@ -77,14 +77,14 @@ BranchData.txt file. Subbasin routing lines are randomly assigned a color using 
 }
 \examples{
 \dontrun{
-# Import GeoData and subbasin polygons
-require(sf);require(leaflet.extras);require(leaflet);require(mapview)
-te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
-te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"))
-PlotSubbasinRouting(map = system.file("demo_model",
-"gis", "Nytorp_map.gpkg", package = "HYPEtools"), 
-                    gd = system.file("demo_model", "GeoData.txt", package = "HYPEtools"),
-                    map.subid.column = 25)
+PlotSubbasinRouting(
+  map = system.file("demo_model",
+                    "gis", "Nytorp_map.gpkg",
+                    package = "HYPEtools"
+  ),
+  gd = system.file("demo_model", "GeoData.txt", package = "HYPEtools"),
+  map.subid.column = 25
+)
 }
 
 }

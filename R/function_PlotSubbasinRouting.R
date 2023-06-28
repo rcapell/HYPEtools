@@ -35,17 +35,17 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Import GeoData and subbasin polygons
-#' require(sf);require(leaflet.extras);require(leaflet);require(mapview)
-#' te1 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
-#' te2 <- st_read(dsn = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"))
-#' PlotSubbasinRouting(map = system.file("demo_model",
-#' "gis", "Nytorp_map.gpkg", package = "HYPEtools"), 
-#'                     gd = system.file("demo_model", "GeoData.txt", package = "HYPEtools"),
-#'                     map.subid.column = 25)
+#' PlotSubbasinRouting(
+#'   map = system.file("demo_model",
+#'                     "gis", "Nytorp_map.gpkg",
+#'                     package = "HYPEtools"
+#'   ),
+#'   gd = system.file("demo_model", "GeoData.txt", package = "HYPEtools"),
+#'   map.subid.column = 25
+#' )
 #' }
 #'
-#' @importFrom dplyr full_join %>% bind_rows filter across
+#' @importFrom dplyr full_join %>% bind_rows filter across rename_with
 #' @importFrom tidyselect matches
 #' @importFrom rlang .data
 #' @importFrom stats setNames
@@ -83,7 +83,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
     # Rename columns to all uppercase except geometry column
     map <- map %>%
-      rename_with(.fn = toupper, .cols = !matches(attr(map, "sf_column")))
+      rename_with(.fn = toupper, .cols = colnames(map)[which(!colnames(map) == attr(map, "sf_column"))])
 
     # Get name of map subid column
     map.subid.name <- colnames(map)[map.subid.column]
