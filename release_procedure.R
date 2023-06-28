@@ -22,8 +22,6 @@ library(dplyr)
 # Update NEWS.md
 # - Remove development version tag from header
 
-# Add release comments to cran-comments.md
-
 # Run update code at bottom of VariableLookup.R
 
 # _____________________________________________________________________________________________________________________________________
@@ -79,6 +77,8 @@ devtools::check_win_devel(email = email)
 # _____________________________________________________________________________________________________________________________________
 # 5) Create Release & Update Repo #####
 # _____________________________________________________________________________________________________________________________________
+
+# Add release comments to cran-comments.md
 
 # Commit any changes to GitHub
 
