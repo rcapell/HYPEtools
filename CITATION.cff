@@ -9,7 +9,7 @@ type: software
 license: LGPL-3.0-only
 title: 'HYPEtools: Tools for Processing and Analyzing Files from the Hydrological
   Catchment Model HYPE'
-version: 1.4.0.9000
+version: 1.4.1
 abstract: 'Work with model files (setup, input, output) from the hydrological catchment
   model HYPE: Streamlined file import and export, standard evaluation plot routines,
   diverse post-processing and aggregation routines for hydrological model analysis.'
@@ -409,6 +409,16 @@ references:
     orcid: https://orcid.org/0000-0003-0645-5666
   year: '2023'
 - type: software
+  title: beepr
+  abstract: 'beepr: Easily Play Notification Sounds on any Platform'
+  notes: Suggests
+  repository: https://CRAN.R-project.org/package=beepr
+  authors:
+  - family-names: Bååth
+    given-names: Rasmus
+    email: rasmus.baath@gmail.com
+  year: '2023'
+- type: software
   title: DT
   abstract: 'DT: A Wrapper of the JavaScript Library ''DataTables'''
   notes: Suggests
@@ -639,7 +649,7 @@ references:
   title: webshot
   abstract: 'webshot: Take Screenshots of Web Pages'
   notes: Suggests
-  url: http://wch.github.io/webshot/
+  url: https://wch.github.io/webshot/
   repository: https://CRAN.R-project.org/package=webshot
   authors:
   - family-names: Chang
