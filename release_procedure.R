@@ -85,8 +85,10 @@ devtools::check_win_devel(email = email)
 # Submit to CRAN, includes checks
 devtools::release()
 
-# Create version tag in github repo
+# Create version tag in GitHub repo
 usethis::use_github_release()
+
+# Add Date & Zenodo badge to GitHub Release
 
 # After successful release
 # - Update version number in DESCRIPTION to *.9000
