@@ -54,11 +54,11 @@ Suggests:
     leaflet.extras,
     mapview,
     plotly,
+    randomcoloR,
     sf,
     shiny,
     shinyalert,
     shinyFiles,
     shinyWidgets,
-    randomcoloR,
     webshot
 VignetteBuilder: knitr
