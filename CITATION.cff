@@ -538,6 +538,16 @@ references:
     email: pedro@plot.ly
   year: '2023'
 - type: software
+  title: randomcoloR
+  abstract: 'randomcoloR: Generate Attractive Random Colors'
+  notes: Suggests
+  url: https://github.com/ronammar/randomcoloR
+  repository: https://CRAN.R-project.org/package=randomcoloR
+  authors:
+  - family-names: Ammar
+    given-names: Ron
+  year: '2023'
+- type: software
   title: sf
   abstract: 'sf: Simple Features for R'
   notes: Suggests
@@ -634,16 +644,6 @@ references:
     given-names: Fanny
   - family-names: Granjon
     given-names: David
-  year: '2023'
-- type: software
-  title: randomcoloR
-  abstract: 'randomcoloR: Generate Attractive Random Colors'
-  notes: Suggests
-  url: https://github.com/ronammar/randomcoloR
-  repository: https://CRAN.R-project.org/package=randomcoloR
-  authors:
-  - family-names: Ammar
-    given-names: Ron
   year: '2023'
 - type: software
   title: webshot
