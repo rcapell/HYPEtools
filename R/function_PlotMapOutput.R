@@ -47,6 +47,7 @@
 #' @param weight Numeric, weight of subbasin boundary lines. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
 #' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See [leaflet::addPolygons()].
 #' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
+#' @param outline.color Character string of color to use to for subbasin polygon outlines. Use \code{NA} to hide the outlines.
 #' @param na.color Character string of color to use to symbolize subbasin polygons in maps which correspond to \code{NA} values.
 #' @param plot.searchbar Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See [leaflet.extras::addSearchFeatures()].
 #' @param plot.label Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over subbasins.
@@ -137,7 +138,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                           plot.legend = TRUE, legend.pos = "right", legend.title = NULL,
                           legend.signif = 2, col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
-                          weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
+                          weight = 0.15, opacity = 0.75, fillOpacity = 0.5, outline.color = "black", na.color = "#808080",
                           plot.searchbar = FALSE, plot.label = FALSE, plot.label.size = 2.5, plot.label.geometry = c("centroid", "surface"),
                           file = "", width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300,
                           vwidth = 1424, vheight = 1000, html.name = "",
@@ -732,7 +733,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         
         # Create plot and add polygons
         plot <- ggplot() +
-          geom_sf(data = x, aes(fill = .data[["color"]]), color = "black", size = weight, show.legend = plot.legend) +
+          geom_sf(data = x, aes(fill = .data[["color"]]), color = outline.color, size = weight, show.legend = plot.legend) +
           scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
           theme(axis.title = element_blank())
         
@@ -821,7 +822,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
               leaflet::addPolygons(
                 group = "Subbasins",
                 data = x,
-                color = "black",
+                color = outline.color,
                 weight = weight,
                 opacity = opacity,
                 fillColor = ~color,
@@ -834,7 +835,7 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
               leaflet::addPolygons(
                 group = "Subbasins",
                 data = x,
-                color = "black",
+                color = outline.color,
                 weight = weight,
                 opacity = opacity,
                 fillColor = ~color,

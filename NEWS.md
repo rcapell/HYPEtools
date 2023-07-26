@@ -5,6 +5,7 @@
 
 #### Highlights
 * Add basic MergeObs() function
+* Allow users to change polygon outline colors in in PlotMapOutput()
 
 ## HYPEtools 1.4.1 (2023-06-30)
 *Enhancements and bug fixes*

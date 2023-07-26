@@ -26,6 +26,7 @@ PlotMapOutput(
   weight = 0.15,
   opacity = 0.75,
   fillOpacity = 0.5,
+  outline.color = "black",
   na.color = "#808080",
   plot.searchbar = FALSE,
   plot.label = FALSE,
@@ -108,6 +109,8 @@ classification will be applied (see details).}
 \item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
 \item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+
+\item{outline.color}{Character string of color to use to for subbasin polygon outlines. Use \code{NA} to hide the outlines.}
 
 \item{na.color}{Character string of color to use to symbolize subbasin polygons in maps which correspond to \code{NA} values.}
 
