@@ -6,6 +6,8 @@
 #### Highlights
 * Add basic MergeObs() function
 * Allow users to change polygon outline colors in in PlotMapOutput()
+* Fix bug in PlotMapOutput() that ignored user defined col.breaks
+* Allow users to specify custom labels for PlotMapPoint() legends
 
 ## HYPEtools 1.4.1 (2023-06-30)
 *Enhancements and bug fixes*

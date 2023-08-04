@@ -20,6 +20,7 @@ PlotMapPoints(
   legend.signif = 2,
   col = NULL,
   col.breaks = NULL,
+  col.labels = NULL,
   col.rev = FALSE,
   plot.scale = TRUE,
   scale.pos = "br",
@@ -108,6 +109,8 @@ interpreted as right-closed, i.e upper boundaries included in class. Lowest clas
 Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
 unclassified white spots on the map plot. If \code{NULL} (the default), \code{col.breaks} covers a range from 0 to 1
 with 9 intervals, and an additional interval for negative values. This is suitable for e.g. NSE performances.}
+
+\item{col.labels}{A character vector, specifying custom labels to be used for each legend item. Works with \code{map.type} set to \code{default} or \code{leaflet}.}
 
 \item{col.rev}{Logical, If \code{TRUE}, then color palette will be reversed.}
 

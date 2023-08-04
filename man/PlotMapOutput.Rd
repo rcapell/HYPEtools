@@ -18,6 +18,7 @@ PlotMapOutput(
   col = "auto",
   col.ramp.fun,
   col.breaks = NULL,
+  col.labels = NULL,
   col.rev = FALSE,
   plot.scale = TRUE,
   scale.pos = "br",
@@ -93,6 +94,8 @@ Meaningful results require the lowest and uppermost breaks to bracket all model 
 unclassified white spots on the map plot. Not mandatory, can optionally
 be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
 classification will be applied (see details).}
+
+\item{col.labels}{A character vector, specifying custom labels to be used for each legend item. Works with \code{map.type} set to \code{default} or \code{leaflet}.}
 
 \item{col.rev}{Logical, If \code{TRUE}, then color palette will be reversed.}
 

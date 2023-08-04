@@ -36,6 +36,7 @@
 #' Meaningful results require the lowest and uppermost breaks to bracket all model result values, otherwise there will be
 #' unclassified white spots on the map plot. If \code{NULL} (the default), \code{col.breaks} covers a range from 0 to 1
 #' with 9 intervals, and an additional interval for negative values. This is suitable for e.g. NSE performances.
+#' @param col.labels A character vector, specifying custom labels to be used for each legend item. Works with \code{map.type} set to \code{default} or \code{leaflet}.
 #' @param col.rev Logical, If \code{TRUE}, then color palette will be reversed.
 #' @param plot.scale Logical, plot a scale bar on map. NOTE: Scale bar may be inaccurate for geographic coordinate systems (Consider switching to projected coordinate system).
 #' @param scale.pos Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_scale}}.
@@ -130,7 +131,7 @@
 
 PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL, bg = NULL, bg.label.column = 1, var.name = "", map.type = "default", shiny.data = FALSE,
                           plot.legend = TRUE, legend.pos = "right", legend.title = NULL, 
-                          legend.signif = 2, col = NULL, col.breaks = NULL, col.rev = FALSE,
+                          legend.signif = 2, col = NULL, col.breaks = NULL, col.labels = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
@@ -763,6 +764,11 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
         l.label <- unlist(lapply(1:(length(cbrks) - 1), function(X) {
           paste(signif(cbrks[X], legend.signif), "to", signif(cbrks[X + 1], legend.signif))
         }))
+      }
+      
+      # Override legend labels if custom labels were provided
+      if(!is.null(col.labels)){
+        l.label <- col.labels
       }
       
       # Create ggplot static map

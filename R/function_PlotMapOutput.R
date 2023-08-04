@@ -39,6 +39,7 @@
 #' unclassified white spots on the map plot. Not mandatory, can optionally
 #' be combined with one of the pre-defined palettes, including \code{"auto"} selection. Per default, a generic
 #' classification will be applied (see details).
+#' @param col.labels A character vector, specifying custom labels to be used for each legend item. Works with \code{map.type} set to \code{default} or \code{leaflet}.
 #' @param col.rev Logical, If \code{TRUE}, then color palette will be reversed.
 #' @param plot.scale Logical, plot a scale bar on map. NOTE: Scale bar may be inaccurate for geographic coordinate systems (Consider switching to projected coordinate system).
 #' @param scale.pos Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_scale}}.
@@ -136,7 +137,7 @@
 
 PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", shiny.data = FALSE,
                           plot.legend = TRUE, legend.pos = "right", legend.title = NULL,
-                          legend.signif = 2, col = "auto", col.ramp.fun, col.breaks = NULL, col.rev = FALSE,
+                          legend.signif = 2, col = "auto", col.ramp.fun, col.breaks = NULL, col.labels = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
                           weight = 0.15, opacity = 0.75, fillOpacity = 0.5, outline.color = "black", na.color = "#808080",
                           plot.searchbar = FALSE, plot.label = FALSE, plot.label.size = 2.5, plot.label.geometry = c("centroid", "surface"),
@@ -308,6 +309,12 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         crfun <- ColDiffGeneric
         cbrks <- quantile(x[, 2], probs = seq(0, 1, .1), na.rm = TRUE)
       }
+      
+      # Override cbrks if custom breakpoints provided
+      if(!is.null(col.breaks)){
+        cbrks <- col.breaks
+      }
+      
     } else if (is.vector(col)) {
       # Case 3: a vector of colors
       crfun <- NULL
@@ -726,6 +733,11 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         l.label <- unlist(lapply(1:(length(cbrks) - 1), function(X) {
           paste(signif(cbrks[X], legend.signif), "-", signif(cbrks[X + 1], legend.signif))
         }))
+      }
+      
+      # Override legend labels if custom labels were provided
+      if(!is.null(col.labels)){
+        l.label <- col.labels
       }
       
       # Create ggplot static map
