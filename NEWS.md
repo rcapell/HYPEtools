@@ -1,7 +1,7 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.4.1.9000
-*Development Version*
+## HYPEtools 1.5.0
+*Enhancements and bug fixes*
 
 #### Highlights
 * Add basic MergeObs() function
