@@ -116,9 +116,7 @@ VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description",
 # # Format Units
 # vars.info[which(grepl("\\p{So}C",vars.info$Unit,perl=T)),"Unit"] <- "C" # Remove Degree Symbol from Temperatures
 # vars.info[which(vars.info$Unit=="106m3"),"Unit"] <- "10^6 m3" # Fix Volume Units
-# vars.info$Unit <- gsub("[\xb5]","micro ",vars.info$Unit) # Replace Mu (Hex Code &#xb5) with word Micro
-# 
-# 
+# vars.info$Unit <- gsub("[\\xb5]","micro ",vars.info$Unit, perl = T) # Replace Mu (Hex Code &#xb5) with word Micro
 # 
 # # _____________________________________________________________________________________________________________________________________
 # # 4) Make Lists of Variables into Unique Rows #####
