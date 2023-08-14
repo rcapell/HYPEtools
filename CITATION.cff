@@ -9,7 +9,7 @@ type: software
 license: LGPL-3.0-only
 title: 'HYPEtools: Tools for Processing and Analyzing Files from the Hydrological
   Catchment Model HYPE'
-version: 1.4.1.9000
+version: 1.5.0
 abstract: 'Work with model files (setup, input, output) from the hydrological catchment
   model HYPE: Streamlined file import and export, standard evaluation plot routines,
   diverse post-processing and aggregation routines for hydrological model analysis.'
@@ -151,18 +151,6 @@ references:
     given-names: Kamil
     email: kslowikowski@gmail.com
     orcid: https://orcid.org/0000-0002-2843-6370
-  year: '2023'
-- type: software
-  title: ggspatial
-  abstract: 'ggspatial: Spatial Data Framework for ggplot2'
-  notes: Imports
-  url: https://paleolimbot.github.io/ggspatial/
-  repository: https://CRAN.R-project.org/package=ggspatial
-  authors:
-  - family-names: Dunnington
-    given-names: Dewey
-    email: dewey@fishandwhistle.net
-    orcid: https://orcid.org/0000-0002-9415-4582
   year: '2023'
 - type: software
   title: grDevices
@@ -563,36 +551,35 @@ references:
   title: shiny
   abstract: 'shiny: Web Application Framework for R'
   notes: Suggests
-  url: https://shiny.rstudio.com/
+  url: https://shiny.posit.co/
   repository: https://CRAN.R-project.org/package=shiny
   authors:
   - family-names: Chang
     given-names: Winston
-    email: winston@rstudio.com
+    email: winston@posit.co
     orcid: https://orcid.org/0000-0002-1576-2126
   - family-names: Cheng
     given-names: Joe
-    email: joe@rstudio.com
+    email: joe@posit.co
   - family-names: Allaire
     given-names: JJ
-    email: jj@rstudio.com
+    email: jj@posit.co
   - family-names: Sievert
     given-names: Carson
-    email: carson@rstudio.com
+    email: carson@posit.co
     orcid: https://orcid.org/0000-0002-4958-2844
   - family-names: Schloerke
     given-names: Barret
-    email: barret@rstudio.com
+    email: barret@posit.co
     orcid: https://orcid.org/0000-0001-9986-114X
   - family-names: Xie
     given-names: Yihui
-    email: yihui@rstudio.com
+    email: yihui@posit.co
   - family-names: Allen
     given-names: Jeff
-    email: jeff@rstudio.com
   - family-names: McPherson
     given-names: Jonathan
-    email: jonathan@rstudio.com
+    email: jonathan@posit.co
   - family-names: Dipert
     given-names: Alan
   - family-names: Borges
