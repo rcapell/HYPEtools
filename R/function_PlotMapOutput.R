@@ -42,9 +42,9 @@
 #' @param col.labels A character vector, specifying custom labels to be used for each legend item. Works with \code{map.type} set to \code{default} or \code{leaflet}.
 #' @param col.rev Logical, If \code{TRUE}, then color palette will be reversed.
 #' @param plot.scale Logical, plot a scale bar on map. NOTE: Scale bar may be inaccurate for geographic coordinate systems (Consider switching to projected coordinate system).
-#' @param scale.pos Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_scale}}.
+#' @param scale.pos Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.
 #' @param plot.arrow Logical, plot a North arrow in static maps.
-#' @param arrow.pos Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_north_arrow}}.
+#' @param arrow.pos Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.
 #' @param weight Numeric, weight of subbasin boundary lines. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
 #' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See [leaflet::addPolygons()].
 #' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
@@ -127,7 +127,6 @@
 #'
 #' @importFrom dplyr right_join %>% mutate filter across
 #' @importFrom ggplot2 aes geom_sf ggplot ggsave scale_fill_manual theme element_text element_blank
-#' @importFrom ggspatial annotation_north_arrow annotation_scale
 #' @importFrom grDevices dev.list
 #' @importFrom graphics par frame legend strwidth text
 #' @importFrom stats quantile setNames
@@ -772,13 +771,13 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         # Add scale bar
         if(plot.scale == TRUE){
           plot <- plot +
-            annotation_scale(location = scale.pos)
+            .annotation_scale(location = scale.pos)
         }
         
         # Add north arrow
         if(plot.arrow == TRUE){
           plot <- plot +
-            annotation_north_arrow(location = arrow.pos)
+            .annotation_north_arrow(location = arrow.pos)
         }
         
         # Save image

@@ -116,11 +116,11 @@ with 9 intervals, and an additional interval for negative values. This is suitab
 
 \item{plot.scale}{Logical, plot a scale bar on map. NOTE: Scale bar may be inaccurate for geographic coordinate systems (Consider switching to projected coordinate system).}
 
-\item{scale.pos}{Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_scale}}.}
+\item{scale.pos}{Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.}
 
 \item{plot.arrow}{Logical, plot a North arrow in static maps.}
 
-\item{arrow.pos}{Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}. See \code{\link{annotation_north_arrow}}.}
+\item{arrow.pos}{Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.}
 
 \item{radius}{Numeric, radius of markers maps. See \code{\link{geom_sf}} for static maps and \code{\link[leaflet:map-layers]{leaflet::addCircleMarkers()}} for Leaflet maps.}
 

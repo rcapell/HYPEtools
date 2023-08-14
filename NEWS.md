@@ -8,6 +8,7 @@
 * Allow users to change polygon outline colors in in PlotMapOutput()
 * Fix bug in PlotMapOutput() that ignored user defined col.breaks
 * Allow users to specify custom labels for PlotMapPoint() legends
+* Remove ggspatial dependency because the package is set to be archived by CRAN due to unaddressed check problems
 
 ## HYPEtools 1.4.1 (2023-06-30)
 *Enhancements and bug fixes*
