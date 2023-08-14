@@ -1,6 +1,11 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.5.0
+## HYPEtools 1.5.0.9000
+*Development Version*
+
+#### Highlights
+
+## HYPEtools 1.5.0 (2023-08-14)
 *Enhancements and bug fixes*
 
 #### Highlights
