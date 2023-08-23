@@ -4,6 +4,7 @@
 *Development Version*
 
 #### Highlights
+* Fix broken @docTYPE package documentation as described here: https://github.com/r-lib/roxygen2/issues/1491
 
 ## HYPEtools 1.5.0 (2023-08-14)
 *Enhancements and bug fixes*
