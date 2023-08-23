@@ -3,12 +3,35 @@
 \docType{package}
 \name{HYPEtools}
 \alias{HYPEtools}
+\alias{HYPEtools-package}
 \title{HYPEtools: Tools to work with HYPE model set-ups and results}
-\value{
-No return value, package documentation.
-}
 \description{
 This package contains functions to handle and analyze input and
 output files from the conceptual rainfall-runoff model HYPE (HYdrological
 Predictions for the Environment).
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/}
+  \item Report bugs at \url{https://github.com/rcapell/HYPEtools/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Rene Capell \email{hypetools.rene@smhi.se} (\href{https://orcid.org/0000-0002-7784-1313}{ORCID})
+
+Authors:
+\itemize{
+  \item Conrad Brendel \email{conrad.brendel@smhi.se} (\href{https://orcid.org/0000-0002-5199-0580}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Jafet Andersson [contributor]
+  \item David Gustafsson [contributor]
+  \item Jude Musuuza [contributor]
+  \item Jude Lubega [contributor]
+}
+
 }

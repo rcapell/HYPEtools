@@ -4,8 +4,8 @@
 #' output files from the conceptual rainfall-runoff model HYPE (HYdrological
 #' Predictions for the Environment).
 #'
-#' @docType package
 #' @name HYPEtools
+"_PACKAGE"
 #' 
 #' @return 
 #' No return value, package documentation.
