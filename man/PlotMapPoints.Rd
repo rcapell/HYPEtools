@@ -6,7 +6,7 @@
 \usage{
 PlotMapPoints(
   x,
-  sites,
+  sites = NULL,
   sites.subid.column = 1,
   sites.groups = NULL,
   bg = NULL,
@@ -58,17 +58,19 @@ PlotMapPoints(
   par.mar = rep(0, 4) + 0.1,
   pch = 21,
   lwd = 0.8,
-  add = FALSE
+  add = FALSE,
+  map = NULL,
+  map.subid.column = NULL
 )
 }
 \arguments{
 \item{x}{Information to plot, typically model performances from imported HYPE 'subassX.txt' files. Data frame object
 with two columns, first column containing SUBIDs and second column containing model results to plot. See details.}
 
-\item{sites}{A \code{SpatialPointsDataFrame} or \code{sf} object. Typically an imported outlet point vector point file. Import of vector points
+\item{sites, map}{A \code{SpatialPointsDataFrame} or \code{sf} object. Typically an imported outlet point vector point file. Import of vector points
 requires additional packages, e.g. \code{\link[sf:st_read]{sf::st_read()}}.}
 
-\item{sites.subid.column}{Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
+\item{sites.subid.column, map.subid.column}{Integer, column index in the \code{sites} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
 \item{sites.groups}{Named list providing groups of SUBIDs to allow toggling of point groups in Leaflet maps. Default \code{NULL} will produce maps without
 point groups. List names represent the names of the groups to plot, and list values represent the SUBIDs within the group.

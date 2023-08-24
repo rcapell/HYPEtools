@@ -6,7 +6,7 @@
 \usage{
 PlotMapOutput(
   x,
-  map,
+  map = NULL,
   map.subid.column = 1,
   var.name = "",
   map.type = "default",
@@ -46,18 +46,20 @@ PlotMapOutput(
   legend.inset = c(0, 0),
   par.cex = 1,
   par.mar = rep(0, 4) + 0.1,
-  add = FALSE
+  add = FALSE,
+  sites = NULL,
+  sites.subid.column = NULL
 )
 }
 \arguments{
 \item{x}{HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and
 second column containing model results to plot. See details.}
 
-\item{map}{A \code{SpatialPolygonsDataFrame} or \code{sf} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
+\item{map, sites}{A \code{SpatialPolygonsDataFrame} or \code{sf} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
 requires additional packages, e.g. \link[sf:st_read]{sf::st_read}. For interactive Leaflet maps a small/simplified polygon file should be used as larger
 files can take an excessive amount of time to render.}
 
-\item{map.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
+\item{map.subid.column, sites.subid.column}{Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).}
 
 \item{var.name}{Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.}

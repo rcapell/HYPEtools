@@ -5,10 +5,10 @@
 #'
 #' @param x HYPE model results, typically 'map output' results. Data frame object with two columns, first column containing SUBIDs and
 #' second column containing model results to plot. See details.
-#' @param map A \code{SpatialPolygonsDataFrame} or \code{sf} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
+#' @param map,sites A \code{SpatialPolygonsDataFrame} or \code{sf} object. Typically an imported sub-basin vector polygon file. Import of vector polygons
 #' requires additional packages, e.g. [sf::st_read]. For interactive Leaflet maps a small/simplified polygon file should be used as larger
 #' files can take an excessive amount of time to render.
-#' @param map.subid.column Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
+#' @param map.subid.column,sites.subid.column Integer, column index in the \code{map} 'data' \code{\link{slot}} holding SUBIDs (sub-catchment IDs).
 #' @param var.name Character string. HYPE variable name to be plotted. Mandatory for automatic color ramp selection of pre-defined
 #' HYPE variables (\code{col = "auto"}). Not case-sensitive. See details.
 #' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps. Use \code{"legacy"} for deprecated static plots.
@@ -134,7 +134,7 @@
 #' @export
 
 
-PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type = "default", shiny.data = FALSE,
+PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", map.type = "default", shiny.data = FALSE,
                           plot.legend = TRUE, legend.pos = "right", legend.title = NULL,
                           legend.signif = 2, col = "auto", col.ramp.fun, col.breaks = NULL, col.labels = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
@@ -142,7 +142,8 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
                           plot.searchbar = FALSE, plot.label = FALSE, plot.label.size = 2.5, plot.label.geometry = c("centroid", "surface"),
                           file = "", width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300,
                           vwidth = 1424, vheight = 1000, html.name = "",
-                          map.adj = 0, legend.outer = FALSE, legend.inset = c(0, 0), par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE) {
+                          map.adj = 0, legend.outer = FALSE, legend.inset = c(0, 0), par.cex = 1, par.mar = rep(0, 4) + .1, add = FALSE,
+                          sites = NULL, sites.subid.column = NULL) {
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
@@ -190,6 +191,22 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
         warning(paste0('For Leaflet maps legend.pos must be one of "bottomright", "topright", "topleft", or "bottomleft", not "', legend.pos, '". Switching to "bottomright".'), call. = FALSE)
         legend.pos <- "bottomright"
       }
+    }
+    
+    # Check that map/sites are specified
+    stopifnot(!is.null(map) | !is.null(sites))
+    
+    # Handle if both map/sites are specified or if only sites specified
+    if(!is.null(map) & !is.null(sites)){
+      warning('Both "map" and "sites" arguments specified. Ignoring "sites".', call. = FALSE)
+    } else if(!is.null(sites)){
+      map <- sites
+    }
+    
+    # Handle if sites.subid.column is specified
+    if(!is.null(sites.subid.column)){
+      warning('"sites.subid.column" argument specified. Ignoring "map.subid.column".', call. = FALSE)
+      map.subid.column <- sites.subid.column
     }
     
     # input argument checks

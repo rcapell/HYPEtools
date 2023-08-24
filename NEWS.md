@@ -6,6 +6,7 @@
 #### Highlights
 * Fix broken @docTYPE package documentation as described here: https://github.com/r-lib/roxygen2/issues/1491
 * Update PlotMapOutput() and PlotMapPoints() to allow for missing SUBIDs in MapOutput or GIS files
+* Update PlotMapOutput() and PlotMapPoints() functions so "map"/"sites" and "map.subid.column"/"sites.subid.column" arguments are interchangeable
 
 ## HYPEtools 1.5.0 (2023-08-14)
 *Enhancements and bug fixes*
