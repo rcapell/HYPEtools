@@ -218,7 +218,7 @@ specification for the default maps, see \code{inset} in \code{\link{legend}}.
 }
 \examples{
 \donttest{
-# Import plot data and subbasin polygons
+# Import plot data and subbasin points
 require(sf)
 te1 <- ReadSubass(filename = system.file("demo_model",
 "results", "subass1.txt", package = "HYPEtools"))
