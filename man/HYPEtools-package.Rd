@@ -13,7 +13,8 @@ Work with model files (setup, input, output) from the hydrological catchment mod
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/}
+  \item \url{https://hypeweb.smhi.se/}
+  \item \url{https://github.com/rcapell/HYPEtools}
   \item Report bugs at \url{https://github.com/rcapell/HYPEtools/issues}
 }
 
