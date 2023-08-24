@@ -37,7 +37,7 @@ Imports:
     utils
 License: LGPL-3
 LazyData: false
-URL: https://github.com/rcapell/HYPEtools,https://hypeweb.smhi.se/
+URL: https://hypeweb.smhi.se/
 BugReports: https://github.com/rcapell/HYPEtools/issues
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
