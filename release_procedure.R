@@ -21,6 +21,7 @@ library(dplyr)
 
 # Update NEWS.md
 # - Remove development version tag from header
+# - Change "*development version*" to e.g. "*Enhancements and bug fixes*"
 
 # Run update code at bottom of VariableLookup.R
 

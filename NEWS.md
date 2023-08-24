@@ -1,7 +1,12 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.5.1
+## HYPEtools 1.5.1.9000
 *Development Version*
+
+#### Highlights
+
+## HYPEtools 1.5.1 (2023-08-24)
+*Enhancements and bug fixes*
 
 #### Highlights
 * Fix broken @docTYPE package documentation (package?pkgname) as described here: https://github.com/r-lib/roxygen2/issues/1491
