@@ -195,8 +195,24 @@ PlotMapOutput <- function(x, map, map.subid.column = 1, var.name = "", map.type 
     # input argument checks
     stopifnot(is.data.frame(x), dim(x)[2] == 2, is.null(col.breaks) || is.numeric(col.breaks), ("sf" %in% class(map) | "SpatialPolygonsDataFrame" %in% class(map)))
     
-    x <- as.data.frame(x) # Force x to data.frame format from e.g. tibble or data.table
+    # Force x to data.frame format from e.g. tibble or data.table
+    x <- as.data.frame(x)
     
+    # Check if GIS data exists for all mapoutput SUBIDs
+    if(!all(as.character(x[[1]]) %in% as.character(map[[map.subid.column]]))){
+      warning("Some MapOutput (x) SUBIDs not present in GIS data (map)", call. = FALSE)
+    }
+    
+    # Check if mapoutput data exists for all GIS SUBIDs
+    if(!all(as.character(map[[map.subid.column]]) %in% as.character(x[[1]]))){
+      warning("Some GIS (map) SUBIDs not present in MapOutput (x)", call. = FALSE)
+    }
+    
+    # Only get subbasins in the gis data
+    x <- x %>%
+      filter(as.character(!!sym(colnames(x)[1])) %in% as.character(map[[map.subid.column]]))
+    
+    # Convert GIS type
     if (map.type == "legacy") {
       if ("sf" %in% class(map)) {
         map <- sf::as_Spatial(map)

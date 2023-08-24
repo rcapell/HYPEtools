@@ -196,8 +196,24 @@ PlotMapPoints <- function(x, sites, sites.subid.column = 1, sites.groups = NULL,
       is.null(col.breaks) || is.numeric(col.breaks)
     )
     
-    x <- as.data.frame(x) # Force x to data.frame format from e.g. tibble or data.table
+    # Force x to data.frame format from e.g. tibble or data.table
+    x <- as.data.frame(x)
     
+    # Check if GIS data exists for all mapoutput SUBIDs
+    if(!all(as.character(x[[1]]) %in% as.character(sites[[sites.subid.column]]))){
+      warning("Some MapOutput (x) SUBIDs not present in GIS data (sites)", call. = FALSE)
+    }
+    
+    # Check if mapoutput data exists for all GIS SUBIDs
+    if(!all(as.character(sites[[sites.subid.column]]) %in% as.character(x[[1]]))){
+      warning("Some GIS (sites) SUBIDs not present in MapOutput (x)", call. = FALSE)
+    }
+    
+    # Only get subbasins in the gis data
+    x <- x %>%
+      filter(as.character(!!sym(colnames(x)[1])) %in% as.character(sites[[sites.subid.column]]))
+    
+    # Convert GIS types
     if (map.type == "legacy") {
       if ("sf" %in% class(sites)) {
         sites <- sf::as_Spatial(sites)
