@@ -1542,7 +1542,11 @@ ReadObs <- function(filename, variable = "",
   obsid(x) <- sbd
   
   # conditional: timestep attribute identified by difference between first two rows
-  tdff <- as.numeric(difftime(x[[2,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)]], x[[1,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)]], units = "hours"))
+  if(type == "df"){
+    tdff <- as.numeric(difftime(x[2,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)], x[1,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)], units = "hours"))
+  } else if(type == "dt"){
+    tdff <- as.numeric(difftime(x[[2,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)]], x[[1,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)]], units = "hours"))
+  }
 
   if (!is.na(tdff)) {
     if (tdff == 24) {

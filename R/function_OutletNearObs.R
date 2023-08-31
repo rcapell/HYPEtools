@@ -89,7 +89,7 @@ OutletNearObs <- function(gd, file.qobs = NULL, file.xobs = NULL, variable = NUL
     
     # import obs info
     if (is.null(file.xobs)) {
-      sbd.obs <- attr(ReadPTQobs(filename = file.qobs, variable = "rout", nrows = 0), "obsid")
+      sbd.obs <- attr(ReadObs(filename = file.qobs, variable = "rout", nrows = 0), "obsid")
     } else {
       sbd.obs <- attr(ReadXobs(filename = file.xobs, nrows = 0, variable = variable), "subid")
     }
