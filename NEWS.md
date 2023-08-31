@@ -4,6 +4,7 @@
 *Development Version*
 
 #### Highlights
+* Fix ReadObs() so date/time format works when importing as a data.table object
 
 ## HYPEtools 1.5.1 (2023-08-24)
 *Enhancements and bug fixes*

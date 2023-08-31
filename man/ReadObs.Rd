@@ -8,8 +8,7 @@
 ReadObs(
   filename,
   variable = "",
-  dt.format = c("\%F", "\%F \%R", "\%Y-\%m-\%d", "\%Y-\%m-\%d \%H:\%M", "\%Y\%m\%d",
-    "\%Y\%m\%d\%H\%M"),
+  dt.format = NULL,
   nrows = -1,
   type = c("df", "dt"),
   select = NULL,
@@ -19,8 +18,7 @@ ReadObs(
 ReadPTQobs(
   filename,
   variable = "",
-  dt.format = c("\%F", "\%F \%R", "\%Y-\%m-\%d", "\%Y-\%m-\%d \%H:\%M", "\%Y\%m\%d",
-    "\%Y\%m\%d\%H\%M"),
+  dt.format = NULL,
   nrows = -1,
   type = c("df", "dt"),
   select = NULL,
@@ -37,7 +35,8 @@ from \code{filename}, which only works with HYPE input data file names or file n
 In these cases, a dummy ID is used, see table in Details. If automatic extraction fails, attribute \code{variable} is set
 to \code{"other"}. Alternatively, any other variable name can be provided.}
 
-\item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}.}
+\item{dt.format}{Optional date-time \code{format} string as in \code{\link{strptime}}. If \code{NULL}, then HYPEtools will try to identify
+the format automatically.}
 
 \item{nrows}{Number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives the number of rows
 to import.}

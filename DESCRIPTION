@@ -23,6 +23,7 @@ Imports:
     grDevices,
     graphics,
     hydroGOF,
+    lubridate,
     ncdf4,
     parallel,
     patchwork,

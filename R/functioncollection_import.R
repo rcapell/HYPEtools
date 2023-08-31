@@ -1370,7 +1370,8 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' 
 #' @param filename Path to and file name of the file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
-#' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
+#' @param dt.format Optional date-time \code{format} string as in \code{\link{strptime}}. If \code{NULL}, then HYPEtools will try to identify
+#' the format automatically. 
 #' @param variable Character string, HYPE variable ID of file contents. If \code{""} (default), the ID is extracted 
 #' from \code{filename}, which only works with HYPE input data file names or file names including those names 
 #' (e.g. 'Pobs_old.txt', 'testSFobs.txt'). Some of the observation data files have no corresponding HYPE variable ID. 
@@ -1426,15 +1427,12 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' 
 #' @importFrom data.table fread
 #' @importFrom stats na.fail
-# #' @importFrom lubridate force_tz
+#' @importFrom lubridate as_datetime
 #' @export
 
 
 ReadObs <- function(filename, variable = "", 
-                    dt.format = c("%F", "%F %R", "%Y-%m-%d", "%Y-%m-%d %H:%M", "%Y%m%d", "%Y%m%d%H%M"), nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
-  
-  # input check: date format
-  dt.format <- match.arg(dt.format)
+                    dt.format = NULL, nrows = -1, type = c("df", "dt"), select = NULL, obsid = NULL) {
   
   # input check: variable
   if (!is.character(variable)) {
@@ -1527,8 +1525,11 @@ ReadObs <- function(filename, variable = "",
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
              sep = "\t", header = TRUE, data.table = d.t, nrows = nrows, select = select, colClasses = cC, check.names = TRUE)
   
+  
+  
+  
   # date(time) conversion
-  xd <- as.POSIXct(strptime(x[, 1], format = dt.format), tz = "UTC")
+  xd <- as_datetime(x$DATE, format = dt.format)
   x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
   })
@@ -1541,7 +1542,7 @@ ReadObs <- function(filename, variable = "",
   obsid(x) <- sbd
   
   # conditional: timestep attribute identified by difference between first two rows
-  tdff <- as.numeric(difftime(x[2,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)], x[1,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)], units = "hours"))
+  tdff <- as.numeric(difftime(x[[2,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)]], x[[1,grep("DATE",colnames(x),ignore.case = TRUE,value=TRUE)]], units = "hours"))
 
   if (!is.na(tdff)) {
     if (tdff == 24) {
