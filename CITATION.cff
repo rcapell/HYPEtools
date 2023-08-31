@@ -187,6 +187,21 @@ references:
     orcid: https://orcid.org/0000-0002-9536-643X
   year: '2023'
 - type: software
+  title: lubridate
+  abstract: 'lubridate: Make Dealing with Dates a Little Easier'
+  notes: Imports
+  url: https://lubridate.tidyverse.org
+  repository: https://CRAN.R-project.org/package=lubridate
+  authors:
+  - family-names: Spinu
+    given-names: Vitalie
+    email: spinuvit@gmail.com
+  - family-names: Grolemund
+    given-names: Garrett
+  - family-names: Wickham
+    given-names: Hadley
+  year: '2023'
+- type: software
   title: ncdf4
   abstract: 'ncdf4: Interface to Unidata netCDF (Version 4 or Earlier) Format Data
     Files'
@@ -454,7 +469,11 @@ references:
   authors:
   - family-names: Cheng
     given-names: Joe
-    email: joe@rstudio.com
+    email: joe@posit.co
+  - family-names: Schloerke
+    given-names: Barret
+    email: barret@posit.co
+    orcid: https://orcid.org/0000-0001-9986-114X
   - family-names: Karambelkar
     given-names: Bhaskar
   - family-names: Xie
