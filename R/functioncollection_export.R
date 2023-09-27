@@ -840,7 +840,7 @@ WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif 
   }
   
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, scipen = 999)
 }
 
 # alias, for backwards compatibility
@@ -922,7 +922,7 @@ WriteAquiferData <- function(x, filename, verbose = TRUE) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   }
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
   # old version
   # # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
   # x[is.na(x)] <- -9999
@@ -944,7 +944,7 @@ WriteOutregions <- function(x, filename, verbose = TRUE) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   }
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
   # old version
   # # convert NAs to -9999, needed because format() below does not allow for automatic replacement of NA strings 
   # x[is.na(x)] <- -9999
@@ -967,7 +967,7 @@ WriteBranchData <- function(x, filename, verbose = TRUE) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   }
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 #' @rdname HypeDataExport
@@ -984,7 +984,7 @@ WriteCropData <- function(x, filename, verbose = TRUE) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   }
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 #' @rdname HypeDataExport
@@ -1001,7 +1001,7 @@ WriteDamData <- function(x, filename, verbose = TRUE) {
     warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   }
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 #' @rdname HypeDataExport
@@ -1013,7 +1013,7 @@ WriteLakeData <- function(x, filename, verbose = TRUE) {
     .CheckCharLengthDf(x, maxChar = 100)
     }
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 #' @rdname HypeDataExport
@@ -1028,7 +1028,7 @@ WriteMgmtData <- function(x, filename, verbose = TRUE) {
   te <- apply(x, 2, function(x) {any(is.na(x))})
   if (any(te) && verbose) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 #' @rdname HypeDataExport
@@ -1043,14 +1043,14 @@ WritePointSourceData <- function(x, filename, verbose = TRUE) {
   te <- apply(x, 2, function(x) {any(is.na(x))})
   if (any(te) && verbose) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
 WriteForcKey <- function(x, filename) {
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 #' @rdname HypeDataExport
@@ -1065,7 +1065,7 @@ WriteGlacierData <- function(x, filename, verbose = TRUE) {
   te <- apply(x, 2, function(x) {any(is.na(x))})
   if (any(te) && verbose) warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
   # export
-  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE)
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 
