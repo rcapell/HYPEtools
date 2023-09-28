@@ -2,6 +2,7 @@
 #--------------------------------------------------------------------------------------------------------------------------------------
 #   Collection of HYPE file import functions, herein:
 #
+#     - ReadClassData()
 #     - ReadGeoClass()
 #     - ReadBasinOutput()
 #     - ReadXobs()
@@ -21,6 +22,93 @@
 #     - ReadSimass()
 #     - ReadInfo()
 #--------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+#--------------------------------------------------------------------------------------------------------------------------------------
+# ReadClassData
+#--------------------------------------------------------------------------------------------------------------------------------------
+
+#' Read a 'ClassData.txt' File
+#'
+#' This is a convenience wrapper function to import a ClassData file as data frame into R. ClassData files contain definitions
+#' of SLC (\bold{S}oil and \bold{L}and use \bold{C}rop) classes in five to 15 predefined columns, see 
+#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:classdata.txt}{ClassData.txt documentation}.
+#' 
+#' @param filename Path to and file name of the ClassData file to import. Windows users: Note that 
+#' Paths are separated by '/', not '\\'. 
+#' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
+#' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
+#' also argument description in \code{\link[data.table]{fread}}.
+#' @param verbose Print information on number of data columns in imported file.
+#' 
+#' @details
+#' \code{ReadClassData} is a convenience wrapper function of \code{\link[data.table]{fread}}, with treatment of leading 
+#' comment rows. Column names are created on import, optional comment rows are imported as strings in \code{attribute} 'comment'. 
+#' Optional inline comments (additional non-numeric columns) are automatically identified and imported along with data columns. 
+#' 
+#' @return
+#' \code{ReadClassData} returns a data frame with added attribute 'comment'.
+#' 
+#' @seealso
+#' \code{\link{ReadGeoClass}}
+#' 
+#' @examples
+#' te <- ReadClassData(filename = system.file("demo_model", "ClassData.txt", package = "HYPEtools"))
+#' te
+#' 
+#' @importFrom data.table fread
+#' @importFrom dplyr rename_with
+#' @export
+
+ReadClassData <- function(filename = "ClassData.txt", encoding = c("unknown", "UTF-8", "Latin-1"), verbose = TRUE) { 
+  
+  # argument checks
+  encoding <- match.arg(encoding)
+  
+  # identify comment rows, lines starting with '!' at the top of the file
+  gf <- file(description = filename, open = "r")
+  cm <- TRUE
+  skip <- 0
+  while (cm) {
+    te <- substr(readLines(gf, n = 1), 1, 1)
+    if (te == "!") {
+      skip <- skip + 1
+    } else {
+      cm <- FALSE
+    }
+  }
+  close(gf)
+  
+  # read in the data in the file, skipping the comments and header
+  x <- fread(filename, header = TRUE, skip = skip, fill = TRUE, data.table = FALSE, encoding = encoding) %>%
+    rename_with(toupper)
+  
+  # Specify mandatory columns
+  mandatory_cols <- c("CLASS", "LANDUSE", "SOILTYPE", "STREAMDEPTH", "DEPTHSL1")
+  
+  # Check that all mandatory columns are included
+  if(any(!mandatory_cols %in% colnames(x))){
+    warning(paste("Missing mandatory columns:", mandatory_cols[which(!mandatory_cols %in% colnames(x))]))
+  }
+  
+  # update with new attributes to hold comment rows
+  attr(x, which = "comment") <- readLines(filename, n = skip, encoding = ifelse(encoding == "Latin-1", "latin1", encoding))
+  
+  # check if all data columns are numeric, with a useful warning
+  if (!all(apply(x[, 1:ncol(x)], 2, is.numeric))) {
+    warning("Non-numeric contents in data columns of imported file.")
+  }
+  
+  if (verbose) {
+    message(paste(ncol(x), "data columns in imported file."))
+  }
+  
+  return(x)
+}
+
 
 
 
@@ -50,6 +138,9 @@
 #' 
 #' @return
 #' \code{ReadGeoClass} returns a data frame with added attribute 'comment'.
+#' 
+#' @seealso
+#' \code{\link{ReadClassData}}
 #' 
 #' @examples
 #' te <- ReadGeoClass(filename = system.file("demo_model", "GeoClass.txt", package = "HYPEtools"))
