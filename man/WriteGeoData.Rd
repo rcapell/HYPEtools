@@ -4,7 +4,7 @@
 \alias{WriteGeoData}
 \title{Write a 'GeoData.txt' file}
 \usage{
-WriteGeoData(x, filename, digits = 6, scipen = getOption("scipen", 0L))
+WriteGeoData(x, filename, digits = 6)
 }
 \arguments{
 \item{x}{The object to be written, a dataframe, as an object returned from \code{\link{ReadGeoData}}.
@@ -14,8 +14,6 @@ WriteGeoData(x, filename, digits = 6, scipen = getOption("scipen", 0L))
 Paths are separated by '/', not '\\'.}
 
 \item{digits}{Integer, number of significant digits \strong{in SLC class columns} to export. See \code{\link{signif}}.}
-
-\item{scipen}{Integer, scientific notification bias, see documentation in \code{\link[data.table]{fwrite}}.}
 }
 \value{
 No return value, called for export to text files.
