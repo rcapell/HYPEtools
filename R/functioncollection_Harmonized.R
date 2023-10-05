@@ -223,5 +223,5 @@ WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents
     relocate(all_of(required_cols), .before = 1)
 
   # Write file
-  fwrite(x = df, file = filename, sep = ",", dec = ".", dateTimeAs = "write.csv", nThread = nThread, quote = TRUE)
+  fwrite(x = df, file = filename, sep = ",", dec = ".", dateTimeAs = "write.csv", nThread = nThread, quote = TRUE, scipen = 999)
 }
