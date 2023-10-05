@@ -335,7 +335,7 @@ WriteXobs <- function(x, filename, append = FALSE, comment = NULL, variable = NU
         # attribute subid exists
         if (length(attr(x, which = "subid")) == ncol(x) - 1) {
           # attribute and export dataframe match in length, export attribute with padded 0 and newline
-          tmp <- paste(as.character(c(0, attr(x, which = "subid"))), collapse = "\t")
+          tmp <- paste(c("0", as.character(attr(x, which = "subid"))), collapse = "\t")
           writeLines(tmp, con = fcon)
         } else {
           # mismatch in length, stop with error
