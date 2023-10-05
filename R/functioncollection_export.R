@@ -80,7 +80,6 @@ WritePar <- function (x, filename, digits = 10, nsmall = 1) {
 #' @param filename A character string naming a file to write to. Windows users: Note that 
 #' Paths are separated by '/', not '\\'.
 #' @param digits Integer, number of significant digits \strong{in SLC class columns} to export. See \code{\link{signif}}.
-#' @param scipen Integer, scientific notification bias, see documentation in \code{\link[data.table]{fwrite}}.
 #'  
 #' @details
 #' \code{WriteGeoData} exports a GeoData dataframe using \code{\link[data.table]{fwrite}}. \code{SUBID} and \code{MAINDOWN} 
@@ -102,7 +101,7 @@ WritePar <- function (x, filename, digits = 10, nsmall = 1) {
 #' @export
 
 
-WriteGeoData <- function(x, filename, digits = 6, scipen = getOption('scipen', 0L)) {
+WriteGeoData <- function(x, filename, digits = 6) {
   
   # warn if there are NAs, which should not occur in GeoData files for HYPE
   if (!is.null(na.action(na.omit(x)))) {
@@ -134,7 +133,7 @@ WriteGeoData <- function(x, filename, digits = 6, scipen = getOption('scipen', 0
   # 
   # do.call(table, call) # exectue table() with the custom settings
   
-  fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE, scipen = scipen)
+  fwrite(x, file = filename, quote = FALSE, sep = "\t", row.names = FALSE, col.names = TRUE, scipen = 999)
 }
 
 
