@@ -20,7 +20,7 @@ library(dplyr)
 # - Read through all sections and check validity
 
 # Update NEWS.md
-# - Remove development version tag from header
+# - Remove development version tag (.9000) from header
 # - Change "*development version*" to e.g. "*Enhancements and bug fixes*"
 
 # Run update code at bottom of VariableLookup.R
@@ -85,6 +85,8 @@ devtools::check_win_devel(email = email)
 
 # Submit to CRAN, includes checks
 devtools::release()
+
+# AFTER CRAN APPROVAL --------------------------------------------------------------------------------------------------------------------
 
 # Create version tag in GitHub repo
 usethis::use_github_release()

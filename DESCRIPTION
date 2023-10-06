@@ -1,5 +1,5 @@
 Package: HYPEtools
-Version: 1.5.1.9000
+Version: 1.5.2
 Title: Tools for Processing and Analyzing Files from the Hydrological
     Catchment Model HYPE
 Description: Work with model files (setup, input, output) from
