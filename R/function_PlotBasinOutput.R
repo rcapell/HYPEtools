@@ -24,6 +24,7 @@
 #' \code{\link{AnnualRegime}}.
 #' @param from,to Integer or date string of format \%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are 
 #' interpreted as row indices of \code{x}.
+#' @param date.format String format for x-axis dates/times. See \code{\link{strptime}}.
 #' @param name Character string, name to be printed on the plot.
 #' @param area Numeric, upstream area of sub-basin in m^2. Required for calculation of accumulated volume error. Optional argument, 
 #' either this or arguments \code{subid}, \code{gd}, and \code{bd} are required.
@@ -101,8 +102,8 @@
 #' @export
 
 PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "screen"), timestep = attr(x, "timestep"), 
-                            hype.vars = "all", vol.err = TRUE, log.q = FALSE, start.mon = 1, from = 1, to = nrow(x), name = "", area = NULL, 
-                            subid = attr(x, "subid"), gd = NULL, bd = NULL, ylab.t1 = "Conc.") {
+                            hype.vars = "all", vol.err = TRUE, log.q = FALSE, start.mon = 1, from = 1, to = nrow(x), date.format = "",
+                            name = "", area = NULL, subid = attr(x, "subid"), gd = NULL, bd = NULL, ylab.t1 = "Conc.") {
   
   # Backup par and restore on function exit
   userpar <- par(no.readonly = TRUE) # Backup par
@@ -1125,7 +1126,8 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
   
   # add axis annotation to plot list, conditional on daily or sub-daily time steps
   cp <- cp + 1
-  list.plotexpr[[cp]] <- parse(text = 'axis.POSIXct(side = 1, x = date, cex.axis = 1)')
+  # list.plotexpr[[cp]] <- parse(text = 'axis.POSIXct(side = 1, x = date, cex.axis = 1)')
+  list.plotexpr[[cp]] <- parse(text = paste0("axis.POSIXct(side = 1, x = date, cex.axis = 1, format = '", date.format,"')"))
 
   
   ## set up plot device with layout and call all plot commands 

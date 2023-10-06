@@ -7,6 +7,7 @@
 * Fix ReadObs() so date/time format works when importing as a data.table object
 * Prevent scientific notation when writing files
 * Add ReadClassData() function
+* Add argument to control date/time format for x-axis in PlotBasinOutput()
 
 ## HYPEtools 1.5.1 (2023-08-24)
 *Enhancements and bug fixes*

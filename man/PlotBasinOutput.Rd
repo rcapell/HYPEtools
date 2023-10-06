@@ -15,6 +15,7 @@ PlotBasinOutput(
   start.mon = 1,
   from = 1,
   to = nrow(x),
+  date.format = "",
   name = "",
   area = NULL,
   subid = attr(x, "subid"),
@@ -53,6 +54,8 @@ will be plotted.}
 
 \item{from, to}{Integer or date string of format \\%F, see \code{\link{strptime}}. Time period bounds for plotting . Integers are
 interpreted as row indices of \code{x}.}
+
+\item{date.format}{String format for x-axis dates/times. See \code{\link{strptime}}.}
 
 \item{name}{Character string, name to be printed on the plot.}
 
