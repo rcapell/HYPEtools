@@ -22,7 +22,6 @@ Imports:
     ggrepel,
     grDevices,
     graphics,
-    hydroGOF,
     lubridate,
     ncdf4,
     parallel,

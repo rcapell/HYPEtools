@@ -27,7 +27,6 @@
 #' as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 #' 
 #' @examples 
-#' require(hydroGOF)
 #' # Create dummy data, discharge observations with added white noise as model simulations
 #' te1 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
 #' te1 <- HypeSingleVar(x = array(data = unlist(te1[, -1]) + 
@@ -46,10 +45,8 @@
 #' 
 #' @name NSE
 #' 
-#' @seealso \code{\link[hydroGOF]{NSE}}, the S3 generic function defined in package 'hydroGOF'.
 #' 
 #' @importFrom pbapply pblapply
-#' @importFrom hydroGOF NSE NSE.default
 #' @export
 
 NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) { 
@@ -123,7 +120,6 @@ NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) {
 #' as the second and third dimension in \code{sim}, i.e. \code{[subid, iteration]}.
 #' 
 #' @examples 
-#' require(hydroGOF)
 #' # Create dummy data, discharge observations with added white noise as model simulations
 #' te1 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
 #' te1 <- HypeSingleVar(x = array(data = unlist(te1[, -1]) + 
@@ -141,10 +137,8 @@ NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) {
 #' 
 #' @name pbias
 #' 
-#' @seealso \code{\link[hydroGOF]{pbias}}, the S3 generic function defined in package 'hydroGOF'.
 #' 
 #' @importFrom pbapply pblapply
-#' @importFrom hydroGOF pbias pbias.default
 #' @export
 
 

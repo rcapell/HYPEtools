@@ -97,7 +97,6 @@
 #' "snow", "upcprf", "upcpsf"))
 #' }
 #' 
-#' @importFrom hydroGOF gof gof.default
 #' @importFrom grDevices dev.new dev.control dev.off cairo_pdf png
 #' @export
 

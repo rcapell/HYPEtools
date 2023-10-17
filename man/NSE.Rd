@@ -29,7 +29,6 @@ Nash-Sutcliffe Efficiency calculation for imported HYPE outputs with single vari
 map files, optionally multiple model run iterations combined.
 }
 \examples{
-require(hydroGOF)
 # Create dummy data, discharge observations with added white noise as model simulations
 te1 <- ReadObs(filename = system.file("demo_model", "Qobs.txt", package = "HYPEtools"))
 te1 <- HypeSingleVar(x = array(data = unlist(te1[, -1]) + 
@@ -46,7 +45,4 @@ te2 <- HypeSingleVar(x = array(data = unlist(te2[, -1]),
 NSE(sim = te1, obs = te2, progbar = FALSE)
 
 
-}
-\seealso{
-\code{\link[hydroGOF]{NSE}}, the S3 generic function defined in package 'hydroGOF'.
 }

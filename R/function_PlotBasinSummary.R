@@ -101,7 +101,6 @@
 #' PlotBasinSummary(x = te1, gd = te2, driver = "screen", panels = 2)
 #' }
 #' 
-#' @importFrom hydroGOF gof gof.default
 #' @importFrom stats weighted.mean
 #' @importFrom grDevices dev.new png dev.off cairo_pdf 
 #' @export
