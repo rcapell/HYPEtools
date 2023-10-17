@@ -8,6 +8,8 @@
 \alias{valindex.default}
 \alias{rPearson}
 \alias{rPearson.default}
+\alias{sKGE}
+\alias{sKGE.default}
 \alias{KGE}
 \alias{KGE.default}
 \alias{NSE}
@@ -27,13 +29,8 @@ gof(sim, obs, ...)
   obs,
   na.rm = TRUE,
   do.spearman = FALSE,
-  do.pbfdc = FALSE,
-  j = 1,
-  norm = "sd",
   s = c(1, 1, 1),
   method = c("2009", "2012"),
-  lQ.thr = 0.7,
-  hQ.thr = 0.2,
   start.month = 1,
   digits = 2,
   fun = NULL,
@@ -51,6 +48,22 @@ rPearson(sim, obs, ...)
 \method{rPearson}{default}(
   sim,
   obs,
+  fun = NULL,
+  ...,
+  epsilon.type = c("none", "Pushpalatha2012", "otherFactor", "otherValue"),
+  epsilon.value = NA
+)
+
+sKGE(sim, obs, ...)
+
+\method{sKGE}{default}(
+  sim,
+  obs,
+  s = c(1, 1, 1),
+  na.rm = TRUE,
+  method = c("2009", "2012"),
+  start.month = 1,
+  out.PerYear = FALSE,
   fun = NULL,
   ...,
   epsilon.type = c("none", "Pushpalatha2012", "otherFactor", "otherValue"),
@@ -126,7 +139,20 @@ VE(sim, obs, ...)
 
 \item{obs}{numeric, vector of observed values}
 
-\item{na.rm}{logical indicating whether or not NA values should be removed when calculating goodness of fit.}
+\item{...}{further arguments passed to/from other methods.}
+
+\item{na.rm}{a logical value indicating whether 'NA' should be stripped before the computation proceeds.
+When an 'NA' value is found at the i-th position in obs OR sim, the i-th value of obs AND sim are removed before the computation.}
+
+\item{do.spearman}{logical, indicates if the Spearman correlation should be computed. The default is \code{FALSE}.}
+
+\item{s}{argument passed to the \code{\link{KGE}} function.}
+
+\item{method}{argument passed to the \code{\link{KGE}} function.}
+
+\item{start.month}{argument passed to the \code{\link{sKGE}} function.}
+
+\item{digits}{integer, numer of decimal places used for rounding the goodness of fit indexes.}
 
 \item{fun}{function to be applied to \code{sim} and \code{obs} in order to obtain transformed values thereof before applying any goodness-of-fit function}
 
@@ -140,21 +166,22 @@ described in Pushpalatha et al., (2012). The resulting value is then added to bo
 \item{\emph{otherValue}: the numeric value defined in \code{epsilon.value} is directly added to both \code{sim} and \code{obs}.}
 }}
 
-\item{epsilon.value}{numeric, value to be added to both \code{sim} and \code{obs} when \code{epsilon} = "otherValue"}
+\item{epsilon.value}{numeric, value to be added to both \code{sim} and \code{obs} when \code{epsilon} = "otherValue".}
+
+\item{out.PerYear}{logical, argument passed to the \code{\link{sKGE}} function.}
+
+\item{out.type}{argument passed to the \code{\link{KGE}} function.}
+
+\item{dec}{argument passed to the \code{\link{pbias}} function.}
 }
 \value{
-\code{gof} Returns a matrix of goodness of fit statistics.
-\code{mae} returns a numeric of the goodness of fit statistic.
-\code{pbias} returns a numeric of the goodness of fit statistic.
-\code{NSE} returns a numeric of the goodness of fit statistic.
-\code{rPearson} returns a numeric of the goodness of fit statistic.
-\code{KGE} returns a numeric of the goodness of fit statistic.
+\code{gof} Returns a matrix of goodness of fit statistics. \code{mae}, \code{pbias}, \code{NSE}, \code{rPearson}, \code{sKGE}, and \code{KGE} return a numeric of the goodness of fit statistic.
 }
 \description{
-Functions/methods to calculate goodness of fit statistics
+Numerical goodness-of-fit measures between sim and obs, with treatment of missing values.
 }
 \details{
-The \code{gof}, \code{mae}, \code{pbias}, \code{NSE}, \code{rPearson}, and \code{KGE} functions are provided to calculate goodness of fit statistics.
+The \code{gof}, \code{mae}, \code{pbias}, \code{NSE}, \code{rPearson}, \code{sKGE}, and \code{KGE} functions are provided to calculate goodness of fit statistics.
 The functions were adapted from the hydroGOF package \url{https://github.com/hzambran/hydroGOF}.
 }
 \examples{

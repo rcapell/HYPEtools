@@ -1,10 +1,19 @@
 #' Goodness of Fit Functions
 #'
-#' Functions/methods to calculate goodness of fit statistics
+#' Numerical goodness-of-fit measures between sim and obs, with treatment of missing values.
 #'
 #' @param sim numeric, vector of simulated values
 #' @param obs numeric, vector of observed values
-#' @param na.rm logical indicating whether or not NA values should be removed when calculating goodness of fit.
+#' @param na.rm a logical value indicating whether 'NA' should be stripped before the computation proceeds. 
+#' When an 'NA' value is found at the i-th position in obs OR sim, the i-th value of obs AND sim are removed before the computation.
+#' @param do.spearman logical, indicates if the Spearman correlation should be computed. The default is \code{FALSE}.
+#' @param s argument passed to the \code{\link{KGE}} function.
+#' @param method argument passed to the \code{\link{KGE}} function.
+#' @param start.month argument passed to the \code{\link{sKGE}} function.
+#' @param out.PerYear logical, argument passed to the \code{\link{sKGE}} function.
+#' @param out.type argument passed to the \code{\link{KGE}} function.
+#' @param dec argument passed to the \code{\link{pbias}} function.
+#' @param digits integer, numer of decimal places used for rounding the goodness of fit indexes.
 #' @param fun function to be applied to \code{sim} and \code{obs} in order to obtain transformed values thereof before applying any goodness-of-fit function
 #' @param epsilon.type argument used to define a numeric value to be added to both \code{sim} and \code{obs} before applying fun. It was designed to allow the use of
 #' logarithm and other similar functions that do not work with zero values. It must be one of the following possible values:
@@ -15,18 +24,14 @@
 #' described in Pushpalatha et al., (2012). The resulting value is then added to both \code{sim} and \code{obs}.}
 #' \item{\emph{otherValue}: the numeric value defined in \code{epsilon.value} is directly added to both \code{sim} and \code{obs}.}
 #' }
-#' @param epsilon.value numeric, value to be added to both \code{sim} and \code{obs} when \code{epsilon} = "otherValue"
+#' @param epsilon.value numeric, value to be added to both \code{sim} and \code{obs} when \code{epsilon} = "otherValue".
+#' @param ... further arguments passed to/from other methods.
 #' @details
-#' The \code{gof}, \code{mae}, \code{pbias}, \code{NSE}, \code{rPearson}, and \code{KGE} functions are provided to calculate goodness of fit statistics.
+#' The \code{gof}, \code{mae}, \code{pbias}, \code{NSE}, \code{rPearson}, \code{sKGE}, and \code{KGE} functions are provided to calculate goodness of fit statistics.
 #' The functions were adapted from the hydroGOF package \url{https://github.com/hzambran/hydroGOF}.
 #'
 #' @return
-#' \code{gof} Returns a matrix of goodness of fit statistics.
-#' \code{mae} returns a numeric of the goodness of fit statistic.
-#' \code{pbias} returns a numeric of the goodness of fit statistic.
-#' \code{NSE} returns a numeric of the goodness of fit statistic.
-#' \code{rPearson} returns a numeric of the goodness of fit statistic.
-#' \code{KGE} returns a numeric of the goodness of fit statistic.
+#' \code{gof} Returns a matrix of goodness of fit statistics. \code{mae}, \code{pbias}, \code{NSE}, \code{rPearson}, \code{sKGE}, and \code{KGE} return a numeric of the goodness of fit statistic.
 #' 
 #'
 #' @examples
@@ -77,9 +82,11 @@ gof <-function(sim, obs, ...) UseMethod("gof")
 
 #' @rdname GOF
 #' @export
-gof.default <- function(sim, obs, na.rm=TRUE, do.spearman=FALSE, do.pbfdc=FALSE, 
-                        j=1, norm="sd", s=c(1,1,1), method=c("2009", "2012"), 
-                        lQ.thr=0.7, hQ.thr=0.2, start.month=1, 
+gof.default <- function(sim, obs, na.rm=TRUE, do.spearman=FALSE, #do.pbfdc=FALSE, 
+                        #j=1, norm="sd",
+                        s=c(1,1,1), method=c("2009", "2012"), 
+                        # lQ.thr=0.7, hQ.thr=0.2, 
+                        start.month=1, 
                         digits=2, fun=NULL, ...,
                         epsilon.type=c("none", "Pushpalatha2012", "otherFactor", "otherValue"), 
                         epsilon.value=NA){
@@ -415,6 +422,130 @@ rPearson.default <- function(sim, obs, fun=NULL, ...,
   
 } # 'rPearson.default' end
 
+# sKGE --------------------------------------------------------------------------------------------------------------------
+
+# 'sKGE': Kling-Gupta Efficiency with focus on low flows                       
+# The optimal value of sKGE is 1
+
+# Ref:
+# Fowler, K., Coxon, G., Freer, J., Peel, M., Wagener, T., 
+# Western, A., Woods, R. and Zhang, L. (2018). Simulating runoff under 
+# changing climatic conditions: A framework for model improvement.
+# Water Resources Research, 54(12), pp.9812-9832. doi:https://doi.org/10.1029/2018WR023989
+
+#' @rdname GOF
+#' @importFrom stats time
+#' @importFrom zoo coredata
+#' @export
+sKGE <- function(sim, obs, ...) UseMethod("sKGE")
+
+# epsilon: By default it is set at one hundredth of the mean flow. See Pushpalatha et al. (2012)
+#' @rdname GOF
+#' @export
+sKGE.default <- function(sim, obs, s=c(1,1,1), na.rm=TRUE, 
+                         method=c("2009", "2012"),
+                         start.month=1, out.PerYear=FALSE,
+                         fun=NULL,
+                         ...,
+                         epsilon.type=c("none", "Pushpalatha2012", "otherFactor", "otherValue"), 
+                         epsilon.value=NA
+) { 
+  
+  lKGE <- function(i, lsim, lobs, s=c(1,1,1), na.rm=TRUE, 
+                   method=c("2009", "2012"), out.type="single",
+                   fun1=NULL,
+                   ...,
+                   epsilon.type=c("none", "Pushpalatha2012", "otherFactor", "otherValue"), 
+                   epsilon.value=NA) {
+    llsim <- lsim[[i]]
+    llobs <- lobs[[i]]
+    
+    out <- KGE(sim=llsim, obs=llobs, s=s, na.rm=na.rm, method=method, out.type=out.type,
+               fun=fun1, ..., epsilon.type=epsilon.type, epsilon.value=epsilon.value)
+    return(out)
+  } #'lKGE' END
+  
+  
+  # Function for shifting a time vector by 'nmonths' number of months.
+  .shiftyears <- function(ltime,       # Date/POSIX* object. It MUST contat MONTH and YEAR
+                          lstart.month # numeric in [2,..,12], representing the months. 2:Feb, 12:Dec
+  ) {
+    syears.bak        <- as.numeric(format( ltime, "%Y" ))
+    syears            <- syears
+    smonths           <- as.numeric(format( ltime, "%m"))
+    months2moveback   <- 1:(lstart.month-1)
+    N                 <- length(months2moveback)
+    for (i in 1:N) {
+      m.index         <- which(smonths == months2moveback[i])
+      m.year          <- unique(na.omit(syears.bak[m.index]))
+      m.year          <- m.year - 1
+      syears[m.index] <- m.year
+    } # FOR end
+    return(syears)
+  } # '.shift' END
+  
+  
+  # Checking 'method' and 'epsilon.type'
+  method       <- match.arg(method)
+  epsilon.type <- match.arg(epsilon.type)
+  
+  if ( !inherits(sim, "zoo") | !inherits(obs, "zoo"))
+    stop("Invalid argument: 'sim' and 'obs' must be 'zoo' objects !")
+  
+  # Selecting only valid paris of values
+  vi <- valindex(sim, obs)     
+  if (length(vi) > 0) {	 
+    obs <- obs[vi]
+    sim <- sim[vi]
+    
+    if (!is.null(fun)) {
+      fun <- match.fun(fun)
+      new <- preproc(sim=sim, obs=obs, fun=fun, ..., 
+                     epsilon.type=epsilon.type, epsilon.value=epsilon.value)
+      sim <- new[["sim"]]
+      obs <- new[["obs"]]
+    } # IF end
+  } else stop("There are no points with simultaneous values of 'sim' and 'obs' !!")
+  
+  # Annual index for 'x'
+  dates.sim  <- time(sim)
+  dates.obs  <- time(obs)
+  years.sim  <- format( dates.sim, "%Y")
+  years.obs  <- format( dates.obs, "%Y")
+  if (!all.equal(years.sim, years.obs)) {
+    stop("Invalid argument: 'sim' and 'obs' must have the same dates !")
+  } else {
+    
+    if (start.month !=1) 
+      years.obs <- .shiftyears(dates.obs, start.month)
+    
+    years.unique <- unique(years.obs)
+    nyears       <- length(years.unique)
+  } # ELSE end
+  
+  
+  # Getting a list of 'sim' and 'obs' values for each year
+  sim.PerYear <- split(coredata(sim), years.obs)
+  obs.PerYear <- split(coredata(obs), years.obs) # years.sim == years.obs
+  
+  
+  # Computing Annual KGE values
+  #if (!is.null(fun)) {
+  KGE.yr <- sapply(1:nyears, FUN=lKGE, lsim=sim.PerYear, lobs=obs.PerYear, s=s, 
+                   na.rm= na.rm, method=method, out.type="single", 
+                   fun1=fun, ..., epsilon.type=epsilon.type, epsilon.value=epsilon.value)
+  
+  names(KGE.yr) <- as.character(years.unique)
+  
+  sKGE <- mean(KGE.yr, na.rm=na.rm)
+  
+  if (out.PerYear) {
+    out <- list(sKGE.value=sKGE, KGE.PerYear=KGE.yr)
+  } else out <- sKGE
+  
+  return(out)
+} # 'sKGE.default' END
+
 # KGE --------------------------------------------------------------------------------------------------------------------
 
 # The optimal value of KGE is 1
@@ -449,6 +580,7 @@ rPearson.default <- function(sim, obs, fun=NULL, ...,
 KGE <- function(sim, obs, ...) UseMethod("KGE")
 
 #' @rdname GOF
+#' @importFrom stats sd
 #' @export
 KGE.default <- function(sim, obs, s=c(1,1,1), na.rm=TRUE, 
                         method=c("2009", "2012", "2021"), out.type=c("single", "full"), 
@@ -489,8 +621,8 @@ KGE.default <- function(sim, obs, s=c(1,1,1), na.rm=TRUE,
     mean.obs <- mean(obs, na.rm=na.rm)
     
     # Standard deviations
-    sigma.sim <- stats::sd(sim, na.rm=na.rm)
-    sigma.obs <- stats::sd(obs, na.rm=na.rm)
+    sigma.sim <- sd(sim, na.rm=na.rm)
+    sigma.obs <- sd(obs, na.rm=na.rm)
     
     # Pearson product-moment correlation coefficient
     r     <- rPearson(sim, obs)
@@ -859,7 +991,6 @@ VE.default <- function(sim, obs, na.rm=TRUE, fun=NULL, ...,
 #' NSE(sim = te1, obs = te2, progbar = FALSE)
 #' 
 #' 
-#' @name NSE
 #' 
 #' 
 #' @importFrom pbapply pblapply
@@ -951,7 +1082,6 @@ NSE.HypeSingleVar <- function(sim, obs, na.rm = TRUE, progbar = TRUE, ...) {
 #' # Percentage bias
 #' pbias(sim = te1, obs = te2, progbar = FALSE)
 #' 
-#' @name pbias
 #' 
 #' 
 #' @importFrom pbapply pblapply

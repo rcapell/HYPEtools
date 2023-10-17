@@ -34,7 +34,8 @@ Imports:
     stringr,
     tidyr,
     tidyselect,
-    utils
+    utils,
+    zoo
 License: LGPL-3
 LazyData: false
 URL: https://hypeweb.smhi.se/, https://github.com/rcapell/HYPEtools
