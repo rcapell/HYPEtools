@@ -100,8 +100,7 @@ Plotted panels show:
 loads in sub-basin outlet, and summed upstream gross loads from point sources and rural households (if necessary variables available, omitted
 otherwise).}
 \item{\emph{Goodness-of-fit measures for discharge and concentrations}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS
-(Percentage Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency).
-See package \code{\link{hydroGOF}} for details.}
+(Percentage Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency).}
 \item{\emph{Simulation-observation relationships for discharge and concentrations}: Simulated and observed concentration-discharge relationships,
 relationship between observed and simulated nutrient, sediment, and tracer concentrations.}
 \item{\emph{Duration curves for flow and concentrations}: Pairwise simulated and observed curves.}
