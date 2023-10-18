@@ -175,18 +175,6 @@ references:
   institution:
     name: R Foundation for Statistical Computing
 - type: software
-  title: hydroGOF
-  abstract: 'hydroGOF: Goodness-of-Fit Functions for Comparison of Simulated and Observed
-    Hydrological Time Series'
-  notes: Imports
-  url: https://github.com/hzambran/hydroGOF
-  repository: https://CRAN.R-project.org/package=hydroGOF
-  authors:
-  - name: Mauricio Zambrano-Bigiarini
-    email: mzb.devel@gmail.com
-    orcid: https://orcid.org/0000-0002-9536-643X
-  year: '2023'
-- type: software
   title: lubridate
   abstract: 'lubridate: Make Dealing with Dates a Little Easier'
   notes: Imports
@@ -356,6 +344,25 @@ references:
   year: '2023'
   institution:
     name: R Foundation for Statistical Computing
+- type: software
+  title: zoo
+  abstract: 'zoo: S3 Infrastructure for Regular and Irregular Time Series (Z''s Ordered
+    Observations)'
+  notes: Imports
+  url: https://zoo.R-Forge.R-project.org/
+  repository: https://CRAN.R-project.org/package=zoo
+  authors:
+  - family-names: Zeileis
+    given-names: Achim
+    email: Achim.Zeileis@R-project.org
+    orcid: https://orcid.org/0000-0003-0918-3766
+  - family-names: Grothendieck
+    given-names: Gabor
+    email: ggrothendieck@gmail.com
+  - family-names: Ryan
+    given-names: Jeffrey A.
+    email: jeff.a.ryan@gmail.com
+  year: '2023'
 - type: software
   title: rmarkdown
   abstract: 'rmarkdown: Dynamic Documents for R'
