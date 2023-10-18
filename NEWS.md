@@ -1,7 +1,7 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.5.2.9000
-*Development Version*
+## HYPEtools 1.6.0
+*Enhancements*
 
 #### Highlights
 * Remove hydroGOF and hydroTSM dependencies because packages are being archived by CRAN due to not updating to remove dependencies on retired r-spatial packages

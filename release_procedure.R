@@ -26,7 +26,7 @@ library(dplyr)
 # Run update code at bottom of VariableLookup.R
 
 # _____________________________________________________________________________________________________________________________________
-# 2) Check Example Excution Time #####
+# 2) Check Example Execution Time #####
 # _____________________________________________________________________________________________________________________________________
 
 # Run devtools check and save results to a temporary directory

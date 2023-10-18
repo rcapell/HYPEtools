@@ -91,7 +91,7 @@ te1 <- ReadBasinOutput(filename = system.file("demo_model",
                                               "results", "0003587.txt",
                                               package = "HYPEtools"))
 # Daily discharge regime, computed and observed,
-# hydrologigical year from October, aggregated to weekly means
+# hydrological year from October, aggregated to weekly means
 te2 <- AnnualRegime(te1[, c("DATE", "COUT", "ROUT")],
                     ts.in = "day",
                     ts.out = "week", start.mon = 10)
