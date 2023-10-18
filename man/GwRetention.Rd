@@ -24,7 +24,7 @@ See details.}
 \item{unit.area}{Logical, set to \code{FALSE} to calculate incoming load (leaching rates) in kg/year instead of kg/(ha year).}
 
 \item{nutrient}{Character keyword, one of the HYPE-modeled nutrient groups, for which to calculate groundwater retention. Not
-case-sensitive. \emph{Currently, only \code{tn} {total nitrogen} is implemented.}}
+case-sensitive. \emph{Currently, only \code{tn} (total nitrogen) is implemented.}}
 }
 \value{
 \code{GwRetention} returns a three-column data frame, containing SUBIDs, retention in groundwater as a fraction of incoming loads
@@ -52,7 +52,7 @@ The retention fraction \emph{R} is calculated as (see also the
 , where \emph{li} is incoming load to groundwater (leaching rates), \emph{lr} is rural load (total from GeoData converted to kg/yr; \emph{locsoil} in the formula converts it to rural load into soil layer 3), and
 \emph{nfrz}, \emph{gts3}, \emph{nfs3} are soil loads as in function arguments described above. See Examples for HYPE variable names for \code{TN} loads.
 
-Columns \code{SUBID}, \code{LOC_VOL}, and code{LOC_TN} must be present in \code{gd}, for a description of column contents see the
+Columns \code{SUBID}, \code{LOC_VOL}, and \code{LOC_TN} must be present in \code{gd}, for a description of column contents see the
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData file description in the HYPE online documentation}.
 Column names are not case-sensitive.
 }
