@@ -923,7 +923,7 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
     }
   }
   # convert list elements to numeric, if possible, catch conversion errors and collapse non-numeric vectors to single strings
-  res <- suppressWarnings(lapply(res, function(x) tryCatch(format(na.fail(as.numeric(x)), scientific = FALSE), error = function(e) paste(x, collapse = " "))))
+  res <- suppressWarnings(lapply(res, function(x) tryCatch(na.fail(as.numeric(x)), error = function(e) paste(x, collapse = " "))))
   
   return(res)
 }
