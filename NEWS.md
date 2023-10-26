@@ -4,7 +4,8 @@
 *Development Version*
 
 #### Highlights
-
+* Add cbind option for adding groups in PlotPerformanceByAttribute()
+* Handle NA values when scaling axes in PlotPerformanceByAttribute()
 
 ## HYPEtools 1.6.0 (2023-10-18)
 *Enhancements*

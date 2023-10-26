@@ -11,6 +11,9 @@
 #' @param join.type Specify how to join \code{subass} to \code{attributes}. Default "join" will perform a \code{\link{left_join}} in which the order of the SUBIDs does not need to match. Additional option "cbind"
 #' will perform a \code{\link{cbind}} in which the order of the SUBIDs needs to match; this can be helpful if you want to create plots where \code{subass} performance data is calculated according to a 
 #' grouping variable (e.g. month).
+#' @param group.join.type Specify how to join \code{subass} to \code{groups}. Default "join" will perform a \code{\link{left_join}} in which the order of the SUBIDs does not need to match. Additional option "cbind"
+#' will perform a \code{\link{cbind}} in which the order of the SUBIDs needs to match; this can be helpful if you want to create plots where \code{subass} performance data is calculated according to a 
+#' grouping variable (e.g. month).
 #' @param groups.color.pal Vector containing colors to use when plotting groups. Only used if groups is not \code{NULL}.
 #' @param drop Logical, should unused factor levels be omitted from the legend. See \code{\link{scale_color_manual}} and \code{link{scale_fill_manual}}.
 #' @param alpha Numeric value to set transparency of dots in output plots. Should be in the range 0-1.
@@ -101,7 +104,7 @@
 #' @importFrom scales pseudo_log_trans
 #' @export
 
-PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
+PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL, attributes, join.type = c("join", "cbind"), group.join.type = c("join", "cbind"), groups.color.pal = NULL, drop = TRUE, alpha = 0.4,
                                        trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15, density.plot = FALSE, density.plot.type = c("density", "boxplot"),
                                        scale.x.log = FALSE, scale.y.log = FALSE, xsigma = 1, ysigma = 1, xlimits = c(NA, NA), ylimits = c(NA, NA), xbreaks = waiver(), ybreaks = waiver(), xlabels = waiver(), ylabels = waiver(),
                                        xlab = NULL, ylab = NULL, ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", group.legend.title = "Group", common.y.axis = FALSE, summary.table = FALSE,
@@ -109,6 +112,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
   # Check join type and density plot type
   join.type <- match.arg(join.type)
+  group.join.type <- match.arg(group.join.type)
   density.plot.type <- match.arg(density.plot.type)
 
   # Check trendline.darken value
@@ -133,7 +137,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
   # Join subass data to groups if they are given
   if (!is.null(groups)) {
-    plotdata <- left_join(plotdata, groups, by = "SUBID") %>% rename("Group" = colnames(groups)[2])
+    if(group.join.type == "join"){
+      plotdata <- left_join(plotdata, groups, by = "SUBID") %>% rename("Group" = colnames(groups)[2])
+    } else if (group.join.type == "cbind"){
+      if (!nrow(plotdata) == nrow(groups)) {
+        stop("ERROR: number of rows in subass does not match number of rows in groups")
+      }
+      plotdata <- cbind(plotdata, groups %>% select(-"SUBID")) %>% rename("Group" = colnames(groups)[2])
+    }
   }
 
   # Join subass data to attribute data
@@ -288,7 +299,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     
     # Scale x axis
     if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
-      if(any(plotdata[[col]] <= 0)){
+      if(any(plotdata[[col]] <= 0, na.rm = TRUE)){
         plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=pseudo_log_trans(base = 10, sigma = xsigma)) # Psuedo-log if 0 or negative values
       } else{
         plot <- plot + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
@@ -296,10 +307,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     } else{ # Normal scale
       plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels)
     }
-    
+
     # Scale y axis
     if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
-      if(any(plotdata[[colnames(subass)[subass.column]]] <= 0)){
+      if(any(plotdata[[colnames(subass)[subass.column]]] <= 0, na.rm = TRUE)){
         plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=pseudo_log_trans(base = 10, sigma = ysigma)) # Psuedo-log if 0 or negative values
       } else{
         plot <- plot + scale_y_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
@@ -410,7 +421,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       
       # Scale x axis
       if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
-        if(any(plotdata[[col]] <= 0)){
+        if(any(plotdata[[col]] <= 0, na.rm = TRUE)){
           densx <- densx + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=pseudo_log_trans(base = 10, sigma = xsigma)) # Psuedo-log if 0 or negative values
         } else{
           densx <- densx + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
@@ -421,7 +432,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       
       # Scale y axis
       if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
-        if(any(plotdata[[colnames(subass)[subass.column]]] <= 0)){
+        if(any(plotdata[[colnames(subass)[subass.column]]] <= 0, na.rm = TRUE)){
           densy <- densy + scale_x_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=pseudo_log_trans(base = 10, sigma = ysigma)) # Psuedo-log if 0 or negative values
         } else{
           densy <- densy + scale_x_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
