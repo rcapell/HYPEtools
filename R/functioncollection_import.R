@@ -747,6 +747,96 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
     }
   }
   
+  # Create list of standard GeoData column names/prefixes
+  standard_colnames <- c(
+  "area",
+  "subid",
+  "maindown",
+  "latitude",
+  "region",
+  "parreg",
+  "wqparreg",
+  "lakeregion",
+  "ilregion",
+  "olregion",
+  "elev_mean",
+  "elev_std",
+  "slope_mean",
+  "slope_std",
+  "lake_depth",
+  "lakedataid",
+  "icatch",
+  "rivlen",
+  "loc_rivlen",
+  "slc_",
+  "scr_",
+  "dhslc_",
+  "grwdown",
+  "grwolake",
+  "loc_vol",
+  "loc_tp",
+  "loc_sp",
+  "loc_tn",
+  "loc_in",
+  "loc_ts",
+  "loc_ss",
+  "loc_t1",
+  "loc_t2",
+  "loc_si",
+  "loc_ds",
+  "loc_oc",
+  "loc_soil",
+  "locltp",
+  "loclsp",
+  "locltn",
+  "loclin",
+  "loclts",
+  "loclss",
+  "loclt1",
+  "loclt2",
+  "loclsi",
+  "loclds",
+  "locloc",
+  "lrwet_area",
+  "mrwet_area",
+  "lrwet_dep",
+  "mrwet_dep",
+  "lrwet_part",
+  "mrwet_part",
+  "iwetcatch",
+  "buffer",
+  "close_w",
+  "eroindex",
+  "suspchannel",
+  "sand",
+  "silt",
+  "clay",
+  "petmodel",
+  "ws_",
+  "cloud_",
+  "weight_sub",
+  "lks_",
+  "lks_dp_",
+  "lks_fi_",
+  "lks_fa_",
+  "tilefrac_",
+  "xcoord",
+  "ycoord",
+  "hds_depth",
+  "wetdep_n",
+  "drydep_n1",
+  "drydep_n2",
+  "drydep_n3",
+  "deploadn")
+  
+  # Check if column names start with any of the standard column names/prefixes
+  check_cols <- grepl(pattern = paste0("^", toupper(standard_colnames), "*.", collapse = "|"), x = colnames(res))
+  
+  # Warning if any non-standard column names
+  if(any(check_cols == FALSE)){
+    warning("Non-standard GeoData column names found: ", paste(colnames(res)[which(check_cols == FALSE)], collapse = ", "), call. = FALSE)
+  }
+  
   return(res)
 }
 
@@ -833,7 +923,7 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
     }
   }
   # convert list elements to numeric, if possible, catch conversion errors and collapse non-numeric vectors to single strings
-  res <- suppressWarnings(lapply(res, function(x) tryCatch(na.fail(as.numeric(x)), error = function(e) paste(x, collapse = " "))))
+  res <- suppressWarnings(lapply(res, function(x) tryCatch(format(na.fail(as.numeric(x)), scientific = FALSE), error = function(e) paste(x, collapse = " "))))
   
   return(res)
 }
