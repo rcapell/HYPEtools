@@ -7,6 +7,7 @@
 * Add cbind option for adding groups in PlotPerformanceByAttribute()
 * Handle NA values when scaling axes in PlotPerformanceByAttribute()
 * Add warning for non-standard column names when using ReadGeoData()
+* Update default info columns for VariableLookup functions
 
 ## HYPEtools 1.6.0 (2023-10-18)
 *Enhancements*

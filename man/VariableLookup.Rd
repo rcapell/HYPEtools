@@ -6,11 +6,14 @@
 \alias{VariableSearch}
 \title{Lookup Functions For HYPE Variables}
 \usage{
-VariableInfo(variable, info = "Name")
+VariableInfo(
+  variable,
+  info = c("ID", "Name", "Unit", "Description", "Aggregation", "Reference", "Component")
+)
 
 VariableSearch(
   search,
-  info = c("ID", "Name", "Unit", "Description", "Aggregation", "Component"),
+  info = c("ID", "Name", "Unit", "Description", "Aggregation", "Reference", "Component"),
   ignore_case = TRUE
 )
 }

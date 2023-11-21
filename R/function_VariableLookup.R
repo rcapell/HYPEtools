@@ -30,7 +30,7 @@ NULL
 #' @importFrom stringr fixed str_detect
 
 #' @rdname VariableLookup
-VariableInfo <- function(variable, info = "Name") {
+VariableInfo <- function(variable, info = c("ID", "Name", "Unit", "Description", "Aggregation", "Reference", "Component")) {
   result <- INTERNAL.hype.vars.info %>%
     filter(str_detect(.$ID, fixed(variable, ignore_case = TRUE))) %>% # Search Variable IDs, Ignore Case
     select(info) %>% # Subset to info Columns
@@ -45,7 +45,7 @@ VariableInfo <- function(variable, info = "Name") {
 }
 
 #' @rdname VariableLookup
-VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description", "Aggregation", "Component"), ignore_case = TRUE) {
+VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description", "Aggregation", "Reference", "Component"), ignore_case = TRUE) {
   result <- INTERNAL.hype.vars.info %>%
     filter(if_any(info, ~ str_detect(., fixed(search, ignore_case = ignore_case))))
   return(result)
