@@ -3,7 +3,7 @@
 #'
 #' Function to sort an imported GeoData.txt file in downstream order, so that all upstream sub-basins are listed in rows above downstream sub-basins.
 #' 
-#' @param gd A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.
+#' @param gd A data frame containing a column with SUBIDs and a column (MAINDOWN) containing the corresponding downstream SUBID, e.g. an imported 'GeoData.txt' file.
 #' @param bd A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.
 #' @param progbar Logical, display a progress bar while calculating SUBID sorting. 
 #' 

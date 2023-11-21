@@ -7,7 +7,7 @@
 SortGeoData(gd, bd = NULL, progbar = TRUE)
 }
 \arguments{
-\item{gd}{A data frame containing a column with SUBIDs and a column with areas, e.g. an imported 'GeoData.txt' file.}
+\item{gd}{A data frame containing a column with SUBIDs and a column (MAINDOWN) containing the corresponding downstream SUBID, e.g. an imported 'GeoData.txt' file.}
 
 \item{bd}{A data frame with bifurcation connections, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
