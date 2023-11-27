@@ -88,7 +88,7 @@ during manual calibration
 \code{PlotBasinOutput} plots a suite of time series along with a flow duration curve, a flow regime plot, and a selection of
 goodness-of-fit measures from an imported HYPE basin output file. The function selects from a range of "known" variables, and plots
 those which are available in the user-supplied basin output. It is mostly meant as a support tool during calibration, manual or
-automatic, providing a quick and comprehensive overview of model dynamics at in a sub-basin of interest.
+automatic, providing a quick and comprehensive overview of model dynamics in a subbasin of interest.
 
 HYPE outputs which are known to \code{PlotBasinOutput} include:
 
