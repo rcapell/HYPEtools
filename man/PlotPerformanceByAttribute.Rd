@@ -42,6 +42,7 @@ PlotPerformanceByAttribute(
   group.legend.title = "Group",
   common.y.axis = FALSE,
   summary.table = FALSE,
+  table.margin = 0.4,
   filename = NULL,
   width = NA,
   height = NA,
@@ -86,6 +87,7 @@ PlotJohan(
   group.legend.title = "Group",
   common.y.axis = FALSE,
   summary.table = FALSE,
+  table.margin = 0.4,
   filename = NULL,
   width = NA,
   height = NA,
@@ -170,6 +172,8 @@ grouping variable (e.g. month).}
 \item{common.y.axis}{Logical, if \code{TRUE}, then only one y-axis label and marginal density plot will be provided. If \code{FALSE}, then separate y-axis labels and marginal density plots will be included for each subplot.}
 
 \item{summary.table}{Logical, if \code{TRUE}, then a table providing summary statistics will be included at the bottom of the output plot.}
+
+\item{table.margin}{Numeric, controls spacing between plots and summary table.}
 
 \item{filename}{String, filename used to save plot. File extension must be specified. See \code{\link{ggsave}}.}
 

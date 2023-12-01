@@ -44,6 +44,7 @@
 #' @param group.legend.title String, title for plot legend when generating plots with \code{groups}.
 #' @param common.y.axis Logical, if \code{TRUE}, then only one y-axis label and marginal density plot will be provided. If \code{FALSE}, then separate y-axis labels and marginal density plots will be included for each subplot.
 #' @param summary.table Logical, if \code{TRUE}, then a table providing summary statistics will be included at the bottom of the output plot.
+#' @param table.margin Numeric, controls spacing between plots and summary table.
 #' @param filename String, filename used to save plot. File extension must be specified. See \code{\link{ggsave}}.
 #' @param width Numeric, specify width of output plot. See \code{\link{ggsave}}.
 #' @param height Numeric, specify height of output plot. See \code{\link{ggsave}}.
@@ -108,7 +109,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
                                        trendline = TRUE, trendline.method = "lm", trendline.formula = NULL, trendline.alpha = 0.5, trendline.darken = 15, density.plot = FALSE, density.plot.type = c("density", "boxplot"),
                                        scale.x.log = FALSE, scale.y.log = FALSE, xsigma = 1, ysigma = 1, xlimits = c(NA, NA), ylimits = c(NA, NA), xbreaks = waiver(), ybreaks = waiver(), xlabels = waiver(), ylabels = waiver(),
                                        xlab = NULL, ylab = NULL, ncol = NULL, nrow = NULL, align = "hv", common.legend = TRUE, legend.position = "bottom", group.legend.title = "Group", common.y.axis = FALSE, summary.table = FALSE,
-                                       filename = NULL, width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300) {
+                                       table.margin = 0.4, filename = NULL, width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300) {
 
   # Check join type and density plot type
   join.type <- match.arg(join.type)
@@ -598,7 +599,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     }
 
     # Arrange plots
-    arrangeplot <- ggarrange(arrangeplot, table.p, nrow = 2, heights = c(1, 0.4))
+    arrangeplot <- ggarrange(arrangeplot, table.p, nrow = 2, heights = c(1, table.margin))
   }
 
   # Save plot
