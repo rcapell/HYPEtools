@@ -47,6 +47,7 @@
 #' @param opacity Numeric, opacity of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
 #' @param fillOpacity Numeric, opacity of markers in Leaflet maps. See [leaflet::addCircleMarkers()].
 #' @param na.color Character string of color to use to symbolize markers in maps which correspond to \code{NA} values.
+#' @param jitter Numeric, amount to jitter points with duplicate geometries. See [sf::st_jitter()].
 #' @param bg.weight Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See [leaflet::addPolygons()].
 #' @param bg.opacity Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
 #' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
@@ -132,7 +133,7 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
                           plot.legend = TRUE, legend.pos = "right", legend.title = NULL, 
                           legend.signif = 2, col = NULL, col.breaks = NULL, col.labels = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
-                          radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080",
+                          radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080", jitter = 0.01,
                           bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
                           # plot.searchbar = FALSE, # leaflet.extras searchbar currently doesn't work for CircleMarkers
                           plot.label = FALSE, plot.label.size = 2.5, plot.label.geometry = c("centroid", "surface"), noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL,
@@ -472,6 +473,26 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
       if(any(duplicated(x[,1]))){message(" - Duplicate SUBIDS exist in subass (x)!")}
       
       x <- right_join(sites[, sites.subid.column] %>% mutate(across(1, ~ as.character(.x))), x %>% mutate(across(1, ~ as.character(.x))), by = setNames(nm = colnames(sites)[sites.subid.column], colnames(x)[1])) # Join GIS Data with subass in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
+    }
+    
+    # Jitter points with duplicate geometry
+    if(any(duplicated(x[[attr(x, "sf_column")]]))){
+      message(" - Jittering Duplicate Geometries!")
+      
+      # Add variable to get original row order
+      x$sort <- 1:nrow(x)
+      
+      # Get points that don't have duplicate geometry + first occurance of points with duplicate geometry
+      non_duplicated <- x %>% filter(!duplicated(!!sym(attr(x, "sf_column"))))
+      
+      # Jitter points that have duplicate geometry
+      duplicated <- x %>% filter(duplicated(!!sym(attr(x, "sf_column")))) %>% sf::st_jitter(jitter)
+      
+      # Recombine points
+      x <- rbind(duplicated, non_duplicated) %>%
+        arrange(sort) %>%
+        select(-sort)
+      
     }
     
     # update legend title if none was provided by user or "auto" selection
