@@ -459,8 +459,6 @@ shinyAppServer <- function(input, output, session) {
     } else{
       var.name <- gsub("map", "", tools::file_path_sans_ext(input$result))
     }
-    
-    tester<<-result_type()
 
     # Create basemap and get data
     data <- PlotMapPoints(
