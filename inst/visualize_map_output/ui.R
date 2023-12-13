@@ -58,11 +58,19 @@ shinyAppUI <- fluidPage(
   hr(),
   div(style = "display:flex",
     div(style = "width: 75%; padding:10px",
-        div(div(style="display:inline-block",h4(tags$b("GIS Data:"))),div(style="display:inline-block",actionButton("help_gis_df",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
+        div(
+          div(style = "display:inline-block", h4(tags$b("GIS Data:"))),
+          div(style = "display:inline-block", actionButton("help_gis_df", label = "", icon = icon("circle-question"), class = "help-button", style = "height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none")),
+          div(style = "display:inline-block;margin-left:30px;margin-bottom:10px", downloadButton("download_gis", label = "Download GIS Data"))
+        ),
         DT::dataTableOutput("gis")
     ),
     div(style = "width: 25%; padding:10px",
-        div(div(style="display:inline-block",h4(tags$b("MapOutput Data:"))),div(style="display:inline-block",actionButton("help_data_df",label="",icon=icon("circle-question"),class="help-button",style="height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none"))),
+        div(
+          div(style = "display:inline-block", h4(tags$b("MapOutput Data:"))),
+          div(style = "display:inline-block", actionButton("help_data_df", label = "", icon = icon("circle-question"), class = "help-button", style = "height:0px;width:0px;padding:0px;padding-bottom:25px;border:none;background:none")),
+          div(style = "display:inline-block;margin-left:30px;margin-bottom:10px", downloadButton("download_data", label = "Download Result Data"))
+        ),
         DT::dataTableOutput("table")
     )
   )

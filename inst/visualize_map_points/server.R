@@ -215,7 +215,7 @@ shinyAppServer <- function(input, output, session) {
   output$input_column <- shiny::renderUI({shiny::selectInput("column", "Select SUBID Column", choices = colnames(gis())[which(!colnames(gis()) %in% attr(gis(), "sf_column"))], selected = colnames(gis())[sites.subid.column])})
   
   # Download Data
-  output$download_gis <- downloadHandler(
+  output$download_gis <- shiny::downloadHandler(
     filename = "gis_data.csv",
     content = function(file){
       write.csv(gis_filtered() %>% sf::st_drop_geometry(), file, row.names = FALSE)
@@ -332,7 +332,7 @@ shinyAppServer <- function(input, output, session) {
   output$table <- DT::renderDataTable(data_out() %>% rename_with(~gsub("^X", "", .), .cols = 2), rownames = FALSE, filter = "top", options = list(scrollX = TRUE, lengthMenu = c(5, 10, 25, 50, 100)))
   
   # Download Data
-  output$download_data <- downloadHandler(
+  output$download_data <- shiny::downloadHandler(
     filename = "result_data.csv",
     content = function(file){
       write.csv(data_out(), file, row.names = FALSE)
