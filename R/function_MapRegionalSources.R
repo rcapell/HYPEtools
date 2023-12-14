@@ -226,7 +226,8 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
           data = suppressWarnings(sf::st_point_on_surface(label_data)),
           label = label_data[[map.subid.name]],
           labelOptions = leaflet::labelOptions(noHide = TRUE, direction = "auto", textOnly = TRUE, style = list("font-size" = paste0(font.size, "px")))
-        )
+        ) %>%
+        leaflet::hideGroup("Labels") # Hide Labels by default
 
       # Create function to get colors for polylines
       color_pal <- function(X) {
