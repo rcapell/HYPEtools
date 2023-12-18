@@ -127,6 +127,11 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   if(is.numeric(groups[[2]])){
     groups[[2]] <- as.character(groups[[2]])
   }
+  
+  # Rename grouping column if it exists already in plotdata to avoid conflict when joining
+  if(colnames(groups)[2] %in% colnames(plotdata)){
+    colnames(groups)[2] <- "Group"
+  }
 
   # Create dataframe to store plot data
   if (join.type == "join") {
@@ -231,8 +236,9 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             summarize(unique = n_distinct(!!sym(col))) %>%
             filter(unique > 1) %>%
             select(all_of("Group")) %>%
-            unlist() %>%
-            as.numeric()
+            unlist()
+          
+          trendline_groups <- which(unique(groups[[2]]) %in% trendline_groups)
         } else{
           trendline_groups <- 1:length(unique(groups[[2]]))
         }
