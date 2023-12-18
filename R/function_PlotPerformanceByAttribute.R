@@ -129,8 +129,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   }
   
   # Rename grouping column if it exists already in plotdata to avoid conflict when joining
-  if(colnames(groups)[2] %in% colnames(plotdata)){
-    colnames(groups)[2] <- "Group"
+  if (!is.null(groups)) {
+    if(colnames(groups)[2] %in% colnames(plotdata)){
+      colnames(groups)[2] <- "Group"
+    }
   }
 
   # Create dataframe to store plot data
