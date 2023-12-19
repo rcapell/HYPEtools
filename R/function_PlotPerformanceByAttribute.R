@@ -122,11 +122,6 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   } else if (trendline.darken > 100) {
     warning("trendline.darken set must be in range 1-100. Setting to 100")
   }
-  
-  # Convert group IDs to string if numeric
-  if(is.numeric(groups[[2]])){
-    groups[[2]] <- as.character(groups[[2]])
-  }
 
   # Create dataframe to store plot data
   if (join.type == "join") {
@@ -136,8 +131,15 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     plotdata <- subass
   }
   
-  # Rename grouping column if it exists already in plotdata to avoid conflict when joining
+  # Format groups
   if (!is.null(groups)) {
+    
+    # Convert group IDs to string if numeric
+    if(is.numeric(groups[[2]])){
+      groups[[2]] <- as.character(groups[[2]])
+    }
+    
+    # Rename grouping column if it exists already in plotdata to avoid conflict when joining
     if(colnames(groups)[2] %in% colnames(plotdata)){
       colnames(groups)[2] <- "Group"
     }
