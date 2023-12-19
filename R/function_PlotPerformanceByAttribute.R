@@ -127,13 +127,6 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   if(is.numeric(groups[[2]])){
     groups[[2]] <- as.character(groups[[2]])
   }
-  
-  # Rename grouping column if it exists already in plotdata to avoid conflict when joining
-  if (!is.null(groups)) {
-    if(colnames(groups)[2] %in% colnames(plotdata)){
-      colnames(groups)[2] <- "Group"
-    }
-  }
 
   # Create dataframe to store plot data
   if (join.type == "join") {
@@ -141,6 +134,13 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       filter(!is.na(!!sym(colnames(subass)[subass.column]))) # Remove NA values from y-axis plotting column
   } else{
     plotdata <- subass
+  }
+  
+  # Rename grouping column if it exists already in plotdata to avoid conflict when joining
+  if (!is.null(groups)) {
+    if(colnames(groups)[2] %in% colnames(plotdata)){
+      colnames(groups)[2] <- "Group"
+    }
   }
 
   # Join subass data to groups if they are given
