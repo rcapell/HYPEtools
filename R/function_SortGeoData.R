@@ -52,6 +52,8 @@ SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {
     ibd <- bd[, c(brcol.sr, brcol.br)]
   }
   
+  # Get max SUBID and round up to power of 10 for dummy outlets
+  dummy_power <- 10^ceiling(log10(max(c(gd[[geocol.md]], gd[[geocol.sbd]]))))
   
   ## create dummy outlets for independent basins connected through BranchData
   ## this is needed to avoid upstream duplicates from subid sorting below
@@ -103,7 +105,7 @@ SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {
       }
       
       # dummy outlet subids, larger than max allowed subid number of digits (HYPE restriction)
-      dsbd <- 1:length(le) + 10^8
+      dsbd <- 1:length(le) + dummy_power
       
       # add dummy outlets to internal gd
       for (i in 1:length(le)) {
@@ -130,7 +132,7 @@ SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {
   }
   
   # remove dummy subids from result
-  # ssbd <- ssbd[ssbd < 10^8]
+  ssbd <- ssbd[ssbd < dummy_power]
   
   # sort gd
   gd <- gd[match(ssbd, gd[, geocol.sbd]), ]
