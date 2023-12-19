@@ -130,7 +130,7 @@ SortGeoData <- function(gd, bd = NULL, progbar = TRUE) {
   }
   
   # remove dummy subids from result
-  ssbd <- ssbd[ssbd < 10^8]
+  # ssbd <- ssbd[ssbd < 10^8]
   
   # sort gd
   gd <- gd[match(ssbd, gd[, geocol.sbd]), ]

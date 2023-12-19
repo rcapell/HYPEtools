@@ -6,10 +6,13 @@
 #### Highlights
 * Add cbind option for adding groups in PlotPerformanceByAttribute()
 * Handle NA values when scaling axes in PlotPerformanceByAttribute()
+* Handle group IDs as strings in PlotPerformanceByAttribute()
+* Add argument to adjust spacing between plots and summary table in PlotPerformanceByAttribute()
 * Add warning for non-standard column names when using ReadGeoData()
 * Update default info columns for VariableLookup functions
-* Add argument to adjust spacing between plots and summary table in PlotPerformanceByAttribute()
 * Add jitter to points with duplicate geometries in PlotMapPoints()
+* Hide label group by default for Leaflet maps in MapRegionalSources()
+* Allow SUBIDs with many digits in SortGeoData()
 * Various updates to help text
 
 ## HYPEtools 1.6.0 (2023-10-18)
