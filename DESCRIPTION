@@ -15,6 +15,7 @@ Depends:
     R (>= 3.5.0)
 Imports:
     clipr,
+    colorspace,
     data.table (>= 1.9.8),
     dplyr,
     ggplot2,
