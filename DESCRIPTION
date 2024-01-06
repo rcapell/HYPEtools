@@ -54,7 +54,6 @@ Suggests:
     leaflet.extras,
     mapview,
     plotly,
-    randomcoloR,
     sf,
     shiny,
     shinyalert,

@@ -17,6 +17,7 @@ PlotSubbasinRouting(
   fillOpacity = 0.25,
   line.weight = 5,
   line.opacity = 1,
+  seed = NULL,
   font.size = 10,
   file = "",
   vwidth = 1424,
@@ -51,6 +52,8 @@ Only required if providing GeoData information with \code{gd}.}
 
 \item{line.opacity}{Numeric, opacity of routing lines. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
 
+\item{seed}{Integer, seed number to to produce repeatable color palette.}
+
 \item{font.size}{Numeric, font size (px) for map subbasin labels.}
 
 \item{file}{Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified.
@@ -73,7 +76,7 @@ Plot routing of subbasins for a HYPE model on an interactive map.
 \details{
 \code{PlotSubbasinRouting} generates an interactive Leaflet map with lines indicating the routing of flow between subbasins. GeoData information only needs
 to be provided if the \code{map} GIS data does not include SUBID and/or MAINDOWN fields. BranchData information only needs to be provided if model has a
-BranchData.txt file. Subbasin routing lines are randomly assigned a color using \code{\link[randomcoloR:distinctColorPalette]{randomcoloR::distinctColorPalette()}}.
+BranchData.txt file. Subbasin routing lines are randomly assigned a color using \code{\link{distinctColorPalette}}.
 }
 \examples{
 \dontrun{

@@ -19,6 +19,7 @@ MapRegionalSources(
   fillOpacity = 0.25,
   line.weight = 5,
   line.opacity = 1,
+  seed = NULL,
   font.size = 10,
   file = "",
   vwidth = 1424,
@@ -56,6 +57,8 @@ center-point shape file or geopackage. If provided polygon data, then the polygo
 \item{line.weight}{Numeric, weight of connection lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
 
 \item{line.opacity}{Numeric, opacity of connection lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
+
+\item{seed}{Integer, seed number to to produce repeatable color palette.}
 
 \item{font.size}{Numeric, font size (px) for subbasin labels in Leaflet maps.}
 
