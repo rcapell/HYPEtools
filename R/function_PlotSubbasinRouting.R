@@ -271,7 +271,6 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 # library(sf)
 # library(leaflet)
 # library(leaflet.extras)
-# library(randomcoloR)
 # map.subid.column <- 1
 # gd <- NULL
 # bd <- NULL
