@@ -13,7 +13,7 @@
 * Add jitter to points with duplicate geometries in PlotMapPoints()
 * Hide label group by default for Leaflet maps in MapRegionalSources()
 * Allow SUBIDs with many digits in SortGeoData()
-* Update PlotSimObsRegime() to ignore NA values
+* Update PlotSimObsRegime() to ignore NA values and to fix percentile polygons when using log scale with negative/zero values (Issue #61)
 * Various updates to help text
 
 ## HYPEtools 1.6.0 (2023-10-18)

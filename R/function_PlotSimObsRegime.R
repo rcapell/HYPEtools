@@ -157,9 +157,14 @@ PlotSimObsRegime <- function(x, sim, obs, ts.in = NULL, ts.out = "month", start.
     
   } else if (log && ylim[1] <= 0) {
     
-    # minimum value 0 or negative, raise axis minimum to smalles positive value
+    # minimum value 0 or negative, raise axis minimum to smallest positive value and filter out negative/zero values
     warning("Zero or negative values in 'sim'/'obs', not shown in log-scaled plot.")
     ylim[1] <- min(c(x.sim[, 2], x.obs[, 2])[c(x.sim[, 2], x.obs[, 2]) > 0], na.rm = TRUE)
+    
+    x.sim <- x.sim[which(x.sim[, 2] > 0),]
+    if(!is.null(x.obs)){
+      x.obs <- x.obs[which(x.obs[, 2] > 0),]
+    }
     
   }
   
