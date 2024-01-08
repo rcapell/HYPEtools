@@ -8,6 +8,8 @@ MapRegionalSources(
   data,
   map,
   map.subid.column = 1,
+  group.column = NULL,
+  group.colors = NULL,
   digits = 3,
   progbar = FALSE,
   map.type = "default",
@@ -35,7 +37,14 @@ irrigation target and source sub-catchments, respectively. Typically a HYPE 'Mgm
 \item{map}{A \code{sf}, \code{SpatialPointsDataFrame}, or \code{SpatialPolygonsDataFrame} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
 center-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link[sf:geos_unary]{sf::st_centroid()}}). Spatial data import requires additional packages, e.g. \code{sf}.}
 
-\item{map.subid.column}{Integer, index of the column in the \code{map} column holding SUBIDs (sub-catchment IDs).}
+\item{map.subid.column}{Integer, index of the column in \code{map} holding SUBIDs (sub-catchment IDs).}
+
+\item{group.column}{Integer, optional index of the column in \code{data} providing grouping of connections to allow toggling of groups in Leaflet maps. Default \code{NULL} will produce maps without
+grouping.}
+
+\item{group.colors}{Named list providing colors for connection groups in Leaflet maps. List names represent the names of the groups in the \code{group.column} of \code{data}, and list values represent the colors.
+Example: \code{groups.colors = list("GROUP 1" = "black", "GROUP 2" = "red")}. If a group is not included in \code{group.colors}, then random colors will be assigned to the connections in the group.
+Default \code{NULL} will produce maps using random colors for all groups.}
 
 \item{digits}{Integer, number of digits to which irrigation connection lengths are rounded to.}
 
@@ -61,7 +70,7 @@ center-point shape file or geopackage. If provided polygon data, then the polygo
 
 \item{seed}{Integer, seed number to to produce repeatable color palette.}
 
-\item{darken}{Numeric specifying the amount of darkening applied to the random color palette. See \code{\link{distinctColorPalette}}.}
+\item{darken}{Numeric specifying the amount of darkening applied to the random color palette. Negative values will lighten the palette. See \code{\link{distinctColorPalette}}.}
 
 \item{font.size}{Numeric, font size (px) for subbasin labels in Leaflet maps.}
 

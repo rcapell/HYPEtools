@@ -7,7 +7,12 @@
 #' irrigation target and source sub-catchments, respectively. Typically a HYPE 'MgmtData.txt' file, imported with \code{\link{ReadMgmtData}}.
 #' @param map A \code{sf}, \code{SpatialPointsDataFrame}, or \code{SpatialPolygonsDataFrame} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
 #' center-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See [sf::st_centroid()]). Spatial data import requires additional packages, e.g. \code{sf}.
-#' @param map.subid.column Integer, index of the column in the \code{map} column holding SUBIDs (sub-catchment IDs).
+#' @param map.subid.column Integer, index of the column in \code{map} holding SUBIDs (sub-catchment IDs).
+#' @param group.column Integer, optional index of the column in \code{data} providing grouping of connections to allow toggling of groups in Leaflet maps. Default \code{NULL} will produce maps without
+#' grouping.
+#' @param group.colors Named list providing colors for connection groups in Leaflet maps. List names represent the names of the groups in the \code{group.column} of \code{data}, and list values represent the colors.
+#' Example: \code{groups.colors = list("GROUP 1" = "black", "GROUP 2" = "red")}. If a group is not included in \code{group.colors}, then random colors will be assigned to the connections in the group.
+#' Default \code{NULL} will produce maps using random colors for all groups.
 #' @param digits Integer, number of digits to which irrigation connection lengths are rounded to.
 #' @param progbar Logical, display a progress bar while calculating.
 #' @param map.type Map type keyword string. Choose either \code{"default"} for the default static plots or \code{"leaflet"} for interactive Leaflet maps.
@@ -20,7 +25,7 @@
 #' @param line.weight Numeric, weight of connection lines in Leaflet maps. See [leaflet::addPolylines()].
 #' @param line.opacity Numeric, opacity of connection lines in Leaflet maps. See [leaflet::addPolylines()].
 #' @param seed Integer, seed number to to produce repeatable color palette.
-#' @param darken Numeric specifying the amount of darkening applied to the random color palette. See \code{\link{distinctColorPalette}}.
+#' @param darken Numeric specifying the amount of darkening applied to the random color palette. Negative values will lighten the palette. See \code{\link{distinctColorPalette}}.
 #' @param font.size Numeric, font size (px) for subbasin labels in Leaflet maps.
 #' @param file Save a Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified.
 #' See [mapview::mapshot()].
@@ -63,7 +68,7 @@
 #' @importFrom rlang .data
 #' @export
 
-MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, progbar = FALSE, map.type = "default",
+MapRegionalSources <- function(data, map, map.subid.column = 1, group.column = NULL, group.colors = NULL, digits = 3, progbar = FALSE, map.type = "default",
                                plot.scale = TRUE, plot.searchbar = FALSE, weight = 0.5, opacity = 1, fillColor = "#4d4d4d",
                                fillOpacity = 0.25, line.weight = 5, line.opacity = 1, seed = NULL, darken = 0, font.size = 10, file = "",
                                vwidth = 1424, vheight = 1000, html.name = "") {
@@ -124,7 +129,7 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
     rcb <- data[row.rcb, c(col.subid, col.regsrcid)]
 
     # Update row names, necessary for connection to map data below
-    rownames(rcb) <- 1:nrow(rcb)
+    # rownames(rcb) <- 1:nrow(rcb)
 
     # Add a column to hold connection lengths,
     rcb <- data.frame(rcb, 0)
@@ -140,8 +145,8 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
       sf::st_drop_geometry()
 
     # Create dataframe of target-source connections
-    condata <- left_join(rcb, geometry %>% select(.data$SUBID, .data$SUBID_GEO), by = "SUBID") %>% # Add coordinates for SUBID
-      left_join(geometry %>% select(.data$SUBID, .data$REGSRC_GEO), by = c("REGSRCID" = "SUBID")) %>% # Add coordinates for REGSRCID
+    condata <- left_join(rcb, geometry %>% select(SUBID, SUBID_GEO), by = "SUBID") %>% # Add coordinates for SUBID
+      left_join(geometry %>% select(SUBID, REGSRC_GEO), by = c("REGSRCID" = "SUBID")) %>% # Add coordinates for REGSRCID
       mutate(id = as.character(1:nrow(.)), .before = 1) # Add character ID
 
     # Apply function over all source-target connections to create line objects between connections
@@ -174,13 +179,20 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
 
       # Create Leaflet Plot
       message("Creating Map")
+      
+      # Get overlay groups
+      if(is.null(group.column)){
+        overlay_groups <- c("Subbasins", "Labels", "Connections")
+      } else{
+        overlay_groups <- c("Subbasins", "Labels", unlist(unique(data[, group.column])))
+      }
 
       # Create map
       leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
         leaflet::addTiles() %>%
         leaflet::addLayersControl(
           baseGroups = c("Map", "Street", "Topo", "Satellite"),
-          overlayGroups = c("Connections", "Subbasins", "Labels"),
+          overlayGroups = as.character(unlist(overlay_groups)),
           options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
         ) %>%
         leaflet.extras::addResetMapButton()
@@ -255,11 +267,21 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
 
         leafmap <- leafmap %>%
           leaflet::addPolylines(
-            group = "Connections",
+            group = ifelse(is.null(group.column), "Connections", as.character(data[i, group.column])),
             lat = sf::st_coordinates(condata$LINE[i])[, 2],
             lng = sf::st_coordinates(condata$LINE[i])[, 1],
             label = paste("REGSRCID ", condata$REGSRCID[i], "to SUBID", condata$SUBID[i]),
-            color = colors[i],
+            color = if(is.null(group.column)) { # No groups - use random colors
+              colors[i]
+            } else {
+              if(is.null(group.colors)){ # Groups but no colors provided - use random colors
+                colors[i]
+              } else if(as.character(data[i, group.column]) %in% names(group.colors)){ # Override color provided
+                as.character(group.colors[which(names(group.colors) == as.character(data[i, group.column]))])
+              } else { # No override color provided - use random colors
+                colors[i]
+              }
+            },
             weight = line.weight,
             opacity = line.opacity
           )

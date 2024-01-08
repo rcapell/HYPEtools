@@ -15,6 +15,7 @@
 * Allow SUBIDs with many digits in SortGeoData()
 * Update PlotSimObsRegime() to ignore NA values and to fix percentile polygons when using log scale with negative/zero values (Issue #61)
 * Create distinctColorPalette() function and update PlotSubbasinRouting() and MapRegionalSources() to allow setting a seed so palettes can be reproduced
+* Update MapRegionalSources() to allow specifying different connection groups with different colors
 * Various updates to help text
 
 ## HYPEtools 1.6.0 (2023-10-18)

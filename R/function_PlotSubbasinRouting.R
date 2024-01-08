@@ -17,7 +17,7 @@
 #' @param line.weight Numeric, weight of routing lines. See [leaflet::addPolylines()].
 #' @param line.opacity Numeric, opacity of routing lines. See [leaflet::addPolylines()].
 #' @param seed Integer, seed number to to produce repeatable color palette.
-#' @param darken Numeric specifying the amount of darkening applied to the random color palette. See \code{\link{distinctColorPalette}}.
+#' @param darken Numeric specifying the amount of darkening applied to the random color palette. Negative values will lighten the palette. See \code{\link{distinctColorPalette}}.
 #' @param font.size Numeric, font size (px) for map subbasin labels.
 #' @param file Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. 
 #' See [mapview::mapshot()].

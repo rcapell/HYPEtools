@@ -55,7 +55,7 @@ Only required if providing GeoData information with \code{gd}.}
 
 \item{seed}{Integer, seed number to to produce repeatable color palette.}
 
-\item{darken}{Numeric specifying the amount of darkening applied to the random color palette. See \code{\link{distinctColorPalette}}.}
+\item{darken}{Numeric specifying the amount of darkening applied to the random color palette. Negative values will lighten the palette. See \code{\link{distinctColorPalette}}.}
 
 \item{font.size}{Numeric, font size (px) for map subbasin labels.}
 
