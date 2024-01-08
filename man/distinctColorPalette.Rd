@@ -4,12 +4,15 @@
 \alias{distinctColorPalette}
 \title{Generate optimally distinct color palettes}
 \usage{
-distinctColorPalette(count = 1, seed = NULL)
+distinctColorPalette(count = 1, seed = NULL, darken = 0)
 }
 \arguments{
 \item{count}{Integer, number of colors (>= 1). May be ineffective for count > 40.}
 
 \item{seed}{Integer, seed number to produce repeatable palettes.}
+
+\item{darken}{Numeric specifying the amount of darkening applied to the color palette. See \code{\link{darken}}.
+Negative values will lighten the palette.}
 }
 \value{
 \code{distinctColorPalette} returns a character vector of \code{count} optimally distinct colors in hexadecimal codes.

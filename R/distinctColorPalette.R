@@ -4,6 +4,8 @@
 
 #' @param count Integer, number of colors (>= 1). May be ineffective for count > 40.
 #' @param seed Integer, seed number to produce repeatable palettes.
+#' @param darken Numeric specifying the amount of darkening applied to the color palette. See \code{\link{darken}}.
+#' Negative values will lighten the palette.
 #' @details
 #' Adapted from the randomcoloR package \url{https://cran.r-project.org/package=randomcoloR}.
 #' 
@@ -13,11 +15,11 @@
 #' @examples
 #' distinctColorPalette()
 
-#' @importFrom colorspace hex RGB LAB
+#' @importFrom colorspace darken hex RGB LAB
 #' @importFrom stats kmeans
 #' @export
 
-distinctColorPalette <-function(count = 1, seed = NULL) {
+distinctColorPalette <-function(count = 1, seed = NULL, darken = 0) {
   
   # Check count
   if (!count >= 1) {
@@ -43,6 +45,9 @@ distinctColorPalette <-function(count = 1, seed = NULL) {
   # Get random colors
   km <- kmeans(currentColorSpace, count, iter.max=20)
   colors <- unname(hex(LAB(km$centers)))
+  
+  # Apply darkening to color palette
+  colors <- darken(colors, amount = darken, method = "relative")
 
   return(colors)
 }

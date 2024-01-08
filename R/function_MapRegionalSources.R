@@ -20,6 +20,7 @@
 #' @param line.weight Numeric, weight of connection lines in Leaflet maps. See [leaflet::addPolylines()].
 #' @param line.opacity Numeric, opacity of connection lines in Leaflet maps. See [leaflet::addPolylines()].
 #' @param seed Integer, seed number to to produce repeatable color palette.
+#' @param darken Numeric specifying the amount of darkening applied to the random color palette. See \code{\link{distinctColorPalette}}.
 #' @param font.size Numeric, font size (px) for subbasin labels in Leaflet maps.
 #' @param file Save a Leaflet map to an image file by specifying the path to the desired output file using this argument. File extension must be specified.
 #' See [mapview::mapshot()].
@@ -64,7 +65,7 @@
 
 MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, progbar = FALSE, map.type = "default",
                                plot.scale = TRUE, plot.searchbar = FALSE, weight = 0.5, opacity = 1, fillColor = "#4d4d4d",
-                               fillOpacity = 0.25, line.weight = 5, line.opacity = 1, seed = NULL, font.size = 10, file = "",
+                               fillOpacity = 0.25, line.weight = 5, line.opacity = 1, seed = NULL, darken = 0, font.size = 10, file = "",
                                vwidth = 1424, vheight = 1000, html.name = "") {
 
   # Check/Load Dependencies for mapping features - do this here so that these packages are not required for the base HYPEtools installation
@@ -231,9 +232,9 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, digits = 3, prog
 
       # Create function to get colors for polylines
       color_pal <- function(X) {
-        tryCatch(distinctColorPalette(X, seed = seed), # Try to get a distinct color for each line
+        tryCatch(distinctColorPalette(X, seed = seed, darken = darken), # Try to get a distinct color for each line
           error = function(e) {
-            rep_len(distinctColorPalette(100, seed = seed), X) # If there is an error, then repeat palette of 100 colors as necessary
+            rep_len(distinctColorPalette(100, seed = seed, darken = darken), X) # If there is an error, then repeat palette of 100 colors as necessary
           }
         )
       }
