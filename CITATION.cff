@@ -9,7 +9,7 @@ type: software
 license: LGPL-3.0-only
 title: 'HYPEtools: Tools for Processing and Analyzing Files from the Hydrological
   Catchment Model HYPE'
-version: 1.6.0.9000
+version: 1.6.1
 abstract: 'Work with model files (setup, input, output) from the hydrological catchment
   model HYPE: Streamlined file import and export, standard evaluation plot routines,
   diverse post-processing and aggregation routines for hydrological model analysis.'
@@ -186,7 +186,7 @@ references:
   title: ggrepel
   abstract: 'ggrepel: Automatically Position Non-Overlapping Text Labels with ''ggplot2'''
   notes: Imports
-  url: https://github.com/slowkow/ggrepel
+  url: https://ggrepel.slowkow.com/
   repository: https://CRAN.R-project.org/package=ggrepel
   authors:
   - family-names: Slowikowski
@@ -231,6 +231,17 @@ references:
   - family-names: Wickham
     given-names: Hadley
   year: '2024'
+- type: software
+  title: methods
+  abstract: 'R: A Language and Environment for Statistical Computing'
+  notes: Imports
+  authors:
+  - name: R Core Team
+  location:
+    name: Vienna, Austria
+  year: '2024'
+  institution:
+    name: R Foundation for Statistical Computing
 - type: software
   title: ncdf4
   abstract: 'ncdf4: Interface to Unidata netCDF (Version 4 or Earlier) Format Data
