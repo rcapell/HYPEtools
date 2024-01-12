@@ -56,9 +56,13 @@
 #' te2 <- AnnualRegime(te1[, c("DATE", "COUT", "ROUT")],
 #'                     ts.in = "day",
 #'                     ts.out = "week", start.mon = 10)
+#'                     
+#' # Screen devices should not be used in examples
+#' \dontrun{
 #' PlotAnnualRegime(x = te2)
 #' PlotAnnualRegime(x = te2, line = "median", band = "p05p95",
 #'   add.legend = TRUE, col = c("red", "blue"))
+#' }
 #' 
 #' @importFrom graphics par grid abline axis axis.POSIXct box polygon lines legend
 #' @importFrom stats na.omit
