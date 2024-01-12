@@ -311,7 +311,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Scale x axis
     if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
       if(any(plotdata[[col]] <= 0, na.rm = TRUE)){
-        plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=pseudo_log_trans(base = 10, sigma = xsigma)) # Psuedo-log if 0 or negative values
+        plot <- plot + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=pseudo_log_trans(base = 10, sigma = xsigma)) # Pseudo-log if 0 or negative values
       } else{
         plot <- plot + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
       }

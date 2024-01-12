@@ -62,12 +62,12 @@ devtools::spell_check()
 email <- "hypetools.rene@smhi.se"
 
 # check in different environments
-# - You can stop the task in R or use interactive = F if you don't want to see the live output (the check will still be performed)
+# - You can stop the task in R if you don't want to see the live output (the check will still be performed)
 # - This check takes several hours
 devtools::check_rhub(email = email)
 
 # check CRAN environment (may give notes which do not show up otherwise)
-# - You can stop the task in R or use show_status = F if you don't want to see the live output (the check will still be performed)
+# - You can stop the task in R if you don't want to see the live output (the check will still be performed)
 # - This check takes several hours
 rhub::check_for_cran(email = email)
 
