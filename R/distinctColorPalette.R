@@ -16,7 +16,8 @@
 #' distinctColorPalette()
 
 #' @importFrom colorspace darken hex RGB LAB
-#' @importFrom stats kmeans
+#' @importFrom stats kmeans runif
+#' @importFrom methods as
 #' @export
 
 distinctColorPalette <-function(count = 1, seed = NULL, darken = 0) {

@@ -23,12 +23,14 @@
 #'
 #' @examples 
 #' \dontrun{
-#' VisualizeMapPoints(
-#'   results.dir = system.file("demo_model", "results", package = "HYPEtools"),
-#'   sites = system.file("demo_model", "gis", "Nytorp_centroids.gpkg", package = "HYPEtools"),
-#'   sites.subid.column = 25,
-#'   bg = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools")
-#' )
+#' if (interactive()) {
+#'   VisualizeMapPoints(
+#'     results.dir = system.file("demo_model", "results", package = "HYPEtools"),
+#'     sites = system.file("demo_model", "gis", "Nytorp_centroids.gpkg", package = "HYPEtools"),
+#'     sites.subid.column = 25,
+#'     bg = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools")
+#'   )
+#' }
 #' }
 #' 
 #' @export

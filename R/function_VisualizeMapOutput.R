@@ -22,9 +22,13 @@
 #'
 #' @examples 
 #' \dontrun{
-#' VisualizeMapOutput(results.dir = system.file("demo_model", "results", package = "HYPEtools"),
-#' map = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"),
-#' map.subid.column = 25)
+#' if (interactive()) {
+#'   VisualizeMapOutput(
+#'     results.dir = system.file("demo_model", "results", package = "HYPEtools"),
+#'     map = system.file("demo_model", "gis", "Nytorp_map.gpkg", package = "HYPEtools"),
+#'     map.subid.column = 25
+#'   )
+#' }
 #' }
 #' 
 #' @export

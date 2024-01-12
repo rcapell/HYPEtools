@@ -1,7 +1,7 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.6.0.9000
-*Development Version*
+## HYPEtools 1.6.1
+*Enhancements and bug fixes*
 
 #### Highlights
 * Add cbind option for adding groups in PlotPerformanceByAttribute()

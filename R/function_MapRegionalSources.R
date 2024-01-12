@@ -145,8 +145,8 @@ MapRegionalSources <- function(data, map, map.subid.column = 1, group.column = N
       sf::st_drop_geometry()
 
     # Create dataframe of target-source connections
-    condata <- left_join(rcb, geometry %>% select(SUBID, SUBID_GEO), by = "SUBID") %>% # Add coordinates for SUBID
-      left_join(geometry %>% select(SUBID, REGSRC_GEO), by = c("REGSRCID" = "SUBID")) %>% # Add coordinates for REGSRCID
+    condata <- left_join(rcb, geometry %>% select("SUBID", "SUBID_GEO"), by = "SUBID") %>% # Add coordinates for SUBID
+      left_join(geometry %>% select("SUBID", "REGSRC_GEO"), by = c("REGSRCID" = "SUBID")) %>% # Add coordinates for REGSRCID
       mutate(id = as.character(1:nrow(.)), .before = 1) # Add character ID
 
     # Apply function over all source-target connections to create line objects between connections
