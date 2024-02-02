@@ -4,18 +4,24 @@
 \alias{ScalePar}
 \title{Scale 'par.txt' files to different model time step}
 \usage{
-ScalePar(x, sfac = 1/24, digits = 3, verbose = TRUE, print.par = FALSE)
+ScalePar(
+  x,
+  timestep.ratio = 1/24,
+  digits = 3,
+  verbose = TRUE,
+  print.par = FALSE
+)
 }
 \arguments{
 \item{x}{List containing HYPE parameters. Typically imported with \code{\link[=ReadPar]{ReadPar()}}.}
 
-\item{sfac}{Numeric, scale factor. Defaults to scaling from daily to hourly time steps.}
+\item{timestep.ratio}{Numeric, time step scaling factor. Defaults to (1/24) to scale from daily to hourly time steps. To scale from hourly to daily time steps, then use 24.}
 
-\item{digits}{Integer, number of significant digits \emph{in SLC class columns} to export. See \code{\link[=signif]{signif()}}.}
+\item{digits}{Integer, number of significant digits in scaled parameter values to export. See \code{\link[=signif]{signif()}}.}
 
 \item{verbose}{Logical, if \code{TRUE}, then information will be printed.}
 
-\item{print.par}{Logical, print known time-scale dependent parameters instead of scaling a par list.}
+\item{print.par}{Logical, print known time-scale dependent parameters instead of scaling a parameter list.}
 }
 \value{
 A \code{\link[=list]{list()}} object as supplied in \code{x}, with parameters re-scaled parameters, or nothing if \code{print.par = TRUE}.
@@ -23,10 +29,10 @@ A \code{\link[=list]{list()}} object as supplied in \code{x}, with parameters re
 \description{
 \code{ScalePar} scales time step-dependent parameters in an imported
 \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:par.txt}{HYPE 'par.txt'} parameter file to a
-new target time step.
+new target time step. See HYPE wiki tutorial on \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps}{sub-daily time steps}.
 }
 \details{
-\code{ScalePar} simply applies a user-chosen scaling factor \code{sfac} to all time scale-dependent parameters
+\code{ScalePar} simply applies a user-chosen scaling factor \code{timestep.ratio} to all time scale-dependent parameters
 in a HYPE parameter list. Parameters are matched against an inbuilt set of parameter names.
 \emph{\href{https://github.com/rcapell/HYPEtools/issues}{Please notify us} if you find parameters missing.}
 }

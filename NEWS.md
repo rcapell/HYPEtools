@@ -4,7 +4,7 @@
 *Development Version*
 
 #### Highlights
-
+* Update ScalePar() function to properly handle recession coefficients
 
 ## HYPEtools 1.6.1 (2924-01-12)
 *Enhancements and bug fixes*
