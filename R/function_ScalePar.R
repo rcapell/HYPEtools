@@ -12,8 +12,14 @@
 #' 
 #' @details
 #' `ScalePar` simply applies a user-chosen scaling factor `timestep.ratio` to all time scale-dependent parameters
-#' in a HYPE parameter list. Parameters are matched against an inbuilt set of parameter names. 
+#' in a HYPE parameter list. Parameters are matched against an inbuilt set of parameter names. To see this parameters, call \code{ScalePar(print.par = TRUE)}. 
 #' *[Please notify us](https://github.com/rcapell/HYPEtools/issues) if you find parameters missing.*
+#'
+#' If parameters are not timestep-dependent recession coefficients, then scaling is performed using the ratio between the two time step lengths (e.g. 1/24 when scaling from daily to hourly time steps).
+#' If parameters are timestep-dependent recession coefficients, then scaling is performed using the relationship described in: 
+#' Nalbantis, Ioannis (1995). “Use of multiple-time-step information in rainfall-runoff modelling”, Journal of Hydrology 165, 1-4, pp. 135–159.
+#'
+#' \code{new_parameter_value = 1 - (1 - old_parameter_value)^time_step_ratio}
 #' 
 #' @return
 #' A [list()] object as supplied in `x`, with parameters re-scaled parameters, or nothing if `print.par = TRUE`.
@@ -28,9 +34,12 @@
 #' 
 #' @export
 
-ScalePar <- function(x, timestep.ratio = 1 / 24, digits = 3, verbose = TRUE, print.par = FALSE) {
+ScalePar <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbose = TRUE, print.par = FALSE) {
   
   # Timestep Dependent Parameters --------------------------------------------------------------------------------------------------------------------
+  # www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps
+  
+  # Parameters that are timestep-dependent
   ts_dependent <- c(
     "cevp",
     "cmlt",
@@ -38,15 +47,16 @@ ScalePar <- function(x, timestep.ratio = 1 / 24, digits = 3, verbose = TRUE, pri
     "eroddecay",
     "glaccmlt",
     "irrdemand",
-    "licesndens",
+    # "licesndens", # Lotta said that in the current HYPE version (5.25.0), this is actually hard-coded as daily and should not be scaled
     "mactrinf",
     "mperc1",
     "mperc2",
     "ocfldelx",
     "ppenrflow",
     "pprelmax",
-    "rcgrwst", # Lotta checked and this parameter is time-step dependent, but it isn't in the table the HYPE wiki: http://www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps
-    "ricesndens",
+    "rcgrw",
+    "rcgrwst",
+    # "ricesndens",  # Lotta said that in the current HYPE version (5.25.0), this is actually hard-coded as daily and should not be scaled
     "rrcs1",
     "rrcs2",
     "rrcs3",
@@ -65,9 +75,13 @@ ScalePar <- function(x, timestep.ratio = 1 / 24, digits = 3, verbose = TRUE, pri
     "wetdepspl"
   )
   
-  # Reservoir Constant Parameters --------------------------------------------------------------------------------------------------------------------
+  # Recession Coefficients --------------------------------------------------------------------------------------------------------------------
+  # www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps
+  
+  # Recession coefficients that are timestep-dependent
   rc_dependent <- c(
-    "rcgrwst", # Lotta checked and this parameter is time-step dependent, but it isn't in the table the HYPE wiki: http://www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps
+    "rcgrw",
+    "rcgrwst",
     "rrcs1",
     "rrcs2",
     "rrcs3",
@@ -78,10 +92,10 @@ ScalePar <- function(x, timestep.ratio = 1 / 24, digits = 3, verbose = TRUE, pri
   # Conversion Function --------------------------------------------------------------------------------------------------------------------
   
   # To go from daily to hourly time steps use a ratio of 1/24, vice versa use 24/1
-  conversion <- function(value, conversion_factor, reservoir_constant, digits){
+  conversion <- function(value, conversion_factor, recession_coefficient, digits){
     
-    # If the parameter is a time constant in a linear reservoir
-    if(reservoir_constant == TRUE){
+    # If the parameter is a recession coefficient - Relationship from: Nalbantis, Ioannis (1995). “Use of multiple-time-step information in rainfall-runoff modelling”, Journal of Hydrology 165, 1-4, pp. 135–159.
+    if(recession_coefficient == TRUE){
       new_value <- 1 - ((1 - value) ^ conversion_factor)
     } else{
       new_value <-  value * conversion_factor
@@ -99,7 +113,7 @@ ScalePar <- function(x, timestep.ratio = 1 / 24, digits = 3, verbose = TRUE, pri
   # Just print known parameters
   if (print.par) {
     cat(paste0("Known time-step dependent parameters:\n", paste(ts_dependent, collapse = ", "), "."), "\n")
-    cat(paste0("Known reservoir constant time-step dependent parameters:\n", paste(rc_dependent, collapse = ", "), "."), "\n")
+    cat(paste0("Known time-step dependent rececession coefficients:\n", paste(rc_dependent, collapse = ", "), "."), "\n")
     
   # Perform Scaling
   } else {
@@ -112,9 +126,9 @@ ScalePar <- function(x, timestep.ratio = 1 / 24, digits = 3, verbose = TRUE, pri
       cat(paste0("Scaled parameters:\n", paste(scale_parameters, collapse = ", "), "."), "\n")
     }
     
-    # Scale parameters while accounting for reservoir constant dependent parameters
+    # Scale parameters while accounting for recession coefficient dependent parameters
     for(parameter in scale_parameters){
-      x[[parameter]] <- sapply(x[[parameter]], conversion, conversion_factor = timestep.ratio, reservoir_constant = parameter %in% rc_dependent, digits = digits)
+      x[[parameter]] <- sapply(x[[parameter]], conversion, conversion_factor = timestep.ratio, recession_coefficient = parameter %in% rc_dependent, digits = digits)
     }
     
   }

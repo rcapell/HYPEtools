@@ -5,7 +5,7 @@
 \title{Scale 'par.txt' files to different model time step}
 \usage{
 ScalePar(
-  x,
+  x = NULL,
   timestep.ratio = 1/24,
   digits = 3,
   verbose = TRUE,
@@ -33,8 +33,14 @@ new target time step. See HYPE wiki tutorial on \href{http://www.smhi.net/hype/w
 }
 \details{
 \code{ScalePar} simply applies a user-chosen scaling factor \code{timestep.ratio} to all time scale-dependent parameters
-in a HYPE parameter list. Parameters are matched against an inbuilt set of parameter names.
+in a HYPE parameter list. Parameters are matched against an inbuilt set of parameter names. To see this parameters, call \code{ScalePar(print.par = TRUE)}.
 \emph{\href{https://github.com/rcapell/HYPEtools/issues}{Please notify us} if you find parameters missing.}
+
+If parameters are not timestep-dependent recession coefficients, then scaling is performed using the ratio between the two time step lengths (e.g. 1/24 when scaling from daily to hourly time steps).
+If parameters are timestep-dependent recession coefficients, then scaling is performed using the relationship described in:
+Nalbantis, Ioannis (1995). “Use of multiple-time-step information in rainfall-runoff modelling”, Journal of Hydrology 165, 1-4, pp. 135–159.
+
+\code{new_parameter_value = 1 - (1 - old_parameter_value)^time_step_ratio}
 }
 \examples{
 # Import daily HYPE parameter file
