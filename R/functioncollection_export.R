@@ -1006,6 +1006,23 @@ WriteDamData <- function(x, filename, verbose = TRUE) {
 #' @rdname HypeDataExport
 #' @importFrom data.table fwrite
 #' @export
+WriteFloodData <- function(x, filename, verbose = TRUE) {
+  # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
+  if (verbose) {
+    .CheckCharLengthDf(x, maxChar = 100)
+  }
+  # warn if NAs in data, since HYPE does not allow empty values in 
+  te <- apply(x, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) {
+    warning(paste("NA values in exported dataframe in column(s):", paste(names(x)[te], collapse=", ")))
+  }
+  # export
+  fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, col.names = TRUE, scipen = 999)
+}
+
+#' @rdname HypeDataExport
+#' @importFrom data.table fwrite
+#' @export
 WriteLakeData <- function(x, filename, verbose = TRUE) {
   # test length of string columns elements, throws warning if any element longer than 100, since HYPE does not read them
   if (verbose) {

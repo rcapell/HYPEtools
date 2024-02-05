@@ -7,6 +7,7 @@
 \alias{WriteBranchData}
 \alias{WriteCropData}
 \alias{WriteDamData}
+\alias{WriteFloodData}
 \alias{WriteLakeData}
 \alias{WriteMgmtData}
 \alias{WritePointSourceData}
@@ -23,6 +24,8 @@ WriteBranchData(x, filename, verbose = TRUE)
 WriteCropData(x, filename, verbose = TRUE)
 
 WriteDamData(x, filename, verbose = TRUE)
+
+WriteFloodData(x, filename, verbose = TRUE)
 
 WriteLakeData(x, filename, verbose = TRUE)
 

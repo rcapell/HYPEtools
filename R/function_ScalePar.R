@@ -26,6 +26,7 @@
 #' 
 #' @seealso
 #' \code{\link{ScaleAquiferData}}
+#' \code{\link{ScaleFloodData}}
 #' 
 #' @examples
 #' # Import daily HYPE parameter file
@@ -55,6 +56,8 @@ ScalePar <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbose = TR
     "mperc1",
     "mperc2",
     "ocfldelx",
+    "opt5", # Replaces FloodData recession coefficients if optonoff == 1 or optonoff == 3 - The floodplain routine hasn't been checked to see if it works with other timesteps
+    "opt8", # Replaces FloodData recession coefficients if optonoff == 1 or optonoff == 3 - The floodplain routine hasn't been checked to see if it works with other timesteps
     "ppenrflow",
     "pprelmax",
     "rcgrw",
@@ -83,6 +86,8 @@ ScalePar <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbose = TR
   
   # Recession coefficients that are timestep-dependent
   rc_dependent <- c(
+    "opt5", # Replaces FloodData recession coefficients if optonoff == 1 or optonoff == 3
+    "opt8", # Replaces FloodData recession coefficients if optonoff == 1 or optonoff == 3
     "rcgrw",
     "rcgrwst",
     "rrcs1",
@@ -115,8 +120,8 @@ ScalePar <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbose = TR
   
   # Just print known parameters
   if (print.par) {
-    cat(paste0("Known time-step dependent parameters:\n", paste(ts_dependent, collapse = ", "), "."), "\n")
-    cat(paste0("Known time-step dependent rececession coefficients:\n", paste(rc_dependent, collapse = ", "), "."), "\n")
+    cat(paste0("Known time-step dependent parameters:\n", paste(ts_dependent, collapse = ", ")), "\n")
+    cat(paste0("Known time-step dependent rececession coefficients:\n", paste(rc_dependent, collapse = ", ")), "\n")
     
   # Perform Scaling
   } else {
@@ -126,7 +131,10 @@ ScalePar <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbose = TR
     
     # Print information
     if (verbose) {
-      cat(paste0("Scaled parameters:\n", paste(scale_parameters, collapse = ", "), "."), "\n")
+      cat(paste0("Scaled parameters:\n", paste(scale_parameters, collapse = ", ")), "\n")
+      if(any(c("opt5", "opt8") %in% scale_parameters)){
+        warning("The floodplain routine has not been tested with different time steps as of 2024-02-05. Use caution when scaling opt5 and opt8!", call. = FALSE)
+      }
     }
     
     # Scale parameters while accounting for recession coefficient dependent parameters

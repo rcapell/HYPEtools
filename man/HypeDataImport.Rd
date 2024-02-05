@@ -7,6 +7,7 @@
 \alias{ReadBranchData}
 \alias{ReadCropData}
 \alias{ReadDamData}
+\alias{ReadFloodData}
 \alias{ReadGlacierData}
 \alias{ReadLakeData}
 \alias{ReadMgmtData}
@@ -62,6 +63,18 @@ ReadCropData(
 
 ReadDamData(
   filename = "DamData.txt",
+  verbose = TRUE,
+  header = TRUE,
+  na.strings = "-9999",
+  sep = "\\t",
+  quote = "",
+  stringsAsFactors = FALSE,
+  encoding = c("unknown", "latin1", "UTF-8"),
+  ...
+)
+
+ReadFloodData(
+  filename = "FloodData.txt",
   verbose = TRUE,
   header = TRUE,
   na.strings = "-9999",

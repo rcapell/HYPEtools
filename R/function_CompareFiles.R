@@ -7,7 +7,7 @@
 #' @param y Path to a HYPE model file to read, or an existing list/data frame object for a HYPE model file.
 #' File contents are compared to those of \code{x}.
 #' @param type Character string identifying the type of HYPE model file. Used to determine appropriate read function. One of
-#' \code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{GeoClass},
+#' \code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{FloodData}, \code{GeoClass},
 #' \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointSourceData}, \code{Obs},
 #' \code{Simass}, \code{Subass}, \code{TimeOutput}, or \code{Xobs}.
 #' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See [dplyr::full_join()].
@@ -42,7 +42,11 @@
 #' @importFrom rlang .data
 #' @export
 
-CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE, threshold = 1E-10, ...) {
+CompareFiles <- function(x, y, type = c("AquiferData", "BasinOutput", "BranchData", "CropData", "DamData", "ForcKey", "FloodData", "GeoClass", "GeoData", "Info", "LakeData", "MapOutput", "MgmtData", "Optpar", "Par", "PointSourceData", "Obs", "Simass, Subass, TimeOutput, Xobs"),
+                         by = NULL, compare.order = TRUE, threshold = 1E-10, ...) {
+  
+  # Check that type exists
+  type <- match.arg(type)
 
   # Create function to read files
   ReadFile <- function(file, type, ...) {
@@ -58,6 +62,8 @@ CompareFiles <- function(x, y, type, by = NULL, compare.order = TRUE, threshold 
         file <- ReadCropData(file, ...)
       } else if (type == "DamData") {
         file <- ReadDamData(file, ...)
+      } else if (type == "FloodData") {
+        file <- ReadFloodData(file, ...)
       } else if (type == "ForcKey") {
         file <- ReadForcKey(file, ...)
       } else if (type == "GeoClass") {

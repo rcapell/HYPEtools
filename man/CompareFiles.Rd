@@ -7,7 +7,9 @@
 CompareFiles(
   x,
   y,
-  type,
+  type = c("AquiferData", "BasinOutput", "BranchData", "CropData", "DamData", "ForcKey",
+    "FloodData", "GeoClass", "GeoData", "Info", "LakeData", "MapOutput", "MgmtData",
+    "Optpar", "Par", "PointSourceData", "Obs", "Simass, Subass, TimeOutput, Xobs"),
   by = NULL,
   compare.order = TRUE,
   threshold = 1e-10,
@@ -22,7 +24,7 @@ File contents are compared to those of \code{y}.}
 File contents are compared to those of \code{x}.}
 
 \item{type}{Character string identifying the type of HYPE model file. Used to determine appropriate read function. One of
-\code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{GeoClass},
+\code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{FloodData}, \code{GeoClass},
 \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointSourceData}, \code{Obs},
 \code{Simass}, \code{Subass}, \code{TimeOutput}, or \code{Xobs}.}
 

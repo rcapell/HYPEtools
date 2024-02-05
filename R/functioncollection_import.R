@@ -1894,6 +1894,23 @@ ReadDamData <- function(filename = "DamData.txt", verbose = TRUE, header = TRUE,
 #' @rdname HypeDataImport
 #' @importFrom utils read.table
 #' @export
+ReadFloodData <- function(filename = "FloodData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
+                        quote = "", stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
+  # argument checks
+  encoding <- match.arg(encoding)
+  
+  res <- read.table(file = filename, header = header, na.strings = na.strings, sep = sep, 
+                    stringsAsFactors = stringsAsFactors, quote = quote, encoding = encoding, ...)
+  names(res) <- toupper(names(res))
+  # check for NAs
+  te <- apply(res, 2, function(x) {any(is.na(x))})
+  if (any(te) && verbose) message(paste("NA values in imported dataframe in column(s):", paste(names(res)[te], collapse=", ")))
+  return(res)
+}
+
+#' @rdname HypeDataImport
+#' @importFrom utils read.table
+#' @export
 ReadGlacierData <- function(filename = "GlacierData.txt", verbose = TRUE, header = TRUE, na.strings = "-9999", sep = "\t", 
                             stringsAsFactors = FALSE, encoding = c("unknown", "latin1", "UTF-8"), ...) {
   # argument checks
