@@ -44,7 +44,7 @@ Nalbantis, Ioannis (1995). “Use of multiple-time-step information in rainfall-
 }
 \examples{
 # Import daily HYPE AquiferData file
-ad <- ReadAquiferData(filename = system.file("demo_model", "AquiferData.txt", package = "HYPEtools"))
+ad <- ReadAquiferData(filename = system.file("demo_model", "AquiferData_Example.txt", package = "HYPEtools"))
 # Scale to hourly time steps
 ScaleAquiferData(x = ad)
 # Print all time scale-dependent coefficients known to the function
