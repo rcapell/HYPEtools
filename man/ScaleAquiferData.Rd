@@ -24,7 +24,7 @@ ScaleAquiferData(
 \item{print.par}{Logical, print known time-scale dependent recession coefficients instead of scaling an AquiferData data frame.}
 }
 \value{
-A \code{\link[=dataframe]{dataframe()}} object as supplied in \code{x}, with re-scaled recession coefficients, or nothing if \code{print.par = TRUE}.
+A \code{\link[=data.frame]{data.frame()}} object as supplied in \code{x}, with re-scaled recession coefficients, or nothing if \code{print.par = TRUE}.
 }
 \description{
 \code{ScaleAquiferData} scales the \code{RETRATE} time step-dependent recession coefficient in an imported
@@ -44,7 +44,8 @@ Nalbantis, Ioannis (1995). “Use of multiple-time-step information in rainfall-
 }
 \examples{
 # Import daily HYPE AquiferData file
-ad <- ReadAquiferData(filename = system.file("demo_model", "AquiferData_Example.txt", package = "HYPEtools"))
+ad <- ReadAquiferData(filename = system.file("demo_model",
+"AquiferData_Example.txt", package = "HYPEtools"))
 # Scale to hourly time steps
 ScaleAquiferData(x = ad)
 # Print all time scale-dependent coefficients known to the function
