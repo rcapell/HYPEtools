@@ -41,6 +41,12 @@ If parameters are timestep-dependent recession coefficients, then scaling is per
 Nalbantis, Ioannis (1995). “Use of multiple-time-step information in rainfall-runoff modelling”, Journal of Hydrology 165, 1-4, pp. 135–159.
 
 \code{new_parameter_value = 1 - (1 - old_parameter_value)^time_step_ratio}
+
+\code{ScalePar} does not scale the values for the "gratk", "ilratk", "olratk", or "wetrate" rating curve recession coefficients in par.txt because they are not limited to the range 0-1.
+Likewise, HYPEtools does not provide any scaling function for the "RATE" columns in DamData.txt and LakeData.txt because these values are not limited to the range 0-1.
+We recommend looking at the results from the lakes/wetlands and recalibrating these parameters and their related power coefficients as needed.
+
+Use the \code{\link{ScaleAquiferData}} and \code{\link{ScaleFloodData}} functions to scale the time-dependent recession coefficients in AquiferData.txt and FloodData.txt files, respectively.
 }
 \examples{
 # Import daily HYPE parameter file

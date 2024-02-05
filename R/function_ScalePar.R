@@ -21,6 +21,12 @@
 #'
 #' \code{new_parameter_value = 1 - (1 - old_parameter_value)^time_step_ratio}
 #' 
+#' \code{ScalePar} does not scale the values for the "gratk", "ilratk", "olratk", or "wetrate" rating curve recession coefficients in par.txt because they are not limited to the range 0-1.
+#' Likewise, HYPEtools does not provide any scaling function for the "RATE" columns in DamData.txt and LakeData.txt because these values are not limited to the range 0-1.
+#' We recommend looking at the results from the lakes/wetlands and recalibrating these parameters and their related power coefficients as needed.
+#' 
+#' Use the \code{\link{ScaleAquiferData}} and \code{\link{ScaleFloodData}} functions to scale the time-dependent recession coefficients in AquiferData.txt and FloodData.txt files, respectively.
+#' 
 #' @return
 #' A [list()] object as supplied in `x`, with re-scaled parameters and recession coefficients, or nothing if `print.par = TRUE`.
 #' 
@@ -135,6 +141,19 @@ ScalePar <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbose = TR
       if(any(c("opt5", "opt8") %in% scale_parameters)){
         warning("The floodplain routine has not been tested with different time steps as of 2024-02-05. Use caution when scaling opt5 and opt8!", call. = FALSE)
       }
+    }
+    
+    # Add warning for hidden recession coefficients for rating curves
+    hidden_parameters <- c("gratk", "ilratk", "olratk", "wetrate")
+    if(any(hidden_parameters %in% names(x))){
+      warning(
+        paste0(
+          'ScalePar() does not scale the values for the following rating curve recession coefficients present in "x": ',
+          paste(hidden_parameters[which(hidden_parameters %in% names(x))], collapse = ", "),
+          ". We recommend looking at the results from the lakes/wetlands and recalibrating these parameters and their related power coefficients as needed."
+        ),
+        call. = FALSE
+      )
     }
     
     # Scale parameters while accounting for recession coefficient dependent parameters

@@ -21,6 +21,11 @@
 #'
 #' \code{new_coefficient_value = 1 - (1 - old_coefficient_value)^time_step_ratio}
 #' 
+#' Use the \code{\link{ScalePar}} and \code{\link{ScaleFloodData}} functions to scale the time-dependent parameters and recession coefficients in par.txt and FloodData.txt files, respectively.
+#' Note that \code{ScalePar} does not scale the values for the "gratk", "ilratk", "olratk", or "wetrate" rating curve recession coefficients in par.txt because they are not limited to the range 0-1.
+#' Likewise, HYPEtools does not provide any scaling function for the "RATE" columns in DamData.txt and LakeData.txt because these values are not limited to the range 0-1.
+#' We recommend looking at the results from the lakes/wetlands and recalibrating these parameters and their related power coefficients as needed.
+#' 
 #' @return
 #' A [data.frame()] object as supplied in `x`, with re-scaled recession coefficients, or nothing if `print.par = TRUE`.
 #' 
