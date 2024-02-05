@@ -58,5 +58,5 @@ ScaleFloodData(print.par = TRUE)
 }
 \seealso{
 \code{\link{ScaleAquiferData}}
-\code{\link{ScaleLakeData}}
+\code{\link{ScalePar}}
 }

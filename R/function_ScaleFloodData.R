@@ -30,7 +30,7 @@
 #' 
 #' @seealso
 #' \code{\link{ScaleAquiferData}}
-#' \code{\link{ScaleLakeData}}
+#' \code{\link{ScalePar}}
 #' 
 #' @examples
 #' # Import daily HYPE FloodData file
