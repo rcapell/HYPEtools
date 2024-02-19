@@ -13,7 +13,7 @@
 * Add ReadFloodData() and WriteFloodData() functions
 * Update CompareFiles() function to warn if "type" argument is not in the supported list of options
 
-## HYPEtools 1.6.1 (2924-01-12)
+## HYPEtools 1.6.1 (2024-01-12)
 *Enhancements and bug fixes*
 
 #### Highlights
