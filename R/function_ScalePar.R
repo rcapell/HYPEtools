@@ -161,8 +161,8 @@ ScalePar <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbose = TR
       x[[parameter]] <- sapply(x[[parameter]], conversion, conversion_factor = timestep.ratio, recession_coefficient = parameter %in% rc_dependent, digits = digits)
     }
     
+    # Return scaled list
+    invisible(x)
+    
   }
-  
-  # Return scaled list
-  return(x)
 }
