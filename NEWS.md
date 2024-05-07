@@ -12,6 +12,7 @@
 * Add ScaleFloodData() function to scale recession cofficients
 * Add ReadFloodData() and WriteFloodData() functions
 * Update CompareFiles() function to warn if "type" argument is not in the supported list of options
+* Update links to HYPEtools Wiki
 
 ## HYPEtools 1.6.1 (2024-01-12)
 *Enhancements and bug fixes*
