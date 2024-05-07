@@ -20,7 +20,7 @@ or \code{outregid} must be supplied.}
 \item{outregid}{Integer vector with HYPE output region IDs, alternative to \code{subid}.}
 
 \item{hype.var}{Character string, keyword to specify HYPE variable ID, see
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variable}.
 Not case-sensitive.}
 }
 \value{

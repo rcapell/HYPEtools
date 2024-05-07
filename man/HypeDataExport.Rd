@@ -57,16 +57,16 @@ Hype data file exports, simple \code{\link[data.table]{fwrite}} wrappers with fo
 specifications:
 
 \itemize{
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
-\item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
 }
 
 In most files, HYPE requires \code{NA}-free input in required columns, but empty values are

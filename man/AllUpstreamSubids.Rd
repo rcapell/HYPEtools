@@ -49,7 +49,7 @@ fractions where bifurcation branches remove discharge from the basin. Fractions 
 are multiplied.
 
 For details on bifurcation handling in HYPE, see the
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{HYPE online documentation for BranchData.txt}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{HYPE online documentation for BranchData.txt}.
 }
 \examples{
 te <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))

@@ -17,14 +17,14 @@ IsRegulated(subid, gd, dd = NULL, ld = NULL)
 \item{subid}{Numeric, vector of SUBIDs to be queried}
 
 \item{gd}{\code{\link{HypeGeoData}} or base data frame with columns \code{SUBID} and \code{MAINDOWN}, typically an imported
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData.txt} file.}
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData.txt} file.}
 
 \item{dd}{Data frame, typically an imported
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt} file. Defaults
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt} file. Defaults
 to \code{NULL}. \code{dd} or \code{ld} has to be provided in \code{IsRegulated}.}
 
 \item{ld}{Data frame, typically an imported
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt} file. Defaults
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt} file. Defaults
 to \code{NULL}. \code{dd} or \code{ld} has to be provided in \code{IsRegulated}.}
 }
 \value{

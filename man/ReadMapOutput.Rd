@@ -23,7 +23,7 @@ headers to POSIX dates, which are returned as attribute. Incomplete format strin
 summary values over the model period.}
 
 \item{hype.var}{Character string, a four-letter keyword to specify HYPE variable ID of file contents. See
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
 If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE
 map output file names.}
 
@@ -44,7 +44,7 @@ returned, see argument \code{warn.nan}.
 }
 \description{
 This is a convenience wrapper function to import a
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mapxxxx.txt}{map output file}
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:mapxxxx.txt}{map output file}
 ('map<\emph{HYPE_output_variable}>.txt') into R.
 }
 \details{

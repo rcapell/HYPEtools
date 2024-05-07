@@ -17,11 +17,11 @@ CreateOptpar(
 
 \item{pars}{Character vector with HYPE parameter names to be included in optpar list. Parameters must
 exist in \code{x}. Not case-sensitive. For a complete list of HYPE parameters, see the
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:par.txt}{par.txt online documentation}.}
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:par.txt}{par.txt online documentation}.}
 
 \item{tasks}{Data frame with two columns providing optimization tasks and settings (key-value pairs) as
 described in the
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
 Defaults to an empty task section.}
 
 \item{comment}{Character string, comment (first row in optpar.txt file).}

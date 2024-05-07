@@ -1,8 +1,8 @@
 #' Scale 'FloodData.txt' files to different model time steps
 #'
 #' `ScaleFloodData` scales the time step-dependent recession coefficients in an imported 
-#' [HYPE 'FloodData.txt'](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:flooddata.txt) file to a 
-#' new target time step. See HYPE wiki tutorial on [sub-daily time steps](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps).
+#' [HYPE 'FloodData.txt'](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:flooddata.txt) file to a 
+#' new target time step. See HYPE wiki tutorial on [sub-daily time steps](http://hype.smhi.net//wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps).
 #' 
 #' @param x Data frame containing HYPE FloodData contents. Typically imported with [ReadFloodData()].
 #' @param timestep.ratio Numeric, time step scaling factor. Defaults to (1/24) to scale from daily to hourly time steps. To scale from hourly to daily time steps use 24.
@@ -47,7 +47,7 @@ ScaleFloodData <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbos
   
   # Timestep Dependent Parameters --------------------------------------------------------------------------------------------------------------------
   # www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps
-  # http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:flooddata.txt
+  # http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:flooddata.txt
   
   # Parameters that are timestep-dependent
   ts_dependent <- c(
@@ -59,7 +59,7 @@ ScaleFloodData <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbos
   
   # Recession Coefficients --------------------------------------------------------------------------------------------------------------------
   # www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps
-  # http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:flooddata.txt
+  # http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:flooddata.txt
   
   # Recession coefficients that are timestep-dependent
   rc_dependent <- c(

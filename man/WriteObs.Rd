@@ -55,7 +55,7 @@ Export forcing data and discharge observation files from R.
 Headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it).
 
 Observation IDs are SUBIDs or IDs connected to SUBIDs with a
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
 
 If the first column in \code{x} contains dates of class \code{POSIXt}, then they will be formatted according to \code{dt.format} before writing the output file.
 

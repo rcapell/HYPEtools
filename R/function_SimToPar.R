@@ -38,8 +38,8 @@ NULL
 #' @rdname SimToPar
 AllSimToPar <- function(simfile, row, par){
   
-  # Allsim column names from: http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt&s[]=jpop
-  # Bestsim column names from: http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:bestsims.txt
+  # Allsim column names from: http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:allsim.txt&s[]=jpop
+  # Bestsim column names from: http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:bestsims.txt
   stat_cols  <- c("NO", "CRIT", "rr2", "sr2", "mr2", "rmae", "sre", "rre", "mre", "rra", "sra", "mra", "tau", "md2", "mda", "mrs", "mcc", "mdkg", "akg", "asckg", "mar", "mdnr", "mnw", "snr", "smb", "numrc", "nummc", "jpop", "igen", "iacc")
   
   # Get parameters from allsims or bestsims file

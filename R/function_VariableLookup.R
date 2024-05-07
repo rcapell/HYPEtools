@@ -8,7 +8,7 @@
 #' @param ignore_case Logical, should case differences be ignored in the match?  
 #' @details
 #' The \code{VariableInfo} and \code{VariableSearch} functions provide features to lookup information on HYPE variables from the
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE Wiki}.
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE Wiki}.
 #' \code{VariableInfo} can be used to return information (e.g. Name, Units) for a known HYPE Variable ID.
 #' \code{VariableSearch} can be used to search for e.g. an unknown HYPE variable ID based on a \code{search} term.
 #' The \code{info} argument can be used to select which information to return or search.
@@ -65,7 +65,7 @@ VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description",
 # # 1) Scrape Data from Wiki #####
 # # _____________________________________________________________________________________________________________________________________
 # # Wiki URL
-# url <- "http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables"
+# url <- "http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables"
 # 
 # # Scrape HTML
 # html <- read_html(url)

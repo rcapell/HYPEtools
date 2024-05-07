@@ -38,7 +38,7 @@ variables for multiple sub-basins and equidistant time steps in POSIXct format i
 \details{
 S3 class constructor function for \code{HypeXobs} data frame objects which hold HYPE Xobs.txt file contents. Xobs.txt
 files contain three header rows, see the
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt description in the HYPE documentation}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt description in the HYPE documentation}.
 These headers are stored as additional attributes in  objects.
 }
 \examples{

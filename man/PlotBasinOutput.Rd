@@ -110,7 +110,7 @@ HYPE outputs which are known to \code{PlotBasinOutput} include:
 
 Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file.
 For a detailed description of the variables, see the
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 
 \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc cct2 ret2 ccin rein ccon reon cctn retn 
 ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1}

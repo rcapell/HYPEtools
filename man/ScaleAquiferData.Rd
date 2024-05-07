@@ -28,8 +28,8 @@ A \code{\link[=data.frame]{data.frame()}} object as supplied in \code{x}, with r
 }
 \description{
 \code{ScaleAquiferData} scales the \code{RETRATE} time step-dependent recession coefficient in an imported
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{HYPE 'AquiferData.txt'} file to a
-new target time step. See HYPE wiki tutorial on \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps}{sub-daily time steps}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{HYPE 'AquiferData.txt'} file to a
+new target time step. See HYPE wiki tutorial on \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps}{sub-daily time steps}.
 }
 \details{
 \code{ScaleAquiferData} applies a user-specified scaling factor \code{timestep.ratio} to the \code{RETRATE} time step-dependent recession coefficient

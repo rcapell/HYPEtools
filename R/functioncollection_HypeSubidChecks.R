@@ -5,12 +5,12 @@
 #' 
 #' @param subid Numeric, vector of SUBIDs to be queried
 #' @param gd [`HypeGeoData`] or base data frame with columns `SUBID` and `MAINDOWN`, typically an imported 
-#' [GeoData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geodata.txt) file.
+#' [GeoData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:geodata.txt) file.
 #' @param dd Data frame, typically an imported 
-#' [DamData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt) file. Defaults 
+#' [DamData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:damdata.txt) file. Defaults 
 #' to `NULL`. `dd` or `ld` has to be provided in `IsRegulated`.
 #' @param ld Data frame, typically an imported 
-#' [LakeData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt) file. Defaults 
+#' [LakeData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:lakedata.txt) file. Defaults 
 #' to `NULL`. `dd` or `ld` has to be provided in `IsRegulated`.
 #' 
 #' @details 

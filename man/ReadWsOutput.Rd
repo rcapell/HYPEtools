@@ -78,7 +78,7 @@ consist of basin, time, or map output files.
 \details{
 HYPE optimization routines optionally allow for generation of simulation output files for each iteration in the optimization routine.
 For further details see documentation on 'task WS' in the
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
 
 \code{ReadWsOutput} imports and combines all simulation iterations in an \code{\link{array}}, which can then be easily used in
 further analysis, most likely in combination with performance and parameter values from an imported corresponding 'allsim.txt' file.

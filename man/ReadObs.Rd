@@ -60,7 +60,7 @@ Import single-variable HYPE observation files into R.
 \code{ReadObs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package
 \code{\link{data.table}},
 with conversion of date-time strings to POSIX time representations. Observation IDs (SUBIDs or IDs connected to SUBIDs with a
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer
 attribute \code{obsid} (directly accessible through \code{\link{obsid}}).
 
 Observation file types with automatic (dummy) \code{variable} attribute assignment:\tabular{lc}{

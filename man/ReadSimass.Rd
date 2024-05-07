@@ -27,9 +27,9 @@ Simulation assessment files contain domain-wide aggregated performance criteria 
 }
 \details{
 \code{ReadSimass} imports a simulation assessment file into R.
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:simass.txt}{HYPE simass.txt files} contain
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:simass.txt}{HYPE simass.txt files} contain
 domain-wide performance measures for observed-simulated variable pairs as defined in
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt#performance_criteria_options}{HYPE info.txt files}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt#performance_criteria_options}{HYPE info.txt files}.
 
 The function interprets character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions.
 \strong{Sub-daily time steps are currently not treated} and will probably result in a warning during time step evaluation within the

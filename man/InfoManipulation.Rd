@@ -28,7 +28,7 @@ Add/Remove lines to HYPE info.txt files
 }
 \details{
 The \code{AddInfoLine} and \code{RemoveInfoLine} functions provide features to add/remove lines to an imported info.txt
-file. Info.txt codes can be found on the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt}{HYPE Wiki}.
+file. Info.txt codes can be found on the \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt}{HYPE Wiki}.
 }
 \examples{
 info <- ReadInfo(filename = system.file("demo_model",

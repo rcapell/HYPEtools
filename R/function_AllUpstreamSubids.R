@@ -26,7 +26,7 @@
 #' are multiplied.
 #' 
 #' For details on bifurcation handling in HYPE, see the 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{HYPE online documentation for BranchData.txt}.
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{HYPE online documentation for BranchData.txt}.
 #' 
 #' @return
 #' If \code{get.weights} is \code{FALSE}, \code{AllUpstreamSubids} returns a vector of SUBIDs, otherwise a two-column data frame with SUBIDs in 

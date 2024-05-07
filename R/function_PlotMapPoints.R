@@ -86,7 +86,7 @@
 #' @details
 #' \code{PlotMapPoints} can be used to print point information on a mapped surface. The primary target are model performance
 #' measures as written to
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:subassx.txt}{HYPE 'subassX.txt' files}, but
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:subassx.txt}{HYPE 'subassX.txt' files}, but
 #' color scale and break point arguments are flexible enough to also be used with e.g. HYPE output variables or other data.
 #'
 #' \code{PlotMapOutput} can return static plots or interactive Leaflet maps depending on value provided for the argument \code{map.type}.

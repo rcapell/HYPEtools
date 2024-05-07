@@ -29,7 +29,7 @@ This function imports an 'optpar.txt' into a list.
 \details{
 \code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimization
 and parameter value ranges, for details on the file format, see the
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}.
 }
 \examples{
 te <- ReadOptpar(filename = system.file("demo_model", "optpar.txt", package = "HYPEtools"))

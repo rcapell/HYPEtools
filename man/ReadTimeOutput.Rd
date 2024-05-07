@@ -20,8 +20,8 @@ ReadTimeOutput(
 }
 \arguments{
 \item{filename}{Path to and file name of the time output file to import. Acceptable file choices are \code{*.txt} files following
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:timexxxx.txt}{HYPE time output file format} or \code{.nc}
-files following the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:timexxxx.txt}{HYPE time output file format} or \code{.nc}
+files following the \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}.
 See also details for netCDF import.}
 
 \item{dt.format}{Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly
@@ -29,7 +29,7 @@ and annual values allowed, e.g. \code{"\\\%Y"}. If set to \code{NULL}, no date-t
 be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.}
 
 \item{hype.var}{Character, HYPE variable ID in \code{x}. See
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
 If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE
 time output file names (incl. regional and class outputs).}
 
@@ -75,7 +75,7 @@ Date-time representations in data files are converted to POSIX time representati
 first day of the time step period.
 
 Import from netCDF files requires an \code{id} dimension in the netCDF data. Gridded data with remapped HYPE results in spatial x/y
-dimensions as defined in the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}
+dimensions as defined in the \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}
 are currently not supported.
 }
 \note{

@@ -21,8 +21,8 @@ Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
 
 \item{file.qobs, file.xobs}{Character string, file location of HYPE observation data file. \emph{Only one of these needs to be
 supplied}, with \code{file.qobs} taking precedence if both are provided. Either an
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt} or a
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:qobs.txt}{Qobs.txt} file.}
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt} or a
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:qobs.txt}{Qobs.txt} file.}
 
 \item{variable}{Character string, HYPE variable to use. Needed only with argument \code{file.xobs}. If \code{NULL} (default),
 a vector of available variables in \code{file.xobs} is returned.}
@@ -57,8 +57,8 @@ outlet subbasin(s). Currently, only upstream observations are identified.
 }
 \details{
 \code{OutletNearObs} finds observation sites for observation variables in
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:qobs.txt}{HYPE 'Qobs.txt'} and
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{HYPE 'Xobs.txt'} files
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:qobs.txt}{HYPE 'Qobs.txt'} and
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:xobs.txt}{HYPE 'Xobs.txt'} files
 located upstream an outlet sub-basin. For \code{file.xobs} files, which can hold several observation variables, a single variable has
 to be selected (the function conveniently prints available variables in \code{file.xobs}, if no \code{variable} is provided).
 Any number of SUBIDs present in \code{gd} can be defined as outlet subbasins with argument \code{outlets}. The function handles nested

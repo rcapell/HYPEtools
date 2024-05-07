@@ -26,7 +26,7 @@ also argument description in \code{\link[data.table]{fread}}.}
 \description{
 This is a convenience wrapper function to import a ClassData file as data frame into R. ClassData files contain definitions
 of SLC (\bold{S}oil and \bold{L}and use \bold{C}rop) classes in five to 15 predefined columns, see
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:classdata.txt}{ClassData.txt documentation}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:classdata.txt}{ClassData.txt documentation}.
 }
 \details{
 \code{ReadClassData} is a convenience wrapper function of \code{\link[data.table]{fread}}, with treatment of leading

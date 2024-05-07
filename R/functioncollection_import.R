@@ -35,7 +35,7 @@
 #'
 #' This is a convenience wrapper function to import a ClassData file as data frame into R. ClassData files contain definitions
 #' of SLC (\bold{S}oil and \bold{L}and use \bold{C}rop) classes in five to 15 predefined columns, see 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:classdata.txt}{ClassData.txt documentation}.
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:classdata.txt}{ClassData.txt documentation}.
 #' 
 #' @param filename Path to and file name of the ClassData file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
@@ -122,7 +122,7 @@ ReadClassData <- function(filename = "ClassData.txt", encoding = c("unknown", "U
 #'
 #' This is a convenience wrapper function to import a GeoClass file as data frame into R. GeoClass files contain definitions
 #' of SLC (\bold{S}oil and \bold{L}and use \bold{C}rop) classes in twelve to 14 predefined columns, see 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geoclass.txt}{GeoClass.txt documentation}.
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:geoclass.txt}{GeoClass.txt documentation}.
 #' 
 #' @param filename Path to and file name of the GeoClass file to import. Windows users: Note that 
 #' Paths are separated by '/', not '\\'. 
@@ -490,7 +490,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
 #' Paths are separated by '/', not '\\'. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. 
 #' @param variable Character vector, HYPE variable ID(s) to select for import. Not case-sensitive. If \code{NULL} (default), all 
-#' variables are imported. See \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt documentation} 
+#' variables are imported. See \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt documentation} 
 #' for a list of variable IDs.
 #' @param nrows Integer, number of rows to import. A value of \code{-1} indicates all rows, a positive integer gives 
 #' the number of rows to import.
@@ -944,7 +944,7 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' Read a Map Output File
 #'
 #' This is a convenience wrapper function to import a 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mapxxxx.txt}{map output file} 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:mapxxxx.txt}{map output file} 
 #' ('map<\emph{HYPE_output_variable}>.txt') into R.
 #' 
 #' @param filename Path to and file name of the map output file to import. Windows users: Note that 
@@ -954,7 +954,7 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' `"\%Y"`. *Defaults to \code{NULL}, which prevents date-time conversion*, applicable e.g. for files containing just one column of 
 #' summary values over the model period.
 #' @param hype.var Character string, a four-letter keyword to specify HYPE variable ID of file contents. See 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
 #' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
 #' map output file names.
 #' @param type Character, keyword for data type to return. \code{"df"} to return a standard data frame, \code{"dt"} to 
@@ -1117,14 +1117,14 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' into R.
 #' 
 #' @param filename Path to and file name of the time output file to import. Acceptable file choices are \code{*.txt} files following 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:timexxxx.txt}{HYPE time output file format} or \code{.nc} 
-#' files following the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}. 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:timexxxx.txt}{HYPE time output file format} or \code{.nc} 
+#' files following the \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard}. 
 #' See also details for netCDF import. 
 #' @param dt.format Date-time \code{format} string as in \code{\link{strptime}}. Incomplete format strings for monthly 
 #' and annual values allowed, e.g. `"\%Y"`. If set to \code{NULL}, no date-time conversion will be attempted and the column will
 #' be imported as \code{character}, applicable e.g. for files containing just one row of summary values over the model period.
 #' @param hype.var Character, HYPE variable ID in \code{x}. See 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}.
 #' If \code{NULL} (default), the variable ID is extracted from the provided file name, which only works for standard HYPE 
 #' time output file names (incl. regional and class outputs).
 #' @param out.reg Logical, specify if file contents are sub-basin or output region results (i.e. SUBIDs or OUTREGIDs as columns). 
@@ -1149,7 +1149,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' first day of the time step period. 
 #' 
 #' Import from netCDF files requires an \code{id} dimension in the netCDF data. Gridded data with remapped HYPE results in spatial x/y 
-#' dimensions as defined in the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard} 
+#' dimensions as defined in the \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_netcdf_standard}{HYPE netCDF formatting standard} 
 #' are currently not supported. 
 #' 
 #' @return
@@ -1569,7 +1569,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #' \code{ReadObs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
 #' \code{\link{data.table}}, 
 #' with conversion of date-time strings to POSIX time representations. Observation IDs (SUBIDs or IDs connected to SUBIDs with a 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 
 #' attribute \code{obsid} (directly accessible through \code{\link{obsid}}). 
 #' 
 #' Observation file types with automatic (dummy) `variable` attribute assignment:
@@ -1782,17 +1782,17 @@ ReadPTQobs <- ReadObs
 #' @details
 #' Hype data file imports, simple \code{\link{read.table}} or \code{\link[data.table]{fread}} wrappers with 
 #' formatting arguments set to match HYPE file specifications:
-#' * [LakeData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt)
-#' * [DamData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt)
-#' * [MgmtData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt)
-#' * [AquiferData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt)
-#' * [PointSourceData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt)
-#' * [GlacierData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt)
-#' * [CropData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt)
-#' * [BranchData.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt)
-#' * [Outregions.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt)
-#' * [allsim.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:allsim.txt)
-#' * [update.txt](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:update.txt)
+#' * [LakeData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:lakedata.txt)
+#' * [DamData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:damdata.txt)
+#' * [MgmtData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt)
+#' * [AquiferData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt)
+#' * [PointSourceData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt)
+#' * [GlacierData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:glacierdata.txt)
+#' * [CropData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:cropdata.txt)
+#' * [BranchData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:branchdata.txt)
+#' * [Outregions.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:outregions.txt)
+#' * [allsim.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:allsim.txt)
+#' * [update.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:update.txt)
 #' 
 #' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
 #' allowed in additional comment columns. Informative warnings will be thrown if \code{NA}s are found during import.
@@ -2035,7 +2035,7 @@ ReadUpdate <- function(filename = "update.txt", header = TRUE, sep = "\t",
 #' @details
 #' \code{ReadPmsf} imports 'pmsf.txt' files, which contain SUBIDs and are used to run only parts of a HYPE setup's domain 
 #' without having to extract a separate model setup. For details on the file format, see the
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pmsf.txt}{pmsf.txt online documentation}.
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:pmsf.txt}{pmsf.txt online documentation}.
 #' Pmsf.txt files imported with \code{ReadPmsf} are stripped from the first value containing the total number of subcatchments 
 #' in the file. No additional attribute is added to hold this number since it can be easily obtained using \code{\link{length}}.
 #' 
@@ -2078,7 +2078,7 @@ ReadPmsf <- function(filename = "pmsf.txt") {
 #' @details 
 #' \code{ReadOptpar} imports HYPE 'optpar.txt' files. Optpar files contain instructions for parameter calibration/optimization 
 #' and parameter value ranges, for details on the file format, see the
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' 
 #' @return 
 #' \code{ReadOptpar} returns a \code{\link{list}} object with three elements: \itemize{ 
@@ -2366,9 +2366,9 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
 #'  
 #' @details
 #' \code{ReadSimass} imports a simulation assessment file into R. 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:simass.txt}{HYPE simass.txt files} contain 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:simass.txt}{HYPE simass.txt files} contain 
 #' domain-wide performance measures for observed-simulated variable pairs as defined in 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt#performance_criteria_options}{HYPE info.txt files}. 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt#performance_criteria_options}{HYPE info.txt files}. 
 #' 
 #' The function interprets character-coded time steps (e.g. \code{"DD"} for daily time steps), as used in some HYPE versions. 
 #' \strong{Sub-daily time steps are currently not treated} and will probably result in a warning during time step evaluation within the 
@@ -2557,7 +2557,7 @@ ReadSimass <- function(filename = "simass.txt") {
 #' 
 #' @return
 #' \code{ReadInfo} returns a named list. List names are settings codes 
-#' (see [info.txt documentation](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt)). Settings with two 
+#' (see [info.txt documentation](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt)). Settings with two 
 #' codes are placed in nested lists, e.g. `myinfo$basinoutput$variable`. Multi-line subbasin definitions for basin outputs and class 
 #' outputs are merged to single vectors on import. 
 #' 

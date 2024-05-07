@@ -1,8 +1,8 @@
 #' Scale 'AquiferData.txt' files to different model time steps
 #'
 #' `ScaleAquiferData` scales the \code{RETRATE} time step-dependent recession coefficient in an imported 
-#' [HYPE 'AquiferData.txt'](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt) file to a 
-#' new target time step. See HYPE wiki tutorial on [sub-daily time steps](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps).
+#' [HYPE 'AquiferData.txt'](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt) file to a 
+#' new target time step. See HYPE wiki tutorial on [sub-daily time steps](http://hype.smhi.net//wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps).
 #' 
 #' @param x Data frame containing HYPE AquiferData contents. Typically imported with [ReadAquiferData()].
 #' @param timestep.ratio Numeric, time step scaling factor. Defaults to (1/24) to scale from daily to hourly time steps. To scale from hourly to daily time steps use 24.
@@ -48,7 +48,7 @@ ScaleAquiferData <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verb
   
   # Timestep Dependent Parameters --------------------------------------------------------------------------------------------------------------------
   # www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps
-  # http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt
+  # http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt
   
   # Parameters that are timestep-dependent
   ts_dependent <- c(
@@ -57,7 +57,7 @@ ScaleAquiferData <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verb
   
   # Recession Coefficients --------------------------------------------------------------------------------------------------------------------
   # www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps
-  # http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt
+  # http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt
   
   # Recession coefficients that are timestep-dependent
   rc_dependent <- c(

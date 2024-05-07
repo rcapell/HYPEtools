@@ -9,7 +9,7 @@
 #' If multiple values are specified and all codes are present in \code{info}, then the new code will be inserted below the match that is farthest down in the info.txt file.
 #' @details
 #' The \code{AddInfoLine} and \code{RemoveInfoLine} functions provide features to add/remove lines to an imported info.txt
-#' file. Info.txt codes can be found on the \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt}{HYPE Wiki}.
+#' file. Info.txt codes can be found on the \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt}{HYPE Wiki}.
 #'
 #' @return
 #' \code{AddInfoLine} and \code{RemoveInfoLine} return a named list in the info.txt file structure.

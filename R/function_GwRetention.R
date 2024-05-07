@@ -23,7 +23,7 @@
 #' tile drainage, surface flow, and flow from layer 1 and 2. Outgoing loads include runoff from all soil layers, tile drain, and surface flow.
 #' 
 #' The retention fraction \emph{R} is calculated as (see also the 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_model_description:hype_np_soil#diagnostic_output_variables_of_soil_nutrients}{variable description in the HYPE online documentation}):
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_model_description:hype_np_soil#diagnostic_output_variables_of_soil_nutrients}{variable description in the HYPE online documentation}):
 #' 
 #' \eqn{R = 1 - \frac{OUT}{IN} = 1 - \frac{nfrz - gts3 + nfs3 + locsoil * lr}{nfrz + locsoil * lr}}{R = 1 - OUT/IN = 1 - (nfrz - gts3 + nfs3 + locsoil * lr)/li} [-]
 #'
@@ -35,7 +35,7 @@
 #' \emph{nfrz}, \emph{gts3}, \emph{nfs3} are soil loads as in function arguments described above. See Examples for HYPE variable names for \code{TN} loads.
 #' 
 #' Columns \code{SUBID}, \code{LOC_VOL}, and \code{LOC_TN} must be present in \code{gd}, for a description of column contents see the
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData file description in the HYPE online documentation}. 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:geodata.txt}{GeoData file description in the HYPE online documentation}. 
 #' Column names are not case-sensitive. 
 #' 
 #' @return 

@@ -7,10 +7,10 @@
 #' @param x a list with named vector elements, as an object returned from \code{\link{ReadPar}}. 
 #' @param pars Character vector with HYPE parameter names to be included in optpar list. Parameters must 
 #' exist in \code{x}. Not case-sensitive. For a complete list of HYPE parameters, see the
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:par.txt}{par.txt online documentation}. 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:par.txt}{par.txt online documentation}. 
 #' @param tasks Data frame with two columns providing optimization tasks and settings (key-value pairs) as 
 #' described in the
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:optpar.txt}{optpar.txt online documentation}. 
 #' Defaults to an empty task section.
 #' @param comment Character string, comment (first row in optpar.txt file). 
 #' @param fun.ival Either \code{NULL} (default), or a function with a single argument. See Details.

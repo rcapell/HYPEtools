@@ -28,8 +28,8 @@ A \code{\link[=list]{list()}} object as supplied in \code{x}, with re-scaled par
 }
 \description{
 \code{ScalePar} scales time step-dependent parameters and recession coefficients in an imported
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:par.txt}{HYPE 'par.txt'} parameter file to a
-new target time step. See HYPE wiki tutorial on \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps}{sub-daily time steps}.
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:par.txt}{HYPE 'par.txt'} parameter file to a
+new target time step. See HYPE wiki tutorial on \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps}{sub-daily time steps}.
 }
 \details{
 \code{ScalePar} applies a user-specified scaling factor, \code{timestep.ratio}, to all time scale-dependent parameters and recession coefficients

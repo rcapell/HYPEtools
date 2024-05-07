@@ -1,8 +1,8 @@
 #' Scale 'par.txt' files to different model time step
 #'
 #' `ScalePar` scales time step-dependent parameters and recession coefficients in an imported 
-#' [HYPE 'par.txt'](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:par.txt) parameter file to a 
-#' new target time step. See HYPE wiki tutorial on [sub-daily time steps](http://www.smhi.net/hype/wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps).
+#' [HYPE 'par.txt'](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:par.txt) parameter file to a 
+#' new target time step. See HYPE wiki tutorial on [sub-daily time steps](http://hype.smhi.net//wiki/doku.php?id=start:hype_tutorials:subdaily_timesteps).
 #' 
 #' @param x List containing HYPE parameters. Typically imported with [ReadPar()].
 #' @param timestep.ratio Numeric, time step scaling factor. Defaults to (1/24) to scale from daily to hourly time steps. To scale from hourly to daily time steps use 24.

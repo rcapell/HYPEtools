@@ -24,7 +24,7 @@ period averages, e.g. \code{"2000-2010"}.}
 
 \item{hype.var, hype.unit}{Character vectors of keywords to specify HYPE variable IDs, corresponding to second dimension
 (columns) in \code{x}. See
-\href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}}
+\href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{list of HYPE variables}}
 
 \item{subid}{Integer, HYPE sub-basin ID. Either this or \code{outregid} needs to be supplied.}
 

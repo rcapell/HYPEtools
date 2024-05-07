@@ -749,7 +749,7 @@ WritePmsf <- function(x, filename) {
 #' Headers are generated from attribute \code{obsid} on export (see \code{\link{attr}} on how to create and access it). 
 #' 
 #' Observation IDs are SUBIDs or IDs connected to SUBIDs with a 
-#' \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
+#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}.
 #' 
 #' If the first column in \code{x} contains dates of class \code{POSIXt}, then they will be formatted according to \code{dt.format} before writing the output file.
 #' 
@@ -874,16 +874,16 @@ WritePTQobs <- WriteObs
 #' specifications:
 #' 
 #' \itemize{
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
-#'   \item \href{http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:lakedata.txt}{LakeData.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:damdata.txt}{DamData.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:mgmtdata.txt}{MgmtData.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt}{AquiferData.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:pointsourcedata.txt}{PointSourceData.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:glacierdata.txt}{GlacierData.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:cropdata.txt}{CropData.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:forckey.txt}{forckey.txt}
+#'   \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
 #' }
 #' 
 #' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
