@@ -19,20 +19,6 @@ Found the following (possibly) invalid URLs:
 ```
 This is a valid URL, so the server may blocking some requests. 
 
-R-hub builder also gave the following NOTEs which do not seem to be related to the package:
-```
-* checking HTML version of manual ... NOTE
-Skipping checking HTML validation: no command 'tidy' found
-Skipping checking math rendering: package 'V8' unavailable
-* checking for non-standard things in the check directory ... NOTE
-Found the following files/directories:
-  ''NULL''
-* checking for detritus in the temp directory ... NOTE
-Found the following files/directories:
-  'lastMiKTeXException'
-  ‘pulse-PKdhtXMmr18n’
-```
-
 ## Downstream dependencies
 
 There are currently no downstream dependencies for HYPEtools.

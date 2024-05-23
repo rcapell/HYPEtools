@@ -86,6 +86,7 @@ results.
 Grid lines plotted in the background are mid-month lines.
 }
 \examples{
+\dontrun{
 # Source data, HYPE basin output with a number of result variables
 te1 <- ReadBasinOutput(filename = system.file("demo_model",
                                               "results", "0003587.txt",
@@ -97,7 +98,6 @@ te2 <- AnnualRegime(te1[, c("DATE", "COUT", "ROUT")],
                     ts.out = "week", start.mon = 10)
                     
 # Screen devices should not be used in examples
-\dontrun{
 PlotAnnualRegime(x = te2)
 PlotAnnualRegime(x = te2, line = "median", band = "p05p95",
   add.legend = TRUE, col = c("red", "blue"))

@@ -1,7 +1,7 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.6.1.9000
-*Development Version*
+## HYPEtools 1.6.2
+*Enhancements and bug fixes*
 
 #### Highlights
 * Update ScalePar() function to properly handle recession coefficients

@@ -28,7 +28,7 @@ model_path <- system.file("demo_model", package = "HYPEtools")
 list.files(model_path)
 ```
 
-More information on the different types of HYPE model files can be found on the HYPE Wiki: http://www.smhi.net/hype/wiki/doku.php?id=start:hype_file_reference#setup_files
+More information on the different types of HYPE model files can be found on the HYPE Wiki: http://hype.smhi.net/wiki/doku.php?id=start:hype_file_reference
 
 ## Import Some Model Setup Files
 ```{r import_setup}

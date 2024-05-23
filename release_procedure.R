@@ -61,19 +61,11 @@ devtools::spell_check()
 # Specify email to receive the results from the various checks
 email <- "hypetools.rene@smhi.se"
 
-# check in different environments
-# - You can stop the task in R if you don't want to see the live output (the check will still be performed)
-# - This check takes several hours
-devtools::check_rhub(email = email)
-
-# check CRAN environment (may give notes which do not show up otherwise)
-# - You can stop the task in R if you don't want to see the live output (the check will still be performed)
-# - This check takes several hours
-rhub::check_for_cran(email = email)
-
-# check and build windows binary
+# check and build package
 devtools::check_win_release(email = email)
 devtools::check_win_devel(email = email)
+devtools::check_mac_release()
+devtools::check_built(path = ".")
 
 # _____________________________________________________________________________________________________________________________________
 # 5) Create Release & Update Repo #####
