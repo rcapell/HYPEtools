@@ -11,8 +11,8 @@
 #' @param group Optional, Integer vector of same length as number of SLC classes in gd. Alternative grouping index specification to gcl + type for \code{\link{UpstreamGroupSLCClasses}}.
 #' @param group.upstream Logical, if \code{TRUE}, then SLC fractions will be summarized for upstream areas using \code{\link{UpstreamGroupSLCClasses}}.
 #' If \code{FALSE}, then SLC fractions will be summarized for subbasin area only using \code{\link{GroupSLCClasses}}.
-#' @param signif.digits Optional, Integer specifying number of significant digits to round outputs to. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{link{UpstreamGeoData}}.
-#' @param progbar Logical, display a progress bar while calculating summary information. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{link{UpstreamGeoData}}.
+#' @param signif.digits Optional, Integer specifying number of significant digits to round outputs to. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{\link{UpstreamGeoData}}.
+#' @param progbar Logical, display a progress bar while calculating summary information. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{\link{UpstreamGeoData}}.
 #' @param summarize.landuse Logical, specify whether or not subbasin upstream landuse fractions should be calculated.
 #' @param summarize.soil Logical, specify whether or not subbasin upstream soil fractions should be calculated.
 #' @param summarize.crop Logical, specify whether or not subbasin upstream crop fractions should be calculated.
