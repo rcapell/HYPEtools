@@ -151,7 +151,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       plotdata <- left_join(plotdata, groups, by = "SUBID") %>% rename("Group" = colnames(groups)[2])
     } else if (group.join.type == "cbind"){
       if (!nrow(plotdata) == nrow(groups)) {
-        stop("ERROR: number of rows in subass does not match number of rows in groups")
+        stop("Number of rows in subass does not match number of rows in groups")
       }
       plotdata <- cbind(plotdata, groups %>% select(-"SUBID")) %>% rename("Group" = colnames(groups)[2])
     }
@@ -159,10 +159,15 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
 
   # Join subass data to attribute data
   if (join.type == "join") {
-    plotdata <- left_join(plotdata, attributes, by = "SUBID")
+    # Check for columns present in both subass and attributes
+    colnames_intersect <- intersect(colnames(plotdata), colnames(attributes))
+    if(length(colnames_intersect) > 1){
+      warning(paste("Multiple column names are present in both subass and attributes. Joining by:", paste(colnames_intersect, collapse = ", ")))
+    }
+    plotdata <- left_join(plotdata, attributes, by = colnames_intersect)
   } else if (join.type == "cbind") {
     if (!nrow(plotdata) == nrow(attributes)) {
-      stop("ERROR: number of rows in subass does not match number of rows in attributes")
+      stop("Number of rows in subass does not match number of rows in attributes")
     }
     plotdata <- cbind(plotdata, attributes %>% select(-"SUBID"))
   }
@@ -176,14 +181,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
   if(length(scale.x.log == 1)){
     scale.x.log = rep(scale.x.log, length(plotcols))
   } else if(!length(scale.x.log) == length(plotcols)){
-    stop("ERROR: length of scale.x.log does not match number of output plots")
+    stop("Length of scale.x.log does not match number of output plots")
   }
   
   # Check scale.y.log
   if(length(scale.y.log == 1)){
     scale.y.log = rep(scale.y.log, length(plotcols))
   } else if(!length(scale.y.log) == length(plotcols)){
-    stop("ERROR: length of scale.y.log does not match number of output plots")
+    stop("Length of scale.y.log does not match number of output plots")
   }
   
   # Determine if ncol and nrow should be automatically calculated
