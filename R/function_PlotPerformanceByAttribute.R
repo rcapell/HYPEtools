@@ -233,13 +233,16 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         geom_point(alpha = alpha)
     }
     
+    # Identify groups with values for x-axis plots
+    x_groups <- plotdata %>% filter(complete.cases(!!sym(col)))
+    x_groups <- which(sort(unique(plotdata$Group)) %in% x_groups$Group)
+    
     # Add trendlines
     if (trendline == TRUE) {
       if (!is.null(groups)) {
         plot <- plot + geom_smooth(aes(color = .data[["Group"]]), method = trendline.method, formula = trendline.formula)
         
         # Identify which groups have unique values and thus trendlines
-        # if(drop == TRUE){
           trendline_groups <- plotdata %>%
             group_by(.data[["Group"]]) %>%
             summarize(unique = n_distinct(!!sym(col))) %>%
@@ -248,9 +251,6 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             unlist()
           
           trendline_groups <- which(sort(unique(groups[[2]])) %in% trendline_groups)
-        # } else{
-        #   trendline_groups <- 1:length(unique(groups[[2]]))
-        # }
         
       } else {
         plot <- plot + geom_smooth(method = trendline.method, formula = trendline.formula)
@@ -271,17 +271,21 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Format colors if color palette specified
     if (!is.null(groups.color.pal)) {
       
+      # Check that enough colors are provided
       if(length(unique(groups[[2]])) > length(groups.color.pal)){
         stop(paste(length(unique(groups[[2]])), "groups specified but only", length(groups.color.pal), "colors provided. Increase the number of colors in groups.color.pal"))
       }
-      manual_colors <- groups.color.pal[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
       
-      # if(drop == TRUE){
-        # legend_colors <- manual_colors
-      # } else{
+      # Get colors
+      if(drop == TRUE){
+        manual_colors <- groups.color.pal
+        legend_colors <- manual_colors
+        trendline_groups <- x_groups
+      } else if(drop == FALSE){
+        manual_colors <- groups.color.pal[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
         legend_colors <- groups.color.pal
-      # }
-      
+      }
+
       plot <- plot +
         scale_fill_manual(values = manual_colors, name = group.legend.title, drop = drop) +
         scale_color_manual(values = unlist(lapply(legend_colors[trendline_groups], function(X) {
@@ -298,14 +302,15 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         hcl(h = hues, l = 65, c = 100)[1:n]
       }
 
-      # Get colors for ggplot
-      gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
-      
-      # if(drop == TRUE){
-      #   legend_colors <- gg_colors
-      # } else{
+      # Get colors
+      if(drop == TRUE){
+        gg_colors <- gg_color_hue(length(which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))))
+        legend_colors <- gg_colors
+        trendline_groups <- x_groups
+      } else if(drop == FALSE){
+        gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
         legend_colors <- gg_color_hue(length(unique(groups[[2]])))
-      # }
+      }
 
       # Adjust colors
       plot <- plot +
@@ -347,17 +352,12 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     if(density.plot == TRUE){
       
       if(!is.null(groups)){
-        
-        # Identify groups with values for x-axis plots
-        density_x_groups <- plotdata %>% filter(complete.cases(!!sym(col)))
-        density_x_groups <- which(sort(unique(plotdata$Group)) %in% density_x_groups$Group)
-        
         if (!is.null(groups.color.pal)) { # If custom colors exist
           if(density.plot.type == "density"){
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = manual_colors[density_x_groups], name = group.legend.title) +
+              scale_fill_manual(values = manual_colors[x_groups], name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
@@ -372,7 +372,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = manual_colors[density_x_groups], name = group.legend.title) +
+              scale_fill_manual(values = manual_colors[x_groups], name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
@@ -389,7 +389,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = gg_colors[density_x_groups], name = group.legend.title) +
+              scale_fill_manual(values = gg_colors[x_groups], name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
@@ -404,7 +404,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = gg_colors[density_x_groups], name = group.legend.title) +
+              scale_fill_manual(values = gg_colors[x_groups], name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             

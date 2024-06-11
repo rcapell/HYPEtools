@@ -5,6 +5,7 @@
 
 #### Highlights
 * Add warning message to PlotPerformanceByAttribute() if multiple column names are present in both subass and attributes
+* Fix group colors in PlotPerformanceByAttribute()
 
 ## HYPEtools 1.6.2 (2024-05-24)
 *Enhancements and bug fixes*
