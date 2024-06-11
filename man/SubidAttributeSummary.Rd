@@ -41,9 +41,9 @@ SubidAttributeSummary(
 \item{group.upstream}{Logical, if \code{TRUE}, then SLC fractions will be summarized for upstream areas using \code{\link{UpstreamGroupSLCClasses}}.
 If \code{FALSE}, then SLC fractions will be summarized for subbasin area only using \code{\link{GroupSLCClasses}}.}
 
-\item{signif.digits}{Optional, Integer specifying number of significant digits to round outputs to. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{link{UpstreamGeoData}}.}
+\item{signif.digits}{Optional, Integer specifying number of significant digits to round outputs to. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{\link{UpstreamGeoData}}.}
 
-\item{progbar}{Logical, display a progress bar while calculating summary information. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{link{UpstreamGeoData}}.}
+\item{progbar}{Logical, display a progress bar while calculating summary information. Used by \code{\link{UpstreamGroupSLCClasses}} and \code{\link{UpstreamGeoData}}.}
 
 \item{summarize.landuse}{Logical, specify whether or not subbasin upstream landuse fractions should be calculated.}
 

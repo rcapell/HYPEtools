@@ -115,7 +115,7 @@ grouping variable (e.g. month).}
 
 \item{groups.color.pal}{Vector containing colors to use when plotting groups. Only used if groups is not \code{NULL}.}
 
-\item{drop}{Logical, should unused factor levels be omitted from the legend. See \code{\link{scale_color_manual}} and \code{link{scale_fill_manual}}.}
+\item{drop}{Logical, should unused factor levels be omitted from the legend. See \code{\link{scale_color_manual}} and \code{\link{scale_fill_manual}}.}
 
 \item{alpha}{Numeric value to set transparency of dots in output plots. Should be in the range 0-1.}
 
