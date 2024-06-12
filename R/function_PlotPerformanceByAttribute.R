@@ -348,9 +348,35 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     } else{ # Normal scale
       plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels)
     }
+    
+    # Get Cartesian coordinate limits so that main plot and density plots align
+    if(is.na(xlimits[1])){
+      cart_x_min <- min(plotdata[[col]], na.rm = TRUE)
+    } else{
+      cart_x_min <- xlimits[1]
+    }
+    
+    if(is.na(xlimits[2])){
+      cart_x_max <- max(plotdata[[col]], na.rm = TRUE)
+    } else{
+      cart_x_max <- xlimits[2]
+    }
+    
+    if(is.na(ylimits[1])){
+      cart_y_min <- min(plotdata[[colnames(subass)[subass.column]]], na.rm = TRUE)
+    } else{
+      cart_y_min <- ylimits[1]
+    }
+    
+    if(is.na(ylimits[2])){
+      cart_y_max <- max(plotdata[[colnames(subass)[subass.column]]], na.rm = TRUE)
+    } else{
+      cart_y_max <- ylimits[2]
+    }
 
     # Format plot
     plot <- plot +
+      coord_cartesian(xlim = c(cart_x_min, cart_x_max), ylim = c(cart_y_min, cart_y_max)) +
       theme(axis.title = element_text(face = "bold"),
             legend.position = "bottom")
     
