@@ -284,6 +284,9 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       } else if(drop == FALSE){
         manual_colors <- groups.color.pal[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
         legend_colors <- groups.color.pal
+        if(trendline == FALSE){
+          trendline_groups <- 1:length(legend_colors)
+        }
       }
 
       plot <- plot +
@@ -310,6 +313,9 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       } else if(drop == FALSE){
         gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
         legend_colors <- gg_color_hue(length(unique(groups[[2]])))
+        if(trendline == FALSE){
+          trendline_groups <- 1:length(legend_colors)
+        }
       }
 
       # Adjust colors
