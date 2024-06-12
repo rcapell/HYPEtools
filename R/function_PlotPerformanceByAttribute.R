@@ -94,7 +94,7 @@
 #' }
 #' 
 #' @importFrom dplyr group_by sym left_join n rename select summarize n_distinct
-#' @importFrom ggplot2 aes coord_flip element_text geom_density geom_boxplot geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
+#' @importFrom ggplot2 aes coord_cartesian coord_flip element_text geom_density geom_boxplot geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
 #' scale_y_continuous theme theme_void unit waiver xlab ylab scale_x_log10 scale_y_log10
 #' @importFrom ggpubr colnames_style get_legend ggarrange ggtexttable tab_add_title tbody_style ttheme
 #' @importFrom grDevices colorRampPalette hcl
