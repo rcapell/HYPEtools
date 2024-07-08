@@ -9,7 +9,7 @@ CompareFiles(
   y,
   type = c("AquiferData", "BasinOutput", "BranchData", "CropData", "DamData", "ForcKey",
     "FloodData", "GeoClass", "GeoData", "Info", "LakeData", "MapOutput", "MgmtData",
-    "Optpar", "Par", "PointSourceData", "Obs", "Simass, Subass, TimeOutput, Xobs"),
+    "Optpar", "Par", "PointSourceData", "Obs", "Simass", "Subass", "TimeOutput", "Xobs"),
   by = NULL,
   compare.order = TRUE,
   threshold = 1e-10,
