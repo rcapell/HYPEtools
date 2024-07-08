@@ -42,7 +42,7 @@
 #' @importFrom rlang .data
 #' @export
 
-CompareFiles <- function(x, y, type = c("AquiferData", "BasinOutput", "BranchData", "CropData", "DamData", "ForcKey", "FloodData", "GeoClass", "GeoData", "Info", "LakeData", "MapOutput", "MgmtData", "Optpar", "Par", "PointSourceData", "Obs", "Simass, Subass, TimeOutput, Xobs"),
+CompareFiles <- function(x, y, type = c("AquiferData", "BasinOutput", "BranchData", "CropData", "DamData", "ForcKey", "FloodData", "GeoClass", "GeoData", "Info", "LakeData", "MapOutput", "MgmtData", "Optpar", "Par", "PointSourceData", "Obs", "Simass", "Subass", "TimeOutput", "Xobs"),
                          by = NULL, compare.order = TRUE, threshold = 1E-10, ...) {
   
   # Check that type exists
