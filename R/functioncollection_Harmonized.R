@@ -27,7 +27,7 @@
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param ignore.cols Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.
-#' @param nThread Integer, set number of threads to be used when writing file. See \code{\link{getDTthreads}}
+#' @param nThread Integer, set number of threads to be used when writing file. If \code{NULL} (default), then the output of \code{\link{getDTthreads}} will be used.
 #'
 #' @details
 #' \code{WriteHarmonizedData} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized data in the HYPEObsMetadataTools Harmonized Data Format.
@@ -52,7 +52,11 @@
 #' @importFrom data.table fwrite getDTthreads
 #' @export
 
-WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, ignore.cols = NULL, nThread = getDTthreads()) {
+WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, ignore.cols = NULL, nThread = NULL) {
+  
+  if(is.null(nThread)){
+    nThread <- getDTthreads()
+  }
 
   # Required Column Names
   required_cols <- c("STATION_ID", "DATE_START", "DATE_END", "PARAMETER", "VALUE", "UNIT", "QUALITY_CODE")
@@ -132,7 +136,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param ignore.cols Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.
-#' @param nThread Integer, set number of threads to be used when writing file. See \code{\link{getDTthreads}}
+#' @param nThread Integer, set number of threads to be used when writing file. If \code{NULL} (default), then the output of \code{\link{getDTthreads}} will be used
 #'
 #' @details
 #' \code{WriteHarmonizedSpatialDescription} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized spatial description data in the HYPEObsMetadataTools Harmonized Spatial Description Format.
@@ -163,8 +167,12 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 #' @importFrom data.table fwrite getDTthreads
 #' @export
 
-WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, ignore.cols = NULL, nThread = getDTthreads()) {
+WriteHarmonizedSpatialDescription <- function(df, filename = "", replace.accents = FALSE, strip.punctuation = FALSE, ignore.cols = NULL, nThread = NULL) {
 
+  if(is.null(nThread)){
+    nThread <- getDTthreads()
+  }
+  
   # Required Column Names
   required_cols <- c("STATION_ID", "SRC_NAME", "DOWNLOAD_DATE", "SRC_STATNAME", "SRC_WBNAME", "SRC_UAREA", "SRC_XCOORD", "SRC_YCOORD", "SRC_EPSG", "ADJ_XCOORD", "ADJ_YCOORD", "ADJ_EPSG")
 
