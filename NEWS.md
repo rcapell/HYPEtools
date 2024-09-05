@@ -8,6 +8,7 @@
 * Fix group colors in PlotPerformanceByAttribute()
 * Update allowable "types" in CompareFiles() to fix bug preventing comparison of certain HYPE file types
 * Update WriteHarmonizedData() and WriteHarmonizedSpatialDescription() to prevent error caused when writing file without loading data.table package
+* Add reference to HYPEtools reference paper
 
 ## HYPEtools 1.6.2 (2024-05-24)
 *Enhancements and bug fixes*
