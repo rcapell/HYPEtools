@@ -36,7 +36,7 @@ a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. 
 \item{col.prefix}{String, prefix added to mapoutput column names. Default is \code{X}. Set to \code{NULL} to ignore.}
 }
 \value{
-\code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array.
+\code{ReadMapOutput} returns a \code{data.frame}, \link[data.table:data.table]{data.table::data.table}, or a \code{\link{HypeSingleVar}} array.
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID,
 \code{date}, a vector of date-times (corresponding to columns from column 2), \code{timestep} with a time step attribute,
 and \code{comment} with the first line of the imported file as text string. An additional attribute \code{subid.nan} might be
@@ -49,7 +49,7 @@ This is a convenience wrapper function to import a
 }
 \details{
 \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package
-\code{\link{data.table}},
+\link[data.table:data.table]{data.table::data.table},
 with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day
 of the time step period.
 }

@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Work with model files (setup, input, output) from the hydrological catchment model HYPE: Streamlined file import and export, standard evaluation plot routines, diverse post-processing and aggregation routines for hydrological model analysis. The HYPEtools package is also archived at [doi:10.5281/zenodo.7627955] and can be cited in publications with Brendel et al. (2024) [doi:10.1016/j.envsoft.2024.106094].
+Work with model files (setup, input, output) from the hydrological catchment model HYPE: Streamlined file import and export, standard evaluation plot routines, diverse post-processing and aggregation routines for hydrological model analysis. The HYPEtools package is also archived at \doi{10.5281/zenodo.7627955} and can be cited in publications with Brendel et al. (2024) \doi{10.1016/j.envsoft.2024.106094}.
 }
 \seealso{
 Useful links:

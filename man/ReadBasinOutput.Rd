@@ -31,7 +31,7 @@ give the SUBID or OUTREGID with leading zeros. See details.}
 a warning is thrown and affected SUBIDs saved in an attribute \code{subid.nan}. Adds noticeable overhead to import time for large files.}
 }
 \value{
-\code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array.
+\code{ReadBasinOutput} returns a \code{data.frame}, \link[data.table:data.table]{data.table::data.table}, or a \code{\link{HypeMultiVar}} array.
 Data frames and data tables contain additional \code{\link{attributes}}: \code{hypeunit}, a vector of HYPE variable units,
 \code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created and assigned \code{NA}
 if not applicable to data contents), \code{timestep} with a time step keyword attribute, and \code{comment} with contents of an optional
@@ -42,7 +42,7 @@ This is a convenience wrapper function to import a basin output file as data fra
 }
 \details{
 \code{ReadBasinOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package
-\code{\link{data.table}}, with conversion of date-time strings to
+\link[data.table:data.table]{data.table::data.table}, with conversion of date-time strings to
 POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
 
 HYPE basin output files can contain results for a single sub-basin or for a user-defined output region. \code{ReadBasinOutput} checks HYPE

@@ -30,6 +30,7 @@ library(dplyr)
 # _____________________________________________________________________________________________________________________________________
 
 # Run devtools check and save results to a temporary directory
+# - If there is an error with running e.g. the PlotBasinSummary example, then try rerunning the check (some errors are intermittent)
 check_dir <- tempdir()
 devtools::check(incoming = T, args = "--timings", check_dir = check_dir)
 timing_df <- read.delim(file.path(check_dir,"HYPEtools.Rcheck", "HYPEtools-Ex.timings")) %>%
@@ -66,6 +67,9 @@ devtools::check_win_release(email = email)
 devtools::check_win_devel(email = email)
 devtools::check_mac_release()
 devtools::check_built(path = ".")
+
+# If there is an error with running e.g. the PlotBasinSummary example, then try rerunning the check (some errors are intermittent)
+# If there is an error Rd warning missing file link when linking to an alias, then switch from using \code{\link{<function>}} to using [package::function] format
 
 # _____________________________________________________________________________________________________________________________________
 # 5) Create Release & Update Repo #####

@@ -234,7 +234,7 @@ WriteGeoClass <- function(x, filename, use.comment = FALSE) {
 #' 
 #' @details
 #' \code{WriteXobs} writes a 'Xobs.txt' file, typically originating from an imported and modified 'Xobs.txt'.
-#' HYPE Xobs files contain a three-row header, with a comment line first, next a line of variables, and then a line of subids. 
+#' HYPE Xobs files contain a three-row header, with a comment line first, next a line of variables, and then a line of SUBIDs. 
 #' Objects imported with \code{\link{ReadXobs}} include attributes holding this information, and \code{WriteXobs} will use this
 #' information. Otherwise, these attributes can be added to objects prior to calling \code{WriteXobs}, or passed as function 
 #' arguments.

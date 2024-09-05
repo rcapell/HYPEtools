@@ -27,7 +27,7 @@ If \code{FALSE}, then strings will be left unmodified.}
 
 \item{ignore.cols}{Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.}
 
-\item{nThread}{Integer, set number of threads to be used when writing file. If \code{NULL} (default), then the output of \code{\link{getDTthreads}} will be used}
+\item{nThread}{Integer, set number of threads to be used when writing file. If \code{NULL} (default), then the output of \link[data.table:openmp-utils]{data.table::getDTthreads} will be used}
 }
 \value{
 \code{WriteSpatialDescrption} exports a CSV file if \code{filename} is specified. Otherwise, the function outputs a data frame to the console.

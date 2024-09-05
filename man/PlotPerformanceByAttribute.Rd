@@ -105,25 +105,25 @@ with first column containing SUBIDs and additional columns containing model resu
 
 \item{attributes}{Data frame object containing the subbasin attribute information to plot on the x-axis of the output plots. Typically a data frame created by \code{\link{SubidAttributeSummary}}}
 
-\item{join.type}{Specify how to join \code{subass} to \code{attributes}. Default "join" will perform a \code{\link{left_join}} in which the order of the SUBIDs does not need to match. Additional option "cbind"
+\item{join.type}{Specify how to join \code{subass} to \code{attributes}. Default "join" will perform a \link[dplyr:mutate-joins]{dplyr::left_join} in which the order of the SUBIDs does not need to match. Additional option "cbind"
 will perform a \code{\link{cbind}} in which the order of the SUBIDs needs to match; this can be helpful if you want to create plots where \code{subass} performance data is calculated according to a
 grouping variable (e.g. month).}
 
-\item{group.join.type}{Specify how to join \code{subass} to \code{groups}. Default "join" will perform a \code{\link{left_join}} in which the order of the SUBIDs does not need to match. Additional option "cbind"
+\item{group.join.type}{Specify how to join \code{subass} to \code{groups}. Default "join" will perform a \link[dplyr:mutate-joins]{dplyr::left_join} in which the order of the SUBIDs does not need to match. Additional option "cbind"
 will perform a \code{\link{cbind}} in which the order of the SUBIDs needs to match; this can be helpful if you want to create plots where \code{subass} performance data is calculated according to a
 grouping variable (e.g. month).}
 
 \item{groups.color.pal}{Vector containing colors to use when plotting groups. Only used if groups is not \code{NULL}.}
 
-\item{drop}{Logical, should unused factor levels be omitted from the legend. See \code{\link{scale_color_manual}} and \code{\link{scale_fill_manual}}.}
+\item{drop}{Logical, should unused factor levels be omitted from the legend. See \link[ggplot2:scale_manual]{ggplot2::scale_color_manual} and \link[ggplot2:scale_manual]{ggplot2::scale_fill_manual}.}
 
 \item{alpha}{Numeric value to set transparency of dots in output plots. Should be in the range 0-1.}
 
-\item{trendline}{Logical, if \code{TRUE}, then trendlines will be added to the output plots. Set to \code{FALSE} to hide trendlines. See \code{\link{geom_smooth}}.}
+\item{trendline}{Logical, if \code{TRUE}, then trendlines will be added to the output plots. Set to \code{FALSE} to hide trendlines. See \link[ggplot2:geom_smooth]{ggplot2::geom_smooth}.}
 
-\item{trendline.method}{Specify method used to create trendlines. See \code{\link{geom_smooth}}.}
+\item{trendline.method}{Specify method used to create trendlines. See \link[ggplot2:geom_smooth]{ggplot2::geom_smooth}.}
 
-\item{trendline.formula}{Specify formula used to create trendlines. See \code{\link{geom_smooth}}.}
+\item{trendline.formula}{Specify formula used to create trendlines. See \link[ggplot2:geom_smooth]{ggplot2::geom_smooth}.}
 
 \item{trendline.alpha}{Numeric value to set transparency of trendlines in output plots. Should be in the range 0-1.}
 
@@ -131,41 +131,41 @@ grouping variable (e.g. month).}
 
 \item{density.plot}{Logical, if \code{TRUE}, then density plots will be added to the output plots. Set to \code{FALSE} to hide density plots.}
 
-\item{density.plot.type}{String, type of plot geometry to use for density plots: \code{"density"} for \code{\link{geom_density}} or \code{"boxplot"} for \code{\link{geom_boxplot}}. Outliers are hidden from the boxplots.}
+\item{density.plot.type}{String, type of plot geometry to use for density plots: \code{"density"} for \link[ggplot2:geom_density]{ggplot2::geom_density} or \code{"boxplot"} for \link[ggplot2:geom_boxplot]{ggplot2::geom_boxplot}. Outliers are hidden from the boxplots.}
 
-\item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_x_log10}}.}
+\item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_log10}.}
 
-\item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \code{\link{scale_y_log10}}.}
+\item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_log10}.}
 
-\item{xsigma}{Numeric, scaling factor for the linear part of psuedo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \code{\link{pseudo_log_trans}}.}
+\item{xsigma}{Numeric, scaling factor for the linear part of psuedo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \link[scales:transform_log]{scales::pseudo_log_trans}.}
 
-\item{ysigma}{Numeric, scaling factor for the linear part of psuedo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See \code{\link{pseudo_log_trans}}.}
+\item{ysigma}{Numeric, scaling factor for the linear part of psuedo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See \link[scales:transform_log]{scales::pseudo_log_trans}.}
 
-\item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.}
+\item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_continuous}.}
 
-\item{ylimits}{Vector containing minimum and maximum values for the y-axis of the output plots. See \code{\link{scale_y_continuous}}.}
+\item{ylimits}{Vector containing minimum and maximum values for the y-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_continuous}.}
 
-\item{xbreaks}{Vector containing the break values used for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.}
+\item{xbreaks}{Vector containing the break values used for the x-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_continuous}.}
 
-\item{ybreaks}{Vector containing the break values used for the y-axis of the output plots. See \code{\link{scale_y_continuous}}.}
+\item{ybreaks}{Vector containing the break values used for the y-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_continuous}.}
 
-\item{xlabels}{Vector containing the labels for each break value used for the x-axis of the output plots. See \code{\link{scale_x_continuous}}.}
+\item{xlabels}{Vector containing the labels for each break value used for the x-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_continuous}.}
 
-\item{ylabels}{Vector containing the labels for each break value used for the y-axis of the output plots. See \code{\link{scale_y_continuous}}.}
+\item{ylabels}{Vector containing the labels for each break value used for the y-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_continuous}.}
 
-\item{xlab}{String containing the text to use for the x-axis title of the output plots. See \code{\link{xlab}}.}
+\item{xlab}{String containing the text to use for the x-axis title of the output plots. See \link[ggplot2:labs]{ggplot2::xlab}.}
 
-\item{ylab}{String containing the text to use for the y-axis title of the output plots. See \code{\link{ylab}}.}
+\item{ylab}{String containing the text to use for the y-axis title of the output plots. See \link[ggplot2:labs]{ggplot2::ylab}.}
 
-\item{ncol}{Integer, number of columns to use in the output arranged plot. See \code{\link{ggarrange}}.}
+\item{ncol}{Integer, number of columns to use in the output arranged plot. See \link[ggpubr:ggarrange]{ggpubr::ggarrange}.}
 
-\item{nrow}{Integer, number of rows to use in the output arranged plot. See \code{\link{ggarrange}}.}
+\item{nrow}{Integer, number of rows to use in the output arranged plot. See \link[ggpubr:ggarrange]{ggpubr::ggarrange}.}
 
-\item{align}{Specify how output plots should be arranged. See \code{\link{ggarrange}}.}
+\item{align}{Specify how output plots should be arranged. See \link[ggpubr:ggarrange]{ggpubr::ggarrange}.}
 
-\item{common.legend}{Specify if arranged plot should use a common legend. See \code{\link{ggarrange}}.}
+\item{common.legend}{Specify if arranged plot should use a common legend. See \link[ggpubr:ggarrange]{ggpubr::ggarrange}.}
 
-\item{legend.position}{Specify position of common legend for arranged plot. See \code{\link{ggarrange}}. Use \code{"none"} to hide legend.}
+\item{legend.position}{Specify position of common legend for arranged plot. See \link[ggpubr:ggarrange]{ggpubr::ggarrange}. Use \code{"none"} to hide legend.}
 
 \item{group.legend.title}{String, title for plot legend when generating plots with \code{groups}.}
 
@@ -175,15 +175,15 @@ grouping variable (e.g. month).}
 
 \item{table.margin}{Numeric, controls spacing between plots and summary table.}
 
-\item{filename}{String, filename used to save plot. File extension must be specified. See \code{\link{ggsave}}.}
+\item{filename}{String, filename used to save plot. File extension must be specified. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{width}{Numeric, specify width of output plot. See \code{\link{ggsave}}.}
+\item{width}{Numeric, specify width of output plot. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{height}{Numeric, specify height of output plot. See \code{\link{ggsave}}.}
+\item{height}{Numeric, specify height of output plot. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{units}{Specify units of \code{width} and \code{height}. See \code{\link{ggsave}}.}
+\item{units}{Specify units of \code{width} and \code{height}. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{dpi}{Specify resolution of output plot. See \code{\link{ggsave}}.}
+\item{dpi}{Specify resolution of output plot. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 }
 \value{
 \code{PlotPerformanceByAttribute} returns a plot to the currently active plot device.

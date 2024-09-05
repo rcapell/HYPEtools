@@ -45,26 +45,26 @@
 #' @param scale.pos Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.
 #' @param plot.arrow Logical, plot a North arrow in static maps.
 #' @param arrow.pos Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.
-#' @param weight Numeric, weight of subbasin boundary lines. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
-#' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See [leaflet::addPolygons()].
-#' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See [leaflet::addPolygons()].
+#' @param weight Numeric, weight of subbasin boundary lines. See [ggplot2::geom_sf] for static maps and [leaflet::addPolygons] for Leaflet maps.
+#' @param opacity Numeric, opacity of subbasin boundary lines in Leaflet maps. See [leaflet::addPolygons].
+#' @param fillOpacity Numeric, opacity of subbasin polygons in Leaflet maps. See [leaflet::addPolygons].
 #' @param outline.color Character string of color to use to for subbasin polygon outlines. Use \code{NA} to hide the outlines.
 #' @param na.color Character string of color to use to symbolize subbasin polygons in maps which correspond to \code{NA} values.
-#' @param plot.searchbar Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See [leaflet.extras::addSearchFeatures()].
+#' @param plot.searchbar Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See [leaflet.extras::addSearchFeatures].
 #' @param plot.label Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over subbasins.
-#' See \code{\link{geom_sf_text}} for default maps and [leaflet::addPolygons()] for Leaflet maps.
-#' @param plot.label.size Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.
-#' @param plot.label.geometry Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \code{sf::st_centroid} or \code{surface} to use \code{sf::st_point_on_surface}.
-#' @param file Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
-#' [mapview::mapshot()] for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs()].
-#' @param width Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
-#' @param height Numeric, height of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
-#' @param units Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \code{\link{ggsave}}.
-#' @param dpi Integer, resolution to save static map. See \code{\link{ggsave}}.
-#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [mapview::mapshot()].
-#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [mapview::mapshot()].
+#' See [ggplot2::geom_sf_text] for default maps and [leaflet::addPolygons] for Leaflet maps.
+#' @param plot.label.size Numeric, size of text for labels on default static plots. See [ggplot2::geom_sf_text].
+#' @param plot.label.geometry Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use [sf::st_centroid] or \code{surface} to use [sf::st_point_on_surface].
+#' @param file Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See [ggplot2::ggsave] for static maps and
+#' [mapview::mapshot] for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs].
+#' @param width Numeric, width of output plot for static maps in units of \code{units}. See [ggplot2::ggsave].
+#' @param height Numeric, height of output plot for static maps in units of \code{units}. See [ggplot2::ggsave].
+#' @param units Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See [ggplot2::ggsave].
+#' @param dpi Integer, resolution to save static map. See [ggplot2::ggsave].
+#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [mapview::mapshot].
+#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [mapview::mapshot].
 #' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. 
-#' File extension must be specified. See [htmlwidgets::saveWidget()].
+#' File extension must be specified. See [htmlwidgets::saveWidget].
 #' @param map.adj Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
 #' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.
 #' @param legend.outer Logical. If \code{TRUE}, outer break point values will be plotted in legend.

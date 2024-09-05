@@ -49,7 +49,7 @@
 #' \code{[time, subid, iteration]} dimensions, basin output file imports return an array of class \code{\link{HypeMultiVar}} with 
 #' \code{[time, variable, iteration]} dimensions. An additional attribute \code{subid.nan} might be 
 #' returned, see argument \code{warn.nan}, containing a list with SUBID vector elements. Vectors contain iterations where \code{NaN} 
-#' values occur for the given subid.
+#' values occur for the given SUBID.
 
 #' 
 #' Returned arrays contain additional \code{\link{attributes}}:

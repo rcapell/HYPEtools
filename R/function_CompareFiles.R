@@ -10,9 +10,9 @@
 #' \code{AquiferData}, \code{BasinOutput}, \code{BranchData}, \code{CropData}, \code{DamData}, \code{ForcKey}, \code{FloodData}, \code{GeoClass},
 #' \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointSourceData}, \code{Obs},
 #' \code{Simass}, \code{Subass}, \code{TimeOutput}, or \code{Xobs}.
-#' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See [dplyr::full_join()].
+#' @param by Character vector, names of columns in \code{x} and \code{y} to use to join data. See [dplyr::full_join].
 #' @param compare.order Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
-#' will also be joined by row number. See \code{\link{full_join}}.
+#' will also be joined by row number. See [dplyr::full_join].
 #' @param threshold Numeric, threshold difference for comparison of numeric values. Set to 0 to only accept identical values.
 #' @param ... Other arguments passed on to functions to read the files to compare (e.g. \code{\link{ReadGeoData}}, \code{\link{ReadPar}}, etc.).
 #'

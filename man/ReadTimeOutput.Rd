@@ -54,7 +54,7 @@ a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds n
 \item{verbose}{Logical, print information during import.}
 }
 \value{
-\code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array.
+\code{ReadTimeOutput} returns a \code{data.frame}, \link[data.table:data.table]{data.table::data.table}, or a \code{\link{HypeSingleVar}} array.
 Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID,
 \code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onward) to which the time
 series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a
@@ -70,7 +70,7 @@ into R.
 \code{ReadTimeOutput} imports from text or netCDF files. \emph{netCDF import is experimental and not feature-complete (e.g. attributes are
 not yet fully digested).}
 Text file import uses \code{\link[data.table]{fread}} from package
-\code{\link{data.table}}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}.
+\link[data.table:data.table]{data.table::data.table}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}.
 Date-time representations in data files are converted to POSIX time representations. Monthly and annual time steps are returned as
 first day of the time step period.
 

@@ -32,7 +32,7 @@ a standard dataframe is returned along with informative warning messages.
 Import a GeoData file into R.
 }
 \details{
-\code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \code{\link{data.table}} package
+\code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \link[data.table:data.table]{data.table::data.table} package
 with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and
 upper-case column names.
 }

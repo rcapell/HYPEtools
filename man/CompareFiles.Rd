@@ -28,10 +28,10 @@ File contents are compared to those of \code{x}.}
 \code{GeoData}, \code{Info}, \code{LakeData}, \code{MapOutput}, \code{MgmtData}, \code{Optpar}, \code{Par}, \code{PointSourceData}, \code{Obs},
 \code{Simass}, \code{Subass}, \code{TimeOutput}, or \code{Xobs}.}
 
-\item{by}{Character vector, names of columns in \code{x} and \code{y} to use to join data. See \code{\link[dplyr:mutate-joins]{dplyr::full_join()}}.}
+\item{by}{Character vector, names of columns in \code{x} and \code{y} to use to join data. See \link[dplyr:mutate-joins]{dplyr::full_join}.}
 
 \item{compare.order}{Logical, whether or not the order of the rows should be compared. If \code{TRUE}, then \code{x} and \code{y}
-will also be joined by row number. See \code{\link{full_join}}.}
+will also be joined by row number. See \link[dplyr:mutate-joins]{dplyr::full_join}.}
 
 \item{threshold}{Numeric, threshold difference for comparison of numeric values. Set to 0 to only accept identical values.}
 

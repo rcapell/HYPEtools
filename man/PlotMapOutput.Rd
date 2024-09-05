@@ -109,42 +109,42 @@ classification will be applied (see details).}
 
 \item{arrow.pos}{Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.}
 
-\item{weight}{Numeric, weight of subbasin boundary lines. See \code{\link{geom_sf}} for static maps and \code{\link[leaflet:map-layers]{leaflet::addPolygons()}} for Leaflet maps.}
+\item{weight}{Numeric, weight of subbasin boundary lines. See \link[ggplot2:ggsf]{ggplot2::geom_sf} for static maps and \link[leaflet:map-layers]{leaflet::addPolygons} for Leaflet maps.}
 
-\item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addPolygons}.}
 
-\item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addPolygons}.}
 
 \item{outline.color}{Character string of color to use to for subbasin polygon outlines. Use \code{NA} to hide the outlines.}
 
 \item{na.color}{Character string of color to use to symbolize subbasin polygons in maps which correspond to \code{NA} values.}
 
-\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \code{\link[leaflet.extras:search-features]{leaflet.extras::addSearchFeatures()}}.}
+\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included within Leaflet maps. See \link[leaflet.extras:search-features]{leaflet.extras::addSearchFeatures}.}
 
 \item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over subbasins.
-See \code{\link{geom_sf_text}} for default maps and \code{\link[leaflet:map-layers]{leaflet::addPolygons()}} for Leaflet maps.}
+See \link[ggplot2:ggsf]{ggplot2::geom_sf_text} for default maps and \link[leaflet:map-layers]{leaflet::addPolygons} for Leaflet maps.}
 
-\item{plot.label.size}{Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.}
+\item{plot.label.size}{Numeric, size of text for labels on default static plots. See \link[ggplot2:ggsf]{ggplot2::geom_sf_text}.}
 
-\item{plot.label.geometry}{Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \code{sf::st_centroid} or \code{surface} to use \code{sf::st_point_on_surface}.}
+\item{plot.label.geometry}{Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \link[sf:geos_unary]{sf::st_centroid} or \code{surface} to use \link[sf:geos_unary]{sf::st_point_on_surface}.}
 
-\item{file}{Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
-\code{\link[mapview:mapshot]{mapview::mapshot()}} for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \code{\link[webshot:install_phantomjs]{webshot::install_phantomjs()}}.}
+\item{file}{Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \link[ggplot2:ggsave]{ggplot2::ggsave} for static maps and
+\link[mapview:mapshot]{mapview::mapshot} for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See \link[webshot:install_phantomjs]{webshot::install_phantomjs}.}
 
-\item{width}{Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.}
+\item{width}{Numeric, width of output plot for static maps in units of \code{units}. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{height}{Numeric, height of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.}
+\item{height}{Numeric, height of output plot for static maps in units of \code{units}. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{units}{Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \code{\link{ggsave}}.}
+\item{units}{Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{dpi}{Integer, resolution to save static map. See \code{\link{ggsave}}.}
+\item{dpi}{Integer, resolution to save static map. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.}
+\item{vwidth}{Numeric, width of the exported Leaflet map image in pixels. See \link[mapview:mapshot]{mapview::mapshot}.}
 
-\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \code{\link[mapview:mapshot]{mapview::mapshot()}}.}
+\item{vheight}{Numeric, height of the exported Leaflet map image in pixels. See \link[mapview:mapshot]{mapview::mapshot}.}
 
 \item{html.name}{Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument.
-File extension must be specified. See \code{\link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget()}}.}
+File extension must be specified. See \link[htmlwidgets:saveWidget]{htmlwidgets::saveWidget}.}
 
 \item{map.adj}{Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
 or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for default maps.}

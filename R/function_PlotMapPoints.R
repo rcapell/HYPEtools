@@ -42,35 +42,35 @@
 #' @param scale.pos Keyword string for scalebar position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.
 #' @param plot.arrow Logical, plot a North arrow in static maps.
 #' @param arrow.pos Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.
-#' @param radius Numeric, radius of markers maps. See \code{\link{geom_sf}} for static maps and [leaflet::addCircleMarkers()] for Leaflet maps.
-#' @param weight Numeric, weight of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
-#' @param opacity Numeric, opacity of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers()].
-#' @param fillOpacity Numeric, opacity of markers in Leaflet maps. See [leaflet::addCircleMarkers()].
+#' @param radius Numeric, radius of markers maps. See [ggplot2::geom_sf] for static maps and [leaflet::addCircleMarkers] for Leaflet maps.
+#' @param weight Numeric, weight of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers].
+#' @param opacity Numeric, opacity of marker outlines in Leaflet maps. See [leaflet::addCircleMarkers].
+#' @param fillOpacity Numeric, opacity of markers in Leaflet maps. See [leaflet::addCircleMarkers].
 #' @param na.color Character string of color to use to symbolize markers in maps which correspond to \code{NA} values.
-#' @param jitter Numeric, amount to jitter points with duplicate geometries. See [sf::st_jitter()].
-#' @param bg.weight Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See [leaflet::addPolygons()].
-#' @param bg.opacity Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
-#' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
-#' @param bg.fillOpacity Numeric in range 0-1, opacity of \code{bg} subbasin polygons in maps. See \code{\link{geom_sf}} for static maps and [leaflet::addPolygons()] for Leaflet maps.
+#' @param jitter Numeric, amount to jitter points with duplicate geometries. See [sf::st_jitter].
+#' @param bg.weight Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See [leaflet::addPolygons].
+#' @param bg.opacity Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See [ggplot2::geom_sf] for static maps and [leaflet::addPolygons] for Leaflet maps.
+#' @param bg.fillColor Character string of color to use to symbolize \code{bg} subbasin polygons in maps. See [ggplot2::geom_sf] for static maps and [leaflet::addPolygons] for Leaflet maps.
+#' @param bg.fillOpacity Numeric in range 0-1, opacity of \code{bg} subbasin polygons in maps. See [ggplot2::geom_sf] for static maps and [leaflet::addPolygons] for Leaflet maps.
 #' @param plot.label Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over markers.
-#' See \code{\link{geom_sf_text}} for default maps and [leaflet::addCircleMarkers()] for Leaflet maps.
-#' @param plot.label.size Numeric, size of text for labels on default static plots. See \code{\link{geom_sf_text}}.
+#' See [ggplot2::geom_sf_text] for default maps and [leaflet::addCircleMarkers] for Leaflet maps.
+#' @param plot.label.size Numeric, size of text for labels on default static plots. See [ggplot2::geom_sf_text].
 #' @param plot.label.geometry Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \code{sf::st_centroid} or \code{surface} to use \code{sf::st_point_on_surface}.
-#' @param noHide Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See [leaflet::labelOptions()].
-#' @param textOnly Logical, set to \code{TRUE} to hide marker label background in Leaflet maps. See [leaflet::labelOptions()].
+#' @param noHide Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See [leaflet::labelOptions].
+#' @param textOnly Logical, set to \code{TRUE} to hide marker label background in Leaflet maps. See [leaflet::labelOptions].
 #' @param font.size Numeric, font size (px) for marker labels in Leaflet maps.
 #' @param plot.bg.label String, if \code{hover}, then labels will be displayed in Leaflet maps for \code{bg} when the cursor hovers over polygons. If \code{static}, then static
 #' labels for \code{bg} will be displayed in Leaflet maps. If any string is specified, then background labels will be added to default static maps.
-#' @param file Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See \code{\link{ggsave}} for static maps and
-#' [mapview::mapshot()] for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs()].
-#' @param width Numeric, width of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
-#' @param height Numeric, height of output plot for static maps in units of \code{units}. See \code{\link{ggsave}}.
-#' @param units Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See \code{\link{ggsave}}.
-#' @param dpi Integer, resolution to save static map. See \code{\link{ggsave}}.
-#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [webshot::webshot()].
-#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [webshot::webshot()].
+#' @param file Save map to an image file by specifying the path to the desired output file using this argument. File extension must be specified. See [ggplot2::ggsave] for static maps and
+#' [mapview::mapshot] for Leaflet maps. You may need to run \code{webshot::install_phantomjs()} the first time you save a Leaflet map to an image file. See [webshot::install_phantomjs].
+#' @param width Numeric, width of output plot for static maps in units of \code{units}. See [ggplot2::ggsave].
+#' @param height Numeric, height of output plot for static maps in units of \code{units}. See [ggplot2::ggsave].
+#' @param units Keyword string for units to save static map. One of \code{"in"}, \code{"cm"}, \code{"mm"}, \code{"px"}. See [ggplot2::ggsave].
+#' @param dpi Integer, resolution to save static map. See [ggplot2::ggsave].
+#' @param vwidth Numeric, width of the exported Leaflet map image in pixels. See [webshot::webshot].
+#' @param vheight Numeric, height of the exported Leaflet map image in pixels. See [webshot::webshot].
 #' @param html.name Save Leaflet map to an interactive HTML file by specifying the path to the desired output file using this argument. File extension must be specified. 
-#' See [htmlwidgets::saveWidget()].
+#' See [htmlwidgets::saveWidget].
 #' @param map.adj Numeric, map adjustment in direction where it is smaller than the plot window. A value of \code{0} means left-justified
 #' or bottom-justified, \code{0.5} (the default) means centered, and \code{1} means right-justified or top-justified. Only used for legacy static maps.
 #' @param legend.outer Logical. If \code{TRUE}, outer break point values will be plotted in legend. Only used for legacy static maps.

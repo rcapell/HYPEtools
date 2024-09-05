@@ -11,7 +11,7 @@ distinctColorPalette(count = 1, seed = NULL, darken = 0)
 
 \item{seed}{Integer, seed number to produce repeatable palettes.}
 
-\item{darken}{Numeric specifying the amount of darkening applied to the color palette. See \code{\link{darken}}.
+\item{darken}{Numeric specifying the amount of darkening applied to the color palette. See \link[colorspace:lighten]{colorspace::darken}.
 Negative values will lighten the palette.}
 }
 \value{

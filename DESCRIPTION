@@ -1,12 +1,12 @@
 Package: HYPEtools
-Version: 1.6.2.9000
+Version: 1.6.3
 Title: Tools for Processing and Analyzing Files from the Hydrological
     Catchment Model HYPE
 Description: Work with model files (setup, input, output) from
     the hydrological catchment model HYPE: Streamlined file import and export, standard 
     evaluation plot routines, diverse post-processing and aggregation routines 
-    for hydrological model analysis. The HYPEtools package is also archived at [doi:10.5281/zenodo.7627955]
-    and can be cited in publications with Brendel et al. (2024) [doi:10.1016/j.envsoft.2024.106094].
+    for hydrological model analysis. The HYPEtools package is also archived at <doi:10.5281/zenodo.7627955>
+    and can be cited in publications with Brendel et al. (2024) <doi:10.1016/j.envsoft.2024.106094>.
 Authors@R: c(person("Rene", "Capell", role = c("aut", "cre"), email = "hypetools.rene@smhi.se", comment = c(ORCID = "0000-0002-7784-1313")), 
     person("Conrad", "Brendel", role = "aut", email = "conrad.brendel@smhi.se", comment = c(ORCID = "0000-0002-5199-0580")),
     person("Jafet", "Andersson", role = "ctb"),

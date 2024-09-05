@@ -27,7 +27,7 @@
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param ignore.cols Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.
-#' @param nThread Integer, set number of threads to be used when writing file. If \code{NULL} (default), then the output of \code{\link{getDTthreads}} will be used.
+#' @param nThread Integer, set number of threads to be used when writing file. If \code{NULL} (default), then the output of [data.table::getDTthreads] will be used.
 #'
 #' @details
 #' \code{WriteHarmonizedData} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized data in the HYPEObsMetadataTools Harmonized Data Format.
@@ -136,7 +136,7 @@ WriteHarmonizedData <- function(df, filename = "", replace.accents = FALSE, stri
 #' @param strip.punctuation Logical, if \code{TRUE}, then punctuation characters (e.g. "-", ".", ".") will be removed from all strings.
 #' If \code{FALSE}, then strings will be left unmodified.
 #' @param ignore.cols Vector of columns in \code{df} that should be ignored when \code{replace.accents} or \code{strip.punctuation} are set to \code{TRUE}.
-#' @param nThread Integer, set number of threads to be used when writing file. If \code{NULL} (default), then the output of \code{\link{getDTthreads}} will be used
+#' @param nThread Integer, set number of threads to be used when writing file. If \code{NULL} (default), then the output of [data.table::getDTthreads] will be used
 #'
 #' @details
 #' \code{WriteHarmonizedSpatialDescription} is a convenience wrapper function of \code{\link[data.table]{fread}} to export harmonized spatial description data in the HYPEObsMetadataTools Harmonized Spatial Description Format.

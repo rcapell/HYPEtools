@@ -263,7 +263,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' 
 #' @details
 #' \code{ReadBasinOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package 
-#' \code{\link{data.table}}, with conversion of date-time strings to
+#' [data.table::data.table], with conversion of date-time strings to
 #' POSIX time representations. Monthly and annual time steps are returned as first day of the time step period.
 #' 
 #' HYPE basin output files can contain results for a single sub-basin or for a user-defined output region. \code{ReadBasinOutput} checks HYPE 
@@ -271,7 +271,7 @@ ReadGeoClass <- function(filename = "GeoClass.txt", encoding = c("unknown", "UTF
 #' \code{id} is saved to attribute \code{outregid}, otherwise to attribute \code{subid}.
 #' 
 #' @return
-#' \code{ReadBasinOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeMultiVar}} array. 
+#' \code{ReadBasinOutput} returns a \code{data.frame}, [data.table::data.table], or a \code{\link{HypeMultiVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{hypeunit}, a vector of HYPE variable units, 
 #' \code{subid} and \code{outregid}, the HYPE SUBID/OUTREGID to which the time series belong (both attributes always created and assigned \code{NA} 
 #' if not applicable to data contents), \code{timestep} with a time step keyword attribute, and \code{comment} with contents of an optional 
@@ -498,7 +498,7 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
 #'  
 #' @details
 #' \code{ReadXobs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
-#' \code{\link{data.table}}, 
+#' [data.table::data.table], 
 #' with conversion of date-time strings to POSIX time representations. Variable names, SUBIDs, comment, and timestep are returned as 
 #' attributes (see \code{\link{attr}} on how to access these).
 #' 
@@ -644,7 +644,7 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
 #' @param remove.na.cols Logical, remove columns which have all NA values.
 
 #' @details
-#' \code{ReadGeoData} uses \code{\link[data.table]{fread}} from the \code{\link{data.table}} package 
+#' \code{ReadGeoData} uses \code{\link[data.table]{fread}} from the [data.table::data.table] package 
 #' with type \code{numeric} type for columns \code{AREA} and \code{RIVLEN} (if they exist), and 
 #' upper-case column names.
 #' 
@@ -965,12 +965,12 @@ ReadPar <- function (filename = "par.txt", encoding = c("unknown", "UTF-8", "lat
 #' 
 #' @details
 #' \code{ReadMapOutput} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
-#' \code{\link{data.table}}, 
+#' [data.table::data.table], 
 #' with conversion of date-time strings to POSIX time representations. Monthly and annual time steps are returned as first day 
 #' of the time step period.
 #' 
 #' @return
-#' \code{ReadMapOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
+#' \code{ReadMapOutput} returns a \code{data.frame}, [data.table::data.table], or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 #' \code{date}, a vector of date-times (corresponding to columns from column 2), \code{timestep} with a time step attribute, 
 #' and \code{comment} with the first line of the imported file as text string. An additional attribute \code{subid.nan} might be 
@@ -1144,7 +1144,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' \code{ReadTimeOutput} imports from text or netCDF files. \emph{netCDF import is experimental and not feature-complete (e.g. attributes are 
 #' not yet fully digested).} 
 #' Text file import uses \code{\link[data.table]{fread}} from package  
-#' \code{\link{data.table}}, netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}. 
+#' [data.table::data.table], netCDF import extracts data and attributes using functions from package \code{\link[ncdf4:nc_open]{ncdf4}}. 
 #' Date-time representations in data files are converted to POSIX time representations. Monthly and annual time steps are returned as 
 #' first day of the time step period. 
 #' 
@@ -1153,7 +1153,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' are currently not supported. 
 #' 
 #' @return
-#' \code{ReadTimeOutput} returns a \code{data.frame}, \code{\link{data.table}}, or a \code{\link{HypeSingleVar}} array. 
+#' \code{ReadTimeOutput} returns a \code{data.frame}, [data.table::data.table], or a \code{\link{HypeSingleVar}} array. 
 #' Data frames and data tables contain additional \code{\link{attributes}}: \code{variable}, giving the HYPE variable ID, 
 #' \code{subid} and \code{outregid}, the HYPE SUBIDs/OUTREGIDs (corresponding to columns from column two onward) to which the time 
 #' series belong (both attributes always created and assigned \code{NA} if not applicable to data contents), \code{timestep} with a 
@@ -1567,7 +1567,7 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
 #'  
 #' @details
 #' \code{ReadObs} is a convenience wrapper function of \code{\link[data.table]{fread}} from package  
-#' \code{\link{data.table}}, 
+#' [data.table::data.table], 
 #' with conversion of date-time strings to POSIX time representations. Observation IDs (SUBIDs or IDs connected to SUBIDs with a 
 #' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:forckey.txt}{ForcKey.txt file}) are returned as integer 
 #' attribute \code{obsid} (directly accessible through \code{\link{obsid}}). 
