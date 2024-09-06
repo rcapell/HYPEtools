@@ -9,10 +9,13 @@ type: software
 license: LGPL-3.0-only
 title: 'HYPEtools: Tools for Processing and Analyzing Files from the Hydrological
   Catchment Model HYPE'
-version: 1.6.2.9000
+version: 1.6.3
+doi: 10.32614/CRAN.package.HYPEtools
 abstract: 'Work with model files (setup, input, output) from the hydrological catchment
   model HYPE: Streamlined file import and export, standard evaluation plot routines,
-  diverse post-processing and aggregation routines for hydrological model analysis.'
+  diverse post-processing and aggregation routines for hydrological model analysis.
+  The HYPEtools package is also archived at <https://doi.org/10.5281/zenodo.7627955>
+  and can be cited in publications with Brendel et al. (2024) <https://doi.org/10.1016/j.envsoft.2024.106094>.'
 authors:
 - family-names: Capell
   given-names: Rene
@@ -54,6 +57,7 @@ references:
     email: matthew.d.lincoln@gmail.com
     orcid: https://orcid.org/0000-0002-4387-3384
   year: '2024'
+  doi: 10.32614/CRAN.package.clipr
 - type: software
   title: colorspace
   abstract: 'colorspace: A Toolbox for Manipulating and Assessing Colors and Palettes'
@@ -93,6 +97,7 @@ references:
     email: Achim.Zeileis@R-project.org
     orcid: https://orcid.org/0000-0003-0918-3766
   year: '2024'
+  doi: 10.32614/CRAN.package.colorspace
 - type: software
   title: data.table
   abstract: 'data.table: Extension of `data.frame`'
@@ -103,6 +108,7 @@ references:
   - family-names: Barrett
     given-names: Tyson
     email: t.barrett88@gmail.com
+    orcid: https://orcid.org/0000-0002-2137-1391
   - family-names: Dowle
     given-names: Matt
     email: mattjdowle@gmail.com
@@ -113,10 +119,15 @@ references:
     given-names: Jan
   - family-names: Chirico
     given-names: Michael
+    orcid: https://orcid.org/0000-0003-0787-087X
   - family-names: Hocking
     given-names: Toby
     orcid: https://orcid.org/0000-0002-3146-0865
+  - family-names: Schwendinger
+    given-names: Benjamin
+    orcid: https://orcid.org/0000-0003-3315-8114
   year: '2024'
+  doi: 10.32614/CRAN.package.data.table
   version: '>= 1.9.8'
 - type: software
   title: dplyr
@@ -142,6 +153,7 @@ references:
     email: davis@posit.co
     orcid: https://orcid.org/0000-0003-4777-038X
   year: '2024'
+  doi: 10.32614/CRAN.package.dplyr
 - type: software
   title: ggplot2
   abstract: 'ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics'
@@ -181,6 +193,7 @@ references:
     name-particle: van den
     orcid: https://orcid.org/0000-0002-9335-7468
   year: '2024'
+  doi: 10.32614/CRAN.package.ggplot2
 - type: software
   title: ggpubr
   abstract: 'ggpubr: ''ggplot2'' Based Publication Ready Plots'
@@ -192,6 +205,7 @@ references:
     given-names: Alboukadel
     email: alboukadel.kassambara@gmail.com
   year: '2024'
+  doi: 10.32614/CRAN.package.ggpubr
 - type: software
   title: ggrepel
   abstract: 'ggrepel: Automatically Position Non-Overlapping Text Labels with ''ggplot2'''
@@ -204,6 +218,7 @@ references:
     email: kslowikowski@gmail.com
     orcid: https://orcid.org/0000-0002-2843-6370
   year: '2024'
+  doi: 10.32614/CRAN.package.ggrepel
 - type: software
   title: grDevices
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -239,6 +254,7 @@ references:
   - family-names: Wickham
     given-names: Hadley
   year: '2024'
+  doi: 10.32614/CRAN.package.lubridate
 - type: software
   title: methods
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -260,7 +276,9 @@ references:
   - family-names: Pierce
     given-names: David
     email: dpierce@ucsd.edu
+    orcid: https://orcid.org/0000-0002-2453-9030
   year: '2024'
+  doi: 10.32614/CRAN.package.ncdf4
 - type: software
   title: parallel
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -283,6 +301,7 @@ references:
     email: thomasp85@gmail.com
     orcid: https://orcid.org/0000-0002-5147-4711
   year: '2024'
+  doi: 10.32614/CRAN.package.patchwork
 - type: software
   title: pbapply
   abstract: 'pbapply: Adding Progress Bar to ''*apply'' Functions'
@@ -298,6 +317,7 @@ references:
     given-names: Zygmunt
     email: zygmunt@zstat.pl
   year: '2024'
+  doi: 10.32614/CRAN.package.pbapply
 - type: software
   title: purrr
   abstract: 'purrr: Functional Programming Tools'
@@ -313,6 +333,7 @@ references:
     given-names: Lionel
     email: lionel@rstudio.com
   year: '2024'
+  doi: 10.32614/CRAN.package.purrr
 - type: software
   title: rlang
   abstract: 'rlang: Functions for Base Types and Core R and ''Tidyverse'' Features'
@@ -327,6 +348,7 @@ references:
     given-names: Hadley
     email: hadley@posit.co
   year: '2024'
+  doi: 10.32614/CRAN.package.rlang
 - type: software
   title: scales
   abstract: 'scales: Scale Functions for Visualization'
@@ -344,6 +366,7 @@ references:
   - family-names: Seidel
     given-names: Dana
   year: '2024'
+  doi: 10.32614/CRAN.package.scales
 - type: software
   title: stats
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -365,6 +388,7 @@ references:
     given-names: Hadley
     email: hadley@posit.co
   year: '2024'
+  doi: 10.32614/CRAN.package.stringr
 - type: software
   title: tidyr
   abstract: 'tidyr: Tidy Messy Data'
@@ -381,6 +405,7 @@ references:
   - family-names: Girlich
     given-names: Maximilian
   year: '2024'
+  doi: 10.32614/CRAN.package.tidyr
 - type: software
   title: tidyselect
   abstract: 'tidyselect: Select from a Set of Strings'
@@ -395,6 +420,7 @@ references:
     given-names: Hadley
     email: hadley@posit.co
   year: '2024'
+  doi: 10.32614/CRAN.package.tidyselect
 - type: software
   title: utils
   abstract: 'R: A Language and Environment for Statistical Computing'
@@ -424,6 +450,7 @@ references:
     given-names: Jeffrey A.
     email: jeff.a.ryan@gmail.com
   year: '2024'
+  doi: 10.32614/CRAN.package.zoo
 - type: software
   title: rmarkdown
   abstract: 'rmarkdown: Dynamic Documents for R'
@@ -467,6 +494,7 @@ references:
     email: rich@posit.co
     orcid: https://orcid.org/0000-0003-3925-190X
   year: '2024'
+  doi: 10.32614/CRAN.package.rmarkdown
 - type: software
   title: knitr
   abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
@@ -479,16 +507,19 @@ references:
     email: xie@yihui.name
     orcid: https://orcid.org/0000-0003-0645-5666
   year: '2024'
+  doi: 10.32614/CRAN.package.knitr
 - type: software
   title: beepr
   abstract: 'beepr: Easily Play Notification Sounds on any Platform'
   notes: Suggests
+  url: https://github.com/rasmusab/beepr
   repository: https://CRAN.R-project.org/package=beepr
   authors:
   - family-names: Bååth
     given-names: Rasmus
     email: rasmus.baath@gmail.com
   year: '2024'
+  doi: 10.32614/CRAN.package.beepr
 - type: software
   title: DT
   abstract: 'DT: A Wrapper of the JavaScript Library ''DataTables'''
@@ -504,6 +535,7 @@ references:
   - family-names: Tan
     given-names: Xianying
   year: '2024'
+  doi: 10.32614/CRAN.package.DT
 - type: software
   title: htmlwidgets
   abstract: 'htmlwidgets: HTML Widgets for R'
@@ -527,6 +559,7 @@ references:
   - family-names: Russell
     given-names: Kenton
   year: '2024'
+  doi: 10.32614/CRAN.package.htmlwidgets
 - type: software
   title: leaflet
   abstract: 'leaflet: Create Interactive Web Maps with the JavaScript ''Leaflet''
@@ -547,13 +580,17 @@ references:
   - family-names: Xie
     given-names: Yihui
   year: '2024'
+  doi: 10.32614/CRAN.package.leaflet
 - type: software
   title: leaflet.extras
   abstract: 'leaflet.extras: Extra Functionality for ''leaflet'' Package'
   notes: Suggests
-  url: https://bhaskarvk.github.io/leaflet.extras/
+  url: https://trafficonese.github.io/leaflet.extras/
   repository: https://CRAN.R-project.org/package=leaflet.extras
   authors:
+  - family-names: Gatscha
+    given-names: Sebastian
+    email: sebastian_gatscha@gmx.at
   - family-names: Karambelkar
     given-names: Bhaskar
     email: bhaskarvk@gmail.com
@@ -561,6 +598,7 @@ references:
     given-names: Barret
     email: barret@rstudio.com
   year: '2024'
+  doi: 10.32614/CRAN.package.leaflet.extras
 - type: software
   title: mapview
   abstract: 'mapview: Interactive Viewing of Spatial Data in R'
@@ -581,6 +619,7 @@ references:
     given-names: Stefan
     email: stephan.woellauer@geo.uni-marburg.de
   year: '2024'
+  doi: 10.32614/CRAN.package.mapview
 - type: software
   title: plotly
   abstract: 'plotly: Create Interactive Web Graphics via ''plotly.js'''
@@ -612,6 +651,7 @@ references:
     given-names: Pedro
     email: pedro@plot.ly
   year: '2024'
+  doi: 10.32614/CRAN.package.plotly
 - type: software
   title: sf
   abstract: 'sf: Simple Features for R'
@@ -624,6 +664,7 @@ references:
     email: edzer.pebesma@uni-muenster.de
     orcid: https://orcid.org/0000-0001-8049-7069
   year: '2024'
+  doi: 10.32614/CRAN.package.sf
 - type: software
   title: shiny
   abstract: 'shiny: Web Application Framework for R'
@@ -662,6 +703,7 @@ references:
   - family-names: Borges
     given-names: Barbara
   year: '2024'
+  doi: 10.32614/CRAN.package.shiny
 - type: software
   title: shinyalert
   abstract: 'shinyalert: Easily Create Pretty Popup Messages (Modals) in ''Shiny'''
@@ -676,6 +718,7 @@ references:
   - family-names: Edwards
     given-names: Tristan
   year: '2024'
+  doi: 10.32614/CRAN.package.shinyalert
 - type: software
   title: shinyFiles
   abstract: 'shinyFiles: A Server-Side File System Viewer for Shiny'
@@ -694,6 +737,7 @@ references:
   - family-names: Nantz
     given-names: Eric
   year: '2024'
+  doi: 10.32614/CRAN.package.shinyFiles
 - type: software
   title: shinyWidgets
   abstract: 'shinyWidgets: Custom Inputs Widgets for Shiny'
@@ -709,6 +753,7 @@ references:
   - family-names: Granjon
     given-names: David
   year: '2024'
+  doi: 10.32614/CRAN.package.shinyWidgets
 - type: software
   title: webshot
   abstract: 'webshot: Take Screenshots of Web Pages'
@@ -720,4 +765,5 @@ references:
     given-names: Winston
     email: winston@rstudio.com
   year: '2024'
+  doi: 10.32614/CRAN.package.webshot
 
