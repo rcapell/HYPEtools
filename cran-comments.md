@@ -9,7 +9,16 @@
 
 There were no ERRORs or WARNINGs.
 
-There was one NOTE:
+There were two NOTEs:
+```
+Possibly misspelled words in DESCRIPTION:
+    Brendel (9:43)
+    HYPEtools (8:42)
+    al (9:54)
+    et (9:51)
+```
+These are spelled correctly.
+
 ```
 Found the following (possibly) invalid URLs:
   URL: https://anaconda.org/conda-forge/r-hypetools
