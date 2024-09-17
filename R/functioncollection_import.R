@@ -2228,6 +2228,8 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FAL
 #' @param filename Path to and file name of the 'description.txt' file to import. 
 #' @param gcl dataframe, GeoClass.txt file imported with \code{\link{ReadGeoClass}} to compare class IDs with. 
 #' A warning will be thrown if not all class IDs in \code{gcl} exist in the description file.
+#' @param ps dataframe, PointSourceData.txt file imported with \code{\link{ReadPointSourceData}} to compare point source type IDs with. 
+#' A warning will be thrown if not all type IDs in \code{ps} exist in the description file.
 #' @param encoding Character string, encoding of non-ascii characters in imported text file. Particularly relevant when 
 #' importing files created under Windows (default encoding "Latin-1") in Linux (default encoding "UTF-8") and vice versa. See 
 #' also argument description in \code{\link{scan}}.
@@ -2237,7 +2239,7 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FAL
 #' e.g. plotting legend labels or examining imported GeoClass files. E.g., \code{\link{PlotBasinSummary}} requires a list 
 #' as returned from \code{ReadDescription} for labeling. 
 #' 
-#' A 'description.txt' file consists of 22 lines, alternating names and semicolon-separated content. Lines 
+#' A 'description.txt' file consists of 28 lines, alternating names and semicolon-separated content. Lines 
 #' with names are not read by the import function, they just make it easier to compose and read the actual text file.
 #' 
 #' File contents read by \code{ReadDescription}: 
@@ -2245,14 +2247,17 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FAL
 #'  \item HYPE set-up name (line 2)
 #'  \item HYPE set-up version (line 4)
 #'  \item Land use class IDs (line 6)
-#'  \item Land use class names (line 6)
-#'  \item Land use class short names (line 8)
-#'  \item Soil class IDs (line 10)
-#'  \item Soil class names (line 10)
-#'  \item Soil class short names (line 12)
-#'  \item Crop class IDs (line 14)
-#'  \item Crop class names (line 14)
-#'  \item Crop class short names (line 16)
+#'  \item Land use class names (line 8)
+#'  \item Land use class short names (line 10)
+#'  \item Soil class IDs (line 12)
+#'  \item Soil class names (line 14)
+#'  \item Soil class short names (line 16)
+#'  \item Crop class IDs (line 18)
+#'  \item Crop class names (line 20)
+#'  \item Crop class short names (line 22)
+#'  \item Point Source IDs (line 24)
+#'  \item Point Source type names (line 26)
+#'  \item Point Source type short names (line 28)
 #' }
 #' 
 #' Note that Crop class IDs start from \code{0}, which means no crop, whereas land use and soil IDs start from \code{1} (or higher).
@@ -2281,13 +2286,20 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FAL
 #' \code{None;Row crops;Autumn-sown cereal} \cr
 #' \code{# Short crop class names} \cr
 #' \code{None;Row;Aut.-sown} \cr
+#' \code{# Point source type IDs} \cr
+#' \code{-1;1;2} \cr
+#' \code{# Point source type names} \cr
+#' \code{Abstraction;Primary;Secondaryl} \cr
+#' \code{# Short point source type names} \cr
+#' \code{ABS;NP1;NP2} \cr
 #' 
 #' @return
-#' \code{ReadDescription} returns a named list with 11 named character elements, corresponding to the 
+#' \code{ReadDescription} returns a named list with named character elements, corresponding to the 
 #' imported lines:
 #' 
 #' \code{Name}, \code{Version}, \code{lu.id}, \code{Landuse}, \code{lu} (short names), \code{so.id}, 
-#' \code{Soil}, \code{so} (short names), \code{cr.id}, \code{Crop}, \code{cr} (short names)
+#' \code{Soil}, \code{so} (short names), \code{cr.id}, \code{Crop}, \code{cr} (short names),
+#' \code{ps.id}, \code{PointSource}, \code{ps} (short names)
 #' 
 #' @examples
 #' te <- ReadDescription(filename = system.file("demo_model",
@@ -2296,7 +2308,7 @@ ReadSubass <- function(filename = "subass1.txt", nhour = NULL, check.names = FAL
 #'
 #' @export 
 
-ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8", "latin1")) {
+ReadDescription <- function(filename, gcl = NULL, ps = NULL, encoding = c("unknown", "UTF-8", "latin1")) {
   
   # argument checks
   encoding <- match.arg(encoding)
@@ -2309,13 +2321,14 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
   # remove empty strings (excel export artefacts)
   x <- sapply(x, function(x) {te <- nchar(x);te <- ifelse(te == 0, FALSE, TRUE);x[te]})
   # create result list, assign names
-  res <- x[c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22)]
-  names(res) <- c("Name", "Version", "lu.id", "Landuse", "lu", "so.id", "Soil", "so", "cr.id", "Crop", "cr")
+  res <- x[c(2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28)]
+  names(res) <- c("Name", "Version", "lu.id", "Landuse", "lu", "so.id", "Soil", "so", "cr.id", "Crop", "cr", "ps.id", "PointSource", "ps")
   
   # convert IDs to numeric
   res$lu.id <- as.numeric(res$lu.id)
   res$so.id <- as.numeric(res$so.id)
   res$cr.id <- as.numeric(res$cr.id)
+  res$ps.id <- as.numeric(res$ps.id)
   
   # check conformity of names and short names
   if (length(res$Landuse) != length(res$lu) || length(res$Landuse) != length(res$lu.id)) {
@@ -2326,6 +2339,9 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
   }
   if (length(res$Crop) != length(res$cr) || length(res$Crop) != length(res$cr.id)) {
     warning("Diffent numbers of IDs, names, or short names for crops in imported file.")
+  }
+  if (length(res$PointSource) != length(res$ps) || length(res$PointSource) != length(res$ps.id)) {
+    warning("Diffent numbers of IDs, names, or short names for point sources in imported file.")
   }
   
   # check conformity with geoclass if provided, missing classes allowed in gcl, but not in description
@@ -2342,6 +2358,14 @@ ReadDescription <- function(filename, gcl = NULL, encoding = c("unknown", "UTF-8
     te <- unique(c(gcl[, 4], gcl[, 5]))
     if (any(!(te %in% res$cr.id))) {
       warning("Not all crop classes IDs in 'gcl' present in description file.")
+    }
+  }
+  
+  # check conformity with pointsource if provided, missing types allowd in ps, but not in description
+  if (!is.null(ps)) {
+    te <- unique(ps$PS_TYPE)
+    if (any(!(te %in% res$ps.id))) {
+      warning("Not all point source type IDs in 'ps' present in description file.")
     }
   }
   return(res)
