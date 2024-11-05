@@ -12,7 +12,8 @@ WriteObs(
   round = NULL,
   signif = NULL,
   obsid = NULL,
-  append = FALSE
+  append = FALSE,
+  comment = NULL
 )
 
 WritePTQobs(
@@ -22,7 +23,8 @@ WritePTQobs(
   round = NULL,
   signif = NULL,
   obsid = NULL,
-  append = FALSE
+  append = FALSE,
+  comment = NULL
 )
 }
 \arguments{
@@ -43,6 +45,8 @@ in the obs file. Must contain the same number of IDs as observation series in \c
 in \code{x} is mandatory. An existing \code{obsid} argument takes precedence over a \code{obsid} attribute.}
 
 \item{append}{Logical, if \code{TRUE}, then table will be joined to the data in existing file and the output will be sorted by DATE (Rows will be added for any missing dates).}
+
+\item{comment}{A character string to be exported as first row comment in the Obs file. Comments are only exported if \code{append} is \code{FALSE}.}
 }
 \value{
 No return value, called for export to text files.

@@ -743,6 +743,7 @@ WritePmsf <- function(x, filename) {
 #' @param round,signif Integer, number of decimal places and number of significant digits to export, respectively. See \code{\link{round}} and \code{\link{signif}}. Applied in 
 #' sequence (\code{round} first and \code{signif} second). If \code{NULL} (default), the data to export is not touched.
 #' @param append Logical, if \code{TRUE}, then table will be joined to the data in existing file and the output will be sorted by DATE (Rows will be added for any missing dates). 
+#' @param comment A character string to be exported as first row comment in the Obs file. Comments are only exported if \code{append} is \code{FALSE}.
 #'  
 #' @details
 #' \code{WriteObs} is a convenience wrapper function of \code{\link[data.table]{fwrite}} to export a HYPE-compliant observation file. 
@@ -780,7 +781,7 @@ WritePmsf <- function(x, filename) {
 #' @export
 
 
-WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif = NULL, obsid = NULL, append = FALSE) {
+WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif = NULL, obsid = NULL, append = FALSE, comment = NULL) {
   
   ## check if consistent header information is available, obsid arguments take precedence before attribute
   ## construct HYPE-conform header for export (violates R header rules)
@@ -840,6 +841,13 @@ WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif 
   
   # export
   fwrite(x, file = filename, sep = "\t", quote = FALSE, na = "-9999", row.names = FALSE, scipen = 999)
+  
+  # Add comment
+  if(append == FALSE & !is.null(comment)){
+    contents <- readLines(filename)
+    newcontents <- c(paste("!!", comment), contents)
+    writeLines(newcontents, filename)
+  }
 }
 
 # alias, for backwards compatibility
