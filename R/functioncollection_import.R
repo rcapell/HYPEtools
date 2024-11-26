@@ -1706,11 +1706,12 @@ ReadObs <- function(filename, variable = "",
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
              sep = "\t", header = TRUE, data.table = d.t, nrows = nrows, select = select, colClasses = cC, check.names = TRUE)
   
-  
-  
+  # Rename first column to DATE
+  colnames(x)[1] <- "DATE"
   
   # date(time) conversion
   xd <- as_datetime(x$DATE, format = dt.format)
+  
   x[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     print("Date/time conversion attempt led to introduction of NAs, date/times returned as strings"); return(x[, 1])
   })
