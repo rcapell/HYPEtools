@@ -94,7 +94,7 @@
 #'                        package = "HYPEtools"))
 #' te2 <- ReadGeoData(filename = system.file("demo_model", "GeoData.txt", package = "HYPEtools"))
 #' 
-# Screen devices should not be used in examples
+#' # Screen devices should not be used in examples
 #' \dontrun{
 #' # Plot basin summary for discharge on screen device
 #' PlotBasinSummary(x = te1, gd = te2, driver = "screen", panels = 2)

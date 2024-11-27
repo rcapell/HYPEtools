@@ -1,7 +1,7 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.6.3.9000
-*Development Version*
+## HYPEtools 1.6.4
+*Enhancements and bug fixes*
 
 #### Highlights
 * Update ReadDescription() to read information about point source types
