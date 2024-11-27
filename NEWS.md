@@ -7,6 +7,7 @@
 * Update ReadDescription() to read information about point source types
 * Allow adding comment line to WriteObs()
 * Ensure that first column is named "DATE" in ReadObs()
+* Update datetime formatting for ReadXobs()
 
 ## HYPEtools 1.6.3 (2024-09-04)
 *Enhancements and bug fixes*

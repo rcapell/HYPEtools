@@ -523,10 +523,11 @@ ReadBasinOutput <- function(filename, dt.format = "%Y-%m-%d", type = c("df", "dt
 #' 
 #' @importFrom data.table fread
 #' @importFrom stats na.fail
+#' @importFrom lubridate as_datetime
 #' @export
 
 
-ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NULL, nrows = -1L, verbose = if (nrows %in% 0:2) FALSE else TRUE) {
+ReadXobs <- function (filename = "Xobs.txt", dt.format=NULL, variable = NULL, nrows = -1L, verbose = if (nrows %in% 0:2) FALSE else TRUE) {
   
   ## import xobs file header, extract attributes
   # import (3-row header)
@@ -589,7 +590,8 @@ ReadXobs <- function (filename = "Xobs.txt", dt.format="%Y-%m-%d", variable = NU
   }
   
   # date conversion 
-  xd <- as.POSIXct(strptime(xobs[, 1], format = dt.format), tz = "UTC")
+  xd <- as_datetime(xobs$DATE, format = dt.format)
+  
   xobs[, 1] <- tryCatch(na.fail(xd), error = function(e) {
     cat("Date/time conversion attempt led to introduction of NAs, date/times returned as strings.\nImported as data frame, not as 'HypeXobs' object.\n"); return(xobs[, 1])})
   

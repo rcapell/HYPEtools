@@ -6,7 +6,7 @@
 \usage{
 ReadXobs(
   filename = "Xobs.txt",
-  dt.format = "\%Y-\%m-\%d",
+  dt.format = NULL,
   variable = NULL,
   nrows = -1L,
   verbose = if (nrows \%in\% 0:2) FALSE else TRUE
