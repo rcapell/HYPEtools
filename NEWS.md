@@ -4,7 +4,7 @@
 *Development Version*
 
 #### Highlights
-
+* Fix bug in AllUpstreamSubids() that resulted in incorrect upstream SUBIDs when MAINPART == 0 in BranchData.txt
 
 ## HYPEtools 1.6.4 (2024-11-27)
 *Enhancements and bug fixes*

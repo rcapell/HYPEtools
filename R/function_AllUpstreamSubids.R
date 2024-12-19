@@ -66,6 +66,11 @@ AllUpstreamSubids <- function(subid, gd, bd = NULL, sort = FALSE, get.weights = 
       if (length(brcol.mp) != 1) {
         stop("Weights requested, but column 'MAINPART' not found in 'bd'.")
       }
+      # Check for mainpart values equal to zero
+      if (any(bd[, brcol.mp] == 0)){
+        warning("BranchData file has rows where MAINPART == 0. These rows will be ignored")
+        bd <- bd[which(!bd[, brcol.mp] == 0),] # Remove rows where MAINPART == 0
+      }
     }
   }
   

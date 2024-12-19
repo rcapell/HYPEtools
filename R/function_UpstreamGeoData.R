@@ -203,7 +203,7 @@ UpstreamGeoData <- function(subid = NULL, gd, bd = NULL, olake.slc = NULL, bd.we
 
   # apply area-weighted mean function to all SUBIDs in variable 'subid', for all relevant variables
   # conditional: use the progress bar version of sapply if set by function argument
-  if (length(pos.wmean > 0)) {
+  if (length(pos.wmean) > 0) {
     if (progbar) {
       cat("\nCalculating upstream area-weighted means.\n")
       te <- pbsapply(up.sbd, WeightedMean, g = gd, p.sbd = pos.sbd, p.wmean = pos.wmean, p.area = pos.area)
