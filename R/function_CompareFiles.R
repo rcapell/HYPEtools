@@ -26,7 +26,7 @@
 #'
 #' @return
 #' Returns invisibly a data frame containing rows and columns in which differences exist between \code{x} and \code{y}. Values that are the same in both
-#' files are set to \code{NA}. If the returned data frame has 0 row, then there were no differences between the files.
+#' files are set to \code{NA}. If the returned data frame has only rows for the "FILE_ROW" column (and/or columns specified with \code{by}), then there were no differences between the files.
 #'
 #' @examples
 #' # Import demo model GeoData file, edit a SUBID
