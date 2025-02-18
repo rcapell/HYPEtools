@@ -103,6 +103,7 @@ HYPE outputs which are known to \code{PlotBasinOutput} include:
 \item{sub-surface storage components}
 \item{nitrogen concentrations}
 \item{phosphorus concentrations}
+\item{organic carbon concentrations}
 \item{suspended sediment concentrations}
 \item{total sediment concentrations}
 \item{tracer concentration}
@@ -113,7 +114,7 @@ For a detailed description of the variables, see the
 \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 
 \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc cct2 ret2 ccin rein ccon reon cctn retn 
-ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1}
+ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1 ccoc reoc}
 
 \emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting
 to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing.

@@ -87,12 +87,12 @@ Returns a multi-panel plot in a new graphics device.
 }
 \description{
 Plot a standard suite of plots summarizing properties of a sub-basin including upstream area and model performance
-for discharge and concentrations of nutrients, sediment, and tracers.
+for discharge and concentrations of nutrients, organic carbon, sediment, and tracers.
 }
 \details{
 \code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a
 chosen sub-basin. Performance plots include discharge, HYPE-modeled nutrient species for nitrogen (total, inorganic, organic)
-and phosphorus (total, particulate, soluble), and HYPE modeled suspended and total sediment concentrations.
+phosphorus (total, particulate, soluble), organic carbon, and suspended and total sediment concentrations.
 
 Plotted panels show:
 \itemize{
@@ -102,7 +102,7 @@ otherwise).}
 \item{\emph{Goodness-of-fit measures for discharge and concentrations}: KGE (Kling-Gupta Efficiency), NSE (Nash-Sutcliffe Efficiency), PBIAS
 (Percentage Bias, aka relative error), MAE (Mean Absolute Error), r (Pearson product-moment correlation coefficient), VE (Volumetric Efficiency).}
 \item{\emph{Simulation-observation relationships for discharge and concentrations}: Simulated and observed concentration-discharge relationships,
-relationship between observed and simulated nutrient, sediment, and tracer concentrations.}
+relationship between observed and simulated nutrient, organic carbon, sediment, and tracer concentrations.}
 \item{\emph{Duration curves for flow and concentrations}: Pairwise simulated and observed curves.}
 \item{\emph{Annual regimes for flow and concentrations}: Pairwise simulated and observed regime plots at monthly aggregation, with
 number of observations for concentration regimes.}
@@ -121,7 +121,7 @@ Below a complete list of HYPE variables known to the function in HYPE info.txt f
 For a detailed description of the variables, see the
 \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 
-\code{basinoutput variable cout rout ccin rein ccon reon cctn retn ccsp resp ccpp repp cctp retp ctnl ctpl ccss ress ccts rets cct1 ret1}
+\code{basinoutput variable cout rout ccin rein ccon reon cctn retn ccsp resp ccpp repp cctp retp ctnl ctpl ccss ress ccts rets cct1 ret1 ccoc reoc}
 
 #' \emph{Device dimensions} are hard-coded to a width of 13 inches and height depending on the number of plotted time series. When plotting
 to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing.
