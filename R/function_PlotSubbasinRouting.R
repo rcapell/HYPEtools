@@ -184,7 +184,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       leaflet::addTiles() %>%
       leaflet::addLayersControl(
         baseGroups = c("Map", "Street", "Topo", "Satellite"),
-        overlayGroups = c("Routing", "Subbasins"),
+        overlayGroups = c("Labels", "Routing", "Subbasins"),
         options = leaflet::layersControlOptions(collapsed = FALSE, autoIndex = TRUE)
       ) %>%
       leaflet.extras::addResetMapButton() %>%
@@ -200,7 +200,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
         labelOptions = leaflet::labelOptions(noHide = TRUE, textOnly = TRUE, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
       ) %>%
       leaflet::addLabelOnlyMarkers(
-        group = "Subbasins",
+        group = "Labels",
         data = suppressWarnings(sf::st_point_on_surface(map)),
         label = map[[map.subid.name]],
         labelOptions = leaflet::labelOptions(noHide = TRUE, direction = "auto", textOnly = TRUE, style = list("font-size" = paste0(font.size, "px")))
