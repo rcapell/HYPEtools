@@ -113,7 +113,18 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     # Join GIS & GeoData if GeoData provided
     if (!is.null(gd)) {
       message(paste0('Joining "', colnames(map)[map.subid.column], '" from GIS Data (map) To "', "SUBID", '" from GeoData (gd)'))
-      map <- full_join(map[, map.subid.column] %>% mutate(across(1, ~ as.character(.x))), gd %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], "SUBID")) # Join GIS Data with GeoData in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
+      gis_subids <- map[, map.subid.column] %>% st_drop_geometry() %>% unlist() # Get SUBIDs from GIS file
+      if(any(gd$SUBID %in% gis_subids)){
+        if(!all(gis_subids %in% gd$SUBID)){
+          warning('Not all SUBIDs in "map" exist in "gd"', call. = FALSE)
+        }
+        if(!all(gd$SUBID %in% gis_subids)){
+          warning('Not all SUBIDs in "gd" exist in "map"', call. = FALSE)
+        }
+        map <- full_join(map[, map.subid.column] %>% mutate(across(1, ~ as.character(.x))), gd %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], "SUBID")) # Join GIS Data with GeoData in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
+      } else{
+        stop('No common SUBIDs in "gd" and "map". Check data and/or "map.subid.column" argument.')
+      }
     }
 
     # Create Subbasin Points and remove rows where downstream subbasins don't exist
@@ -161,7 +172,11 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
     # Remove Subbasins where downstream subbasin doesn't exist
     map_point <- map_point %>%
-      dplyr::filter(.data$MAINDOWN %in% unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry()))
+      dplyr::filter(.data$MAINDOWN %in% unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry())) %>%
+      dplyr::filter(!sf::st_is_empty(.))
+    
+    # Remove empty geometries
+    map <- map %>% dplyr::filter(!sf::st_is_empty(.))
 
     # Create Leaflet Plot
     message("Creating Map")
@@ -217,8 +232,8 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       leafmap <- leafmap %>%
         leaflet::addPolylines(
           group = "Routing",
-          lat = c(sf::st_coordinates(map_point[attr(map, "sf_column")])[i, 2], sf::st_coordinates(map_point$ds_geometry)[i, 2]),
-          lng = c(sf::st_coordinates(map_point[attr(map, "sf_column")])[i, 1], sf::st_coordinates(map_point$ds_geometry)[i, 1]),
+          lat = c(sf::st_coordinates(map_point[attr(map_point, "sf_column")])[i, 2], sf::st_coordinates(map_point$ds_geometry)[i, 2]),
+          lng = c(sf::st_coordinates(map_point[attr(map_point, "sf_column")])[i, 1], sf::st_coordinates(map_point$ds_geometry)[i, 1]),
           label = paste("SUBID", unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry())[i], "to SUBID", map_point$MAINDOWN[i]),
           color = colors[i],
           weight = line.weight,
