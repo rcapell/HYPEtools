@@ -724,14 +724,14 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
   
   if (any(is.na(pos.m))) {
     # warn if mandatory columns are missing
-    warning(paste0("Mandatory 'HypeGeoData' column(s) '", paste(m[is.na(pos.m)], collapse = "', '"), "' missing. Imported as 'data.frame'."))
+    warning(paste0("Mandatory 'HypeGeoData' column(s) '", paste(m[is.na(pos.m)], collapse = "', '"), "' missing. Imported as 'data.frame'."), call. = FALSE)
 #    class(res) <- class(res)[-1]
     class(res) <- "data.frame"
   }
   
   if (length(pos.s) == 0) {
     # warn if there are no SLC columns
-    warning("Mandatory 'HypeGeoData' column(s) 'SLC_n' missing. Imported as 'data.frame'.")
+    warning("Mandatory 'HypeGeoData' column(s) 'SLC_n' missing. Imported as 'data.frame'.", call. = FALSE)
     if (class(res)[1] == "HypeGeoData") {
       #    class(res) <- class(res)[-1]
       class(res) <- "data.frame"
@@ -744,12 +744,12 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
       te1 <- n.s[dn.s > 1]
       te2 <- sapply(dn.s[dn.s > 1] - 1, function(x) 1:x)
       slc.miss <- sort(unlist(sapply(1:length(te1), function(x, y, z) y[x] - z[[x]], y = te1, z = te2)))
-      warning(paste0("SLC class column(s) missing in imported file: ", paste0("SLC_", slc.miss, collapse = ", ")))
+      warning(paste0("SLC class column(s) missing in imported file: ", paste0("SLC_", slc.miss, collapse = ", ")), call. = FALSE)
     }
     if (any(dn.s == 0)) {
       # warn if there are SLC class duplicates
       warning(paste0("SLC class column duplicate(s) in imported file: ", 
-                     paste0("SLC_", n.s[dn.s == 0], " (", dn.s[dn.s == 0], ")", collapse = ", ")))
+                     paste0("SLC_", n.s[dn.s == 0], " (", dn.s[dn.s == 0], ")", collapse = ", ")), call. = FALSE)
     }
   }
   
