@@ -5,7 +5,8 @@
 
 #### Highlights
 * Fix bug in AllUpstreamSubids() that resulted in incorrect upstream SUBIDs when MAINPART == 0 in BranchData.txt
-* Add plots for modelled organic carbon in PlotBasinOutput() and PlotBasinSummary()
+* Add plots for modeled organic carbon in PlotBasinOutput() and PlotBasinSummary()
+* Update ReadGeoData() to check and warn for duplicate column names
 
 ## HYPEtools 1.6.4 (2024-11-27)
 *Enhancements and bug fixes*

@@ -676,10 +676,14 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
   cnumeric <- which(toupper(cnames) %in% c("AREA", "RIVLEN"))
   
   res <- fread(filename, header = TRUE, sep = sep, colClasses = list("numeric" = cnumeric), data.table = FALSE, encoding = encoding, fill = TRUE)
-  names(res) <- toupper(names(res))
+  
+  # Save column names and make unique so that select call can remove columns with all NA if there are duplicate column names
+  resnames <- toupper(names(res))
+  names(res) <- make.unique(resnames)
   
   # remove columns with all NA
   res <- res %>% select(where(function(x){any(!is.na(x))}))
+  names(res) <- resnames # Restore column names
   
   # # NOT USED ATM, REPLACED BY colClasses ARGUMENT IN fread. LEFT FOR REFERENCE
   # # force type numeric for selected columns if they exist. Otherwise there can be problem with integer calculation in other functions..
@@ -837,6 +841,11 @@ ReadGeoData <- function(filename = "GeoData.txt", sep = "\t", encoding = c("unkn
   # Warning if any non-standard column names
   if(any(check_cols == FALSE)){
     warning("Non-standard GeoData column names found: ", paste(colnames(res)[which(check_cols == FALSE)], collapse = ", "), call. = FALSE)
+  }
+  
+  # Warning for duplicate column names
+  if(any(duplicated(colnames(res)))){
+    warning("Duplicate column names found: ", paste(colnames(res)[which(duplicated(colnames(res)))], collapse = ", "), call. = FALSE)
   }
   
   return(res)
