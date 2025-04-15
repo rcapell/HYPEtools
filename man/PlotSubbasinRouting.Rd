@@ -15,6 +15,7 @@ PlotSubbasinRouting(
   opacity = 1,
   fillColor = "#4d4d4d",
   fillOpacity = 0.25,
+  line.color = NULL,
   line.weight = 5,
   line.opacity = 1,
   seed = NULL,
@@ -49,7 +50,9 @@ Only required if providing GeoData information with \code{gd}.}
 
 \item{fillOpacity}{Numeric, opacity of subbasin polygons. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
 
-\item{line.weight}{Numeric, weight of routing lines. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
+\item{line.color}{String, color codes to use for each routing line. If \code{NULL}, then random colors will be used. If a single value is provided, then that color will be used for all lines.}
+
+\item{line.weight}{Numeric, weight of routing lines. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.If a single value is provided, then that weight will be used for all lines.}
 
 \item{line.opacity}{Numeric, opacity of routing lines. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
 
