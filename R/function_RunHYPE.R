@@ -19,7 +19,7 @@
 #' Output messagess from the HYPE executable are printed to the console.
 #' 
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' RunHYPE()
 #' }
 #' 

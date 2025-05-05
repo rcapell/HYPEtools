@@ -120,7 +120,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     # Join GIS & GeoData if GeoData provided
     if (!is.null(gd)) {
       message(paste0('Joining "', colnames(map)[map.subid.column], '" from GIS Data (map) To "', "SUBID", '" from GeoData (gd)'))
-      gis_subids <- map[, map.subid.column] %>% st_drop_geometry() %>% unlist() # Get SUBIDs from GIS file
+      gis_subids <- map[, map.subid.column] %>% sf::st_drop_geometry() %>% unlist() # Get SUBIDs from GIS file
       if(any(gd$SUBID %in% gis_subids)){
         if(!all(gis_subids %in% gd$SUBID)){
           warning('Not all SUBIDs in "map" exist in "gd"', call. = FALSE)

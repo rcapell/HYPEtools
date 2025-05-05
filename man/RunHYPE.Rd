@@ -31,7 +31,7 @@ and \code{p} can be used to specify if the \code{sequence} number should also be
 Read more about how to run HYPE on the \href{http://hype.smhi.net/wiki/doku.php?id=start#how_to_run_hype}{HYPE wiki}.
 }
 \examples{
-\donttest{
+\dontrun{
 RunHYPE()
 }
 
