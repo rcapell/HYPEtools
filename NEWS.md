@@ -1,7 +1,7 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.6.4.9000
-*Development Version*
+## HYPEtools 1.6.5
+*Enhancements and bug fixes*
 
 #### Highlights
 * Fix bug in AllUpstreamSubids() that resulted in incorrect upstream SUBIDs when MAINPART == 0 in BranchData.txt
