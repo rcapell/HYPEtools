@@ -9,6 +9,7 @@
 * Update ReadGeoData() to check and warn for duplicate column names
 * Add check to PlotSubbasinRouting() to ensure that "map" and "gd" have shared SUBIDs and add handling for if SUBIDs in "map" and "gd" are not identical
 * Allow for custom line colors and weights in PlotSubbasinRouting()
+* Add RunHYPE() function
 
 ## HYPEtools 1.6.4 (2024-11-27)
 *Enhancements and bug fixes*

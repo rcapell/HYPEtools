@@ -37,6 +37,7 @@ Imports:
     stringr,
     tidyr,
     tidyselect,
+    tools,
     utils,
     zoo
 License: LGPL-3
