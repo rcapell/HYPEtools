@@ -50,8 +50,6 @@ return a \code{\link[data.table]{data.table}} object, or \code{"hsv"} to return 
 
 \item{warn.nan}{Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found,
 a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.}
-
-\item{verbose}{Logical, print information during import.}
 }
 \value{
 \code{ReadTimeOutput} returns a \code{data.frame}, \link[data.table:data.table]{data.table::data.table}, or a \code{\link{HypeSingleVar}} array.

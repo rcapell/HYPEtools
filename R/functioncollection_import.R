@@ -1149,7 +1149,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' @param skip Integer, number of \emph{data} rows to skip on import. Time output header lines are always skipped. 
 #' @param warn.nan Logical, check if imported results contain any \code{NaN} values. If \code{TRUE} and \code{NaN}s are found, 
 #' a warning is thrown and affected IDs saved in an attribute \code{id.nan}. Adds noticeable overhead to import time for large files.
-#' @param verbose Logical, print information during import.
+# #' @param verbose Logical, print information during import. # Commented out, I don't think it does anything in this function
 #' 
 #' @details
 #' \code{ReadTimeOutput} imports from text or netCDF files. \emph{netCDF import is experimental and not feature-complete (e.g. attributes are 
@@ -1225,9 +1225,8 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
   
   if (nc) {
     
-    #--------------------------------------------------------------------------------------------------------------------------------------
-    # import from netCDF file
-    #--------------------------------------------------------------------------------------------------------------------------------------
+    # import from netCDF file ----
+    #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     
     
     # open netCDF file connection
@@ -1292,9 +1291,8 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
     
   } else {
     
-    #--------------------------------------------------------------------------------------------------------------------------------------
-    # import from text file
-    #--------------------------------------------------------------------------------------------------------------------------------------
+    # import from text file ----
+    #:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     
     
     # check file contents for metadata header and extract contents if present
@@ -1318,12 +1316,19 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
         warning("Arguments 'select' and 'id' provided. 'id' takes precedence.")
       }
       te <- match(id, sbd)
-      # stop if unknown ids provided by user
+      
+      # warn if unknown ids provided by user and update selection vector
       if (any(is.na(te))) {
-        stop(paste0("Argument 'id': IDs ", paste(id[is.na(te)], collapse = ", "), " not found in imported file."))
+        
+        warning(paste0("Argument 'id': IDs ", paste(id[is.na(te)], collapse = ", "), " not found in imported file."))
+        
+        id <- id[!is.na(te)]
+        te <- te[!is.na(te)]
+        
       }
       select <- c(1, te + 1)
       sbd <- id
+      
     } else if (!is.null(select)) {
       # update id attribute to selected ids
       sbd <- sbd[select[-1] - 1]
@@ -1541,10 +1546,6 @@ ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, ou
   return(x)
 }
 
-## DEBUG
-# filename <- "../timeCCTN.txt"
-# dt.format <- "%Y"
-
 
 
 
@@ -1691,12 +1692,18 @@ ReadObs <- function(filename, variable = "",
       warning("Arguments 'select' and 'obsid' provided. 'obsid' takes precedence.")
     }
     te <- match(obsid, sbd)
-    # stop if unknown obsids provided by user
+    # warn if unknown ids provided by user and update selection vector
     if (any(is.na(te))) {
-      stop(paste0("Argument 'obsid': OBSIDs ", paste(obsid[is.na(te)], collapse = ", "), " not found in imported file."))
+      
+      warning(paste0("Argument 'obsid': IDs ", paste(obsid[is.na(te)], collapse = ", "), " not found in imported file."))
+      
+      obsid <- obsid[!is.na(te)]
+      te <- te[!is.na(te)]
+      
     }
     select <- c(1, te + 1)
     sbd <- obsid
+  
   } else if (!is.null(select)) {
     # update obsid attribute to selected obsids
     sbd <- sbd[select[-1] - 1]
