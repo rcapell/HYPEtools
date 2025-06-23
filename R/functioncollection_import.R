@@ -1194,7 +1194,7 @@ ReadMapOutput <- function(filename, dt.format = NULL, hype.var = NULL, type = c(
 #' @export
 
 ReadTimeOutput <- function(filename, dt.format = "%Y-%m-%d", hype.var = NULL, out.reg = NULL, type = c("df", "dt", "hsv"), 
-                           select = NULL, id = NULL, nrows = -1L, skip = 0L, warn.nan = FALSE, verbose = TRUE) {
+                           select = NULL, id = NULL, nrows = -1L, skip = 0L, warn.nan = FALSE) {
   
   # check file type to import
   ftype <- tolower(substr(filename, nchar(filename) - 2, nchar(filename)))
