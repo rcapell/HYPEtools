@@ -32,6 +32,7 @@ library(dplyr)
 # Run devtools check and save results to a temporary directory
 # - If there is an error with running e.g. the PlotBasinSummary example, then try rerunning the check (some errors are intermittent)
 check_dir <- tempdir()
+options(pkgbuild.has_compiler = TRUE) # Supress diagnostic causing R to think that Rtools isn't installed and working
 devtools::check(incoming = T, args = "--timings", check_dir = check_dir)
 timing_df <- read.delim(file.path(check_dir,"HYPEtools.Rcheck", "HYPEtools-Ex.timings")) %>%
   mutate(cpu = user + system) %>% # Calculate CPU time (user + system)
