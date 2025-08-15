@@ -9,7 +9,7 @@ type: software
 license: LGPL-3.0-only
 title: 'HYPEtools: Tools for Processing and Analyzing Files from the Hydrological
   Catchment Model HYPE'
-version: 1.6.5.9000
+version: 1.6.6
 doi: 10.32614/CRAN.package.HYPEtools
 abstract: 'Work with model files (setup, input, output) from the hydrological catchment
   model HYPE: Streamlined file import and export, standard evaluation plot routines,
@@ -310,7 +310,7 @@ references:
   title: pbapply
   abstract: 'pbapply: Adding Progress Bar to ''*apply'' Functions'
   notes: Imports
-  url: https://github.com/psolymos/pbapply
+  url: https://peter.solymos.org/pbapply/
   repository: https://CRAN.R-project.org/package=pbapply
   authors:
   - family-names: Solymos
