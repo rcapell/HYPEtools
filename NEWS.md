@@ -4,7 +4,7 @@
 *Development Version*
 
 #### Highlights
-
+* Add argument to adjust date format in PlotAnnualRegime()
 
 ## HYPEtools 1.6.5 (2025-05-05)
 *Enhancements and bug fixes*
