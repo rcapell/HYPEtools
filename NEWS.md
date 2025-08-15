@@ -5,6 +5,7 @@
 
 #### Highlights
 * Add argument to adjust date format in PlotAnnualRegime()
+* Update ReadTimeOutput() to send warning if unknown IDs are provided by the user instead of stopping
 
 ## HYPEtools 1.6.5 (2025-05-05)
 *Enhancements and bug fixes*
