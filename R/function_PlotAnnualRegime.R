@@ -18,6 +18,7 @@
 #' @param xlab Character string or \code{\link{plotmath}} expression string, x-axis label. Default prints the time period on which the 
 #' regime is based, read from \code{x$period}.
 #' @param ylab Character or \code{\link{plotmath}} expression string. Y-axis label, with a default for discharge regimes.
+#' @param date_format String specifying date format for x-axis. See \code{\link{strftime}}.
 #' @param col Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile 
 #' series in \code{freq}.
 #' @param alpha Numeric, alpha transparency value for variation bands. Value between \code{0} (transparent) and \code{255} (opaque), see 
@@ -71,8 +72,8 @@
 # Exported function
 PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p05p95", "p25p75", "minmax"), add.legend = FALSE, 
                              l.legend = NULL, l.position = c("topright", "bottomright", "right", "topleft", "left", "bottomleft"), 
-                             log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
-                             xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", alpha = 30, 
+                             log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")),
+                             xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), date_format = "%b", col = "blue", alpha = 30, 
                              lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, verbose = TRUE) {
   
   # Backup par and restore on function exit
@@ -81,7 +82,7 @@ PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p0
   
   # Call function and pass arguments
   .PlotAnnualRegime(x=x, line=line, band=band, add.legend=add.legend,l.legend=l.legend,
-                    l.position=l.position, log=log,ylim=ylim, ylab=ylab, xlab=xlab,
+                    l.position=l.position, log=log,ylim=ylim, ylab=ylab, xlab=xlab, date_format = date_format,
                     col=col, alpha=alpha, lty=lty, lwd=lwd, mar=mar, verbose=verbose)
   
 }
@@ -90,7 +91,7 @@ PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p0
 .PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p05p95", "p25p75", "minmax"), add.legend = FALSE, 
                              l.legend = NULL, l.position = c("topright", "bottomright", "right", "topleft", "left", "bottomleft"), 
                              log = FALSE, ylim = NULL, ylab = expression(paste("Q (m"^3, " s"^{-1}, ")")), 
-                             xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), col = "blue", alpha = 30, 
+                             xlab = paste(format(attr(x, "period"), format = "%Y"), collapse = " to "), date_format = "%b", col = "blue", alpha = 30, 
                              lty = 1, lwd = 1, mar = c(3, 3, 1, 1) + .1, verbose = TRUE) {
   
   # If user calls the internal function using HYPEtools:::.PlotAnnualRegime(), then make sure that par is reset on exit
@@ -191,7 +192,7 @@ PlotAnnualRegime <- function(x, line = c("mean", "median"), band = c("none", "p0
   
   # manually add axes and framing box
   axis(side = 2)
-  axis.POSIXct(side = 1, at = vline)
+  axis.POSIXct(side = 1, at = vline, format = date_format)
   box()
   
   

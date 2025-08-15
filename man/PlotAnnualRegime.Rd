@@ -17,6 +17,7 @@ PlotAnnualRegime(
      -1
  }, ")")),
   xlab = paste(format(attr(x, "period"), format = "\%Y"), collapse = " to "),
+  date_format = "\%b",
   col = "blue",
   alpha = 30,
   lty = 1,
@@ -51,6 +52,8 @@ will always prevent plotting of any band. See details.}
 
 \item{xlab}{Character string or \code{\link{plotmath}} expression string, x-axis label. Default prints the time period on which the
 regime is based, read from \code{x$period}.}
+
+\item{date_format}{String specifying date format for x-axis. See \code{\link{strftime}}.}
 
 \item{col}{Line color specification, see \code{\link{par}} for details. Defaults to blue. Either a single value or a vector of the same length as quantile
 series in \code{freq}.}
