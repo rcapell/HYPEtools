@@ -18,7 +18,7 @@ RunHYPE(hype.path = NULL, info.dir = NULL, sequence = 0, p = FALSE, ...)
 \item{...}{Additional arguments passed on to \code{\link{system}}.}
 }
 \value{
-Output messagess from the HYPE executable are printed to the console.
+Output messages from the HYPE executable are printed to the console.
 }
 \description{
 \code{RunHYPE} is a wrapper to run a HYPE model using a specified HYPE executable.

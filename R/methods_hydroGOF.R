@@ -13,7 +13,7 @@
 #' @param out.PerYear logical, argument passed to the \code{\link{sKGE}} function.
 #' @param out.type argument passed to the \code{\link{KGE}} function.
 #' @param dec argument passed to the \code{\link{pbias}} function.
-#' @param digits integer, numer of decimal places used for rounding the goodness of fit indexes.
+#' @param digits integer, number of decimal places used for rounding the goodness of fit indexes.
 #' @param fun function to be applied to \code{sim} and \code{obs} in order to obtain transformed values thereof before applying any goodness-of-fit function
 #' @param epsilon.type argument used to define a numeric value to be added to both \code{sim} and \code{obs} before applying fun. It was designed to allow the use of
 #' logarithm and other similar functions that do not work with zero values. It must be one of the following possible values:
