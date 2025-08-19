@@ -1,6 +1,12 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.6.6
+## HYPEtools 1.5.0.9000
+*Development Version*
+
+#### Highlights
+* Start work on PlotEvaluationMaps() function - NOT FULLY IMPLEMENTED!
+
+## HYPEtools 1.6.6 (2025-08-19)
 *Enhancements*
 
 #### Highlights
