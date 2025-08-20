@@ -5,6 +5,8 @@
 
 #### Highlights
 * Start work on PlotEvaluationMaps() function - NOT FULLY IMPLEMENTED!
+* Fix bug in PlotSubbasinRouting() that prevented map from being generated when using BranchData
+* Added default feature in PlotSubbasinRouting() to filter GIS data to only the subbasins in GeoData
 
 ## HYPEtools 1.6.6 (2025-08-19)
 *Enhancements*
