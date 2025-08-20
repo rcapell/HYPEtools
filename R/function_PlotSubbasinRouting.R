@@ -149,9 +149,9 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       if (ds %in% unlist(map_point[[map.subid.name]] %>% sf::st_drop_geometry())) {
         sf::st_geometry(map_point[which(unlist(map_point[[map.subid.name]] %>% sf::st_drop_geometry()) == ds), attr(map_point, "sf_column")])
       } else {
-        sf::st_sfc(sf::st_point(c(0, 0)), crs = sf::st_crs(map_point)) # Assign Point 0,0 and remove later
+        sf::st_sfc(sf::st_point(c(0, 0))) # Assign Point 0,0 and remove later
       }
-    }), recursive = FALSE), crs = sf::st_crs(map_point))
+    }), recursive = FALSE))
 
     # Get Downstream Subbasin Points for Branches
     if (!is.null(bd)) {
@@ -167,7 +167,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
           if (bd$BRANCHID[i] %in% map_point[[map.subid.name]]) {
             branch$ds_geometry <- sf::st_sfc(sf::st_geometry(map_point[which(map_point[[map.subid.name]] == bd$BRANCHID[i]), attr(map, "sf_column")]))
           } else {
-            branch$ds_geometry <- sf::st_sfc(sf::st_point(c(0, 0)), crs = sf::st_crs(map_point)) # Assign Point 0,0 and remove later
+            branch$ds_geometry <- sf::st_sfc(sf::st_point(c(0, 0))) # Assign Point 0,0 and remove later
           }
 
           # Add row to map_point
