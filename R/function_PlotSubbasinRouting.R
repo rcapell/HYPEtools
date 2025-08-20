@@ -50,7 +50,7 @@
 #' )
 #' }
 #'
-#' @importFrom dplyr full_join %>% bind_rows filter across rename_with
+#' @importFrom dplyr full_join %>% filter across rename_with
 #' @importFrom tidyselect matches
 #' @importFrom rlang .data
 #' @importFrom stats setNames
@@ -146,12 +146,12 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       ds <- map_point$MAINDOWN[X]
 
       # If Downstream SUBID Exists
-      if (ds %in% unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry())) {
-        sf::st_geometry(map_point[which(unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry()) == ds), attr(map_point, "sf_column")])
+      if (ds %in% unlist(map_point[[map.subid.name]] %>% sf::st_drop_geometry())) {
+        sf::st_geometry(map_point[which(unlist(map_point[[map.subid.name]] %>% sf::st_drop_geometry()) == ds), attr(map_point, "sf_column")])
       } else {
-        sf::st_sfc(sf::st_point(c(0, 0))) # Assign Point 0,0 and remove later
+        sf::st_sfc(sf::st_point(c(0, 0)), crs = sf::st_crs(map_point)) # Assign Point 0,0 and remove later
       }
-    }), recursive = FALSE))
+    }), recursive = FALSE), crs = sf::st_crs(map_point))
 
     # Get Downstream Subbasin Points for Branches
     if (!is.null(bd)) {
@@ -159,27 +159,27 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       for (i in 1:nrow(bd)) {
 
         # Get row of data for source subbasin and change MAINDOWN to Branch subbasin
-        branch <- map_point[which(map_point[, map.subid.name] == bd$SOURCEID[i]), ] %>%
+        branch <- map_point[which(map_point[[map.subid.name]] == bd$SOURCEID[i]), ] %>%
           mutate(MAINDOWN = bd$BRANCHID[i])
 
         # Get branch Geometry if branch SUBID Exists
         if (nrow(branch) > 0) {
-          if (bd$BRANCHID[i] %in% map_point[, map.subid.name]) {
-            branch$ds_geometry <- sf::st_sfc(sf::st_geometry(map_point[which(map_point[, map.subid.name] == bd$BRANCHID[i]), attr(map, "sf_column")]))
+          if (bd$BRANCHID[i] %in% map_point[[map.subid.name]]) {
+            branch$ds_geometry <- sf::st_sfc(sf::st_geometry(map_point[which(map_point[[map.subid.name]] == bd$BRANCHID[i]), attr(map, "sf_column")]))
           } else {
-            branch$ds_geometry <- sf::st_sfc(sf::st_point(c(0, 0))) # Assign Point 0,0 and remove later
+            branch$ds_geometry <- sf::st_sfc(sf::st_point(c(0, 0)), crs = sf::st_crs(map_point)) # Assign Point 0,0 and remove later
           }
 
           # Add row to map_point
           map_point <- map_point %>%
-            bind_rows(branch)
+            rbind(branch)
         }
       }
     }
 
     # Remove Subbasins where downstream subbasin doesn't exist
     map_point <- map_point %>%
-      dplyr::filter(.data$MAINDOWN %in% unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry())) %>%
+      dplyr::filter(.data$MAINDOWN %in% unlist(map_point[[map.subid.name]] %>% sf::st_drop_geometry())) %>%
       dplyr::filter(!sf::st_is_empty(.))
     
     # Remove empty geometries
@@ -203,7 +203,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
         opacity = opacity,
         fillColor = fillColor,
         fillOpacity = fillOpacity,
-        label = paste(map[, map.subid.name]), # Add label so searchbar will work
+        label = paste(map[[map.subid.name]]), # Add label so searchbar will work
         labelOptions = leaflet::labelOptions(noHide = TRUE, textOnly = TRUE, style = list("color" = fillColor, "font-size" = "0px")) # Set label color and size to 0 to hide labels
       ) %>%
       leaflet::addLabelOnlyMarkers(
@@ -262,7 +262,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
           group = "Routing",
           lat = c(sf::st_coordinates(map_point[attr(map_point, "sf_column")])[i, 2], sf::st_coordinates(map_point$ds_geometry)[i, 2]),
           lng = c(sf::st_coordinates(map_point[attr(map_point, "sf_column")])[i, 1], sf::st_coordinates(map_point$ds_geometry)[i, 1]),
-          label = paste("SUBID", unlist(map_point[, map.subid.name] %>% sf::st_drop_geometry())[i], "to SUBID", map_point$MAINDOWN[i]),
+          label = paste("SUBID", unlist(map_point[[map.subid.name]] %>% sf::st_drop_geometry())[i], "to SUBID", map_point$MAINDOWN[i]),
           color = colors[i],
           weight = weights[i],
           opacity = line.opacity
