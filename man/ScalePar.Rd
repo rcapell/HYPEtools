@@ -42,7 +42,7 @@ Nalbantis, Ioannis (1995). “Use of multiple-time-step information in rainfall-
 
 \code{new_parameter_value = 1 - (1 - old_parameter_value)^time_step_ratio}
 
-\code{ScalePar} does not scale the values for the "gratk", "ilratk", "olratk", or "wetrate" rating curve recession coefficients in par.txt because they are not limited to the range 0-1.
+\code{ScalePar} does not scale the values for the "gratk", "ilratk", "olratk", or "wetrate" rating curve parameters in par.txt because they are not limited to the range 0-1.
 Likewise, HYPEtools does not provide any scaling function for the "RATE" columns in DamData.txt and LakeData.txt because these values are not limited to the range 0-1.
 We recommend looking at the results from the lakes/wetlands and recalibrating these parameters and their related power coefficients as needed.
 
