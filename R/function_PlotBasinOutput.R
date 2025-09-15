@@ -70,7 +70,7 @@
 #' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 #' 
 #' \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow upcprc cct2 ret2 ccin rein ccon reon cctn retn 
-#' ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1 ccoc reoc}
+#' ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1 ccoc reoc ccds reds ccas reas ccsi resi}
 #' 
 #' \emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting 
 #' to a screen device, a maximum height of 10 inches is enforced in order to prevent automatic resizing with slow redrawing. 
@@ -185,7 +185,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
   # create vector over all target output variable names which are potentially used in the plot panels
   nm.t <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "soim", "sm13", "upsmfp", "snow", "upcprc", 
             "cct2", "ret2", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp", "wcom", 
-            "wstr", "ccss", "ress", "ccts", "rets", "cct1", "ret1","ccoc","reoc")
+            "wstr", "ccss", "ress", "ccts", "rets", "cct1", "ret1","ccoc","reoc", "ccds", "reds", "ccas", "reas", "ccsi", "resi")
   # initialise logical vector to indicate existence of target variables
   exi.t <- logical(length = length(nm.t))
   names(exi.t) <- nm.t
@@ -209,7 +209,8 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       exi.t[!(nm.t %in% nm.hydro)] <- FALSE
     } else if (hype.vars[1] == "wq") {
       nm.wq <- c("date", "upcprf", "upcpsf", "cout", "rout", "upcprc", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", 
-                    "resp", "ccpp", "repp", "cctp", "retp", "ccss", "ress", "ccts", "rets", "cct1", "ret1","ccoc","reoc")
+                 "resp", "ccpp", "repp", "cctp", "retp", "ccss", "ress", "ccts", "rets", "cct1", "ret1","ccoc","reoc", "ccds",
+                 "reds", "ccas", "reas", "ccsi", "resi")
       exi.t[!(nm.t %in% nm.wq)] <- FALSE
     } else if (is.character(hype.vars)) {
       nm.manu <- c("date", tolower(hype.vars))
@@ -243,15 +244,18 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
   # conditional: three panels with FDC, GoFs, and regime. If GoF variables exist
   if ((exi.t["rout"] || exi.t["cout"]) || (
     (exi.t["rein"] && exi.t["ccin"]) || 
-      (exi.t["reon"] && exi.t["ccon"]) || 
-      (exi.t["retn"] && exi.t["cctn"]) ||
-      (exi.t["resp"] && exi.t["ccsp"]) ||
-      (exi.t["repp"] && exi.t["ccpp"]) ||
-      (exi.t["retp"] && exi.t["cctp"]) ||
-      (exi.t["ress"] && exi.t["ccss"]) ||
-      (exi.t["reoc"] && exi.t["ccoc"])
-    )
-    ) {
+    (exi.t["reon"] && exi.t["ccon"]) || 
+    (exi.t["retn"] && exi.t["cctn"]) ||
+    (exi.t["resp"] && exi.t["ccsp"]) ||
+    (exi.t["repp"] && exi.t["ccpp"]) ||
+    (exi.t["retp"] && exi.t["cctp"]) ||
+    (exi.t["ress"] && exi.t["ccss"]) ||
+    (exi.t["reoc"] && exi.t["ccoc"]) ||
+    (exi.t["reds"] && exi.t["ccds"]) ||
+    (exi.t["reas"] && exi.t["ccas"]) ||
+    (exi.t["resi"] && exi.t["ccsi"])
+  )
+  ) {
     
     # fill layout matrix with panel IDs
     lay.mat <- rbind(lay.mat, 1:3)
@@ -292,7 +296,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.q <- tryCatch(gof(sim = get("cout"), obs = get("rout"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                         error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.9, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 0, y = 0.95, 
                                    legend = c(paste(names(gof.q), gof.q, sep = ": "),"",paste0("(", length(na.omit(rout)), 
                                    " obs.)")), bty = "n", title = "Q, goodness of fit", cex = .8)')
     }
@@ -300,14 +304,14 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.tn <- tryCatch(gof(sim = get("cctn"), obs = get("retn"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 1/4, y = 0.95, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 1/8, y = 0.95, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",
                                    paste0("(", length(na.omit(retn)), " obs.)")), bty = "n", title = "TN, goodness of fit", cex = .8)')
     }
     if (exi.t["retp"] && exi.t["cctp"]){
       gof.tp <- tryCatch(gof(sim = get("cctp"), obs = get("retp"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/4, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/8, y = 0.95, 
                                    legend = c(paste(names(gof.tp), gof.tp, sep = ": "),"",
                                    paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP, goodness of fit", cex = .8)')
     }
@@ -315,7 +319,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.ss <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 3/4, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 3/8, y = 0.95, 
                                    legend = c(paste(names(gof.ss), gof.ss, sep = ": "),"",
                                    paste0("(", length(na.omit(ress)), " obs.)")), bty = "n", title = "SS, goodness of fit", cex = .8)')
     }
@@ -323,10 +327,35 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.oc <- tryCatch(gof(sim = get("ccoc"), obs = get("reoc"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ],
                          error = function(e) {te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 3/4, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 4/8, y = 0.95, 
                                    legend = c(paste(names(gof.oc), gof.oc, sep = ": "),"",
                                    paste0("(", length(na.omit(reoc)), " obs.)")), bty = "n", title = "OC, goodness of fit", cex = .8)')
     }
+    if (exi.t["reds"] && exi.t["ccds"]) {
+      gof.ds <- tryCatch(gof(sim = get("ccds"), obs = get("reds"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ],
+                         error = function(e) {te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 5/8, y = 0.95, 
+                                   legend = c(paste(names(gof.ds), gof.ds, sep = ": "),"",
+                                   paste0("(", length(na.omit(reds)), " obs.)")), bty = "n", title = "DS, goodness of fit", cex = .8)')
+    }
+    if (exi.t["reas"] && exi.t["ccas"]) {
+      gof.as <- tryCatch(gof(sim = get("ccas"), obs = get("reas"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ],
+                         error = function(e) {te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 6/8, y = 0.95, 
+                                   legend = c(paste(names(gof.as), gof.as, sep = ": "),"",
+                                   paste0("(", length(na.omit(reas)), " obs.)")), bty = "n", title = "AS, goodness of fit", cex = .8)')
+    }
+    if (exi.t["resi"] && exi.t["ccsi"]) {
+      gof.si <- tryCatch(gof(sim = get("ccsi"), obs = get("resi"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ],
+                         error = function(e) {te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 7/8, y = 0.95, 
+                                   legend = c(paste(names(gof.si), gof.si, sep = ": "),"",
+                                   paste0("(", length(na.omit(resi)), " obs.)")), bty = "n", title = "SI, goodness of fit", cex = .8)')
+    }
+    
     
     # conditional: prepare regime plot call depending on data availability
     if (exi.t["rout"] && exi.t["cout"]) {
@@ -1078,6 +1107,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
                                  pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
+  
   # OCsim, OCobs panel
   if (exi.t["ccoc"] || exi.t["reoc"]) {
     
@@ -1124,7 +1154,147 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
                                  pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
-   
+  
+  # DSsim, DSobs panel
+  if (exi.t["ccds"] || exi.t["reds"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccds"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, reds, type = "l", col = NA, xaxt = "n", 
+                                  ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(reds, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else if (!exi.t["reds"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccds, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(ccds, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccds, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(c(ccds, reds), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["reds"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, reds, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccds"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccds)], ccds[!is.na(ccds)], col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("DSobs", "DSsim"), lty = c(NA, 1), pch = c(16, NA), 
+                                 pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
+  # ASsim, ASobs panel
+  if (exi.t["ccas"] || exi.t["reas"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccas"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, reas, type = "l", col = NA, xaxt = "n", 
+                                  ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(reas, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else if (!exi.t["reas"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccas, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(ccas, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccas, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(c(ccas, reas), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["reas"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, reas, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccas"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccas)], ccas[!is.na(ccas)], col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("ASobs", "ASsim"), lty = c(NA, 1), pch = c(16, NA), 
+                                 pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
+  # ASsim, ASobs panel
+  if (exi.t["ccsi"] || exi.t["resi"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    cp <- cp + 1
+    if (!exi.t["ccsi"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, resi, type = "l", col = NA, xaxt = "n", 
+                                  ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(resi, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else if (!exi.t["resi"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccsi, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(ccsi, na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, ccsi, type = "l", col = NA, xaxt = "n", 
+                                   ylab = expression(paste("mg l"^"-1")), 
+                                   ylim = c(0, max(c(ccsi, resi), na.rm=T)), cex.axis = 1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["resi"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'points(date, resi, pch = 16, cex = .7)')
+    }
+    
+    if (exi.t["ccsi"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(ccsi)], ccsi[!is.na(ccsi)], col = "red")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("SIobs", "SIsim"), lty = c(NA, 1), pch = c(16, NA), 
+                                 pt.cex = .7, col = c("black", "red"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
   
   # sim tracer, obs tracer panel
   if (exi.t["cct1"] || exi.t["ret1"]) {
@@ -1183,7 +1353,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
   cp <- cp + 1
   # list.plotexpr[[cp]] <- parse(text = 'axis.POSIXct(side = 1, x = date, cex.axis = 1)')
   list.plotexpr[[cp]] <- parse(text = paste0("axis.POSIXct(side = 1, x = date, cex.axis = 1, format = '", date.format,"')"))
-
+  
   
   ## set up plot device with layout and call all plot commands 
   
