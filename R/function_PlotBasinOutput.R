@@ -63,6 +63,8 @@
 #' \item{suspended sediment concentrations}
 #' \item{total sediment concentrations}
 #' \item{tracer concentration}
+#' \item{organic carbon concentration}
+#' \item{dissolved silica concentration and components}
 #' }
 #' 
 #' Below a complete list of HYPE variables known to the function in HYPE info.txt format, ready to copy-paste into an info.txt file. 

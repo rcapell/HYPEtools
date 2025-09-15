@@ -1,7 +1,7 @@
 #' Plot a summary of model results for a single sub-basin
 #' 
 #' Plot a standard suite of plots summarizing properties of a sub-basin including upstream area and model performance 
-#' for discharge and concentrations of nutrients, organic carbon, sediment, and tracers.
+#' for discharge and concentrations of nutrients, organic carbon, sediment, silica, and tracers.
 #' 
 #' @param x Data frame, with column-wise daily time series of HYPE variables. Date-times in 
 #' \code{\link{POSIXct}} format in first column. Typically an imported basin output file from HYPE using \code{\link{ReadBasinOutput}}. 
@@ -44,7 +44,7 @@
 #' @details
 #' \code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a 
 #' chosen sub-basin. Performance plots include discharge, HYPE-modeled nutrient species for nitrogen (total, inorganic, organic) 
-#' phosphorus (total, particulate, soluble), organic carbon, and suspended and total sediment concentrations.
+#' phosphorus (total, particulate, soluble), organic carbon, dissolved silica, and suspended and total sediment concentrations.
 #' 
 #' Plotted panels show: 
 #' \itemize{
