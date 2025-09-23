@@ -9,6 +9,7 @@ PlotSubbasinRouting(
   map.subid.column = 1,
   gd = NULL,
   bd = NULL,
+  filter.map.subids = TRUE,
   plot.scale = TRUE,
   plot.searchbar = FALSE,
   weight = 0.5,
@@ -37,6 +38,9 @@ Only required if providing GeoData information with \code{gd}.}
 \item{gd}{Path to model GeoData.txt or a GeoData object from \code{\link{ReadGeoData}}. Only required if \code{map} does not contain SUBID and/or MAINDOWN fields.}
 
 \item{bd}{Path to model BranchData.txt or a BranchData object from \code{\link{ReadBranchData}}. Only required if model has a BranchData.txt file.}
+
+\item{filter.map.subids}{Logical, if \code{TRUE}, then SUBIDs in \code{map} which are not present in \code{gd} will not be added to the map.
+Otherwise, all SUBIDs in \code{map} will be added to the map.}
 
 \item{plot.scale}{Logical, include a scale bar on the map.}
 

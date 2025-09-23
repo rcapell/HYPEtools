@@ -152,7 +152,7 @@ When an 'NA' value is found at the i-th position in obs OR sim, the i-th value o
 
 \item{start.month}{argument passed to the \code{\link{sKGE}} function.}
 
-\item{digits}{integer, numer of decimal places used for rounding the goodness of fit indexes.}
+\item{digits}{integer, number of decimal places used for rounding the goodness of fit indexes.}
 
 \item{fun}{function to be applied to \code{sim} and \code{obs} in order to obtain transformed values thereof before applying any goodness-of-fit function}
 

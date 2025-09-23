@@ -16,7 +16,7 @@
 #' Read more about how to run HYPE on the [HYPE wiki](http://hype.smhi.net/wiki/doku.php?id=start#how_to_run_hype).
 #' 
 #' @return
-#' Output messagess from the HYPE executable are printed to the console.
+#' Output messages from the HYPE executable are printed to the console.
 #' 
 #' @examples
 #' \dontrun{

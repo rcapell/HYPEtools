@@ -1,10 +1,20 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.6.5.9000
+## HYPEtools 1.5.0.9000
 *Development Version*
 
 #### Highlights
+* Start work on PlotEvaluationMaps() function - NOT FULLY IMPLEMENTED!
+* Fix bug in PlotSubbasinRouting() that prevented map from being generated when using BranchData
+* Added default feature in PlotSubbasinRouting() to filter GIS data to only the subbasins in GeoData
+* Add silica to PlotBasinOutput() and PlotBasinSummary()
 
+## HYPEtools 1.6.6 (2025-08-19)
+*Enhancements*
+
+#### Highlights
+* Add argument to adjust date format in PlotAnnualRegime()
+* Update ReadTimeOutput() to send warning if unknown IDs are provided by the user instead of throwing an error and stopping
 
 ## HYPEtools 1.6.5 (2025-05-05)
 *Enhancements and bug fixes*
@@ -46,7 +56,7 @@
 * Add example AquiferData.txt and FloodData.txt files to demo model; taken from HYPE wiki:
   * http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:aquiferdata.txt
   * http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:flooddata.txt
-* Add ScaleFloodData() function to scale recession cofficients
+* Add ScaleFloodData() function to scale recession coefficients
 * Add ReadFloodData() and WriteFloodData() functions
 * Update CompareFiles() function to warn if "type" argument is not in the supported list of options
 * Update links to HYPEtools Wiki

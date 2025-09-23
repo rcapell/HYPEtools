@@ -21,7 +21,7 @@
 #'
 #' \code{new_parameter_value = 1 - (1 - old_parameter_value)^time_step_ratio}
 #' 
-#' \code{ScalePar} does not scale the values for the "gratk", "ilratk", "olratk", or "wetrate" rating curve recession coefficients in par.txt because they are not limited to the range 0-1.
+#' \code{ScalePar} does not scale the values for the "gratk", "ilratk", "olratk", or "wetrate" rating curve parameters in par.txt because they are not limited to the range 0-1.
 #' Likewise, HYPEtools does not provide any scaling function for the "RATE" columns in DamData.txt and LakeData.txt because these values are not limited to the range 0-1.
 #' We recommend looking at the results from the lakes/wetlands and recalibrating these parameters and their related power coefficients as needed.
 #' 
@@ -143,12 +143,12 @@ ScalePar <- function(x = NULL, timestep.ratio = 1 / 24, digits = 3, verbose = TR
       }
     }
     
-    # Add warning for hidden recession coefficients for rating curves
+    # Add warning for rating curves parameters
     hidden_parameters <- c("gratk", "ilratk", "olratk", "wetrate")
     if(any(hidden_parameters %in% names(x))){
       warning(
         paste0(
-          'ScalePar() does not scale the values for the following rating curve recession coefficients present in "x": ',
+          'ScalePar() does not scale the values for the following rating curve parameters present in "x": ',
           paste(hidden_parameters[which(hidden_parameters %in% names(x))], collapse = ", "),
           ". We recommend looking at the results from the lakes/wetlands and recalibrating these parameters and their related power coefficients as needed."
         ),

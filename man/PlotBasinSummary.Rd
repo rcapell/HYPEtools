@@ -87,12 +87,12 @@ Returns a multi-panel plot in a new graphics device.
 }
 \description{
 Plot a standard suite of plots summarizing properties of a sub-basin including upstream area and model performance
-for discharge and concentrations of nutrients, organic carbon, sediment, and tracers.
+for discharge and concentrations of nutrients, organic carbon, sediment, silica, and tracers.
 }
 \details{
 \code{PlotBasinSummary} plots a multi-panel plot with a number of plots to evaluate model properties and performances for a
 chosen sub-basin. Performance plots include discharge, HYPE-modeled nutrient species for nitrogen (total, inorganic, organic)
-phosphorus (total, particulate, soluble), organic carbon, and suspended and total sediment concentrations.
+phosphorus (total, particulate, soluble), organic carbon, dissolved silica, and suspended and total sediment concentrations.
 
 Plotted panels show:
 \itemize{
