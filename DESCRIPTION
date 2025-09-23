@@ -32,9 +32,12 @@ Imports:
     pbapply,
     purrr,
     rlang,
+    rnaturalearth,
     scales,
+    sf,
     stats,
     stringr,
+    terra,
     tidyr,
     tidyselect,
     tools,
@@ -44,7 +47,7 @@ License: LGPL-3
 LazyData: false
 URL: https://hypeweb.smhi.se/, https://github.com/rcapell/HYPEtools
 BugReports: https://github.com/rcapell/HYPEtools/issues
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-US
@@ -58,7 +61,6 @@ Suggests:
     leaflet.extras,
     mapview,
     plotly,
-    sf,
     shiny,
     shinyalert,
     shinyFiles,
