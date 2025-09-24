@@ -12,7 +12,7 @@ CompareFiles(
     "Optpar", "Par", "PointSourceData", "Obs", "Simass", "Subass", "TimeOutput", "Xobs"),
   by = NULL,
   compare.order = TRUE,
-  threshold = 1e-10,
+  threshold = 0.0000000001,
   ...
 )
 }
