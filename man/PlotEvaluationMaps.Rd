@@ -5,18 +5,19 @@
 \title{Function for plotting up to two HYPE simulation results in maps.}
 \usage{
 PlotEvaluationMaps(
-  tempOutDirectory,
   figuresDirectory = NULL,
-  referenceSubassFile,
-  simulationSubassFile,
-  subbasinShapeFile,
-  geodataFile,
-  simulationInfoFile,
+  tempOutDirectory,
+  refSubass,
+  simSubass,
+  subBasins,
+  geoData,
+  simInfo,
+  var.info,
   streamShapeFile = NULL,
   criterion = c("NSE", "KGE", "CC", "MAE", "RE(\%)", "RMSE", "KGESD", "KGEM"),
   visualization = c("best.simulation", "relative.difference", "comparison"),
   data.presentation = c("outlets", "polygons", "centroids"),
-  evaluation.dataset,
+  evaluation.variable,
   simulation.names = NULL,
   marker.size = NULL,
   show.borders = FALSE,
@@ -24,23 +25,27 @@ PlotEvaluationMaps(
   histogram.fill = NULL,
   used.colours = NULL,
   domain.name,
-  gauge.list = NULL
+  gauge.list = NULL,
+  nsign.figures = 3,
+  file.format = "pdf"
 )
 }
 \arguments{
-\item{tempOutDirectory}{Temporary directory for intermediate data e.g., geo-spatial objects. It is mandatory character string that is also used for figures if the figures directory is not specified. To save time, intermediate data is saved the first time functions are called and loaded from disk during subsequent calls (e.g., to visualize different performance metrics with the same variable).}
-
 \item{figuresDirectory}{The figures output directory, an optional character string. If not set, figures are saved to the temporary directory with the intermediate objects.}
 
-\item{referenceSubassFile}{A mandatory character string specifying the reference (default) HYPE simulation subass file.}
+\item{tempOutDirectory}{Temporary directory for intermediate data e.g., geo-spatial objects. It is mandatory character string that is also used for figures if the figures directory is not specified. To save time, intermediate data is saved the first time functions are called and loaded from disk during subsequent calls (e.g., to visualize different performance metrics with the same variable).}
 
-\item{simulationSubassFile}{An optional character string specifying the second simulation subass file e.g., for comparison to the reference or for computing relative differences between simulation performances.}
+\item{refSubass}{A mandatory reference (default) HYPE simulation subass object imported with the \code{ReadSubass()} function.}
 
-\item{subbasinShapeFile}{The path to the shape file containing the sub-basin geometries. A mandatory character string.}
+\item{simSubass}{An optional simulation subass object imported with the \code{ReadSubass()} function. It is used for comparison to the reference simulation or for computing relative differences between simulation performances.}
 
-\item{geodataFile}{A mandatory character string specifying the path to the GeoData.txt file, which provides spatial information of the sub-basins. The outlets of the gauged sub-basins in the subass files are also read from this file and converted into geo-spatial objects for visualization.}
+\item{subBasins}{A mandatory sf object containing the sub-basin geometries.}
 
-\item{simulationInfoFile}{A mandatory character string specifying the path to the info.txt file containing the simulation settings, e.g., start/end dates, aggregation periods, etc.}
+\item{geoData}{A mandatory geodata object imported by reading the GeoData.txt file with the \code{ReadGeoData()} function. The outlets of the gauged sub-basins in the subass files are also read from this file and converted into geo-spatial objects for visualization.}
+
+\item{simInfo}{A mandatory object imported from the info.txt with the function \code{ReadInfo()}. It provides e.g., start/end dates, aggregation periods, etc.}
+
+\item{var.info}{The information pertaining to the simulation variable, extracted from the header line of the subass file. It is a mandatory character string of length 2 containing the information \code{c('obs vs sim', 'units')}}
 
 \item{streamShapeFile}{An optional character string for the path to the shape file containing the stream network of the model domain, which  should be projected to the WGS84 system for consistency. If the stream network is desired without specifying the shape file, the 50m-resolution map from Natural Earth  is used (requires network connection). The layer may not provide the desired level of detail however.}
 
@@ -50,7 +55,7 @@ PlotEvaluationMaps(
 
 \item{data.presentation}{The mandatory data presentation mode on maps, one of "polygons", "outlets" or "centroids". "Polygons" are useful for spatially distributed data e.g., evaporation. "Outlets" and "centroids" are useful for point observations, e.g., discharge and sediment plotted at the sub-basin outlets and centroids, respectively.}
 
-\item{evaluation.dataset}{A mandatory character string for the name of data being analysed, e.g., "Discharge", "Actual ET", "Snow Water Equivalent", etc.}
+\item{evaluation.variable}{A mandatory character string for the variable name being analysed, e.g., "Discharge", "Actual ET", "Snow Water Equivalent", etc.}
 
 \item{simulation.names}{A vector of two (at least one) character strings with the "names" of the simulations e.g., model versions, used as titles on the maps. The first item mandatory.}
 
@@ -67,6 +72,10 @@ PlotEvaluationMaps(
 \item{domain.name}{The name of the domain. This character string is mandatory. The global model is called "wwhype".}
 
 \item{gauge.list}{A subset of gauges to be plotted (must exist in the subass file), if some gauges in the subass file are to be excluded.}
+
+\item{nsign.figures}{An optional digit specifying the number of significant digits used to display simulation summary statistics. Default is 3.}
+
+\item{file.format}{An optional string specifying the figure output format. Options are "pdf" (default) and "png".}
 }
 \description{
 Draws maps for selected HYPE variables and performance metrics with pretty scale discretizations and colours.
