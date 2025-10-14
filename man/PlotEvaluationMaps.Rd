@@ -5,13 +5,14 @@
 \title{Function for plotting up to two HYPE simulation results in maps.}
 \usage{
 PlotEvaluationMaps(
-  figsDirectory = NULL,
-  tempDirectory,
+  figuresDirectory = NULL,
+  tempOutDirectory,
   refSubass,
   simSubass,
   subBasins,
   geoData,
   simInfo,
+  var.info,
   streamShapeFile = NULL,
   criterion = c("NSE", "KGE", "CC", "MAE", "RE(\%)", "RMSE", "KGESD", "KGEM"),
   visualization = c("best.simulation", "relative.difference", "comparison"),
@@ -30,33 +31,35 @@ PlotEvaluationMaps(
 )
 }
 \arguments{
-\item{figsDirectory}{The figures output directory, an optional character string. If not set, figures are saved to the temporary directory with the intermediate objects.}
+\item{figuresDirectory}{The figures output directory, an optional character string. If not set, figures are saved to the temporary directory with the intermediate objects.}
 
-\item{tempDirectory}{Temporary directory for intermediate data e.g., geo-spatial objects. It is mandatory character string that is also used for figures if the figures directory is not specified. To save time, intermediate data is saved the first time functions are called and loaded from disk during subsequent calls (e.g., to visualize different performance metrics with the same variable).}
+\item{tempOutDirectory}{Temporary directory for intermediate data e.g., geo-spatial objects. It is mandatory character string that is also used for figures if the figures directory is not specified. To save time, intermediate data is saved the first time functions are called and loaded from disk during subsequent calls (e.g., to visualize different performance metrics with the same variable).}
 
-\item{refSubass}{A mandatory reference (default) HYPE simulation subass file from which a subass object can be imported with the \code{ReadSubass()} function.}
+\item{refSubass}{A mandatory reference (default) HYPE simulation subass object imported with the \code{ReadSubass()} function.}
 
-\item{simSubass}{An optional simulation subass file from which a subass object can be imported with the \code{ReadSubass()} function. It is used for comparison to the reference simulation or for computing the relative difference in performance of two simulations.}
+\item{simSubass}{An optional simulation subass object imported with the \code{ReadSubass()} function. It is used for comparison to the reference simulation or for computing relative differences between simulation performances.}
 
-\item{subBasins}{A mandatory file containing the sub-basin polygons.}
+\item{subBasins}{A mandatory sf object containing the sub-basin geometries.}
 
-\item{geoData}{A mandatory GeoData.txt file from which an appropriate object can be imported with the \code{ReadGeoData()} function. The outlets of the gauged sub-basins in the subass files are read from this file and converted into geo-spatial objects for visualization.}
+\item{geoData}{A mandatory geodata object imported by reading the GeoData.txt file with the \code{ReadGeoData()} function. The outlets of the gauged sub-basins in the subass files are also read from this file and converted into geo-spatial objects for visualization.}
 
-\item{simInfo}{A mandatory info.txt file for reading with the \code{ReadInfo()} function. It provides e.g., start/end dates, aggregation periods, etc.}
+\item{simInfo}{A mandatory object imported from the info.txt with the function \code{ReadInfo()}. It provides e.g., start/end dates, aggregation periods, etc.}
 
-\item{streamShapeFile}{An optional file containing the stream network of the model domain, which  should be projected to the WGS84 system for consistency. If the stream network is desired without specifying this file, the 50m-resolution map from Natural Earth  is used (requires network connection). The layer may not provide the desired level of detail however.}
+\item{var.info}{The information pertaining to the simulation variable, extracted from the header line of the subass file. It is a mandatory character string of length 2 containing the information \code{c('obs vs sim', 'units')}}
 
-\item{criterion}{An optional valid name of a HYPE subass evaluation criterion. 'NSE', 'KGE', 'CC', etc. Some are not currently implemented but NSE is plotted by default.}
+\item{streamShapeFile}{An optional character string for the path to the shape file containing the stream network of the model domain, which  should be projected to the WGS84 system for consistency. If the stream network is desired without specifying the shape file, the 50m-resolution map from Natural Earth  is used (requires network connection). The layer may not provide the desired level of detail however.}
 
-\item{visualization}{The mandatory type of visualization from "relative.difference", "best.simulation" and "comparison". The first two options produce a single map while the third produces two side-by-side maps. "Comparison" and "relative difference" require the reference and "new" simulations.}
+\item{criterion}{An optional valid name of a HYPE subass evaluation criterion. 'NSE', 'KGE', 'CC', 'MAE', 'RE(\%)', and 'RMSE' are currently implemented. NSE is plotted by default.}
 
-\item{data.presentation}{The mandatory data presentation mode on maps, one of "polygons", "outlets" or "centroids". "Polygons" are useful for spatially distributed data e.g., evaporation. "Outlets" and "centroids" are useful for point observations, e.g., discharge and sediment plotted at the sub-basin outlets and centroids, respectively. Distributed data from the global model are plotted using centroids.}
+\item{visualization}{The mandatory type of visualization from "relative.difference", "best.simulation" and "comparison". The first two options produce a single map while the third produces two side-by-side maps. "Comparison" and "relative difference" require two simulations.}
 
-\item{evaluation.variable}{A mandatory character string for the variable name being analysed, e.g., "Discharge", "ET", "Snow Water Equivalent", etc.}
+\item{data.presentation}{The mandatory data presentation mode on maps, one of "polygons", "outlets" or "centroids". "Polygons" are useful for spatially distributed data e.g., evaporation. "Outlets" and "centroids" are useful for point observations, e.g., discharge and sediment plotted at the sub-basin outlets and centroids, respectively.}
 
-\item{simulation.names}{A vector of two (at least one) character strings with the "names" of the simulations e.g., model versions, used as titles on the maps. The first item is mandatory.}
+\item{evaluation.variable}{A mandatory character string for the variable name being analysed, e.g., "Discharge", "Actual ET", "Snow Water Equivalent", etc.}
 
-\item{marker.size}{Optional numerical value for the marker size.}
+\item{simulation.names}{A vector of two (at least one) character strings with the "names" of the simulations e.g., model versions, used as titles on the maps. The first item mandatory.}
+
+\item{marker.size}{A numerical value for the marker size, optional.}
 
 \item{show.borders}{Logical choice to show political borders (default is FALSE). If requested, the 110m-resolution map will be downloaded from the Natural Earth portal, which requires an internet connection.}
 
@@ -70,7 +73,7 @@ PlotEvaluationMaps(
 
 \item{gauge.list}{A subset of gauges to be plotted (must exist in the subass file), if some gauges in the subass file are to be excluded.}
 
-\item{nsign.figures}{An optional numeric value specifying the number of significant digits displayed in summary statistics. The default is 3.}
+\item{nsign.figures}{An optional digit specifying the number of significant digits used to display simulation summary statistics. Default is 3.}
 
 \item{file.format}{An optional string specifying the figure output format. Options are "pdf" (default) and "png".}
 }
@@ -87,26 +90,31 @@ Draws maps for selected HYPE variables and performance metrics with pretty scale
 \dontrun{
 if (interactive()) {
   PlotEvaluationMaps(
-    tempDirectory    = system.file("demo_model", "inst", "figures",        
-    package = "HYPEtools"),
-    refSubass           = system.file("demo_model", "results", "subass1.txt", 
-    package = "HYPEtools"),
-    subBasins           = system.file("demo_model", "gis", "Nytorp_map.gpkg", 
-    package = "HYPEtools"),
-    geoData             = system.file("demo_model", "GeoData.txt",            
-    package = "HYPEtools"),
-    simInfo             = system.file("demo_model", "info.txt",               
-    package = "HYPEtools"),
-    criterion           = c('KGE'),
-    visualization       = c("best.simulation"), 
-    data.presentation   = c("outlets"), 
+    tempOutDirectory = system.file("demo_model", "inst", "figures",
+                                   package = "HYPEtools"
+    ),
+    refSubass = ReadSubass(system.file("demo_model", "results", "subass1.txt",
+                                       package = "HYPEtools"
+    )),
+    subBasins = system.file("demo_model", "gis", "Nytorp_map.gpkg",
+                            package = "HYPEtools"
+    ),
+    geoData = system.file("demo_model", "GeoData.txt",
+                          package = "HYPEtools"
+    ),
+    simInfo = system.file("demo_model", "info.txt",
+                          package = "HYPEtools"
+   ),
+    criterion = c("KGE"),
+    visualization = c("best.simulation"),
+    data.presentation = c("outlets"),
     evaluation.variable = c("discharge"),
-    simulation.names    = c("Nytorp"),
-    show.borders        = FALSE,
-    show.streams        = FALSE,
-    domain.name         = "Nytorp",
-    nsign.figures       = 3,
-    file.format         = "pdf"
+    simulation.names = c("Nytorp"),
+    show.borders = FALSE,
+    show.streams = FALSE,
+    domain.name = "Nytorp",
+    nsign.figures = 3,
+    file.format = "pdf"
   )
 }
 }
