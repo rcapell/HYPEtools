@@ -103,7 +103,7 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
     requireNamespace("rnaturalearth", quietly=TRUE)
   )) {
     # Warn that a dependency is not installed
-    stop('To use the PlotEvaluationMaps functionality, please ensure that the following packages are installed: c("sf", "terra", "rnaturalearth")', call.=FALSE)
+    stop('To use the PlotEvaluationMaps features, please ensure that the following packages are installed: c("sf", "terra", "rnaturalearth")', call.=FALSE)
   }
   ### LOCAL FUNCTIONS ###
   MatrixToSf <- function(m., epsg_code=4326, lon_name, lat_name)

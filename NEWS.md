@@ -4,7 +4,7 @@
 *Development Version*
 
 #### Highlights
-* Start work on PlotEvaluationMaps() function - NOT FULLY IMPLEMENTED!
+* Add PlotEvaluationMaps() function
 * Fix bug in PlotSubbasinRouting() that prevented map from being generated when using BranchData
 * Added default feature in PlotSubbasinRouting() to filter GIS data to only the subbasins in GeoData
 * Add silica to PlotBasinOutput() and PlotBasinSummary()
