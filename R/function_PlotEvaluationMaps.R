@@ -51,6 +51,17 @@ PlotEvaluationMaps <- function(tempOutDirectory, figuresDirectory=NULL, referenc
                                gauge.list=NULL
 )
 {
+  
+  # Check/Load Dependencies - do this here so that these packages are not required for the base HYPEtools installation
+  if (!all(
+    requireNamespace("rnaturalearth", quietly = TRUE),
+    requireNamespace("sf", quietly = TRUE),
+    requireNamespace("terra", quietly = TRUE)
+  )) {
+    # Warn that a dependency is not installed
+    stop('To use the function features, please ensure that the following packages are installed: c("rnaturalearth", "sf", "terra")', call.=FALSE)
+  }
+  
   MatrixToSf <- function(m., epsg_code=4326, lon_name, lat_name)
   {
     M=sf::st_as_sf(m., coords = c(lon_name, lat_name))
