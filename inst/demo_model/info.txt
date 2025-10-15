@@ -7,6 +7,9 @@ basinoutput variable crun evap upcprf upcpsf temp upepot upevap cout rout soim s
 basinoutput meanperiod 	1
 basinoutput subbasin 	3587
 basinoutput signfigures 4
+timeoutput variable cout
+timeoutput meanperiod 	1
+timeoutput signfigures 4
 mapoutput variable crun evap temp cout rout soim sm13 snow
 mapoutput meanperiod 5
 mapoutput signfigures 4
