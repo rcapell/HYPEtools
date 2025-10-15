@@ -29,6 +29,7 @@
 
 #' @importFrom graphics par legend strwidth text mtext axis barplot layout
 #' @importFrom grDevices pdf
+#' @importFrom utils unzip
 
 #' @details
 #' \code{PlotEvaluationMaps} visualises model performances from one or two subass files. The user should provide the files as well as the subbasin polygons, the geodata and info.txt files. Relative difference in performance is computed as the (new - ref)/ref simulation *100%. The best simulation is the new in case two are provided or the reference if only one is provided.
@@ -182,8 +183,8 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
         
         #
         if(domain. == "wwhype"){
-          bground=st_as_sf(x.oln)
-          borders=st_as_sf(s.)
+          bground=sf::st_as_sf(x.oln)
+          borders=sf::st_as_sf(s.)
         } else {
           #browser()
           borders=sf::st_as_sf(terra::intersect(terra::vect(sub.o), s.))
@@ -583,7 +584,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
         plot(sf::st_geometry(gag.shp), col=color[[3]], pch=16, cex=cex., add=TRUE)
       } else {
         idx.gag = which(geo.data$subids$SUBID %in% geo.data$gauges$SUBID)
-        gag.ctr = st_centroid(geo.data$subids[idx.gag, ])
+        gag.ctr = sf::st_centroid(geo.data$subids[idx.gag, ])
         plot(sf::st_geometry(gag.ctr), col=color[[3]], pch=16, cex=cex., add=TRUE)
       }
       #
