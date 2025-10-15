@@ -26,11 +26,10 @@
 #' @param file.format An optional string specifying the figure output format. Options are "pdf" (default) and "png".
 #' @param gauge.list A subset of gauges to be plotted (must exist in the subass file), if some gauges in the subass file are to be excluded.
 #' 
-##' @importFrom sf st_as_sf st_crs st_transform as_Spatial st_geometry st_read st_is_valid st_make_valid st_union st_crop st_intersection st_is_empty st_geometry st_centroid 
-##' @importFrom graphics par legend strwidth text mtext axis barplot layout
-##' @importFrom grDevices pdf
-##' @importFrom terra fillHoles vect is.valid makeValid 
-##' @importFrom rnaturalearth ne_download ne_countries
+
+#' @importFrom graphics par legend strwidth text mtext axis barplot layout
+#' @importFrom grDevices pdf
+
 #' @details
 #' \code{PlotEvaluationMaps} visualises model performances from one or two subass files. The user should provide the files as well as the subbasin polygons, the geodata and info.txt files. Relative difference in performance is computed as the (new - ref)/ref simulation *100%. The best simulation is the new in case two are provided or the reference if only one is provided.
 #' 
@@ -41,8 +40,6 @@
 #' if (interactive()) {
 #'   PlotEvaluationMaps(
 #'     tempDirectory       = tempdir(),
-#'     simSubass           = system.file("demo_model", "results", "subass1.txt", 
-#'     package = "HYPEtools"),
 #'     refSubass           = system.file("demo_model", "results", "subass1.txt", 
 #'     package = "HYPEtools"),
 #'     subBasins           = system.file("demo_model", "gis", "Nytorp_map.gpkg", 
@@ -68,7 +65,7 @@
 #' @export
 # Exported function
 PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refSubass, 
-                               simSubass, subBasins, 
+                               simSubass = NULL, subBasins, 
                                geoData, 
                                simInfo,
                                streamShapeFile=NULL, 
@@ -846,6 +843,6 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
            scale.values = scale.vec, stat1=quantiles1, stat2=quantiles2, 
            sco1=sco1., sco2=sco2., stat.sign=num.digits)
   dev.off()
-  cat("done./n")
+  cat("done.")
   
 }

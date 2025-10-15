@@ -8,7 +8,7 @@ PlotEvaluationMaps(
   figsDirectory = NULL,
   tempDirectory = tempdir(),
   refSubass,
-  simSubass,
+  simSubass = NULL,
   subBasins,
   geoData,
   simInfo,
@@ -88,8 +88,6 @@ Draws maps for selected HYPE variables and performance metrics with pretty scale
 if (interactive()) {
   PlotEvaluationMaps(
     tempDirectory       = tempdir(),
-    simSubass           = system.file("demo_model", "results", "subass1.txt", 
-    package = "HYPEtools"),
     refSubass           = system.file("demo_model", "results", "subass1.txt", 
     package = "HYPEtools"),
     subBasins           = system.file("demo_model", "gis", "Nytorp_map.gpkg", 
