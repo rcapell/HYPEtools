@@ -52,6 +52,7 @@ Suggests:
     rmarkdown,
     knitr,
     beepr,
+    curl,
     DT,
     htmlwidgets,
     leaflet,

@@ -90,6 +90,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
 {
   # Check/Load Dependencies - do this here so that these packages are not required for the base HYPEtools installation
   if (!all(
+    requireNamespace("curl",            quietly=TRUE),
     requireNamespace("sf",            quietly=TRUE),
     requireNamespace("terra",         quietly=TRUE),
     requireNamespace("rnaturalearth", quietly=TRUE)
@@ -105,7 +106,28 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     M=sf::st_transform(M, crs=sf::st_crs(paste0("EPSG:", epsg_code)))
     return(M)
   }
-  #
+  
+  # Function to download dataset from rnaturalearth
+  download_centerlines <- function(){
+    
+    downloaddir <- tempdir()
+    
+    # Download using curl
+    curl::curl_download(
+      url = "https://naciscdn.org/naturalearth/50m/physical/ne_50m_rivers_lake_centerlines.zip",
+      destfile = file.path(downloaddir, "rivers.zip")
+    )
+    
+    # Then unzip and read
+    unzip(file.path(downloaddir, "rivers.zip"), exdir = file.path(downloaddir, "rivers"))
+    
+    rivers <- sf::st_read(file.path(downloaddir, "rivers", "ne_50m_rivers_lake_centerlines.shp"))
+    
+    unlink(downloaddir)
+    return(rivers)
+  }
+  
+  
   PrepareGeospatialData <- function(stream_shape=NULL, border_bool=FALSE, 
                                     stream_bool=FALSE, gdata, 
                                     spoly, odir, domain.,  
@@ -177,21 +199,25 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
       if(file.exists(f.str)){
         load(f.str)
       } else {
-        str. <- rnaturalearth::ne_download(scale = 50, type = 'rivers_lake_centerlines', category = 'physical')
+        
+        str. <- download_centerlines()
         
         #
         if(domain. != "wwhype"){
-          str. = sf::st_as_sf(terra::intersect(vect(str.), vect(bground)))
+          str. = sf::st_as_sf(terra::intersect(terra::vect(str.), terra::vect(bground)))
         }
         save(str., file=f.str)
       }
       #GAUGING STATIONS geodata pour points
-      browser()
+      # browser()
       f.gag = file.path(odir, paste(paste(domain., collapse="-"), vcode., "gauge_data.RDATA", sep="_"))
       if(file.exists(f.gag)){
         load(f.gag)
       } else {
         gdata=ReadGeoData(gdata)
+        if(!all(c("SUBID", "POURX", "POURY") %in% colnames(gdata))){
+          stop("POURX and POURY columns are required in GeoData.txt")
+        }
         v. = gdata[match(gauges_vector, gdata$SUBID), c("SUBID", "POURX", "POURY")]
         gag. = MatrixToSf(m=v., lon_name = "POURX", lat_name = "POURY")
         save(gag., file=f.gag)
@@ -345,12 +371,12 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     if( horiz) {for(i in 1:LCOL) rect(SEQ[i],1,SEQ[i+1],10,col=x[i],border=col.border)}
     
     if(grepl(x=plot.type, pattern="relative.difference")){
-      leg.txt="\nRel. Difference"
+      leg.txt="/nRel. Difference"
       tit. = toupper(paste(tit., "rel. diff."))
     }else if (grepl(x=plot.type, pattern="best.run")){
-      leg.txt="\nBest sim"
+      leg.txt="/nBest sim"
     }else if (grepl(x=plot.type, pattern="performance")){
-      leg.txt="\nPerformance"
+      leg.txt="/nPerformance"
     }
     
     text. = sapply(round(z,2), CondenseNumeric)
@@ -359,10 +385,10 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     locs. = locs.[seq(1, length(locs.), by=2)]
     
     if(horiz){
-      mtext(2, at=5, text=sub('-','\n',tit.), cex=1.05, line=-0.5, font=2)
+      mtext(2, at=5, text=sub('-','/n',tit.), cex=1.05, line=-0.5, font=2)
       mtext(3, at=locs., text=labs., line = 0)
     }else {
-      mtext(3, at=5, text=sub('-','\n',tit.), cex=1.05, line=-0.5, font=2)
+      mtext(3, at=5, text=sub('-','/n',tit.), cex=1.05, line=-0.5, font=2)
       mtext(4, at=locs., text=labs., line = 0)
     }
   }
@@ -527,7 +553,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     par(mar=c(0.50, 0.1, 0.5, 0.1), cex=1.1)
     # Plot the country border if requested
     
-    plot(st_geometry(map.bground), col=ColMap[3], border=col.border, axes=FALSE) # political borders
+    plot(sf::st_geometry(map.bground), col=ColMap[3], border=col.border, axes=FALSE) # political borders
     #Add stream network if requested
     if (river.network) {
       if(!is.null(riv.shp)){
@@ -539,7 +565,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
       plot((gag.shp), col=color[[3]], pch=16, cex=cex., add=TRUE)
       if(num.plots ==2){
         #plot the domain outline
-        plot(st_geometry(map.bground), col=ColMap[3], border=col.border, lwd=1.5, axes=FALSE)
+        plot(sf::st_geometry(map.bground), col=ColMap[3], border=col.border, lwd=1.5, axes=FALSE)
         # Plot stream network if requested
         if (river.network) {
           if(!is.null(riv.shp)){
@@ -550,22 +576,22 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
       }
       
     } else if (show.data.as == "polygons"){ 
-      plot(st_geometry(sub.shp), col=color[[3]], border=color[[3]], add=TRUE)
+      plot(sf::st_geometry(sub.shp), col=color[[3]], border=color[[3]], add=TRUE)
       if(num.plots ==2){
-        plot(st_geometry(sub.shp), col=color2[[3]], border=color2[[3]])
+        plot(sf::st_geometry(sub.shp), col=color2[[3]], border=color2[[3]])
       }
       
     } else if (show.data.as == "centroids"){
       if(dom.=="wwhype"){
-        plot(st_geometry(gag.shp), col=color[[3]], pch=16, cex=cex., add=TRUE)
+        plot(sf::st_geometry(gag.shp), col=color[[3]], pch=16, cex=cex., add=TRUE)
       } else {
         idx.gag = which(geo.data$subids$SUBID %in% geo.data$gauges$SUBID)
         gag.ctr = st_centroid(geo.data$subids[idx.gag, ])
-        plot(st_geometry(gag.ctr), col=color[[3]], pch=16, cex=cex., add=TRUE)
+        plot(sf::st_geometry(gag.ctr), col=color[[3]], pch=16, cex=cex., add=TRUE)
       }
       #
       if(num.plots ==2){
-        plot(st_geometry(map.bground), col=ColMap[3], border=ColMap[3], axes=FALSE) # background map
+        plot(sf::st_geometry(map.bground), col=ColMap[3], border=ColMap[3], axes=FALSE) # background map
         #Add stream network if requested
         if (river.network) {
           if(!is.null(riv.shp)){
@@ -574,9 +600,9 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
         }
         #centroid points
         if(dom. == "wwhype"){
-          plot(st_geometry(gag.shp), col=color2[[3]], pch=16, cex=cex., add=TRUE)
+          plot(sf::st_geometry(gag.shp), col=color2[[3]], pch=16, cex=cex., add=TRUE)
         } else {
-          plot(st_geometry(gag.ctr), col=color2[[3]], pch=16, cex=cex., add=TRUE)  
+          plot(sf::st_geometry(gag.ctr), col=color2[[3]], pch=16, cex=cex., add=TRUE)  
         }
         
       }
@@ -820,6 +846,6 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
            scale.values = scale.vec, stat1=quantiles1, stat2=quantiles2, 
            sco1=sco1., sco2=sco2., stat.sign=num.digits)
   dev.off()
-  cat("done.\n")
+  cat("done./n")
   
 }
