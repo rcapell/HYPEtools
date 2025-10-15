@@ -3,30 +3,34 @@
 #'
 #' Draws maps for selected HYPE variables and performance metrics with pretty scale discretizations and colours.
 #'
-#' @param tempOutDirectory Temporary directory for intermediate data e.g., geo-spatial objects. It is mandatory character string that is also used for figures if the figures directory is not specified. To save time, intermediate data is saved the first time functions are called and loaded from disk during subsequent calls (e.g., to visualize different performance metrics with the same variable). 
-#' @param figuresDirectory The figures output directory, an optional character string. If not set, figures are saved to the temporary directory with the intermediate objects.
-#' @param refSubass A mandatory reference (default) HYPE simulation subass object imported with the \code{ReadSubass()} function.  
-#' @param simSubass An optional simulation subass object imported with the \code{ReadSubass()} function. It is used for comparison to the reference simulation or for computing relative differences between simulation performances.
-#' @param subBasins A mandatory sf object containing the sub-basin geometries. 
-#' @param geoData A mandatory geodata object imported by reading the GeoData.txt file with the \code{ReadGeoData()} function. The outlets of the gauged sub-basins in the subass files are also read from this file and converted into geo-spatial objects for visualization. 
-#' @param simInfo A mandatory object imported from the info.txt with the function \code{ReadInfo()}. It provides e.g., start/end dates, aggregation periods, etc. 
-#' @param var.info The information pertaining to the simulation variable, extracted from the header line of the subass file. It is a mandatory character string of length 2 containing the information \code{c('obs vs sim', 'units')}
-#' @param streamShapeFile An optional character string for the path to the shape file containing the stream network of the model domain, which  should be projected to the WGS84 system for consistency. If the stream network is desired without specifying the shape file, the 50m-resolution map from Natural Earth  is used (requires network connection). The layer may not provide the desired level of detail however. 
-#' @param criterion An optional valid name of a HYPE subass evaluation criterion. 'NSE', 'KGE', 'CC', 'MAE', 'RE(%)', and 'RMSE' are currently implemented. NSE is plotted by default.
-#' @param visualization The mandatory type of visualization from "relative.difference", "best.simulation" and "comparison". The first two options produce a single map while the third produces two side-by-side maps. "Comparison" and "relative difference" require two simulations.
-#' @param data.presentation The mandatory data presentation mode on maps, one of "polygons", "outlets" or "centroids". "Polygons" are useful for spatially distributed data e.g., evaporation. "Outlets" and "centroids" are useful for point observations, e.g., discharge and sediment plotted at the sub-basin outlets and centroids, respectively. 
-#' @param evaluation.variable A mandatory character string for the variable name being analysed, e.g., "Discharge", "Actual ET", "Snow Water Equivalent", etc.
-#' @param simulation.names A vector of two (at least one) character strings with the "names" of the simulations e.g., model versions, used as titles on the maps. The first item mandatory. 
-#' @param marker.size A numerical value for the marker size, optional.
+#' @param tempDirectory Temporary directory for intermediate data e.g., geo-spatial objects. It is a mandatory character string that is also used for figures if the figures directory is not specified. The default is temporary space \code{tempdir()}, which is deleted when \code{R} is closed down. The directory is meant to save time by writing intermediate data the first time functions are called. The data is loaded from disk during subsequent calls (e.g., to visualize the same variable with different performance metrics). 
+#' @param figsDirectory The figures output directory, an optional character string. If not set, figures are saved to the temporary directory together with the intermediate objects.
+#' @param refSubass The mandatory reference (default) HYPE simulation subass file from which a subass object can be imported with the \code{ReadSubass()} function.  
+#' @param simSubass An optional simulation subass file from which a subass object can be imported with the \code{ReadSubass()} function. It is used for comparison to the reference simulation or for computing the relative difference in performance of two simulations.
+#' @param subBasins A mandatory file containing the sub-basin polygons. 
+#' @param geoData A mandatory file from which an appropriate object can be imported with the \code{ReadGeoData()} function. The outlets of the gauged sub-basins in the subass files are read from this file and converted into geo-spatial objects for visualization. 
+#' @param simInfo A mandatory file for reading with the \code{ReadInfo()} function. It provides simulation settings e.g., start/end dates, aggregation periods, etc. 
+#' @param streamShapeFile An optional file containing the stream network of the model domain, which  should be projected to the WGS84 system for consistency. If the stream network is desired without specifying this file, the 50m-resolution map from the Natural Earth portal is used (requires network connection). The layer may not provide the desired level of detail however. 
+#' @param criterion An optional valid name of a HYPE subass evaluation criterion. 'NSE', 'KGE', 'CC', etc. Some are not currently implemented but NSE is plotted by default.
+#' @param visualization The mandatory type of visualization, one from "relative.difference", "best.simulation" and "comparison". The first two produce a single map while the third produces two side-by-side maps. "Comparison" and "relative difference" require two subass files.
+#' @param data.presentation The mandatory data presentation mode. One of "polygons", "outlets" or "centroids". "Polygons" are useful for spatially distributed data e.g., evaporation but take very long to plot and render for large domains. "Outlets" and "centroids" are useful for point observations, e.g., discharge; plotted at the sub-basin outlets and centroids, respectively. Distributed data for the global model is visualized with centroids.
+#' @param evaluation.variable A mandatory descriptive character string for the variable name being analysed, e.g., "Discharge", "Snow Water Equivalent", etc.
+#' @param simulation.names A vector of two (at least one) character strings with descriptive "names" of the simulations e.g., model versions. They are used as titles on the maps and the first item is mandatory. 
+#' @param marker.size Optional numerical value for the marker size.
 #' @param show.borders Logical choice to show political borders (default is FALSE). If requested, the 110m-resolution map will be downloaded from the Natural Earth portal, which requires an internet connection.
-#' @param show.streams Logical choice to show river network on the map (default is FALSE). 
-#' @param histogram.fill A character string of length two for the histogram fill colours. In case of a single map, the first colour (mandatory) is used.
-#' @param used.colours An optional vector of colours for the maps. 
-#' @param domain.name The name of the domain. This character string is mandatory. The global model is called "wwhype".
-#' @param nsign.figures An optional digit specifying the number of significant digits used to display simulation summary statistics. Default is 3.
+#' @param show.streams Logical choice to show the river network on the map (default is FALSE). 
+#' @param histogram.fill An optional character string of length two for the histogram fill colours. In case of a single map, the first colour is used.
+#' @param map.colours An optional vector of colours for displaying data on the maps. 
+#' @param domain.name A mandatory character string for the name of the domain. The global model is called "wwhype".
+#' @param num.digits An optional numeric value specifying the number of significant digits displayed in summary statistics. The default is 3.
 #' @param file.format An optional string specifying the figure output format. Options are "pdf" (default) and "png".
 #' @param gauge.list A subset of gauges to be plotted (must exist in the subass file), if some gauges in the subass file are to be excluded.
 #' 
+##' @importFrom sf st_as_sf st_crs st_transform as_Spatial st_geometry st_read st_is_valid st_make_valid st_union st_crop st_intersection st_is_empty st_geometry st_centroid 
+##' @importFrom graphics par legend strwidth text mtext axis barplot layout
+##' @importFrom grDevices pdf
+##' @importFrom terra fillHoles vect is.valid makeValid 
+##' @importFrom rnaturalearth ne_download ne_countries
 #' @details
 #' \code{PlotEvaluationMaps} visualises model performances from one or two subass files. The user should provide the files as well as the subbasin polygons, the geodata and info.txt files. Relative difference in performance is computed as the (new - ref)/ref simulation *100%. The best simulation is the new in case two are provided or the reference if only one is provided.
 #' 
@@ -36,49 +40,37 @@
 #' \dontrun{
 #' if (interactive()) {
 #'   PlotEvaluationMaps(
-#'     tempOutDirectory = system.file("demo_model", "inst", "figures",
-#'                                    package = "HYPEtools"
-#'     ),
-#'     refSubass = ReadSubass(system.file("demo_model", "results", "subass1.txt",
-#'                                        package = "HYPEtools"
-#'     )),
-#'     subBasins = system.file("demo_model", "gis", "Nytorp_map.gpkg",
-#'                             package = "HYPEtools"
-#'     ),
-#'     geoData = system.file("demo_model", "GeoData.txt",
-#'                           package = "HYPEtools"
-#'     ),
-#'     simInfo = system.file("demo_model", "info.txt",
-#'                           package = "HYPEtools"
-#'    ),
-#'     criterion = c("KGE"),
-#'     visualization = c("best.simulation"),
-#'     data.presentation = c("outlets"),
+#'     tempDirectory       = tempdir(),
+#'     simSubass           = system.file("demo_model", "results", "subass1.txt", 
+#'     package = "HYPEtools"),
+#'     refSubass           = system.file("demo_model", "results", "subass1.txt", 
+#'     package = "HYPEtools"),
+#'     subBasins           = system.file("demo_model", "gis", "Nytorp_map.gpkg", 
+#'     package = "HYPEtools"),
+#'     geoData             = system.file("demo_model", "GeoData.txt",            
+#'     package = "HYPEtools"),
+#'     simInfo             = system.file("demo_model", "info.txt",               
+#'     package = "HYPEtools"),
+#'     criterion           = c('KGE'),
+#'     visualization       = c("best.simulation"), 
+#'     data.presentation   = c("outlets"), 
 #'     evaluation.variable = c("discharge"),
-#'     simulation.names = c("Nytorp"),
-#'     show.borders = FALSE,
-#'     show.streams = FALSE,
-#'     domain.name = "Nytorp",
-#'     nsign.figures = 3,
-#'     file.format = "pdf"
+#'     simulation.names    = c("Nytorp"),
+#'     show.borders        = FALSE,
+#'     show.streams        = FALSE,
+#'     domain.name         = "Nytorp",
+#'     num.digits       = 3,
+#'     file.format         = "pdf"
 #'   )
 #' }
 #' }
 #' 
-#' @importFrom sf st_as_sf st_crs st_transform as_Spatial st_geometry st_read st_is_valid st_make_valid st_union st_crop st_intersection st_is_empty st_geometry st_centroid 
-#' @importFrom graphics par legend strwidth text mtext axis barplot layout
-#' @importFrom grDevices pdf
-#' @importFrom terra fillHoles vect is.valid makeValid 
-#' @importFrom rnaturalearth ne_download ne_countries
-#' 
 #' @export
 # Exported function
-PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubass, 
+PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refSubass, 
                                simSubass, subBasins, 
                                geoData, 
                                simInfo,
-                               var.info,
-                               #politicalBorderShapeFile=NULL, 
                                streamShapeFile=NULL, 
                                criterion=c('NSE', 'KGE', 'CC', 'MAE', 'RE(%)', 'RMSE','KGESD','KGEM'),
                                visualization=c("best.simulation", "relative.difference", "comparison"),
@@ -89,10 +81,10 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
                                show.borders=FALSE, 
                                show.streams=FALSE,
                                histogram.fill=NULL,
-                               used.colours=NULL,
+                               map.colours=NULL,
                                domain.name,
                                gauge.list=NULL,
-                               nsign.figures=3,
+                               num.digits=3,
                                file.format="pdf"
 )
 {
@@ -139,14 +131,14 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
         #retain just the SUBID and geometry columns
         sub.x=sub.x["SUBID"]
         if(domain.=="wwhype"){
-          sub.x = st_as_sf(sub.x)
-          sub.o =  NA
+          sub.x = NA
+          sub.o = NA
         } else {
           if(any(!terra::is.valid(sub.x))) sub.x=terra::makeValid(sub.x)
           sub.o=terra::aggregate(sub.x)
           sub.o=terra::fillHoles(sub.o, inverse=FALSE)
-          sub.x=st_as_sf(sub.x)
-          sub.o=st_as_sf(sub.o)
+          sub.x=sf::st_as_sf(sub.x)
+          sub.o=sf::st_as_sf(sub.o)
           
         }
         save(sub.x, sub.o, file=f.sub)
@@ -160,7 +152,7 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
         load(f.bod)
       } else {
         #download global borders from Natural Earth portal; crop it to the domain
-        s.=terra::vect(ne_countries(scale=50L, type="countries"))
+        s.=terra::vect(rnaturalearth::ne_countries(scale=50L, type="countries"))
         #check for invalid geometries
         if(any(!terra::is.valid(s.))){
           s.=terra::makeValid(s.)
@@ -168,33 +160,38 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
         #dissolve internal borders
         x.oln=terra::aggregate(s.)
         x.oln=terra::fillHoles(x.oln, inverse=FALSE)
+        
         #
         if(domain. == "wwhype"){
-          outline=st_as_sf(x.oln)
-          borders=NA
+          bground=st_as_sf(x.oln)
+          borders=st_as_sf(s.)
         } else {
           #browser()
-          borders=st_as_sf(terra::intersect(vect(sub.o), s.))
-          outline=sub.o
+          borders=sf::st_as_sf(terra::intersect(terra::vect(sub.o), s.))
+          bground=sub.o
         }
-        save(borders, outline, file=f.bod)
+        save(borders, bground, file=f.bod)
       }
       #STREAM NETWORK
       f.str=file.path(odir, paste(paste(domain., collapse="-"), "stream_data.RDATA", sep="_"))
       if(file.exists(f.str)){
         load(f.str)
       } else {
-        str. <- ne_download(scale = 50, type = 'rivers_lake_centerlines', category = 'physical')
+        str. <- rnaturalearth::ne_download(scale = 50, type = 'rivers_lake_centerlines', category = 'physical')
+        
+        #
         if(domain. != "wwhype"){
-          str. = st_as_sf(terra::intersect(vect(str.), vect(outline)))
+          str. = sf::st_as_sf(terra::intersect(vect(str.), vect(bground)))
         }
         save(str., file=f.str)
       }
       #GAUGING STATIONS geodata pour points
+      browser()
       f.gag = file.path(odir, paste(paste(domain., collapse="-"), vcode., "gauge_data.RDATA", sep="_"))
       if(file.exists(f.gag)){
         load(f.gag)
       } else {
+        gdata=ReadGeoData(gdata)
         v. = gdata[match(gauges_vector, gdata$SUBID), c("SUBID", "POURX", "POURY")]
         gag. = MatrixToSf(m=v., lon_name = "POURX", lat_name = "POURY")
         save(gag., file=f.gag)
@@ -204,8 +201,8 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
       #
       #browser()
       y.=list("borders" = borders,
-              "outline" = outline,
-              "subids"  = sub.x,
+              "bground" = bground,
+              "basins"  = sub.x,
               #"domain"  = sub.o,
               "rivers"  = str.,
               "gauges"  = gag.)
@@ -219,10 +216,14 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
     ifelse(nchar(x)>7, format(x, scientific=TRUE, digits = 2), format(x, scientific=FALSE))
   }
   #
-  GetSimulationDetails   <- function(info., dt., ov.)
+  GetSimulationDetails   <- function(info., sub., ov.)
   {
     #obtain details about the simulation: begin/end dates, aggregation period and temporal resolution from the info file
     #browser()
+    dt.=unlist(strsplit(x=unlist(
+      strsplit(x=readLines(sub.)[1], split="Variables:", fixed=TRUE))[2], 
+      split="Unit:", fixed=TRUE))
+    
     txt=paste(trimws(unlist(strsplit(x=dt.[1], split=",", fixed=TRUE))), collapse=" vs ")
     units=trimws(dt.[2])
     
@@ -253,9 +254,13 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
     } 
     #   
     x.=list()
+    info.=ReadInfo(info.)
     x.$cdate = as.Date(info.$cdate, format="%Y-%m-%d")
     x.$edate = as.Date(info.$edate, format="%Y-%m-%d")
     aa=info.$timeoutput$meanperiod
+    if(is.null(aa)){
+      stop("No timeouput meanperiod in info.txt")
+    }
     if(aa==1){
       ts.="Daily"
     }else if (aa==2){
@@ -301,7 +306,6 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   ComputeDiff   <- function(sco1, sco2, type., opt.val)
   {
     # Compute relative difference
-    #browser()
     rel.diff = (abs(sco2[,2]-opt.val)-abs(sco1[,2]-opt.val))*100/abs(sco1[,2]-opt.val)
     diff. = data.frame(sco1[,1], -rel.diff)
     colnames(diff.) = c("SUBID", "refdiff")
@@ -333,7 +337,7 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   # 
   DrawColourBar <- function(x, z, col.border=NA, horiz=FALSE, plot.type, tit., scl.=NULL)
   {
-    # This function plots a ramp palette
+    # This function draws the colourbar
     LCOL=length(x)
     SEQ=seq(1,10,length.out=(LCOL+1))
     plot(1:10,1:10,type='n',xaxt='n',yaxt='n',xlab='',ylab='',bty='n')
@@ -417,7 +421,6 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
       barplot(xx, cex.axis=0.75, cex.names=0.75, beside=TRUE, ylab='', col=colbar, border=NA, ylim=range(pretty(c(0, xx))))
     }
     #
-    #mtext(side = 3, text = txt., line=0, las=0, cex=1.1, font=2)
     mtext(side = 2, text = 'Number of catchments', line=2.75, las=0, cex=0.9)
     par(xpd=TRUE)
     par(xpd=FALSE)
@@ -425,13 +428,8 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   #
   WriteStats    <- function(stats1, stats2, coltxt, colbar, critname, ctyp., sig.)
   {
-    #if(grepl(x=ctyp., pattern="relative.difference")){
-    #  txt.=paste(critname, "Rel. Diff. Statistics")
-    #} else {
     txt.=paste("Summary Statistics")
-    #}
     text(0.2, 0.9450, txt., adj = c(0,0.5), cex=1.1, font=2)
-    
     #header text
     if(is.null(stats2)) colbar="gray30"
     text(0.05, 0.750, paste('Median :')       , adj = c(0,0.5), col=coltxt)
@@ -453,7 +451,7 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
       text(0.65, 0.375, paste(RoundNumber(stats2[2], n=sig.)) , adj = c(0,0.5), col=colbar[2])
       text(0.65, 0.250, paste(RoundNumber(stats2[1], n=sig.)) , adj = c(0,0.5), col=colbar[2])
     } 
-    par(mar=c(1, 1, 1.5, 1)); box(); #par(mar=rep(1,4)) ; box()
+    par(mar=c(1, 1, 1.5, 1)); box();
   }
   #
   WriteSimInfo <- function(siminfo, coltxt)
@@ -477,25 +475,6 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
     #browser()
     subids = diff.$SUBID
     gag.shp = geo.data$gauges
-    # if(river.network){
-    #   riv.shp = terra::intersect(terra::makeValid(vect(geo.data$outline)), 
-    #                              terra::makeValid(vect(geo.data$rivers)))
-    # } else {
-    #   riv.shp=NULL
-    # }
-    riv.shp = terra::vect(geo.data$rivers)
-    if(length(riv.shp)==0 || !river.network) riv.shp=NULL
-    #geo.data$rivers
-    sub.shp = geo.data$subids
-    if(dom.=="wwhype"){
-      map.bground=geo.data$outline
-    } else if (!country.borders){
-      map.bground=geo.data$domain
-    } else {
-      map.bground=geo.data$borders
-    }
-    
-    idx_gag.shp <- match(subids, gag.shp$SUBID)
     # Color vectors
     color = GetColour(vals=diff.[, c(1,2)], mtype=ctype., obj.=crit., palcols=pal.cols, val.sca=scale.values)
     if(num.plots==2){
@@ -509,8 +488,21 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
       Choco_trans <- rgb(red=139, green=69, blue=19, maxColorValue=255, alpha=102)
       ColMap <- c(Choco_trans, Li_blue, "black", Li_blue)
     }
+    
+    riv.shp = terra::vect(geo.data$rivers)
+    if(length(riv.shp)==0 || !river.network) riv.shp=NULL
+    sub.shp = geo.data$basins
+    if(dom.=="wwhype" || !country.borders){
+      map.bground=geo.data$bground
+      col.border=ColMap[3]
+    } else {
+      map.bground=geo.data$borders
+      col.border=ColMap[1]
+    }
+    
+    idx_gag.shp <- match(subids, gag.shp$SUBID)
+    
     #
-    #browser()
     par(mar=rep(0,4))
     plot.new() #left margin
     #map heading1
@@ -531,35 +523,23 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
       plot.new()
       mtext(toupper(rnames[2]), col=cbar[2], font=2, side=1, cex=1.25)
     }
-    # if(num.plots ==1){
-    #   
-    #   mtext(toupper(paste(dom., aa, collapse=" ")), side=1, font=2)  
-    # } else {
-    #   
-    # }
-    # #
-    # plot.new()
-    # if(num.plots==2){
-    #   
-    # }
-    
     #maps
     par(mar=c(0.50, 0.1, 0.5, 0.1), cex=1.1)
     # Plot the country border if requested
-    plot(st_geometry(map.bground), col=ColMap[3], border=ColMap[3], axes=FALSE) # political borders
+    
+    plot(st_geometry(map.bground), col=ColMap[3], border=col.border, axes=FALSE) # political borders
     #Add stream network if requested
     if (river.network) {
       if(!is.null(riv.shp)){
         terra::plot(riv.shp, lwd=1.1, col=ColMap[4], add=TRUE)
       }
     }
-    #browser()
     # Plot outlets (gauge locations), centoids or filled polygons
     if(show.data.as == "outlets"){
       plot((gag.shp), col=color[[3]], pch=16, cex=cex., add=TRUE)
       if(num.plots ==2){
         #plot the domain outline
-        plot(st_geometry(map.bground), col=ColMap[3], border=ColMap[3], lwd=1.5, axes=FALSE)
+        plot(st_geometry(map.bground), col=ColMap[3], border=col.border, lwd=1.5, axes=FALSE)
         # Plot stream network if requested
         if (river.network) {
           if(!is.null(riv.shp)){
@@ -572,17 +552,10 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
     } else if (show.data.as == "polygons"){ 
       plot(st_geometry(sub.shp), col=color[[3]], border=color[[3]], add=TRUE)
       if(num.plots ==2){
-        #plot the domain outline
-        # plot(st_geometry(map.bground), col=ColMap[3], border=ColMap[3], axes=FALSE)
-        # Plot stream network if requested
-        # if (river.network) {
-        #   plot((riv.shp), lwd=1.1, col=ColMap[4], add=TRUE)
-        # }
         plot(st_geometry(sub.shp), col=color2[[3]], border=color2[[3]])
       }
       
     } else if (show.data.as == "centroids"){
-      #browser()
       if(dom.=="wwhype"){
         plot(st_geometry(gag.shp), col=color[[3]], pch=16, cex=cex., add=TRUE)
       } else {
@@ -628,11 +601,10 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
                critname=crit., ctyp.=ctype., sig.=stat.sign)
   }
   ###############
-  #browser()
   ###############
   criterion=match.arg(criterion, several.ok = FALSE)
   #if not specified, set figures directory to the temporary output directory
-  if(is.null(figuresDirectory)) figuresDirectory = tempOutDirectory
+  if(is.null(figsDirectory)) figsDirectory = tempDirectory
   #
   optima. = list("NSE"=1, "KGE"=1, "CC"=1, "RE(%)"=0, "MAE"=0, "RMSE"=0, "KGESD"=0, "KGEM"=0)
   cutoff. = list("NSE"=-1, "KGE"=-1, "CC"=-1, "RE(%)"=100, "MAE"=100, "RMSE"=100, "KGESD"=2, "KGEM"=2)
@@ -640,7 +612,6 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   col.txt = "gray20"
   if(is.null(histogram.fill)) col.bar = c('#1e90ff', "#fe6f5e")
   landcol.="Dark"
-  #if(is.null(marker.size)) marker.size=1.0
   #
   tmp.col=c("#00FFFF", "#00BFFF", "#1F75FE", "#3457D5", "#3F00FF", "#0000CD", "#00008B",  "#070738")
   col.pal  = c("#8b0000", "#ff7518","#CD9F07", "#9C990F", "#6B9316", "#3A8D1E", "#1E7B2D", "#165C44", "#0F3D5C", "#071E73", "#00008B")
@@ -650,11 +621,11 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   col.sch = list("NSE"=col.pal, "KGE"=col.pal, "CC"=col.pal, "MAE"=rev(col.pal), 
                  "RMSE"=rev(col.pal), "KGESD"=col.div, "KGEM"=col.div,"RE(%)"=col.div)
   #assign colour pallette if not specified at call time
-  if(is.null(used.colours)){
+  if(is.null(map.colours)){
     if(grepl(x=visualization, pattern="relative.difference")){
-      used.colours=col.div
+      map.colours=col.div
     } else {
-      used.colours=col.sch[[criterion]]
+      map.colours=col.sch[[criterion]]
     }
   }
   #
@@ -664,14 +635,15 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
     plot.number=2
   }
   # obtain the subbasin list for the reference simulation (or common to both in case of two)
-  subass1=refSubass
+  subass1=ReadSubass(refSubass)
   subvec1=subass1[, "SUBID"]
   subass2=NULL
   score2 = NULL
   sco2. = NULL
+  
   quantiles2 = NULL
-  if(plot.number==2 || visualization=="relative.difference"){
-    subass2=simSubass
+  if(!is.null(simSubass)){
+    subass2=ReadSubass(simSubass)
     subvec2=subass2[, "SUBID"]
     #
     subvec1=intersect(subvec1, subvec2)
@@ -680,9 +652,7 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   #
   subass1=subass1[match(subvec1, subass1$SUBID), ]
   #Get information about simulation
-  #z.=GetVariableDetails(ov.=evaluation.variable, f.=refSubass)
-  run.info=GetSimulationDetails(dt.=var.info, ov.=evaluation.variable, info.=simInfo)
-  
+  run.info=GetSimulationDetails(sub.=refSubass, ov.=evaluation.variable, info.=simInfo)
   if(!is.null(gauge.list)){
     idx.=match(gauge.list, subvec1)
     subass1=subass1[idx., ]
@@ -718,7 +688,13 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   # Compute differences if requested
   
   if(visualization %in% "best.simulation"){
-    met.diff = score1
+    if(!is.null(refSubass) && !is.null(simSubass)) 
+    {
+      met.diff = score2
+    } else if (is.null(simSubass)){
+      met.diff = score1
+    }
+    
   } else if (visualization %in% "relative.difference"){
     met.diff = ComputeDiff(sco1=score1, sco2=score2, type.=visualization, opt.val=optimum.) 
     colnames(met.diff)[2] = "rel.diff"
@@ -731,7 +707,7 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   sco1. = data.frame(met.diff[,2])
   colnames(sco1.)=colnames(met.diff)[2]
   if(!is.null(score2)){
-    if(visualization == "relative.difference"){
+    if(visualization %in% c("relative.difference", "best.simulation")){
       sco2. = NULL
     }else {
       sco2. = data.frame(met.diff[,3])
@@ -766,26 +742,24 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
   
   if(is.null(marker.size)){
     if(tolower(run.info$data.type) == "point"){
-      marker.size=0.6
+      marker.size=0.75
     } else if (tolower(run.info$data.type) == "spatial"){
       marker.size=0.275
     }
   }
   # get the geospatial information
-  geo.summary=PrepareGeospatialData(#stream_shape=streamShapeFile, 
+  geo.summary=PrepareGeospatialData(
     border_bool=show.borders, 
     stream_bool=show.streams,
     gdata=geoData,
     vcode.=vcode,
-    odir=tempOutDirectory, 
+    odir=tempDirectory, 
     domain.=domain.name, 
     gauges_vector=subvec1, 
-    #file_string=NULL, 
     spoly=subBasins) 
   #
-  #browser()
-  if(!dir.exists(figuresDirectory)){
-    dir.create(figuresDirectory, recursive=FALSE, showWarnings=FALSE)
+  if(!dir.exists(figsDirectory)){
+    dir.create(figsDirectory, recursive=FALSE, showWarnings=FALSE)
   } 
   if(!is.null(domain.name)){
     txt.=paste("summary", gsub(x=domain.name, pattern=" ", replacement="_", fixed=TRUE), sep="_")
@@ -807,11 +781,11 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
                  paste(tolower(name.), vcode, str., sep="."),
                  paste(domain.name, tolower(name.), vcode, str., sep="."))
   fname=tolower(paste(paste(txt., evar, name., gsub(x=visualization, pattern=".", replacement="-", fixed=TRUE), sep="_"),file.format, sep="."))
-  cat("plotting", file.path(figuresDirectory, fname), "...")
+  cat("plotting", file.path(figsDirectory, fname), "...")
   if(file.format == "pdf"){
-    pdf(file=file.path(figuresDirectory, fname), paper="a4r", width=45, height=45/1.75, title=fig.tit)  
+    pdf(file=file.path(figsDirectory, fname), paper="a4r", width=45, height=45/1.75, title=fig.tit)  
   } else if (file.format == "png"){
-    png(filename=file.path(figuresDirectory, fname), width=45, height=45/1.75, units="cm", res=300)  
+    png(filename=file.path(figsDirectory, fname), width=45, height=45/1.75, units="cm", res=300)  
   }
   
   
@@ -842,11 +816,10 @@ PlotEvaluationMaps <- function(figuresDirectory=NULL, tempOutDirectory, refSubas
            landcol=landcol., river.network=show.streams, 
            country.borders=show.borders, cbar=col.bar, geo.data=geo.summary, 
            crit.=criterion, rnames=simulation.names, wcol=wat.col, tcol=col.txt, 
-           pal.cols=used.colours, dom.=domain.name, num.plots=plot.number,
+           pal.cols=map.colours, dom.=domain.name, num.plots=plot.number,
            scale.values = scale.vec, stat1=quantiles1, stat2=quantiles2, 
-           sco1=sco1., sco2=sco2., stat.sign=nsign.figures)
+           sco1=sco1., sco2=sco2., stat.sign=num.digits)
   dev.off()
   cat("done.\n")
- 
+  
 }
-
