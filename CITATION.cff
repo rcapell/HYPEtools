@@ -535,6 +535,19 @@ references:
   year: '2025'
   doi: 10.32614/CRAN.package.beepr
 - type: software
+  title: curl
+  abstract: 'curl: A Modern and Flexible Web Client for R'
+  notes: Suggests
+  url: https://jeroen.r-universe.dev/curl
+  repository: https://CRAN.R-project.org/package=curl
+  authors:
+  - family-names: Ooms
+    given-names: Jeroen
+    email: jeroenooms@gmail.com
+    orcid: https://orcid.org/0000-0002-4035-0289
+  year: '2025'
+  doi: 10.32614/CRAN.package.curl
+- type: software
   title: DT
   abstract: 'DT: A Wrapper of the JavaScript Library ''DataTables'''
   notes: Suggests
@@ -548,6 +561,10 @@ references:
     email: joe@posit.co
   - family-names: Tan
     given-names: Xianying
+  - family-names: Aden-Buie
+    given-names: Garrick
+    email: garrick@posit.co
+    orcid: https://orcid.org/0000-0002-7111-0077
   year: '2025'
   doi: 10.32614/CRAN.package.DT
 - type: software
@@ -593,6 +610,10 @@ references:
     given-names: Bhaskar
   - family-names: Xie
     given-names: Yihui
+  - family-names: Aden-Buie
+    given-names: Garrick
+    email: garrick@posit.co
+    orcid: https://orcid.org/0000-0002-7111-0077
   year: '2025'
   doi: 10.32614/CRAN.package.leaflet
 - type: software
@@ -617,7 +638,7 @@ references:
   title: mapview
   abstract: 'mapview: Interactive Viewing of Spatial Data in R'
   notes: Suggests
-  url: https://github.com/r-spatial/mapview
+  url: https://r-spatial.github.io/mapview/
   repository: https://CRAN.R-project.org/package=mapview
   authors:
   - family-names: Appelhans
@@ -666,6 +687,22 @@ references:
     email: pedro@plot.ly
   year: '2025'
   doi: 10.32614/CRAN.package.plotly
+- type: software
+  title: rnaturalearth
+  abstract: 'rnaturalearth: World Map Data from Natural Earth'
+  notes: Suggests
+  url: https://docs.ropensci.org/rnaturalearth/
+  repository: https://CRAN.R-project.org/package=rnaturalearth
+  authors:
+  - family-names: Massicotte
+    given-names: Philippe
+    email: pmassicotte@hotmail.com
+    orcid: https://orcid.org/0000-0002-5919-4116
+  - family-names: South
+    given-names: Andy
+    email: southandy@gmail.com
+  year: '2025'
+  doi: 10.32614/CRAN.package.rnaturalearth
 - type: software
   title: sf
   abstract: 'sf: Simple Features for R'
@@ -768,6 +805,19 @@ references:
     given-names: David
   year: '2025'
   doi: 10.32614/CRAN.package.shinyWidgets
+- type: software
+  title: terra
+  abstract: 'terra: Spatial Data Analysis'
+  notes: Suggests
+  url: https://rspatial.org/
+  repository: https://CRAN.R-project.org/package=terra
+  authors:
+  - family-names: Hijmans
+    given-names: Robert J.
+    email: r.hijmans@gmail.com
+    orcid: https://orcid.org/0000-0001-5872-2872
+  year: '2025'
+  doi: 10.32614/CRAN.package.terra
 - type: software
   title: webshot
   abstract: 'webshot: Take Screenshots of Web Pages'
