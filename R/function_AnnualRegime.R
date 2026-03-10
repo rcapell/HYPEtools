@@ -91,6 +91,12 @@ AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL
     stop("'start.mon' not valid.")
   }
   
+  # Convert to dataframe
+  if(!is.data.frame(x) || inherits(x, "tbl_df")){
+    message("Converting 'x' to dataframe")
+    x <- as.data.frame(x)
+  }
+  
   ## identify timestep of x and choose posix element for averaging
   # conditional: get timestep of x from attribute if argument ts.in is not provided, with error handling
   if (is.null(ts.in)) {
