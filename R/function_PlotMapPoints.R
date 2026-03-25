@@ -135,7 +135,7 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
                           legend.signif = 2, col = NULL, col.breaks = NULL, col.labels = NULL, col.rev = FALSE,
                           plot.scale = TRUE, scale.pos = "br", plot.arrow = TRUE, arrow.pos = "tr",
                           radius = 5, weight = 0.15, opacity = 0.75, fillOpacity = 0.5, na.color = "#808080", jitter = 0.01,
-                          bg.color = "black", bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "#e5e5e5", bg.fillOpacity = 0.75,
+                          bg.color = "#f7f7f7", bg.weight = 0.15, bg.opacity = 0.75, bg.fillColor = "gray85", bg.fillOpacity = 0.75,
                           # plot.searchbar = FALSE, # leaflet.extras searchbar currently doesn't work for CircleMarkers
                           plot.label = FALSE, plot.label.size = 2.5, plot.label.geometry = c("centroid", "surface"), noHide = FALSE, textOnly = FALSE, font.size = 10, plot.bg.label = NULL,
                           file = "", width = NA, height = NA, units = c("in", "cm", "mm", "px"), dpi = 300,
