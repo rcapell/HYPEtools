@@ -11,6 +11,7 @@
 * Add observed snow water equivalent (rswe) to PlotBasinOutput()
 * Updated the demo model files to e.g. add POURX and POURY to GeoData.txt based on the subbasin centroids
 * Ensure that input is converted to dataframe for AnnualRegime()
+* Allow changing colors of background map in PlotMapPoints()
 
 ## HYPEtools 1.6.6 (2025-08-19)
 *Enhancements*

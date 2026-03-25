@@ -32,6 +32,7 @@ PlotMapPoints(
   fillOpacity = 0.5,
   na.color = "#808080",
   jitter = 0.01,
+  bg.color = "black",
   bg.weight = 0.15,
   bg.opacity = 0.75,
   bg.fillColor = "#e5e5e5",
@@ -136,6 +137,8 @@ with 9 intervals, and an additional interval for negative values. This is suitab
 \item{na.color}{Character string of color to use to symbolize markers in maps which correspond to \code{NA} values.}
 
 \item{jitter}{Numeric, amount to jitter points with duplicate geometries. See \link[sf:st_jitter]{sf::st_jitter}.}
+
+\item{bg.color}{string, color code of \code{bg} subbasin outlines in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addPolygons}.}
 
 \item{bg.weight}{Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addPolygons}.}
 
