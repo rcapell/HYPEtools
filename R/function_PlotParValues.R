@@ -28,6 +28,7 @@
 #'
 #' @importFrom dplyr %>% filter arrange
 #' @importFrom ggplot2 facet_wrap ggplot ggsave geom_boxplot xlab ylab theme
+#' @importFrom rlang .data
 #' @importFrom stringr str_starts
 #' @importFrom tidyr pivot_longer unnest
 #' @importFrom tools file_path_sans_ext file_ext
@@ -44,12 +45,12 @@ PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values
   
   # Create dataframe to store parameter data
   par_data <- data.frame(parameter = unique(par_names)) %>% # List all parameters to plot
-    filter(!str_starts(parameter, "!")) %>%
-    arrange(parameter)
+    filter(!str_starts(.data$parameter, "!")) %>%
+    arrange(.data$parameter)
   
   # Remove ignored parameters
   if(!is.null(ignore_parameters)){
-    par_data <- par_data %>% filter(!parameter %in% ignore_parameters)
+    par_data <- par_data %>% filter(!.data$parameter %in% ignore_parameters)
   }
 
   # Add parameter data
@@ -64,7 +65,7 @@ PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values
   # Reshape data
   par_data <- par_data %>%
     pivot_longer(cols = !matches("parameter"), names_to = "Model", values_to = "value") %>%
-    unnest(value)
+    unnest(.data$value)
 
   # Divide parameters into chunks
   par_chunks <- chunk_list(unique(par_data$parameter), n_plots)
@@ -76,7 +77,7 @@ PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values
   for(i in 1:length(par_chunks)){
 
     # Create plot
-    plot <- ggplot(par_data %>% filter(parameter %in% par_chunks[[i]])) +
+    plot <- ggplot(par_data %>% filter(.data$parameter %in% par_chunks[[i]])) +
       geom_boxplot(aes(x = .data$parameter, y = .data$value, color = .data$Model))
 
     # Apply custom colors
