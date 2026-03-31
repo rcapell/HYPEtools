@@ -21,13 +21,13 @@ PlotParValues(
 
 \item{n_plots}{Integer, if greater than 1, then the HYPE parameters will be split among \emph{n} plots. Useful if plotting many parameters.}
 
-\item{col.values}{A list containing color values to set custom colors. Length of \code{col.values} should match length of \code{par}. See \code{\link{scale_color_manual}}.}
+\item{col.values}{A list containing color values to set custom colors. Length of \code{col.values} should match length of \code{par}. See \link[ggplot2:scale_manual]{ggplot2::scale_color_manual}.}
 
-\item{file}{Optional filename used to save plot(s) to file. See \code{\link{ggsave}}.}
+\item{file}{Optional filename used to save plot(s) to file. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{width}{Width in inches for output plot. See \code{\link{ggsave}}.}
+\item{width}{Width in inches for output plot. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
-\item{height}{Height in inches for output plot. See \code{\link{ggsave}}.}
+\item{height}{Height in inches for output plot. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 }
 \value{
 Returns an list of plot objects

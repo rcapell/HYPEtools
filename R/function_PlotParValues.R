@@ -5,10 +5,10 @@
 #' @param par A HYPE par.txt file read in with \code{\link{ReadPar}} or a named list of par.txt files read in with \code{\link{ReadPar}}. E.g. \code{par <- list("par_1" = par1, "par2" = par2)}.
 #' @param ignore_parameters A list containing HYPE parameter names that should be ignored while plotting. E.g. \code{ignore_pars <- c("par1", "par2")}.
 #' @param n_plots Integer, if greater than 1, then the HYPE parameters will be split among *n* plots. Useful if plotting many parameters.
-#' @param col.values A list containing color values to set custom colors. Length of \code{col.values} should match length of \code{par}. See \code{\link{scale_color_manual}}.
-#' @param file Optional filename used to save plot(s) to file. See \code{\link{ggsave}}.
-#' @param width Width in inches for output plot. See \code{\link{ggsave}}.
-#' @param height Height in inches for output plot. See \code{\link{ggsave}}.
+#' @param col.values A list containing color values to set custom colors. Length of \code{col.values} should match length of \code{par}. See [ggplot2::scale_color_manual].
+#' @param file Optional filename used to save plot(s) to file. See [ggplot2::ggsave].
+#' @param width Width in inches for output plot. See [ggplot2::ggsave].
+#' @param height Height in inches for output plot. See [ggplot2::ggsave].
 #'
 #' @details
 #' \code{PlotParValues} generates a set of faceted boxplots to show the parameter values for a given HYPE par.txt file or list of par.txt files. The plots can be used to
@@ -77,7 +77,7 @@ PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values
 
     # Create plot
     plot <- ggplot(par_data %>% filter(parameter %in% par_chunks[[i]])) +
-      geom_boxplot(aes(x = parameter, y = value, color = Model))
+      geom_boxplot(aes(x = .data$parameter, y = .data$value, color = .data$Model))
 
     # Apply custom colors
     if(!is.null(col.values)){
@@ -95,7 +95,7 @@ PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values
       facet_wrap(~parameter, scales = "free")
 
     # Save plot to list
-    plot_list[[i]] <- plot
+    plot_list[[paste("Plot", i)]] <- plot
 
   }
 
@@ -109,12 +109,12 @@ PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values
       } else{
         filename = file
       }
-      ggsave(filename = filename, plot = plot_list[[i]], width = width, height = height)
+      ggsave(filename = filename, plot = plot_list[i], width = width, height = height)
     }
   }
   
   # Return plots as a list
-  return(invisible(plot_list))
+  return(plot_list)
   
 }
 
