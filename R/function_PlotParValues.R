@@ -38,7 +38,7 @@ PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values
   
   # Get parameter names
   if(is_nested_list(par)){
-    par_names <- sapply(par, function(X){names(X)}) %>% unlist()
+    par_names <- get_nested_names(par)
   } else{
     par_names <- names(par)
   }
@@ -127,6 +127,29 @@ is_nested_list <- function(x) {
   is.list(x) && any(vapply(x, is.list, logical(1)))
 }
 
+# Function to get variable names
+#' @noRd
+get_nested_names <- function(x, is_top = TRUE) {
+  result <- character(0)
+  
+  # only collect names if NOT top level
+  if (!is_top) {
+    nms <- names(x)
+    if (!is.null(nms)) {
+      result <- c(result, nms)
+    }
+  }
+  
+  # recurse into sublists
+  for (i in seq_along(x)) {
+    if (is.list(x[[i]])) {
+      result <- c(result, get_nested_names(x[[i]], is_top = FALSE))
+    }
+  }
+  
+  result
+}
+
 # Function to divide list into n chunks with equal size
 #' @noRd
 chunk_list <- function(x, n) {
@@ -140,6 +163,6 @@ chunk_list <- function(x, n) {
 # Function to append suffix to filename
 #' @noRd
 append_suffix <- function(filename, suffix) {
-  file_path_sans_ext(filename) |>
+  file_path_sans_ext(filename) %>%
     paste0("_", toString(suffix), ".", file_ext(filename))
 }
