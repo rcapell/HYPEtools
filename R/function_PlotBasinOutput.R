@@ -71,7 +71,7 @@
 #' For a detailed description of the variables, see the 
 #' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:info.txt:variables}{HYPE online documentation}.
 #' 
-#' \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout soim sm13 upsmfp snow rswe upcprc cct2 ret2 ccin rein ccon reon cctn retn 
+#' \code{basinoutput variable upcprf upcpsf temp upepot upevap cout rout cinf rinf soim sm13 upsmfp snow rswe upcprc cct2 ret2 ccin rein ccon reon cctn retn 
 #' ccsp resp ccpp repp cctp retp wcom wstr ccss ress ccts rets cct1 ret1 ccoc reoc ccds reds ccas reas ccsi resi}
 #' 
 #' \emph{Device dimensions} are hard-coded to a width of 15 inches and height depending on the number of plotted time series. When plotting 
@@ -185,7 +185,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
   names(xw) <- tolower(names(xw))
   
   # create vector over all target output variable names which are potentially used in the plot panels
-  nm.t <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "soim", "sm13", "upsmfp", "snow", "rswe", "upcprc", 
+  nm.t <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "cinf", "rinf", "soim", "sm13", "upsmfp", "snow", "rswe", "upcprc", 
             "cct2", "ret2", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", "resp", "ccpp", "repp", "cctp", "retp", "wcom", 
             "wstr", "ccss", "ress", "ccts", "rets", "cct1", "ret1","ccoc","reoc", "ccds", "reds", "ccas", "reas", "ccsi", "resi")
   # initialise logical vector to indicate existence of target variables
@@ -207,10 +207,10 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
   # select from existing variables based on user request, default is to use all available
   if (hype.vars[1] != "all") {
     if (hype.vars[1] == "hydro") {
-      nm.hydro <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "snow", "rswe", "upcprc", "wcom", "wstr", "cct2", "ret2")
+      nm.hydro <- c("date", "upcprf", "upcpsf", "temp", "upepot", "upevap", "cout", "rout", "cinf", "rinf", "snow", "rswe", "upcprc", "wcom", "wstr", "cct2", "ret2")
       exi.t[!(nm.t %in% nm.hydro)] <- FALSE
     } else if (hype.vars[1] == "wq") {
-      nm.wq <- c("date", "upcprf", "upcpsf", "cout", "rout", "upcprc", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", 
+      nm.wq <- c("date", "upcprf", "upcpsf", "cout", "rout", "cinf", "rinf", "upcprc", "ccin", "rein", "ccon", "reon", "cctn", "retn", "ccsp", 
                  "resp", "ccpp", "repp", "cctp", "retp", "ccss", "ress", "ccts", "rets", "cct1", "ret1","ccoc","reoc", "ccds",
                  "reds", "ccas", "reas", "ccsi", "resi")
       exi.t[!(nm.t %in% nm.wq)] <- FALSE
@@ -245,7 +245,8 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
   
   # conditional: three panels with FDC, GoFs, and regime. If GoF variables exist
   if ((exi.t["rout"] || exi.t["cout"]) || (
-    (exi.t["snow"] && exi.t["rswe"]) || 
+    (exi.t["rinf"] && exi.t["cinf"]) ||
+    (exi.t["rswe"] && exi.t["snow"]) || 
     (exi.t["rein"] && exi.t["ccin"]) || 
     (exi.t["reon"] && exi.t["ccon"]) || 
     (exi.t["retn"] && exi.t["cctn"]) ||
@@ -271,15 +272,30 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = "gauss", 
                                    yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = c("Qobs", "Qsim"), 
                                    col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
+    } else if (exi.t["rinf"] && exi.t["cinf"]) {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(rinf, cinf)), xscale = "gauss", 
+                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = c("Rinf", "Cinf"), 
+                                   col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["rout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = rout), xscale = "gauss", 
                                    yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Qobs", 
                                    col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
+    } else if (exi.t["rinf"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = rinf), xscale = "gauss", 
+                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Rinf", 
+                                   col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
     } else if (exi.t["cout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cout), xscale = "gauss", 
                                    yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Qsim", 
+                                   col = c("red"), mar = c(3.1, 3.1, .5, .5))')
+    } else if (exi.t["cinf"]) {
+        cp <- cp + 1
+        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cinf), xscale = "gauss", 
+                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Cinf", 
                                    col = c("red"), mar = c(3.1, 3.1, .5, .5))')
     } else {
       cp <- cp + 1
@@ -303,11 +319,19 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
                                    legend = c(paste(names(gof.q), gof.q, sep = ": "),"",paste0("(", length(na.omit(rout)), 
                                    " obs.)")), bty = "n", title = "Q\ngoodness of fit", cex = .8)')
     }
+    if (exi.t["rinf"] && exi.t["cinf"]){
+      gof.q <- tryCatch(gof(sim = get("cinf"), obs = get("rinf"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
+                        error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 1/10, y = 0.95, 
+                                   legend = c(paste(names(gof.q), gof.q, sep = ": "),"",paste0("(", length(na.omit(rinf)), 
+                                   " obs.)")), bty = "n", title = "Qinf\ngoodness of fit", cex = .8)')
+    }
     if (exi.t["rswe"] && exi.t["snow"]){
       gof.swe <- tryCatch(gof(sim = get("snow"), obs = get("rswe"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                         error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 1/9, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/10, y = 0.95, 
                                    legend = c(paste(names(gof.swe), gof.swe, sep = ": "),"",paste0("(", length(na.omit(rswe)), 
                                    " obs.)")), bty = "n", title = "SWE\ngoodness of fit", cex = .8)')
     }
@@ -315,14 +339,14 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.tn <- tryCatch(gof(sim = get("cctn"), obs = get("retn"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 2/9, y = 0.95, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 3/10, y = 0.95, legend = c(paste(names(gof.tn), gof.tn, sep = ": "),"",
                                    paste0("(", length(na.omit(retn)), " obs.)")), bty = "n", title = "TN\ngoodness of fit", cex = .8)')
     }
     if (exi.t["retp"] && exi.t["cctp"]){
       gof.tp <- tryCatch(gof(sim = get("cctp"), obs = get("retp"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 3/9, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 4/10, y = 0.95, 
                                    legend = c(paste(names(gof.tp), gof.tp, sep = ": "),"",
                                    paste0("(", length(na.omit(retp)), " obs.)")), bty = "n", title = "TP\ngoodness of fit", cex = .8)')
     }
@@ -330,7 +354,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.ss <- tryCatch(gof(sim = get("ccss"), obs = get("ress"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ], 
                          error = function(e){te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 4/9, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 5/10, y = 0.95, 
                                    legend = c(paste(names(gof.ss), gof.ss, sep = ": "),"",
                                    paste0("(", length(na.omit(ress)), " obs.)")), bty = "n", title = "SS\ngoodness of fit", cex = .8)')
     }
@@ -338,7 +362,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.oc <- tryCatch(gof(sim = get("ccoc"), obs = get("reoc"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ],
                          error = function(e) {te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 5/9, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 6/10, y = 0.95, 
                                    legend = c(paste(names(gof.oc), gof.oc, sep = ": "),"",
                                    paste0("(", length(na.omit(reoc)), " obs.)")), bty = "n", title = "OC\ngoodness of fit", cex = .8)')
     }
@@ -346,7 +370,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.ds <- tryCatch(gof(sim = get("ccds"), obs = get("reds"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ],
                          error = function(e) {te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 9/9, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 10/10, y = 0.95, 
                                    legend = c(paste(names(gof.ds), gof.ds, sep = ": "),"",
                                    paste0("(", length(na.omit(reds)), " obs.)")), bty = "n", title = "DS\ngoodness of fit", cex = .8)')
     }
@@ -354,7 +378,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.as <- tryCatch(gof(sim = get("ccas"), obs = get("reas"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ],
                          error = function(e) {te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 7/9, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 8/10, y = 0.95, 
                                    legend = c(paste(names(gof.as), gof.as, sep = ": "),"",
                                    paste0("(", length(na.omit(reas)), " obs.)")), bty = "n", title = "AS\ngoodness of fit", cex = .8)')
     }
@@ -362,7 +386,7 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
       gof.si <- tryCatch(gof(sim = get("ccsi"), obs = get("resi"), na.rm = TRUE)[c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"), ],
                          error = function(e) {te <- rep(NA, 6); names(te) <- c("KGE", "NSE", "PBIAS %", "MAE", "r", "VE"); te})
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'legend(x = 8/9, y = 0.95, 
+      list.plotexpr[[cp]] <- parse(text = 'legend(x = 9/10, y = 0.95, 
                                    legend = c(paste(names(gof.si), gof.si, sep = ": "),"",
                                    paste0("(", length(na.omit(resi)), " obs.)")), bty = "n", title = "SI\ngoodness of fit", cex = .8)')
     }
@@ -375,16 +399,32 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
                                    add.legend = TRUE, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), 
                                    mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+    } else if (exi.t["rinf"] && exi.t["cinf"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rinf, cinf), 
+                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
+                                   add.legend = TRUE, l.legend = c("Rinf", "Cinf"), col = c("blue", "red"), 
+                                   mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else if (exi.t["rout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), 
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
                                    add.legend = TRUE, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+    } else if (exi.t["rinf"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rinf), 
+                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
+                                   add.legend = TRUE, l.legend = c("Rinf"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else if (exi.t["cout"]) {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), 
                                    ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
                                    add.legend = TRUE, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+    } else if (exi.t["cinf"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, cinf), 
+                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
+                                   add.legend = TRUE, l.legend = c("Cinf"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
     } else {
       cp <- cp + 1
       list.plotexpr[[cp]] <- parse(text = 'frame()')
@@ -502,6 +542,53 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("Qobs", "Qsim"), lty = 1, 
+                                 col = c("royalblue4", "orangered3"), bty = "n", cex = 1.2, horiz = TRUE)')
+    
+  }
+  
+  # Cinf, Rinf panel
+  if (exi.t["cinf"] || exi.t["rinf"]) {
+    
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1.5)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    cp <- cp + 1
+    if (!exi.t["cinf"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, rinf, type = "l", col = NA, xaxt = "n", ylab = expression(paste("m"^3, "s"^"-1")), 
+                                   ylim = c(ifelse(log.q, 0.001, 0), max(rinf, na.rm=T)), log = ifelse(log.q, "y", ""), 
+                                   cex.axis = 1, cex.lab = 1.2)')  
+    } else if (!exi.t["rinf"]) {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cinf, type = "l", col = NA, xaxt = "n", ylab = expression(paste("m"^3, "s"^"-1")), 
+                                   ylim = c(ifelse(log.q, 0.001, 0), max(cinf, na.rm=T)), log = ifelse(log.q, "y", ""), cex.axis = 1, 
+                                   cex.lab = 1.2)')  
+    } else {
+      list.plotexpr[[cp]] <- parse(text = 'plot(date, cinf, type = "l", col = NA, xaxt = "n", ylab = expression(paste("m"^3, "s"^"-1")), 
+                                   ylim = c(ifelse(log.q, 0.001, 0), max(c(cinf, rinf), na.rm=T)), log = ifelse(log.q, "y", ""), 
+                                   cex.axis = 1, cex.lab = 1.2)')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    
+    if (exi.t["rinf"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(rinf)], rout[!is.na(rinf)], col = "royalblue4")')
+    }
+    
+    if (exi.t["cinf"]) {
+      cp <- cp + 1
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(cinf)], cout[!is.na(cinf)], col = "orangered3")')  
+    }
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'legend("topleft", inset = c(-.01, -.05), c("Rinf", "Cinf"), lty = 1, 
                                  col = c("royalblue4", "orangered3"), bty = "n", cex = 1.2, horiz = TRUE)')
     
   }
@@ -706,6 +793,34 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(accvolerr)], accvolerr[!is.na(accvolerr)], col = "seagreen")')
     cp <- cp + 1
     list.plotexpr[[cp]] <- parse(text = 'mtext(" Accumulated volume error", side=3, adj= 0, line=-1.1, cex = .8)')
+    
+  }
+  
+  # accumulated inflow vol err panel
+  if (exi.t["cinf"] && exi.t["rinf"] && vol.err) {
+    
+    # fill layout matrix with panel IDs
+    lay.mat <- rbind(lay.mat, rep(if (suppressWarnings(expr = max(lay.mat)) == -Inf) {1} else {max(lay.mat) + 1}, 3)) 
+    # add layout height for this row
+    lay.heights <- c(lay.heights, 1)
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'par(mar = c(0, 3.6, 0, 0.5), xaxs = "i", mgp = c(2.2, .2, 0), tcl = .2, las = 1)')
+    
+    sqsim <- ConvertDischarge(q = get("cinf"), area = uarea, from = "m3s", to = "mmd")
+    sqobs <- ConvertDischarge(q = get("rinf"), area = uarea, from = "m3s", to = "mmd")
+    accvolerr <- cumsum(sqsim - ifelse(is.na(sqobs), sqsim, sqobs))
+    
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'plot(date, accvolerr, type = "l", col = NA, xaxt = "n", ylab = "mm", cex.axis = 1, cex.lab = 1.2)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(h = 0, col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'abline(v = date[which(format(date, format = "%m%d") == "0101")], , col = "grey", lwd = .5)')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(accvolerr)], accvolerr[!is.na(accvolerr)], col = "seagreen")')
+    cp <- cp + 1
+    list.plotexpr[[cp]] <- parse(text = 'mtext(" Accumulated inflow volume error", side=3, adj= 0, line=-1.1, cex = .8)')
     
   }
   
