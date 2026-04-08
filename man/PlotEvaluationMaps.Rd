@@ -22,7 +22,7 @@ PlotEvaluationMaps(
   show.borders = FALSE,
   show.streams = FALSE,
   histogram.fill = NULL,
-  map.colours = NULL,
+  map.colors = NULL,
   domain.name,
   gauge.list = NULL,
   num.digits = 3,
@@ -52,7 +52,7 @@ PlotEvaluationMaps(
 
 \item{data.presentation}{The mandatory data presentation mode. One of "polygons", "outlets" or "centroids". "Polygons" are useful for spatially distributed data e.g., evaporation but take very long to plot and render for large domains. "Outlets" and "centroids" are useful for point observations, e.g., discharge; plotted at the sub-basin outlets and centroids, respectively. Distributed data for the global model is visualized with centroids.}
 
-\item{evaluation.variable}{A mandatory descriptive character string for the variable name being analysed, e.g., "Discharge", "Snow Water Equivalent", etc.}
+\item{evaluation.variable}{A mandatory descriptive character string for the variable name being analyzed, e.g., "Discharge", "Snow Water Equivalent", etc.}
 
 \item{simulation.names}{A vector of two (at least one) character strings with descriptive "names" of the simulations e.g., model versions. They are used as titles on the maps and the first item is mandatory.}
 
@@ -62,9 +62,9 @@ PlotEvaluationMaps(
 
 \item{show.streams}{Logical choice to show the river network on the map (default is FALSE).}
 
-\item{histogram.fill}{An optional character string of length two for the histogram fill colours. In case of a single map, the first colour is used.}
+\item{histogram.fill}{An optional character string of length two for the histogram fill colors. In case of a single map, the first color is used.}
 
-\item{map.colours}{An optional vector of colours for displaying data on the maps.}
+\item{map.colors}{An optional vector of colors for displaying data on the maps.}
 
 \item{domain.name}{A mandatory character string for the name of the domain. The global model is called "wwhype".}
 
@@ -78,7 +78,7 @@ PlotEvaluationMaps(
 \code{PlotEvaluationMaps} does not return any objects.
 }
 \description{
-Draws maps for selected HYPE variables and performance metrics with pretty scale discretizations and colours.
+Draws maps for selected HYPE variables and performance metrics with pretty scale discretizations and colors.
 }
 \details{
 \code{PlotEvaluationMaps} visualises model performances from one or two subass files. The user should provide the files as well as the subbasin polygons, the geodata and info.txt files. Relative difference in performance is computed as the (new - ref)/ref simulation *100\%. The best simulation is the new in case two are provided or the reference if only one is provided.

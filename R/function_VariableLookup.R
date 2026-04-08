@@ -76,19 +76,21 @@ VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description",
 #   html_table()
 # 
 # # Get Simulated and Observed Variables
-# vars.info <- full_join(tables[[1]]%>%filter(!is.na(.[,"#"])), # Simulated Variables, Remove Rows with NA Number
-#                       tables[[2]])%>% # Observed Variables
-#   rename("ID"="Variable ID","Reference"="Reference area","Aggregation"="Agg.") # Rename Columns
+# vars.info <- full_join(
+#   tables[[1]], # Simulated Variables
+#   tables[[2]]  # Observed Variables
+# ) %>% 
+#   rename("ID" = "Variable ID", "Reference" = "Reference area", "Aggregation" = "Agg.") # Rename Columns
 # 
 # # _____________________________________________________________________________________________________________________________________
 # # 2) Create Function to Create Short Description #####
 # # _____________________________________________________________________________________________________________________________________
 # 
 # desc <- function(string){
-# 
+#   
 #   # Find substrings within parentheses
 #   string_par <- regmatches(string, gregexpr("(?=\\().*?(?<=\\))", string, perl=T))[[1]]
-# 
+#   
 #   if(length(string_par)>0){ # If any substrings within parentheses
 #     string_par_s <- grepl(" ",string_par) # Identify if there are any spaces within the substrings in the parentheses
 #     if(any(string_par_s==T)){ # If any spaces within the substrings in the parentheses
@@ -101,7 +103,7 @@ VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description",
 #   }
 #   if(grepl(",",string_out)==T){ # If there is a comma in the output string
 #     string_out <- gsub(",.*","",string_out) # Only get output string before first comma
-# 
+#     
 #   }
 #   tools::toTitleCase(gsub(" $","", string_out, perl=T)) # Remove Trailing Spaces and convert to title case
 # }
@@ -128,17 +130,17 @@ VariableSearch <- function(search, info = c("ID", "Name", "Unit", "Description",
 # for(row in rev(fix_rows)){
 #   # Get Variable Names
 #   row_vars <- strsplit(vars.info$ID[row],",")[[1]]
-# 
+#   
 #   # Add Rows for each Variable
 #   for(var_name in rev(row_vars)){
 #     vars.info <- vars.info%>%
 #       add_row(vars.info[row,]%>%mutate("ID"=var_name),
 #               .after=row)
 #   }
-# 
+#   
 #   # Remove Original Row
 #   vars.info <- vars.info%>%slice(-row)
-# 
+#   
 # }
 # 
 # # Save Data to package sysdata

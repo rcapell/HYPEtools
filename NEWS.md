@@ -1,14 +1,14 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.5.0.9000
-*Development Version*
+## HYPEtools 1.6.7
+*Enhancements and bug fixes*
 
 #### Highlights
 * Add PlotEvaluationMaps() function
 * Fix bug in PlotSubbasinRouting() that prevented map from being generated when using BranchData
 * Added default feature in PlotSubbasinRouting() to filter GIS data to only the subbasins in GeoData
 * Add silica to PlotBasinOutput() and PlotBasinSummary()
-* Add observed snow water equivalent (rswe) to PlotBasinOutput()
+* Add observed snow water equivalent (rswe) and simulated/observed net inflow (cinf, rinf) to PlotBasinOutput()
 * Updated the demo model files to e.g. add POURX and POURY to GeoData.txt based on the subbasin centroids
 * Ensure that input is converted to dataframe for AnnualRegime()
 * Allow changing colors of background map in PlotMapPoints() and change default background colors

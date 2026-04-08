@@ -72,7 +72,7 @@ means for temperatures and sums for precipitation. Long-term aggregated values a
 }
 \note{
 If weekly data are provided in \code{x}, \code{AnnualRegime} will inflate \code{x} to daily time steps before computing
-results. Values in \code{x} will be assigned to the preceeding week days, corresponding to HYPE file output, where weekly
+results. Values in \code{x} will be assigned to the preceding week days, corresponding to HYPE file output, where weekly
 values are conventionally printed on the last day of the week. If \code{NA} values are present in the original weekly data,
 these will be filled with the next available value as a side effect of the inflation.
 

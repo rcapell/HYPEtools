@@ -137,9 +137,9 @@ grouping variable (e.g. month).}
 
 \item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_log10}.}
 
-\item{xsigma}{Numeric, scaling factor for the linear part of psuedo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \link[scales:transform_log]{scales::pseudo_log_trans}.}
+\item{xsigma}{Numeric, scaling factor for the linear part of pseudo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \link[scales:transform_log]{scales::pseudo_log_trans}.}
 
-\item{ysigma}{Numeric, scaling factor for the linear part of psuedo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See \link[scales:transform_log]{scales::pseudo_log_trans}.}
+\item{ysigma}{Numeric, scaling factor for the linear part of pseudo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See \link[scales:transform_log]{scales::pseudo_log_trans}.}
 
 \item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_continuous}.}
 
