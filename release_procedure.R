@@ -85,6 +85,8 @@ devtools::release()
 
 # AFTER CRAN APPROVAL --------------------------------------------------------------------------------------------------------------------
 
+# Merge dev branch into master branch
+
 # Create version tag in GitHub repo
 usethis::use_github_release()
 

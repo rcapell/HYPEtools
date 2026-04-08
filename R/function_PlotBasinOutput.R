@@ -267,39 +267,56 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     lay.heights <- c(lay.heights, 3)
     
     # conditional: prepare FDC plot call depending on data availability
-    if (exi.t["rout"] && exi.t["cout"]) {
+    
+    # Create lookup table
+    var_map <- list(
+      rout = list(label = "Qobs", col = "blue"),
+      cout = list(label = "Qsim", col = "red"),
+      rinf = list(label = "Rinf", col = "purple"),
+      cinf = list(label = "Cinf", col = "orange")
+    )
+    
+    # Identify variables present
+    vars_present <- names(exi.t)[exi.t]
+    vars_present <- vars_present[vars_present %in% names(var_map)]
+    
+    # Create plot
+    if (length(vars_present) > 0) {
+      
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(rout, cout)), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = c("Qobs", "Qsim"), 
-                                   col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
-    } else if (exi.t["rinf"] && exi.t["cinf"]) {
-        cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = data.frame(rinf, cinf)), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = c("Rinf", "Cinf"), 
-                                   col = c("blue", "red"), mar = c(3.1, 3.1, .5, .5))')
-    } else if (exi.t["rout"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = rout), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Qobs", 
-                                   col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
-    } else if (exi.t["rinf"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = rinf), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Rinf", 
-                                   col = c("blue"), mar = c(3.1, 3.1, .5, .5))')
-    } else if (exi.t["cout"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cout), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Qsim", 
-                                   col = c("red"), mar = c(3.1, 3.1, .5, .5))')
-    } else if (exi.t["cinf"]) {
-        cp <- cp + 1
-        list.plotexpr[[cp]] <- parse(text = '.PlotDurationCurve(ExtractFreq(data = cinf), xscale = "gauss", 
-                                   yscale = ifelse(log.q, "log", "lin"), add.legend = TRUE, l.legend = "Cinf", 
-                                   col = c("red"), mar = c(3.1, 3.1, .5, .5))')
+      
+      # collect data
+      data_list <- mget(vars_present)
+      data_obj <- if (length(data_list) == 1) {
+        data_list[[1]]
+      } else {
+        as.data.frame(data_list)
+      }
+      
+      # collect labels and colors
+      labels <- sapply(vars_present, function(v) var_map[[v]]$label)
+      cols   <- sapply(vars_present, function(v) var_map[[v]]$col)
+      
+      list.plotexpr[[cp]] <- substitute(
+        .PlotDurationCurve(
+          ExtractFreq(data = DATA),
+          xscale = "gauss",
+          yscale = ifelse(log.q, "log", "lin"),
+          add.legend = TRUE,
+          l.legend = LABELS,
+          col = COLS,
+          mar = c(3.1, 3.1, .5, .5)
+        ),
+        list(
+          DATA = data_obj,
+          LABELS = labels,
+          COLS = cols
+        )
+      )
+      
     } else {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'frame()')
+      list.plotexpr[[cp]] <- quote(frame())
     }
     
     ## plot information texts
@@ -393,41 +410,43 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     
     # conditional: prepare regime plot call depending on data availability
-    if (exi.t["rout"] && exi.t["cout"]) {
+    if (length(vars_present) > 0) {
+      
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout, cout), 
-                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = TRUE, l.legend = c("Qobs", "Qsim"), col = c("blue", "red"), 
-                                   mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
-    } else if (exi.t["rinf"] && exi.t["cinf"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rinf, cinf), 
-                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = TRUE, l.legend = c("Rinf", "Cinf"), col = c("blue", "red"), 
-                                   mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
-    } else if (exi.t["rout"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rout), 
-                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = TRUE, l.legend = c("Qobs"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
-    } else if (exi.t["rinf"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, rinf), 
-                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = TRUE, l.legend = c("Rinf"), col = c("blue"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
-    } else if (exi.t["cout"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, cout), 
-                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = TRUE, l.legend = c("Qsim"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
-    } else if (exi.t["cinf"]) {
-      cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = '.PlotAnnualRegime(x = AnnualRegime(data.frame(date, cinf), 
-                                   ts.in = timestep, ts.out = "month", start.mon = start.mon), line = "mean", 
-                                   add.legend = TRUE, l.legend = c("Cinf"), col = c("red"), mar = c(3.1, 3.1, .5, .5), xlab = xlab.regime)')
+      
+      # collect data (always include date!)
+      data_list <- c(list(date = date), mget(vars_present))
+      data_obj <- as.data.frame(data_list)
+      
+      # labels and colors
+      labels <- sapply(vars_present, function(v) var_map[[v]]$label)
+      cols   <- sapply(vars_present, function(v) var_map[[v]]$col)
+      
+      list.plotexpr[[cp]] <- substitute(
+        .PlotAnnualRegime(
+          x = AnnualRegime(
+            DATA,
+            ts.in = timestep,
+            ts.out = "month",
+            start.mon = start.mon
+          ),
+          line = "mean",
+          add.legend = TRUE,
+          l.legend = LABELS,
+          col = COLS,
+          mar = c(3.1, 3.1, .5, .5),
+          xlab = xlab.regime
+        ),
+        list(
+          DATA   = data_obj,
+          LABELS = labels,
+          COLS   = cols
+        )
+      )
+      
     } else {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'frame()')
+      list.plotexpr[[cp]] <- quote(frame())
     }
     
   }
@@ -579,12 +598,12 @@ PlotBasinOutput <- function(x, filename, driver = c("default", "pdf", "png", "sc
     
     if (exi.t["rinf"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(rinf)], rout[!is.na(rinf)], col = "royalblue4")')
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(rinf)], rinf[!is.na(rinf)], col = "royalblue4")')
     }
     
     if (exi.t["cinf"]) {
       cp <- cp + 1
-      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(cinf)], cout[!is.na(cinf)], col = "orangered3")')  
+      list.plotexpr[[cp]] <- parse(text = 'lines(date[!is.na(cinf)], cinf[!is.na(cinf)], col = "orangered3")')  
     }
     
     cp <- cp + 1
