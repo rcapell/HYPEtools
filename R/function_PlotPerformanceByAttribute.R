@@ -26,8 +26,8 @@
 #' @param density.plot.type String, type of plot geometry to use for density plots: \code{"density"} for [ggplot2::geom_density] or \code{"boxplot"} for [ggplot2::geom_boxplot]. Outliers are hidden from the boxplots.
 #' @param scale.x.log Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See [ggplot2::scale_x_log10].
 #' @param scale.y.log Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See [ggplot2::scale_y_log10].
-#' @param xsigma Numeric, scaling factor for the linear part of psuedo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See [scales::pseudo_log_trans].
-#' @param ysigma Numeric, scaling factor for the linear part of psuedo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See [scales::pseudo_log_trans].
+#' @param xsigma Numeric, scaling factor for the linear part of pseudo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See [scales::pseudo_log_trans].
+#' @param ysigma Numeric, scaling factor for the linear part of pseudo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See [scales::pseudo_log_trans].
 #' @param xlimits Vector containing minimum and maximum values for the x-axis of the output plots. See [ggplot2::scale_x_continuous].
 #' @param xbreaks Vector containing the break values used for the x-axis of the output plots. See [ggplot2::scale_x_continuous].
 #' @param xlabels Vector containing the labels for each break value used for the x-axis of the output plots. See [ggplot2::scale_x_continuous].
@@ -342,7 +342,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     # Scale y axis
     if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
       if(any(plotdata[[colnames(subass)[subass.column]]] <= 0, na.rm = TRUE)){
-        plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=pseudo_log_trans(base = 10, sigma = ysigma)) # Psuedo-log if 0 or negative values
+        plot <- plot + scale_y_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=pseudo_log_trans(base = 10, sigma = ysigma)) # Pseudo-log if 0 or negative values
       } else{
         plot <- plot + scale_y_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
       }
@@ -479,7 +479,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       # Scale x axis
       if(scale.x.log[which(plotcols == col)] == TRUE){ # Log scale
         if(any(plotdata[[col]] <= 0, na.rm = TRUE)){
-          densx <- densx + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=pseudo_log_trans(base = 10, sigma = xsigma)) # Psuedo-log if 0 or negative values
+          densx <- densx + scale_x_continuous(limits = xlimits, breaks = xbreaks, labels = xlabels, trans=pseudo_log_trans(base = 10, sigma = xsigma)) # Pseudo-log if 0 or negative values
         } else{
           densx <- densx + scale_x_log10(limits = xlimits, breaks = xbreaks, labels = xlabels)
         }
@@ -490,7 +490,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       # Scale y axis
       if(scale.y.log[which(plotcols == col)] == TRUE){ # Log scale
         if(any(plotdata[[colnames(subass)[subass.column]]] <= 0, na.rm = TRUE)){
-          densy <- densy + scale_x_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=pseudo_log_trans(base = 10, sigma = ysigma)) # Psuedo-log if 0 or negative values
+          densy <- densy + scale_x_continuous(limits = ylimits, breaks = ybreaks, labels = ylabels, trans=pseudo_log_trans(base = 10, sigma = ysigma)) # Pseudo-log if 0 or negative values
         } else{
           densy <- densy + scale_x_log10(limits = ylimits, breaks = ybreaks, labels = ylabels)
         }

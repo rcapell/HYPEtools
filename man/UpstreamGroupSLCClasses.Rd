@@ -24,7 +24,7 @@ If \code{NULL} (default), upstream areas for all SUBIDs will be calculated.}
 \item{bd}{A data frame, containing 'BRANCHID' and 'SOURCEID' columns, e.g. an imported 'BranchData.txt' file. Optional argument.}
 
 \item{gcl}{Data frame containing columns with SLCs and corresponding land use and soil class IDs, typically a 'GeoClass.txt'
-file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.}
+file imported with \code{\link{ReadGeoClass}} or a 'ClassData.txt' file imported with \code{\link{ReadClassData}}. Must be provided if no \code{group} argument is given.}
 
 \item{type}{Keyword character string for use with \code{gcl}. Type of grouping index, choice of \code{"landuse"}, \code{"soil"}, and/or \code{"crop"},
 can be abbreviated.}
@@ -40,11 +40,11 @@ is \code{NULL} or contains many SUBIDs.}
 \code{UpstreamGroupSLCClasses} returns a data frame with SUBIDs in the first column, and upstream group fractions in the following columns.
 }
 \description{
-Function to calculate averages of grouped SLC class fractions calculated from imported GeoData.txt and GeoClass.txt or any other user-defined grouping.
+Function to calculate averages of grouped SLC class fractions calculated from imported GeoData.txt and GeoClass.txt/ClassData.txt or any other user-defined grouping.
 }
 \details{
 \code{UpstreamGroupSLCClasses} calculates area-weighted upstream averages of CropID fractions from SLC class fractions in a GeoData table and corresponding
-grouping columns in a GeoClass table or a user-provided vector. Upstream calculations include branch connections in case of stream bifurcations but not
+grouping columns in a GeoClass/ClassData table or a user-provided vector. Upstream calculations include branch connections in case of stream bifurcations but not
 potential irrigation links or groundwater flows. Averages are weighted by sub-catchment area.
 
 The function builds on \code{\link{GroupSLCClasses}}, which provides grouped sums of SLC classes for several or all sub-basins in a GeoData dataframe.

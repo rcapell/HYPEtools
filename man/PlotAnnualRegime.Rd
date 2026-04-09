@@ -34,7 +34,7 @@ See Details and Value sections there.}
 \item{line}{Character string, keyword for type of average line to plot. Either \code{"mean"} or \code{"median"}.}
 
 \item{band}{Character vector, keyword for variation bands. If \code{"none"} (default), plot average line(s) only. \code{"minmax"},
-\code{"p25p75"}, or \code{p5p95} to include bands of variation. Combinations of bands are allowed, but providing \code{"none"}
+\code{"p25p75"}, or \code{p05p95} to include bands of variation. Combinations of bands are allowed, but providing \code{"none"}
 will always prevent plotting of any band. See details.}
 
 \item{add.legend}{Logical. If \code{TRUE}, a legend will be added to the plot.}

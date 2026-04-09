@@ -18,7 +18,7 @@ GroupSLCClasses(
 imported with \code{\link{ReadGeoData}}.}
 
 \item{gcl}{Data frame containing columns with SLCs and corresponding landuse and soil class IDs, typically a 'GeoClass.txt'
-file imported with \code{\link{ReadGeoClass}}. Must be provided if no \code{group} argument is given.}
+file imported with \code{\link{ReadGeoClass}} or a 'ClassData.txt' file imported with \code{\link{ReadClassData}}. Must be provided if no \code{group} argument is given.}
 
 \item{type}{Character string keyword for use with \code{gcl}. Type of grouping index, either \code{"landuse"}, \code{"soil"}, or \code{"crop"},
 can be abbreviated.}
@@ -33,7 +33,7 @@ can be abbreviated.}
 \code{GroupSLClasses} returns the data frame with SUBIDs, SUBID areas, and grouped SLC class columns.
 }
 \description{
-\code{GroupSLCClasses} calculates grouped sums for SLC classes (area fractions or absolute areas) based on land use, soil, or crop groups in a GeoClass
+\code{GroupSLCClasses} calculates grouped sums for SLC classes (area fractions or absolute areas) based on land use, soil, or crop groups in a GeoClass/ClassData
 table, or any other user-provided grouping index.
 }
 \details{

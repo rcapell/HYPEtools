@@ -29,7 +29,7 @@
 #' 
 #' @note
 #' If weekly data are provided in \code{x}, \code{AnnualRegime} will inflate \code{x} to daily time steps before computing 
-#' results. Values in \code{x} will be assigned to the preceeding week days, corresponding to HYPE file output, where weekly 
+#' results. Values in \code{x} will be assigned to the preceding week days, corresponding to HYPE file output, where weekly 
 #' values are conventionally printed on the last day of the week. If \code{NA} values are present in the original weekly data, 
 #' these will be filled with the next available value as a side effect of the inflation.
 #' 
@@ -89,6 +89,12 @@ AnnualRegime <- function(x, stat = c("mean", "sum"), ts.in = NULL, ts.out = NULL
   
   if (start.mon > 12 || start.mon < 1) {
     stop("'start.mon' not valid.")
+  }
+  
+  # Convert to dataframe
+  if(!is.data.frame(x) || inherits(x, "tbl_df")){
+    message("Converting 'x' to dataframe")
+    x <- as.data.frame(x)
   }
   
   ## identify timestep of x and choose posix element for averaging

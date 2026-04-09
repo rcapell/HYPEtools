@@ -1,7 +1,7 @@
 #'
 #' Function for plotting up to two HYPE simulation results in maps.
 #'
-#' Draws maps for selected HYPE variables and performance metrics with pretty scale discretizations and colours.
+#' Draws maps for selected HYPE variables and performance metrics with pretty scale discretizations and colors.
 #'
 #' @param tempDirectory Temporary directory for intermediate data e.g., geo-spatial objects. It is a mandatory character string that is also used for figures if the figures directory is not specified. The default is temporary space \code{tempdir()}, which is deleted when \code{R} is closed down. The directory is meant to save time by writing intermediate data the first time functions are called. The data is loaded from disk during subsequent calls (e.g., to visualize the same variable with different performance metrics). 
 #' @param figsDirectory The figures output directory, an optional character string. If not set, figures are saved to the temporary directory together with the intermediate objects.
@@ -14,13 +14,13 @@
 #' @param criterion An optional valid name of a HYPE subass evaluation criterion. 'NSE', 'KGE', 'CC', etc. Some are not currently implemented but NSE is plotted by default.
 #' @param visualization The mandatory type of visualization, one from "relative.difference", "best.simulation" and "comparison". The first two produce a single map while the third produces two side-by-side maps. "Comparison" and "relative difference" require two subass files.
 #' @param data.presentation The mandatory data presentation mode. One of "polygons", "outlets" or "centroids". "Polygons" are useful for spatially distributed data e.g., evaporation but take very long to plot and render for large domains. "Outlets" and "centroids" are useful for point observations, e.g., discharge; plotted at the sub-basin outlets and centroids, respectively. Distributed data for the global model is visualized with centroids.
-#' @param evaluation.variable A mandatory descriptive character string for the variable name being analysed, e.g., "Discharge", "Snow Water Equivalent", etc.
+#' @param evaluation.variable A mandatory descriptive character string for the variable name being analyzed, e.g., "Discharge", "Snow Water Equivalent", etc.
 #' @param simulation.names A vector of two (at least one) character strings with descriptive "names" of the simulations e.g., model versions. They are used as titles on the maps and the first item is mandatory. 
 #' @param marker.size Optional numerical value for the marker size.
 #' @param show.borders Logical choice to show political borders (default is FALSE). If requested, the 110m-resolution map will be downloaded from the Natural Earth portal, which requires an internet connection.
 #' @param show.streams Logical choice to show the river network on the map (default is FALSE). 
-#' @param histogram.fill An optional character string of length two for the histogram fill colours. In case of a single map, the first colour is used.
-#' @param map.colours An optional vector of colours for displaying data on the maps. 
+#' @param histogram.fill An optional character string of length two for the histogram fill colors. In case of a single map, the first color is used.
+#' @param map.colors An optional vector of colors for displaying data on the maps. 
 #' @param domain.name A mandatory character string for the name of the domain. The global model is called "wwhype".
 #' @param num.digits An optional numeric value specifying the number of significant digits displayed in summary statistics. The default is 3.
 #' @param file.format An optional string specifying the figure output format. Options are "pdf" (default) and "png".
@@ -79,7 +79,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
                                show.borders=FALSE, 
                                show.streams=FALSE,
                                histogram.fill=NULL,
-                               map.colours=NULL,
+                               map.colors=NULL,
                                domain.name,
                                gauge.list=NULL,
                                num.digits=3,
@@ -133,7 +133,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
   {
     #browser()
     if(!dir.exists(odir)){
-      dir.create(odir, recursive=FALSE, mode="0777", showWarnings = F)
+      dir.create(odir, recursive=FALSE, mode="0777", showWarnings = FALSE)
     }
     
     #
@@ -336,7 +336,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     return(diff.)
   }
   #
-  GetColour      <- function(vals, mtype, obj.=NULL, palcols=NULL, val.sca)
+  GetColor      <- function(vals, mtype, obj.=NULL, palcols=NULL, val.sca)
   {
     color = list()
     vals=vals[,2]
@@ -359,9 +359,9 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     return(color)
   }
   # 
-  DrawColourBar <- function(x, z, col.border=NA, horiz=FALSE, plot.type, tit., scl.=NULL)
+  DrawColorBar <- function(x, z, col.border=NA, horiz=FALSE, plot.type, tit., scl.=NULL)
   {
-    # This function draws the colourbar
+    # This function draws the colorbar
     LCOL=length(x)
     SEQ=seq(1,10,length.out=(LCOL+1))
     plot(1:10,1:10,type='n',xaxt='n',yaxt='n',xlab='',ylab='',bty='n')
@@ -500,9 +500,9 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     subids = diff.$SUBID
     gag.shp = geo.data$gauges
     # Color vectors
-    color = GetColour(vals=diff.[, c(1,2)], mtype=ctype., obj.=crit., palcols=pal.cols, val.sca=scale.values)
+    color = GetColor(vals=diff.[, c(1,2)], mtype=ctype., obj.=crit., palcols=pal.cols, val.sca=scale.values)
     if(num.plots==2){
-      color2 = GetColour(vals=diff.[, c(1,3)], mtype=ctype., obj.=crit., palcols=pal.cols, val.sca=scale.values)
+      color2 = GetColor(vals=diff.[, c(1,3)], mtype=ctype., obj.=crit., palcols=pal.cols, val.sca=scale.values)
     } 
     # Map colors
     if (landcol == "Dark") {
@@ -607,11 +607,11 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     }
     #
     plot.new()
-    #The colour bar under the map(s)
+    #The color bar under the map(s)
     par(las=1, mai=c(0.025, 0.025, 0.1, 0.25), cex=1.1  ) #
-    DrawColourBar(x=color[[2]], z=color[[1]], plot.type=ctype., tit.=crit., horiz=TRUE, scl.=scale.values)
+    DrawColorBar(x=color[[2]], z=color[[1]], plot.type=ctype., tit.=crit., horiz=TRUE, scl.=scale.values)
     plot.new()
-    #plot summary information under the colour bar
+    #plot summary information under the color bar
     #1. Write simulation information
     par(mar=c(0,0,0.4,0), cex=1)
     plot.new()
@@ -644,12 +644,12 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
               rev(tmp.col))
   col.sch = list("NSE"=col.pal, "KGE"=col.pal, "CC"=col.pal, "MAE"=rev(col.pal), 
                  "RMSE"=rev(col.pal), "KGESD"=col.div, "KGEM"=col.div,"RE(%)"=col.div)
-  #assign colour pallette if not specified at call time
-  if(is.null(map.colours)){
+  #assign color palette if not specified at call time
+  if(is.null(map.colors)){
     if(grepl(x=visualization, pattern="relative.difference")){
-      map.colours=col.div
+      map.colors=col.div
     } else {
-      map.colours=col.sch[[criterion]]
+      map.colors=col.sch[[criterion]]
     }
   }
   #
@@ -749,7 +749,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
   if(length(bad.idx)>0) vals.[bad.idx,1] = scale.vec[length(scale.vec)]
   rm(bad.idx)
   #
-  quantiles1   = boxplot(as.numeric(vals.[,1]), range=0, plot = F)$stats
+  quantiles1   = boxplot(as.numeric(vals.[,1]), range=0, plot = FALSE)$stats
   if(!is.null(sco2.)){
     vals. = sco2.
     bad.idx=which(vals.[,1] < scale.vec[1])
@@ -758,7 +758,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     bad.idx=which(vals.[,1] > scale.vec[length(scale.vec)])
     if(length(bad.idx)>0) vals.[bad.idx,1] = scale.vec[length(scale.vec)]
     rm(bad.idx)
-    quantiles2   = boxplot(as.numeric(vals.[,1]), range=0, plot = F)$stats
+    quantiles2   = boxplot(as.numeric(vals.[,1]), range=0, plot = FALSE)$stats
   }
   #
   
@@ -818,7 +818,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     nf=layout(matrix(c(1, rep(2, 12), 3,      #map title
                        1, rep(4, 12), 3,                         #map title 
                        1, rep(5, 12), 3,                         # map
-                       1, rep(6,2), rep(7, 8), rep(8,2), 3,      #colour bar
+                       1, rep(6,2), rep(7, 8), rep(8,2), 3,      #color bar
                        1, rep(9,3), rep(10,6), rep(11,3), 3,     #histpgram, statistics, etc
                        1, rep(12,12), 3 ), ncol=14, byrow=TRUE),
               widths=c(0.1, rep(c(rep(3,2), rep(1,2), rep(3,2)), 2), 0.1), #rep(2.5, 2)
@@ -827,7 +827,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
     nf=layout(matrix(c(1, rep(2, 12), 3,                        #map titles
                        1, rep(4,6), rep(5,6), 3,                #map titles
                        1, rep(6,6), rep(7,6), 3,                # maps
-                       1, rep(8,2), rep(9,8), rep(10, 2), 3,    #colour bar
+                       1, rep(8,2), rep(9,8), rep(10, 2), 3,    #color bar
                        
                        1, rep(11,3), rep(12,6), rep(13,3), 3,   #histpgram, statistics, etc
                        1, rep(14,12), 3), ncol=14, byrow=TRUE),
@@ -840,7 +840,7 @@ PlotEvaluationMaps <- function(figsDirectory=NULL, tempDirectory=tempdir(), refS
            landcol=landcol., river.network=show.streams, 
            country.borders=show.borders, cbar=col.bar, geo.data=geo.summary, 
            crit.=criterion, rnames=simulation.names, wcol=wat.col, tcol=col.txt, 
-           pal.cols=map.colours, dom.=domain.name, num.plots=plot.number,
+           pal.cols=map.colors, dom.=domain.name, num.plots=plot.number,
            scale.values = scale.vec, stat1=quantiles1, stat2=quantiles2, 
            sco1=sco1., sco2=sco2., stat.sign=num.digits)
   dev.off()
