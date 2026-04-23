@@ -335,12 +335,17 @@ if (!is.null(groups)) {
           values = group_colors,
           name = group.legend.title,
           drop = drop
-        ) +
-        scale_color_manual(
-          values = trendline_colors,
-          name = group.legend.title,
-          drop = drop
-        ) +
+        )
+      
+      if(trendline == TRUE){
+        plot <- plot +
+          scale_color_manual(
+            values = trendline_colors,
+            name = group.legend.title,
+            drop = drop
+          )
+      }
+      plot <- plot +
         guides(
           fill = guide_legend(
             override.aes = list(
