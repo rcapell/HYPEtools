@@ -13,6 +13,7 @@
 \alias{ReadMgmtData}
 \alias{ReadPointSourceData}
 \alias{ReadAllsim}
+\alias{ReadBestsims}
 \alias{ReadForcKey}
 \alias{ReadUpdate}
 \title{Read HYPE data files}
@@ -131,7 +132,13 @@ ReadPointSourceData(
   ...
 )
 
-ReadAllsim(filename = "allsim.txt", na.strings = "-9999")
+ReadAllsim(filename = "allsim.txt", na.strings = "-9999", check.names = FALSE)
+
+ReadBestsims(
+  filename = "bestsims.txt",
+  na.strings = "-9999",
+  check.names = FALSE
+)
 
 ReadForcKey(
   filename = "ForcKey.txt",
@@ -172,6 +179,8 @@ and vice versa.}
 \item{quote}{See \code{header}.}
 
 \item{data.table}{Logical, return data.table instead of data frame. \code{\link[data.table]{fread}} argument.}
+
+\item{check.names}{See \link[data.table:fread]{data.table::fread}}
 }
 \value{
 Imported files are returned as data frames.
@@ -193,6 +202,7 @@ formatting arguments set to match HYPE file specifications:
 \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:branchdata.txt}{BranchData.txt}
 \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:outregions.txt}{Outregions.txt}
 \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:allsim.txt}{allsim.txt}
+\item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:bestsims.txt}{bestsims.txt}
 \item \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:update.txt}{update.txt}
 }
 

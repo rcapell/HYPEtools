@@ -156,6 +156,9 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       }
       plotdata <- cbind(plotdata, groups %>% select(-"SUBID")) %>% rename("Group" = colnames(groups)[2]) %>% arrange(.data[["Group"]])
     }
+    
+    # Filter groups to get only those that get plotted
+    groups <- groups[which(groups[[2]] %in% plotdata$Group)]
   }
 
   # Join subass data to attribute data
@@ -243,7 +246,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       if (!is.null(groups)) {
         plot <- plot + geom_smooth(aes(color = .data[["Group"]]), method = trendline.method, formula = trendline.formula)
         
-        # Identify which groups have unique values and thus trendlines
+          # Identify which groups have unique values and thus trendlines
           trendline_groups <- plotdata %>%
             group_by(.data[["Group"]]) %>%
             summarize(unique = n_distinct(!!sym(col))) %>%
@@ -281,7 +284,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       if(drop == TRUE){
         manual_colors <- groups.color.pal
         legend_colors <- manual_colors
-        trendline_groups <- x_groups
+        # trendline_groups <- x_groups
       } else if(drop == FALSE){
         manual_colors <- groups.color.pal[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
         legend_colors <- groups.color.pal
@@ -310,7 +313,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       if(drop == TRUE){
         gg_colors <- gg_color_hue(length(which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))))
         legend_colors <- gg_colors
-        trendline_groups <- x_groups
+        # trendline_groups <- x_groups
       } else if(drop == FALSE){
         gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
         legend_colors <- gg_color_hue(length(unique(groups[[2]])))
@@ -324,7 +327,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         scale_fill_manual(values = gg_colors, name = group.legend.title, drop = drop) + # Assign name to palette for points
         scale_color_manual(values = unlist(lapply(legend_colors[trendline_groups], function(X) {
           colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = group.legend.title, drop = drop) + 
+        })), name = group.legend.title, drop = drop) +
         guides(color = guide_legend(override.aes = list(color = legend_colors[trendline_groups]))) # Override colors in legend to be the original colors
     }
     
