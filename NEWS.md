@@ -5,7 +5,7 @@
 
 #### Highlights
 * Add ReadBestsims() function
-* Prevent PlotPerformanceByAttribute() from crashing when drop = TRUE
+* Fix behavior of colors and drop in PlotPerformanceByAttribute()
 
 ## HYPEtools 1.6.7 (2026-04-08)
 *Enhancements and bug fixes*
