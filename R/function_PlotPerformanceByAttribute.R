@@ -173,54 +173,54 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     plotdata <- cbind(plotdata, attributes %>% select(-"SUBID"))
   }
   
- # Define colors
-if (!is.null(groups)) {
-
-  # Ensure Group column exists in plotdata (this is what ggplot actually uses)
-  if (!"Group" %in% colnames(plotdata)) {
-    stop("'Group' column is missing from plotdata after joining groups.")
-  }
-
-  # Drop NA groups early to avoid silent failures
-  plotdata <- plotdata %>%
-    filter(!is.na(Group))
-
-  # Get levels directly from plotdata (NOT from original groups object)
-  all_levels <- sort(unique(plotdata$Group))
-
-  if (length(all_levels) == 0) {
-    stop("No valid group levels found in plotdata$Group after filtering.")
-  }
-
-  # Ensure factor ordering is consistent
-  plotdata$Group <- factor(plotdata$Group, levels = all_levels)
-
-  # Build palette
-  if (!is.null(groups.color.pal)) {
-
-    if (length(all_levels) > length(groups.color.pal)) {
-      stop(paste(length(all_levels), "groups specified but only",
-                 length(groups.color.pal), "colors provided."))
+  # Define colors
+  if (!is.null(groups)) {
+  
+    # Ensure Group column exists in plotdata (this is what ggplot actually uses)
+    if (!"Group" %in% colnames(plotdata)) {
+      stop("'Group' column is missing from plotdata after joining groups.")
     }
-
-    cols <- groups.color.pal[seq_along(all_levels)]
-
-    if (any(is.na(cols)) || length(cols) == 0) {
-      stop("Color palette is invalid after subsetting.")
+  
+    # Drop NA groups early to avoid silent failures
+    plotdata <- plotdata %>%
+      filter(!is.na(Group))
+  
+    # Get levels directly from plotdata (NOT from original groups object)
+    all_levels <- sort(unique(plotdata$Group))
+  
+    if (length(all_levels) == 0) {
+      stop("No valid group levels found in plotdata$Group after filtering.")
     }
-
-    group_colors <- setNames(cols, all_levels)
-
-  } else {
-
-    gg_color_hue <- function(n) {
-      hues <- seq(15, 375, length = n + 1)
-      hcl(h = hues, l = 65, c = 100)[1:n]
+  
+    # Ensure factor ordering is consistent
+    plotdata$Group <- factor(plotdata$Group, levels = all_levels)
+  
+    # Build palette
+    if (!is.null(groups.color.pal)) {
+  
+      if (length(all_levels) > length(groups.color.pal)) {
+        stop(paste(length(all_levels), "groups specified but only",
+                   length(groups.color.pal), "colors provided."))
+      }
+  
+      cols <- groups.color.pal[seq_along(all_levels)]
+  
+      if (any(is.na(cols)) || length(cols) == 0) {
+        stop("Color palette is invalid after subsetting.")
+      }
+  
+      group_colors <- setNames(cols, all_levels)
+  
+    } else {
+  
+      gg_color_hue <- function(n) {
+        hues <- seq(15, 375, length = n + 1)
+        hcl(h = hues, l = 65, c = 100)[1:n]
+      }
+  
+      group_colors <- setNames(gg_color_hue(length(all_levels)), all_levels)
     }
-
-    group_colors <- setNames(gg_color_hue(length(all_levels)), all_levels)
   }
-}
 
   # Create vector to store plots
   plots <- vector("list")
@@ -286,9 +286,9 @@ if (!is.null(groups)) {
     # Add trendlines
     if (trendline == TRUE) {
       if (!is.null(groups)) {
-        plot <- plot + geom_smooth(aes(color = .data[["Group"]]), method = trendline.method, formula = trendline.formula, show.legend = FALSE)
+        plot <- plot + geom_smooth(aes(color = .data[["Group"]]), fill = NA, method = trendline.method, formula = trendline.formula)
       } else {
-        plot <- plot + geom_smooth(method = trendline.method, formula = trendline.formula, show.legend = FALSE)
+        plot <- plot + geom_smooth(fill = NA, method = trendline.method, formula = trendline.formula)
       }
     }
 
@@ -345,16 +345,6 @@ if (!is.null(groups)) {
             drop = drop
           )
       }
-      plot <- plot +
-        guides(
-          fill = guide_legend(
-            override.aes = list(
-              shape = 21,
-              fill = group_colors[present_levels],
-              color = NA
-            )
-          )
-        )
     }
     
     # Scale x axis
