@@ -180,16 +180,12 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     if (!"Group" %in% colnames(plotdata)) {
       stop("'Group' column is missing from plotdata after joining groups.")
     }
-  
-    # Drop NA groups early to avoid silent failures
-    plotdata <- plotdata %>%
-      filter(!is.na(Group))
-  
-    # Get levels directly from plotdata (NOT from original groups object)
-    all_levels <- sort(unique(plotdata$Group))
+    
+    # Get levels from original groups object
+    all_levels <- sort(unique(groups[[2]]))
   
     if (length(all_levels) == 0) {
-      stop("No valid group levels found in plotdata$Group after filtering.")
+      stop("No valid group levels found.")
     }
   
     # Ensure factor ordering is consistent
@@ -320,15 +316,10 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
       if (length(trendline_levels) == 0) {
         trendline_colors <- NULL
       } else {
-        trendline_colors <- setNames(
-          sapply(group_colors[trendline_levels], function(X) {
-            colorRampPalette(c(X, "black"))(100)[trendline.darken]
-          }),
-          trendline_levels
-        )
+        trendline_colors <- sapply(group_colors, function(X) {
+          colorRampPalette(c(X, "black"))(100)[trendline.darken]
+        })
       }
-      
-      present_levels <- levels(droplevels(plotdata$Group))
       
       plot <- plot +
         scale_fill_manual(
