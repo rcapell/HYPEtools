@@ -408,14 +408,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
           if(density.plot.type == "density"){
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
-              geom_density(size = 0.2, alpha = 0.4) +
+              geom_density(linewidth = 0.2, alpha = 0.4) +
               scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
-              geom_density(size = 0.2, alpha = 0.4) +
+              geom_density(linewidth = 0.2, alpha = 0.4) +
               scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
@@ -440,14 +440,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
           if(density.plot.type == "density"){
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
-              geom_density(size = 0.2, alpha = 0.4) +
+              geom_density(linewidth = 0.2, alpha = 0.4) +
               scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
-              geom_density(size = 0.2, alpha = 0.4) +
+              geom_density(linewidth = 0.2, alpha = 0.4) +
               scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
@@ -473,23 +473,23 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         if(density.plot.type == "density"){
           # Create density plot for x-axis
           densx <- ggplot(plotdata, aes(x = !!sym(col))) +
-            geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
+            geom_density(fill = "#619CFF", linewidth = 0.2, alpha = 1) +
             theme_void()
           
           # Create density plot for y-axis
           densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
-            geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
+            geom_density(fill = "#619CFF", linewidth = 0.2, alpha = 1) +
             theme_void() +
             coord_flip()
         } else if(density.plot.type == "boxplot"){
           # Create density plot for x-axis
           densx <- ggplot(plotdata, aes(x = !!sym(col))) +
-            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1, outlier.shape = NA) +
+            geom_boxplot(fill = "#619CFF", linewidth = 0.2, alpha = 1, outlier.shape = NA) +
             theme_void()
           
           # Create density plot for y-axis
           densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
-            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1, outlier.shape = NA) +
+            geom_boxplot(fill = "#619CFF", linewidth = 0.2, alpha = 1, outlier.shape = NA) +
             theme_void() +
             coord_flip()
         }
