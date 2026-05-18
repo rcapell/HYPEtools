@@ -6,6 +6,7 @@
 #### Highlights
 * Add ReadBestsims() function
 * Fix behavior of colors and drop in PlotPerformanceByAttribute()
+* Add additional geometry types to PlotParvalues()
 
 ## HYPEtools 1.6.7 (2026-04-08)
 *Enhancements and bug fixes*

@@ -6,6 +6,7 @@
 \usage{
 PlotParValues(
   par,
+  geom.type = c("boxplot", "violin", "dotplot", "point"),
   ignore_parameters = NULL,
   n_plots = 1,
   col.values = NULL,
@@ -16,6 +17,8 @@ PlotParValues(
 }
 \arguments{
 \item{par}{A HYPE par.txt file read in with \code{\link{ReadPar}} or a named list of par.txt files read in with \code{\link{ReadPar}}. E.g. \code{par <- list("par_1" = par1, "par2" = par2)}.}
+
+\item{geom.type}{String indicating the geometry type used to generate the plots. One of \code{boxplot}, \code{violin}, \code{dotplot}, or \code{point}.}
 
 \item{ignore_parameters}{A list containing HYPE parameter names that should be ignored while plotting. E.g. \code{ignore_pars <- c("par1", "par2")}.}
 
@@ -36,7 +39,7 @@ Returns an list of plot objects
 Plot parameter values for HYPE par.txt files.
 }
 \details{
-\code{PlotParValues} generates a set of faceted boxplots to show the parameter values for a given HYPE par.txt file or list of par.txt files. The plots can be used to
+\code{PlotParValues} generates a set of faceted plots to show the parameter values for a given HYPE par.txt file or list of par.txt files. The plots can be used to
 compare parameter values between models.
 }
 \examples{
