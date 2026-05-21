@@ -39,7 +39,7 @@ NULL
 AllSimToPar <- function(simfile, row, par){
   
   # Ensure that row is an integer
-  if (!is.integer(row)) {
+  if (!is.numeric(row) || row %% 1 != 0)  {
     stop("`row` must be an integer.")
   }
   
