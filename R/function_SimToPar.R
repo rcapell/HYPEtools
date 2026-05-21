@@ -38,8 +38,10 @@ NULL
 #' @rdname SimToPar
 AllSimToPar <- function(simfile, row, par){
   
-  # Ensure simfile is data.frame
-  simfile <- as.data.frame(simfile)
+  # Ensure that row is an integer
+  if (!is.integer(row)) {
+    stop("`row` must be an integer.")
+  }
   
   # Allsim column names from: http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:allsim.txt&s[]=jpop
   # Bestsim column names from: http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:bestsims.txt

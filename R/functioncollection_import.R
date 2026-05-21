@@ -2005,14 +2005,14 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = TRUE
 #' @importFrom data.table fread
 #' @export
 ReadAllsim <- function(filename = "allsim.txt", na.strings="-9999", check.names = FALSE) {
-  fread(file = filename, header = TRUE, sep = ",", na.strings = na.strings, check.names = check.names, data.table = FALSE)
+  fread(file = filename, header = TRUE, sep = ",", na.strings = na.strings, check.names = check.names, data.table = TRUE)
 }
 
 #' @rdname HypeDataImport
 #' @importFrom data.table fread
 #' @export
 ReadBestsims <- function(filename = "bestsims.txt", na.strings="-9999", check.names = FALSE) {
-  fread(file = filename, header = TRUE, sep = ",", na.strings = na.strings, check.names = check.names, data.table = FALSE)
+  fread(file = filename, header = TRUE, sep = ",", na.strings = na.strings, check.names = check.names, data.table = TRUE)
 }
 
 #' @rdname HypeDataImport
