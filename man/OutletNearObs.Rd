@@ -17,7 +17,7 @@ OutletNearObs(
 }
 \arguments{
 \item{gd}{Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive).
-Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}.}
+Typically a 'GeoData.txt' file imported using \verb{[ReadGeoData]}.}
 
 \item{file.qobs, file.xobs}{Character string, file location of HYPE observation data file. \emph{Only one of these needs to be
 supplied}, with \code{file.qobs} taking precedence if both are provided. Either an
@@ -38,14 +38,24 @@ all observation site SUBIDs available within \code{frac.drain} are returned.}
 \item{verbose}{Logical, print status messages and progress bars during runtime.}
 }
 \value{
-\code{OutletNearObs} returns a data frame with 4 columns, containing row-wise all observation sites which match the search
-criteria:
-\describe{
-\item{subid.outlet}{SUBID of outlet subbasin}
-\item{subid.obs}{SUBID of observation site}
-\item{area.fraction}{Relative drainage area fraction of observation site, compared to corresponding outlet subbasin}
-\item{area.outlet}{Drainage area of outlet subbasin, in km^2}
-\item{area.obs}{Drainage area of observation site, in km^2}
+\code{OutletNearObs} returns a list with two elements containing data frames.
+
+Element \code{outlet.no.match} with three columns, containing row-wise outlet subbasins without
+upstream observations according to the chosen criteria:
+\itemize{
+\item \code{subid.outlet}: SUBID of outlet subbasin
+\item \code{area.outlet}: Drainage area of outlet subbasin, in km^2
+\item \code{drain.frac.max}: Area fraction of the nearest observation subbasin, if any. \code{NA} otherwise.
+}
+
+Element \code{upstream.obs} with five columns, containing row-wise all observation sites which match
+the search criteria:
+\itemize{
+\item \code{subid.outlet}: SUBID of outlet subbasin
+\item \code{subid.obs}: SUBID of observation subbasin
+\item \code{area.fraction}: Area fraction of observation subbasin
+\item \code{area.outlet}: Drainage area of outlet subbasin, in km^2
+\item \code{area.obs}: Drainage area of observation site, in km^2
 }
 
 If \code{file.xobs} is provided without \code{variable}, the function prints available HYPE observation variables in \code{file.xobs} and silently

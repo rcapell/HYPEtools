@@ -44,21 +44,21 @@ Otherwise, all SUBIDs in \code{map} will be added to the map.}
 
 \item{plot.scale}{Logical, include a scale bar on the map.}
 
-\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included. See \code{\link[leaflet.extras:search-features]{leaflet.extras::addSearchFeatures()}}.}
+\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included. See \code{\link[leaflet.extras:addSearchFeatures]{leaflet.extras::addSearchFeatures()}}.}
 
-\item{weight}{Numeric, weight of subbasin boundary lines. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{weight}{Numeric, weight of subbasin boundary lines. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
-\item{opacity}{Numeric, opacity of subbasin boundary lines. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{opacity}{Numeric, opacity of subbasin boundary lines. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
-\item{fillColor}{String, color of subbasin polygons. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{fillColor}{String, color of subbasin polygons. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
-\item{fillOpacity}{Numeric, opacity of subbasin polygons. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{fillOpacity}{Numeric, opacity of subbasin polygons. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
 \item{line.color}{String, color codes to use for each routing line. If \code{NULL}, then random colors will be used. If a single value is provided, then that color will be used for all lines.}
 
-\item{line.weight}{Numeric, weight of routing lines. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.If a single value is provided, then that weight will be used for all lines.}
+\item{line.weight}{Numeric, weight of routing lines. See \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}.If a single value is provided, then that weight will be used for all lines.}
 
-\item{line.opacity}{Numeric, opacity of routing lines. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
+\item{line.opacity}{Numeric, opacity of routing lines. See \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}.}
 
 \item{seed}{Integer, seed number to to produce repeatable color palette.}
 

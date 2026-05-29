@@ -105,17 +105,17 @@ with first column containing SUBIDs and additional columns containing model resu
 
 \item{attributes}{Data frame object containing the subbasin attribute information to plot on the x-axis of the output plots. Typically a data frame created by \code{\link{SubidAttributeSummary}}}
 
-\item{join.type}{Specify how to join \code{subass} to \code{attributes}. Default "join" will perform a \link[dplyr:mutate-joins]{dplyr::left_join} in which the order of the SUBIDs does not need to match. Additional option "cbind"
+\item{join.type}{Specify how to join \code{subass} to \code{attributes}. Default "join" will perform a \link[dplyr:left_join]{dplyr::left_join} in which the order of the SUBIDs does not need to match. Additional option "cbind"
 will perform a \code{\link{cbind}} in which the order of the SUBIDs needs to match; this can be helpful if you want to create plots where \code{subass} performance data is calculated according to a
 grouping variable (e.g. month).}
 
-\item{group.join.type}{Specify how to join \code{subass} to \code{groups}. Default "join" will perform a \link[dplyr:mutate-joins]{dplyr::left_join} in which the order of the SUBIDs does not need to match. Additional option "cbind"
+\item{group.join.type}{Specify how to join \code{subass} to \code{groups}. Default "join" will perform a \link[dplyr:left_join]{dplyr::left_join} in which the order of the SUBIDs does not need to match. Additional option "cbind"
 will perform a \code{\link{cbind}} in which the order of the SUBIDs needs to match; this can be helpful if you want to create plots where \code{subass} performance data is calculated according to a
 grouping variable (e.g. month).}
 
 \item{groups.color.pal}{Vector containing colors to use when plotting groups. Only used if groups is not \code{NULL}.}
 
-\item{drop}{Logical, should unused factor levels be omitted from the legend. See \link[ggplot2:scale_manual]{ggplot2::scale_color_manual} and \link[ggplot2:scale_manual]{ggplot2::scale_fill_manual}.}
+\item{drop}{Logical, should unused factor levels be omitted from the legend. See \link[ggplot2:scale_color_manual]{ggplot2::scale_color_manual} and \link[ggplot2:scale_fill_manual]{ggplot2::scale_fill_manual}.}
 
 \item{alpha}{Numeric value to set transparency of dots in output plots. Should be in the range 0-1.}
 
@@ -133,29 +133,29 @@ grouping variable (e.g. month).}
 
 \item{density.plot.type}{String, type of plot geometry to use for density plots: \code{"density"} for \link[ggplot2:geom_density]{ggplot2::geom_density} or \code{"boxplot"} for \link[ggplot2:geom_boxplot]{ggplot2::geom_boxplot}. Outliers are hidden from the boxplots.}
 
-\item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_log10}.}
+\item{scale.x.log}{Vector describing if output plots should use a log scale on the x-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \link[ggplot2:scale_x_log10]{ggplot2::scale_x_log10}.}
 
-\item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_log10}.}
+\item{scale.y.log}{Vector describing if output plots should use a log scale on the y-axis. A pseudo-log scale will be used if any zero or negative values are present. If length of vector == 1, then the value will be used for all output plots. Vector values should be either \code{TRUE} or \code{FALSE}. See \link[ggplot2:scale_y_log10]{ggplot2::scale_y_log10}.}
 
-\item{xsigma}{Numeric, scaling factor for the linear part of pseudo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \link[scales:transform_log]{scales::pseudo_log_trans}.}
+\item{xsigma}{Numeric, scaling factor for the linear part of pseudo-long transformation of x axis. Used if \code{scale.x.log} is \code{TRUE} and zero or negative values are present. See \link[scales:pseudo_log_trans]{scales::pseudo_log_trans}.}
 
-\item{ysigma}{Numeric, scaling factor for the linear part of pseudo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See \link[scales:transform_log]{scales::pseudo_log_trans}.}
+\item{ysigma}{Numeric, scaling factor for the linear part of pseudo-long transformation of y axis. Used if \code{scale.y.log} is \code{TRUE} and zero or negative values are present. See \link[scales:pseudo_log_trans]{scales::pseudo_log_trans}.}
 
-\item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_continuous}.}
+\item{xlimits}{Vector containing minimum and maximum values for the x-axis of the output plots. See \link[ggplot2:scale_x_continuous]{ggplot2::scale_x_continuous}.}
 
-\item{ylimits}{Vector containing minimum and maximum values for the y-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_continuous}.}
+\item{ylimits}{Vector containing minimum and maximum values for the y-axis of the output plots. See \link[ggplot2:scale_y_continuous]{ggplot2::scale_y_continuous}.}
 
-\item{xbreaks}{Vector containing the break values used for the x-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_continuous}.}
+\item{xbreaks}{Vector containing the break values used for the x-axis of the output plots. See \link[ggplot2:scale_x_continuous]{ggplot2::scale_x_continuous}.}
 
-\item{ybreaks}{Vector containing the break values used for the y-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_continuous}.}
+\item{ybreaks}{Vector containing the break values used for the y-axis of the output plots. See \link[ggplot2:scale_y_continuous]{ggplot2::scale_y_continuous}.}
 
-\item{xlabels}{Vector containing the labels for each break value used for the x-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_x_continuous}.}
+\item{xlabels}{Vector containing the labels for each break value used for the x-axis of the output plots. See \link[ggplot2:scale_x_continuous]{ggplot2::scale_x_continuous}.}
 
-\item{ylabels}{Vector containing the labels for each break value used for the y-axis of the output plots. See \link[ggplot2:scale_continuous]{ggplot2::scale_y_continuous}.}
+\item{ylabels}{Vector containing the labels for each break value used for the y-axis of the output plots. See \link[ggplot2:scale_y_continuous]{ggplot2::scale_y_continuous}.}
 
-\item{xlab}{String containing the text to use for the x-axis title of the output plots. See \link[ggplot2:labs]{ggplot2::xlab}.}
+\item{xlab}{String containing the text to use for the x-axis title of the output plots. See \link[ggplot2:xlab]{ggplot2::xlab}.}
 
-\item{ylab}{String containing the text to use for the y-axis title of the output plots. See \link[ggplot2:labs]{ggplot2::ylab}.}
+\item{ylab}{String containing the text to use for the y-axis title of the output plots. See \link[ggplot2:ylab]{ggplot2::ylab}.}
 
 \item{ncol}{Integer, number of columns to use in the output arranged plot. See \link[ggpubr:ggarrange]{ggpubr::ggarrange}.}
 

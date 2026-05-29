@@ -44,7 +44,6 @@ License: LGPL-3
 LazyData: false
 URL: https://hypeweb.smhi.se/, https://github.com/rcapell/HYPEtools
 BugReports: https://github.com/rcapell/HYPEtools/issues
-RoxygenNote: 7.3.3
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-US
@@ -68,3 +67,4 @@ Suggests:
     terra,
     webshot
 VignetteBuilder: knitr
+Config/roxygen2/version: 8.0.0
