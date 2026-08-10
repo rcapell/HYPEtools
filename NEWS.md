@@ -8,6 +8,7 @@
 * Fix behavior of colors and drop in PlotPerformanceByAttribute()
 * Add additional geometry types to PlotParvalues()
 * Bug fixes to OutletNearObs()
+* Fix bug in na.color for PlotMapOutput()
 
 ## HYPEtools 1.6.7 (2026-04-08)
 *Enhancements and bug fixes*

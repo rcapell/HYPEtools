@@ -471,7 +471,6 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
     # Give it a name
     names(x)[3] <- "color"
     
-    
     if (map.type == "legacy") {
       # add x to subid map table (in data slot, indicated by @), merge by SUBID
       map@data <- data.frame(map@data, x[match(map@data[, map.subid.column], x[, 1]), ])
@@ -533,8 +532,7 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
         if (col.rev == FALSE) {
           lcol <- c(crfun(length(cbrks) - 1), na.color) # Add extra legend color for NA
         } else if (col.rev == TRUE) {
-          rev.col <- c(rev(crfun(length(cbrks) - 1)), na.color) # Add extra legend color for NA, reverse color palette
-          lcol <- rev.col[c(2:length(rev.col), 1)] # Reorder colors so that NA color is still last
+          lcol <- c(rev(crfun(length(cbrks) - 1)), na.color) # Add extra legend color for NA, reverse color palette
         }
       } else {
         if (col.rev == FALSE) {
@@ -819,12 +817,6 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
       
       # Create ggplot static map
       if(map.type == "default"){
-        
-        xlcol <<-lcol
-        xl.label <<-l.label
-        
-        bob<<-ggplot() +
-          geom_sf(data = x, aes(fill = .data[["color"]]), color = outline.color, size = weight, show.legend = plot.legend)
         
         # Create plot and add polygons
         plot <- ggplot() +
