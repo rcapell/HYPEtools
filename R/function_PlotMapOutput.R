@@ -472,9 +472,9 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
     if (is.null(crfun)) {
       if (map.type %in% c("default", "leaflet") & any(is.na(x[[2]]))) {
         if (col.rev == FALSE) {
-          lcol <- c(col, na.color) # Add extra legend color for NA for leaflet maps
+          lcol <- c(col, na.color) # Add extra legend color for NA
         } else if (col.rev == TRUE) {
-          lcol <- c(rev(col), na.color) # Add extra legend color for NA for leaflet maps and reverse color palette
+          lcol <- c(rev(col), na.color) # Add extra legend color for NA
         }
       } else {
         if (col.rev == FALSE) {
@@ -763,7 +763,7 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
         x[which(is.na(x[[2]])), "color"] <- na.color
       } else {
         l.label <- unlist(lapply(1:(length(cbrks) - 1), function(X) {
-          paste(signif(cbrks[X], legend.signif), "-", signif(cbrks[X + 1], legend.signif))
+          paste(signif(cbrks[X], legend.signif), "to", signif(cbrks[X + 1], legend.signif))
         }))
       }
       
