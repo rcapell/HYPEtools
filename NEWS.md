@@ -9,7 +9,8 @@
 * Add additional geometry types to PlotParvalues()
 * Bug fixes to OutletNearObs()
 * Fix bug in na.color for PlotMapOutput()
-* Add CalculateRiverDistance() function
+* Add CalculateRiverDistance() and LakeDataOutlets() functions
+* Add example [LakeData.txt](./inst/demo_model/LakeData.txt) file
 
 ## HYPEtools 1.6.7 (2026-04-08)
 *Enhancements and bug fixes*
