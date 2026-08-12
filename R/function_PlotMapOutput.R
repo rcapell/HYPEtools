@@ -818,10 +818,14 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
       # Create ggplot static map
       if(map.type == "default"){
         
+        # Convert color to factor with all levels so that they all get added to the legend
+        x <- x %>%
+          mutate(color = factor(color, levels = lcol))
+        
         # Create plot and add polygons
         plot <- ggplot() +
           geom_sf(data = x, aes(fill = .data[["color"]]), color = outline.color, size = weight, show.legend = plot.legend) +
-          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
+          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label, drop = FALSE) +
           theme(axis.title = element_blank())
         
         # Add labels
