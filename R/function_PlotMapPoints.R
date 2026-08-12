@@ -836,12 +836,16 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
           plot <- plot +
             geom_sf(data = bg, color = bg.color, fill = bg.fillColor, alpha = bg.fillOpacity)
         }
+        
+        # Convert color to factor with all levels so that they all get added to the legend
+        x <- x %>%
+          mutate(color = factor(color, levels = lcol))
 
         # Add points
         plot <- plot +
           geom_sf(data = x, aes(color = .data[["color"]], fill = .data[["color"]]), size = radius, show.legend = plot.legend) +
-          scale_color_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
-          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
+          scale_color_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label, drop = FALSE) +
+          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label, drop = FALSE) +
           theme(axis.title = element_blank())
         
         # Add background labels
