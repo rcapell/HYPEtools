@@ -4,6 +4,7 @@
 cevpam	0.25
 cevpph	67.5
 damp	0.5
+deepmem	1000
 epotdist	3
 gldepi	3.6
 grata	0.6
@@ -29,6 +30,7 @@ cevp	0.175	0.22	0.215
 cmlt	2.8	1.9	3.5
 frost	2	2	2
 srrcs	0.4	0.2	0.3
+surfmem 17.8 5.15 5.15
 ttmp	0.2	0.3	0.2
 !!
 !!Soils	 1=Fine soil	 2=Coarse soil
