@@ -1,6 +1,6 @@
-!!Parameter Values
-!!
-!!General
+!!	=======================================================================================================
+!!	GENERAL PARAMETERS
+!!	__________
 cevpam	0.25
 cevpph	67.5
 damp	0.5
@@ -24,16 +24,20 @@ ttpi	3
 pcelevth	500
 pcelevadd	0.04
 pcelevmax	0.04
-!!
-!!Landuses	 1=Water	 2=Coniferous forest	 3=Agricultural land
+!!	=======================================================================================================
+!!	LANDUSE
+!!	__________
+!!  Landuse Classes: 1=Water 2=Coniferous forest 3=Agricultural land
 cevp	0.175	0.22	0.215
 cmlt	2.8	1.9	3.5
 frost	2	2	2
 srrcs	0.4	0.2	0.3
 surfmem 17.8 5.15 5.15
 ttmp	0.2	0.3	0.2
-!!
-!!Soils	 1=Fine soil	 2=Coarse soil
+!!	=======================================================================================================
+!!	SOILS
+!!	__________
+!!  Soil Classes: 1=Fine soil 2=Coarse soil
 mperc1	20	25	
 mperc2	20	25	
 rrcs1	0.6	0.1
@@ -41,17 +45,65 @@ rrcs2	0.04	0.03
 sfrost	1	1
 srrate	0.05	0.025
 trrcs	0.3	0.15
-wcep1	0.01	0.07
-wcep2	0.01	0.0595
-wcep3	0.01	0.049
-wcfc1	0.15	0.15
-wcfc2	0.15	0.15
-wcfc3	0.15	0.15
-wcwp1	0.15	0.05
-wcwp2	0.15	0.05
-wcwp3	0.15	0.05
+wcep	0.01	0.07
+wcfc	0.15	0.15
+wcwp	0.15	0.05
+!!	=======================================================================================================
+!!	WATER TEMPERATURE
+!!	__________
+upper2deep	2.5
+tcfriver	30
+scfriver	0.3
+ccfriver	-0.3
+lcfriver	-0.1
+tcflake	40
+scflake	0.7
+ccflake	0
+lcflake	0
+stbcorr1	0.4
+stbcorr2	0.25
+stbcorr3	0
+!!	=======================================================================================================
+!!	LAKE AND RIVER ICE
+!!	__________
+licewme	0.1
+licetf	0
+licesndens	0.0024
+licekika	10
+licekexp	1.88
+licetmelt	1.25
+licewcorr	0.5
+!!	__________
+ricewme	0.2
+ricetf	0
+ricesndens	0.0024
+ricekika	10
+ricekexp	1.88
+ricetmelt	1.25
+!! =======================================================================================================
+!!  TRACERS:
+!!  ____________________________________
+!!  GENERAL PARAMETERS
 !!
-!!PARREG	1
+!!  Initial concentrations in soil and water
+iniT1 0
+iniT1sw 0
+!!  Evaporation, proportion of the tracer that follows evaporating water
+t1evap 0
+!!  ____________________________________
+!!  Exponential decay, half life of the tracer in days
+t1expdec 0
+!!  ____________________________________
+!!  Adsorption/desorption to/from soil; equilibrium concentration coefficients 
+!!  ("unit" adsorbed to 1 kg of soil in one liter of soil water, U/kg soil)
+t1freuc 0
+!!  ____________________________________
+!!  Sedimentation in lakes, sink velocity
+t1sedvel 0
+!!	=======================================================================================================
+!!	REGIONAL PARAMETERS
+!!	__________
+!!  PARREG	1
 preccorr	-0.24
 cevpcorr	-0.29
 tempcorr	-0.4
