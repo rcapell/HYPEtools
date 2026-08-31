@@ -117,6 +117,7 @@ style <- data.frame(SUBID = gd$SUBID) \%>\%
   mutate(
     WEIGHT = sapply(SUBID, function(X) length(AllUpstreamSubids(X, gd)))
   ) \%>\%
+  mutate(WEIGHT = scales::rescale(WEIGHT, to = c(2, 10))) \%>\%
   arrange(WEIGHT) \%>\%
   mutate(
     COLOR = ColQ(nrow(gd))
