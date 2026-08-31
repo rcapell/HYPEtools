@@ -54,9 +54,11 @@ Otherwise, all SUBIDs in \code{map} will be added to the map.}
 
 \item{fillOpacity}{Numeric, opacity of subbasin polygons. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
-\item{line.color}{String, color codes to use for each routing line. If \code{NULL}, then random colors will be used. If a single value is provided, then that color will be used for all lines.}
+\item{line.color}{String, color codes to use for each routing line. If \code{NULL}, then random colors will be used. If a single value is provided, then that color will be used for all lines.
+A data frame with "SUBID" and "COLOR" columns can also be entered to provide specific colors for each SUBID (See Example #2).}
 
-\item{line.weight}{Numeric, weight of routing lines. See \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}.If a single value is provided, then that weight will be used for all lines.}
+\item{line.weight}{Numeric, weight of routing lines. See \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}.If a single value is provided, then that weight will be used for all lines.
+A data frame with "SUBID" and "WEIGHT" columns can also be entered to provide specific weights for each SUBID (See Example #2).}
 
 \item{line.opacity}{Numeric, opacity of routing lines. See \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}.}
 
@@ -89,6 +91,7 @@ to be provided if the \code{map} GIS data does not include SUBID and/or MAINDOWN
 BranchData.txt file. Subbasin routing lines are randomly assigned a color using \code{\link{distinctColorPalette}}.
 }
 \examples{
+# Example #1 Random colors
 \dontrun{
 PlotSubbasinRouting(
   map = system.file("demo_model",
@@ -99,5 +102,38 @@ PlotSubbasinRouting(
   map.subid.column = 25
 )
 }
+
+# Example #2: Line widths and colors based on flow accumulation
+\dontrun{
+library(dplyr)
+
+# Read GeoData
+gd <- ReadGeoData(
+  system.file("demo_model", "GeoData.txt", package = "HYPEtools")
+)
+
+# Prepare Line Styling
+style <- data.frame(SUBID = gd$SUBID) \%>\%
+  mutate(
+    WEIGHT = sapply(SUBID, function(X) length(AllUpstreamSubids(X, gd)))
+  ) \%>\%
+  arrange(WEIGHT) \%>\%
+  mutate(
+    COLOR = ColQ(nrow(gd))
+  )
+
+# Plot Routing
+PlotSubbasinRouting(
+  map = system.file("demo_model",
+                    "gis", "Nytorp_map.gpkg",
+                    package = "HYPEtools"
+  ),
+  map.subid.column = 25,
+  gd = gd,
+  line.color = style,
+  line.weight = style
+)
+}
+
 
 }

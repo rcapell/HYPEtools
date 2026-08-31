@@ -11,6 +11,7 @@
 * Fix bug in na.color for PlotMapOutput()
 * Add CalculateRiverDistance() and LakeDataOutlets() functions
 * Add example [LakeData.txt](./inst/demo_model/LakeData.txt) file
+* Update examples for PlotSubbasinRouting() and fix bugs with line.weight and line.color
 
 ## HYPEtools 1.6.7 (2026-04-08)
 *Enhancements and bug fixes*

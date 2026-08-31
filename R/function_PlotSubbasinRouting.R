@@ -17,9 +17,9 @@
 #' @param fillColor String, color of subbasin polygons. See [leaflet::addPolygons()].
 #' @param fillOpacity Numeric, opacity of subbasin polygons. See [leaflet::addPolygons()].
 #' @param line.color String, color codes to use for each routing line. If \code{NULL}, then random colors will be used. If a single value is provided, then that color will be used for all lines.
-#  A data frame with "SUBID" and "COLOR" columns can also be entered to provide specific colors for each SUBID.
+#'  A data frame with "SUBID" and "COLOR" columns can also be entered to provide specific colors for each SUBID (See Example #2).
 #' @param line.weight Numeric, weight of routing lines. See [leaflet::addPolylines()].If a single value is provided, then that weight will be used for all lines.
-#  A data frame with "SUBID" and "WEIGHT" columns can also be entered to provide specific weights for each SUBID.
+#'  A data frame with "SUBID" and "WEIGHT" columns can also be entered to provide specific weights for each SUBID (See Example #2).
 #' @param line.opacity Numeric, opacity of routing lines. See [leaflet::addPolylines()].
 #' @param seed Integer, seed number to to produce repeatable color palette.
 #' @param darken Numeric specifying the amount of darkening applied to the random color palette. Negative values will lighten the palette. See \code{\link{distinctColorPalette}}.
@@ -41,6 +41,7 @@
 #' Returns an interactive Leaflet map.
 #'
 #' @examples
+#' # Example #1 Random colors
 #' \dontrun{
 #' PlotSubbasinRouting(
 #'   map = system.file("demo_model",
@@ -51,6 +52,39 @@
 #'   map.subid.column = 25
 #' )
 #' }
+#' 
+#' # Example #2: Line widths and colors based on flow accumulation
+#' \dontrun{
+#' library(dplyr)
+#' 
+#' # Read GeoData
+#' gd <- ReadGeoData(
+#'   system.file("demo_model", "GeoData.txt", package = "HYPEtools")
+#' )
+#' 
+#' # Prepare Line Styling
+#' style <- data.frame(SUBID = gd$SUBID) %>%
+#'   mutate(
+#'     WEIGHT = sapply(SUBID, function(X) length(AllUpstreamSubids(X, gd)))
+#'   ) %>%
+#'   arrange(WEIGHT) %>%
+#'   mutate(
+#'     COLOR = ColQ(nrow(gd))
+#'   )
+#' 
+#' # Plot Routing
+#' PlotSubbasinRouting(
+#'   map = system.file("demo_model",
+#'                     "gis", "Nytorp_map.gpkg",
+#'                     package = "HYPEtools"
+#'   ),
+#'   map.subid.column = 25,
+#'   gd = gd,
+#'   line.color = style,
+#'   line.weight = style
+#' )
+#' }
+#' 
 #'
 #' @importFrom dplyr full_join right_join %>% filter across rename_with
 #' @importFrom tidyselect matches
@@ -237,7 +271,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
       colors <- color_pal(nrow(map_point))
     } else if(is.data.frame(line.color)){
       stopifnot(all(c("SUBID", "COLOR") %in% colnames(line.color)))
-      colors <- left_join(map_point[, map.subid.column] %>% mutate(across(1, ~ as.character(.x))), line.color %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], "SUBID")) # Join data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
+      colors <- left_join(map_point[, map.subid.name] %>% mutate(across(1, ~ as.character(.x))), line.color %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = map.subid.name, "SUBID")) # Join data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
       colors <- colors[["COLOR"]]
     } else if(length(line.color) == 1){
       colors <- rep(line.color, nrow(map_point))
@@ -248,7 +282,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     # Get line weights for polylines
     if(is.data.frame(line.weight)){
       stopifnot(all(c("SUBID", "WEIGHT") %in% colnames(line.weight)))
-      weights <- left_join(map_point[, map.subid.column] %>% mutate(across(1, ~ as.character(.x))), line.weight %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = colnames(map)[map.subid.column], "SUBID")) # Join data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
+      weights <- left_join(map_point[, map.subid.name] %>% mutate(across(1, ~ as.character(.x))), line.weight %>% mutate(across("SUBID", ~ as.character(.x))), by = setNames(nm = map.subid.name, "SUBID")) # Join data in a manner in which column names don't have to be identical (e.g. "SUBID" and "subid" is okay, character and integer is okay)
       weights <- weights[["WEIGHT"]]
     } else if(length(line.weight) == 1){
       weights <- rep(line.weight, nrow(map_point))
