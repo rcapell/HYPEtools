@@ -1163,11 +1163,10 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
         
         # Add various basemaps
         leafmap <- leafmap %>%
-          leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
+          leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map") %>%
           leaflet::addTiles(group = "Street") %>%
           leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
-          leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
-          leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
+          leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite")
         
         # Save Image
         if (!file == "") {
