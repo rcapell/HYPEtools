@@ -839,7 +839,7 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
         
         # Convert color to factor with all levels so that they all get added to the legend
         x <- x %>%
-          mutate(color = factor(color, levels = lcol))
+          mutate(color = factor(.data[["color"]], levels = lcol))
 
         # Add points
         plot <- plot +

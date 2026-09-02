@@ -820,7 +820,7 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
         
         # Convert color to factor with all levels so that they all get added to the legend
         x <- x %>%
-          mutate(color = factor(color, levels = lcol))
+          mutate(color = factor(.data[["color"]], levels = lcol))
         
         # Create plot and add polygons
         plot <- ggplot() +
