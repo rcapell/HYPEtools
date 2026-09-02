@@ -1,7 +1,7 @@
-# --------------------------------------------
-# CITATION file created with {cffr} R package
+# ------------------------------------------------
+# CITATION.cff file created with {cffr} R package
 # See also: https://docs.ropensci.org/cffr/
-# --------------------------------------------
+# ------------------------------------------------
  
 cff-version: 1.2.0
 message: 'To cite package "HYPEtools" in publications use:'
@@ -9,7 +9,7 @@ type: software
 license: LGPL-3.0-only
 title: 'HYPEtools: Tools for Processing and Analyzing Files from the Hydrological
   Catchment Model HYPE'
-version: 1.6.7.9000
+version: 1.6.8
 doi: 10.32614/CRAN.package.HYPEtools
 abstract: 'Work with model files (setup, input, output) from the hydrological catchment
   model HYPE: Streamlined file import and export, standard evaluation plot routines,
@@ -477,7 +477,7 @@ references:
   abstract: 'zoo: S3 Infrastructure for Regular and Irregular Time Series (Z''s Ordered
     Observations)'
   notes: Imports
-  url: https://zoo.R-Forge.R-project.org/
+  url: https://zeileis.codeberg.page/zoo/
   repository: https://CRAN.R-project.org/package=zoo
   authors:
   - family-names: Zeileis
@@ -851,8 +851,14 @@ references:
     given-names: Andrew
     orcid: https://orcid.org/0000-0002-4565-533X
   - family-names: Barbosa
-    given-names: Márcia
+    given-names: A. Márcia
     orcid: https://orcid.org/0000-0001-8972-7713
+  - family-names: Cordano
+    given-names: Emanuele
+    orcid: https://orcid.org/0000-0002-3508-5898
+  - family-names: Dyba
+    given-names: Krzysztof
+    orcid: https://orcid.org/0000-0002-8614-3816
   year: '2026'
   doi: 10.32614/CRAN.package.terra
 - type: software
