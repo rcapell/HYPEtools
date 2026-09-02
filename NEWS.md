@@ -1,7 +1,7 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.6.7.9000
-*Development Version*
+## HYPEtools 1.6.8
+*Enhancements and bug fixes*
 
 #### Highlights
 * Add ReadBestsims() function
