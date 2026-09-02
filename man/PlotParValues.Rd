@@ -43,6 +43,7 @@ Plot parameter values for HYPE par.txt files.
 compare parameter values between models.
 }
 \examples{
+\dontrun{
 par <- ReadPar(
   system.file(
     "demo_model", "par.txt",
@@ -50,5 +51,6 @@ par <- ReadPar(
   )
 )
 PlotParValues(par)
+}
 
 }

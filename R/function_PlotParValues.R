@@ -19,6 +19,7 @@
 #' Returns an list of plot objects
 #'
 #' @examples
+#' \dontrun{
 #' par <- ReadPar(
 #'   system.file(
 #'     "demo_model", "par.txt",
@@ -26,6 +27,7 @@
 #'   )
 #' )
 #' PlotParValues(par)
+#' }
 #'
 #' @importFrom dplyr %>% filter arrange ungroup summarize
 #' @importFrom ggplot2 facet_wrap ggplot ggsave xlab ylab theme geom_boxplot geom_violin geom_count geom_point after_stat scale_size_area position_jitterdodge guides guide_legend expansion
