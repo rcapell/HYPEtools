@@ -85,6 +85,9 @@ devtools::release()
 
 # AFTER CRAN APPROVAL --------------------------------------------------------------------------------------------------------------------
 
+# Add date to release heading in NEWS.md:
+#     ## HYPEtools 1.2.0 (2023-02-10)
+
 # Merge dev branch into master branch
 
 # Create version tag in GitHub repo
@@ -92,11 +95,9 @@ usethis::use_github_release()
 
 # Add Date & Zenodo badge to GitHub Release
 
-# After successful release
-# - Update version number in DESCRIPTION to *.9000
-# - Add date to release heading in NEWS.md:
-#     ## HYPEtools 1.2.0 (2023-02-10)
-# - Add development version heading to NEWS.md:
+# Update version number in DESCRIPTION to *.9000
+
+# Add development version heading to NEWS.md:
 #     ## HYPEtools 1.5.0.9000
 #     *Development Version*
 #

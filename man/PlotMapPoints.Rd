@@ -126,38 +126,38 @@ with 9 intervals, and an additional interval for negative values. This is suitab
 
 \item{arrow.pos}{Keyword string for north arrow position for static maps. One of \code{bl}, \code{br}, \code{tr}, or \code{tl}.}
 
-\item{radius}{Numeric, radius of markers maps. See \link[ggplot2:ggsf]{ggplot2::geom_sf} for static maps and \link[leaflet:map-layers]{leaflet::addCircleMarkers} for Leaflet maps.}
+\item{radius}{Numeric, radius of markers maps. See \link[ggplot2:geom_sf]{ggplot2::geom_sf} for static maps and \link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers} for Leaflet maps.}
 
-\item{weight}{Numeric, weight of marker outlines in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addCircleMarkers}.}
+\item{weight}{Numeric, weight of marker outlines in Leaflet maps. See \link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers}.}
 
-\item{opacity}{Numeric, opacity of marker outlines in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addCircleMarkers}.}
+\item{opacity}{Numeric, opacity of marker outlines in Leaflet maps. See \link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers}.}
 
-\item{fillOpacity}{Numeric, opacity of markers in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addCircleMarkers}.}
+\item{fillOpacity}{Numeric, opacity of markers in Leaflet maps. See \link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers}.}
 
 \item{na.color}{Character string of color to use to symbolize markers in maps which correspond to \code{NA} values.}
 
 \item{jitter}{Numeric, amount to jitter points with duplicate geometries. See \link[sf:st_jitter]{sf::st_jitter}.}
 
-\item{bg.color}{string, color code of \code{bg} subbasin outlines in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addPolygons}.}
+\item{bg.color}{string, color code of \code{bg} subbasin outlines in Leaflet maps. See \link[leaflet:addPolygons]{leaflet::addPolygons}.}
 
-\item{bg.weight}{Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See \link[leaflet:map-layers]{leaflet::addPolygons}.}
+\item{bg.weight}{Numeric, weight of \code{bg} subbasin outlines in Leaflet maps. See \link[leaflet:addPolygons]{leaflet::addPolygons}.}
 
-\item{bg.opacity}{Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \link[ggplot2:ggsf]{ggplot2::geom_sf} for static maps and \link[leaflet:map-layers]{leaflet::addPolygons} for Leaflet maps.}
+\item{bg.opacity}{Numeric, opacity of \code{bg} subbasin outlines in Leaflet maps. See \link[ggplot2:geom_sf]{ggplot2::geom_sf} for static maps and \link[leaflet:addPolygons]{leaflet::addPolygons} for Leaflet maps.}
 
-\item{bg.fillColor}{Character string of color to use to symbolize \code{bg} subbasin polygons in maps. See \link[ggplot2:ggsf]{ggplot2::geom_sf} for static maps and \link[leaflet:map-layers]{leaflet::addPolygons} for Leaflet maps.}
+\item{bg.fillColor}{Character string of color to use to symbolize \code{bg} subbasin polygons in maps. See \link[ggplot2:geom_sf]{ggplot2::geom_sf} for static maps and \link[leaflet:addPolygons]{leaflet::addPolygons} for Leaflet maps.}
 
-\item{bg.fillOpacity}{Numeric in range 0-1, opacity of \code{bg} subbasin polygons in maps. See \link[ggplot2:ggsf]{ggplot2::geom_sf} for static maps and \link[leaflet:map-layers]{leaflet::addPolygons} for Leaflet maps.}
+\item{bg.fillOpacity}{Numeric in range 0-1, opacity of \code{bg} subbasin polygons in maps. See \link[ggplot2:geom_sf]{ggplot2::geom_sf} for static maps and \link[leaflet:addPolygons]{leaflet::addPolygons} for Leaflet maps.}
 
 \item{plot.label}{Logical, if \code{TRUE}, then labels will be displayed on default static maps and in Leaflet maps when the cursor hovers over markers.
-See \link[ggplot2:ggsf]{ggplot2::geom_sf_text} for default maps and \link[leaflet:map-layers]{leaflet::addCircleMarkers} for Leaflet maps.}
+See \link[ggplot2:geom_sf_text]{ggplot2::geom_sf_text} for default maps and \link[leaflet:addCircleMarkers]{leaflet::addCircleMarkers} for Leaflet maps.}
 
-\item{plot.label.size}{Numeric, size of text for labels on default static plots. See \link[ggplot2:ggsf]{ggplot2::geom_sf_text}.}
+\item{plot.label.size}{Numeric, size of text for labels on default static plots. See \link[ggplot2:geom_sf_text]{ggplot2::geom_sf_text}.}
 
 \item{plot.label.geometry}{Keyword string to select where plot labels should be displayed on the default static plots. Either \code{centroid} to use \code{sf::st_centroid} or \code{surface} to use \code{sf::st_point_on_surface}.}
 
-\item{noHide}{Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \link[leaflet:map-options]{leaflet::labelOptions}.}
+\item{noHide}{Logical, set to \code{TRUE} to always display marker labels in Leaflet maps. See \link[leaflet:labelOptions]{leaflet::labelOptions}.}
 
-\item{textOnly}{Logical, set to \code{TRUE} to hide marker label background in Leaflet maps. See \link[leaflet:map-options]{leaflet::labelOptions}.}
+\item{textOnly}{Logical, set to \code{TRUE} to hide marker label background in Leaflet maps. See \link[leaflet:labelOptions]{leaflet::labelOptions}.}
 
 \item{font.size}{Numeric, font size (px) for marker labels in Leaflet maps.}
 

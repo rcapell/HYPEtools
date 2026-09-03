@@ -4,44 +4,50 @@
 #' Find observation stations close to specified outlet subbasins of a HYPE model set-up. Proximity threshold as upstream area fraction of target 
 #' outlet subbasin(s). Currently, only upstream observations are identified.
 #' 
-#' @param gd Data frame with two columns \code{subid} and \code{maindown} (not case-sensitive). 
-#' Typically a 'GeoData.txt' file imported using \code{\link{ReadGeoData}}. 
-#' @param file.qobs,file.xobs Character string, file location of HYPE observation data file. \emph{Only one of these needs to be 
-#' supplied}, with \code{file.qobs} taking precedence if both are provided. Either an
-#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:xobs.txt}{Xobs.txt} or a 
-#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:qobs.txt}{Qobs.txt} file.
-#' @param variable Character string, HYPE variable to use. Needed only with argument \code{file.xobs}. If \code{NULL} (default), 
-#' a vector of available variables in \code{file.xobs} is returned. 
-#' @param outlets Integer vector, HYPE SUBIDs of subbasins to be considered outlets. If \code{NULL} (default), all outlet 
-#' subbasins in \code{gd} are used.
+#' @param gd Data frame with two columns `subid` and `maindown` (not case-sensitive). 
+#' Typically a 'GeoData.txt' file imported using `[ReadGeoData]`. 
+#' @param file.qobs,file.xobs Character string, file location of HYPE observation data file. *Only one of these needs to be 
+#' supplied*, with `file.qobs` taking precedence if both are provided. Either an
+#' [Xobs.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:xobs.txt) or a 
+#' [Qobs.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:qobs.txt) file.
+#' @param variable Character string, HYPE variable to use. Needed only with argument `file.xobs`. If `NULL` (default), 
+#' a vector of available variables in `file.xobs` is returned. 
+#' @param outlets Integer vector, HYPE SUBIDs of subbasins to be considered outlets. If `NULL` (default), all outlet 
+#' subbasins in `gd` are used.
 #' @param frac.drain Numeric, minimum fraction of drainage area at corresponding outlet to be covered by observation site.
-#' @param nearest.only Logical, if \code{TRUE} (default), only the nearest observation site SUBID is returned. If \code{FALSE}, 
-#' all observation site SUBIDs available within \code{frac.drain} are returned. 
+#' @param nearest.only Logical, if `TRUE` (default), only the nearest observation site SUBID is returned. If `FALSE`, 
+#' all observation site SUBIDs available within `frac.drain` are returned. 
 #' @param verbose Logical, print status messages and progress bars during runtime.
 #' 
 #' @details 
-#' \code{OutletNearObs} finds observation sites for observation variables in 
-#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:qobs.txt}{HYPE 'Qobs.txt'} and 
-#' \href{http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:xobs.txt}{HYPE 'Xobs.txt'} files 
-#' located upstream an outlet sub-basin. For \code{file.xobs} files, which can hold several observation variables, a single variable has 
-#' to be selected (the function conveniently prints available variables in \code{file.xobs}, if no \code{variable} is provided). 
-#' Any number of SUBIDs present in \code{gd} can be defined as outlet subbasins with argument \code{outlets}. The function handles nested
-#' outlets, i.e. cases where user-provided subbasins in \code{outlets} are upstream basins of one another. Outlet proximity is 
+#' `OutletNearObs` finds observation sites for observation variables in 
+#' [HYPE 'Qobs.txt'](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:qobs.txt) and 
+#' [HYPE 'Xobs.txt'](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:xobs.txt) files 
+#' located upstream an outlet sub-basin. For `file.xobs` files, which can hold several observation variables, a single variable has 
+#' to be selected (the function conveniently prints available variables in `file.xobs`, if no `variable` is provided). 
+#' Any number of SUBIDs present in `gd` can be defined as outlet subbasins with argument `outlets`. The function handles nested
+#' outlets, i.e. cases where user-provided subbasins in `outlets` are upstream basins of one another. Outlet proximity is 
 #' defined by drainage area size compared to the respective outlet. The function returns either the nearest or all sites matching 
-#' or exceeding fraction \code{frac.drain}, depending on argument \code{nearest.only}.
+#' or exceeding fraction `frac.drain`, depending on argument `nearest.only`.
 #' 
 #' @return 
-#' \code{OutletNearObs} returns a data frame with 4 columns, containing row-wise all observation sites which match the search 
-#' criteria:
-#' \describe{
-#'   \item{subid.outlet}{SUBID of outlet subbasin}
-#'   \item{subid.obs}{SUBID of observation site}
-#'   \item{area.fraction}{Relative drainage area fraction of observation site, compared to corresponding outlet subbasin}
-#'   \item{area.outlet}{Drainage area of outlet subbasin, in km^2}
-#'   \item{area.obs}{Drainage area of observation site, in km^2}
-#' }
+#' `OutletNearObs` returns a list with two elements containing data frames. 
 #' 
-#' If \code{file.xobs} is provided without \code{variable}, the function prints available HYPE observation variables in \code{file.xobs} and silently 
+#' Element `outlet.no.match` with three columns, containing row-wise outlet subbasins without 
+#' upstream observations according to the chosen criteria: 
+#' * `subid.outlet`: SUBID of outlet subbasin
+#' * `area.outlet`: Drainage area of outlet subbasin, in km^2
+#' * `drain.frac.max`: Area fraction of the nearest observation subbasin, if any. `NA` otherwise.
+#' 
+#' Element `upstream.obs` with five columns, containing row-wise all observation sites which match 
+#' the search criteria:
+#' * `subid.outlet`: SUBID of outlet subbasin
+#' * `subid.obs`: SUBID of observation subbasin
+#' * `area.fraction`: Area fraction of observation subbasin
+#' * `area.outlet`: Drainage area of outlet subbasin, in km^2
+#' * `area.obs`: Drainage area of observation site, in km^2
+#' 
+#' If `file.xobs` is provided without `variable`, the function prints available HYPE observation variables in `file.xobs` and silently 
 #' returns the same information as character vector. 
 #' 
 #' @examples 
@@ -56,8 +62,7 @@
 #' verbose = FALSE)
 #' }
 #' 
-#' @importFrom pbapply pbsapply
-#' @importFrom utils txtProgressBar setTxtProgressBar
+#' @importFrom pbapply pbsapply timerProgressBar setTimerProgressBar
 #' @export
 
 OutletNearObs <- function(gd, file.qobs = NULL, file.xobs = NULL, variable = NULL, outlets = NULL, frac.drain = 0.8, 
@@ -109,7 +114,7 @@ OutletNearObs <- function(gd, file.qobs = NULL, file.xobs = NULL, variable = NUL
         # only sub-set of domain needs to be searched, reduce search data. Works even if duplicates in results from AllUpstreamSubids 
         # (happens if 'outlets' contains nested subbasins)
         if (verbose) {
-          cat("Extracting 'gd' sub-set needed for upstream search of SUBIDs in 'outlets'.\n")
+          cat("\nExtracting 'gd' sub-set needed for upstream search of SUBIDs in 'outlets'.\n")
           outup <- pbsapply(outlets, FUN = AllUpstreamSubids, gd = gd)
         } else {
           outup <- sapply(outlets, FUN = AllUpstreamSubids, gd = gd)
@@ -127,100 +132,107 @@ OutletNearObs <- function(gd, file.qobs = NULL, file.xobs = NULL, variable = NUL
       
     }
     
-    # downstream subid sequences of observation sites
-    if (verbose) {
-      cat("Calculating downstream sequences of observation sites\n")
-      outdown <- pbsapply(sbd.obs, AllDownstreamSubids, gd = gd.sel) 
-    } else {
-      outdown <- sapply(sbd.obs, AllDownstreamSubids, gd = gd.sel) 
-    }
-    
-    # => this list does not include possible nested sites in user-defined 'outlets' vector (it includes only domain outlets)
-    #    such cases are identified and appended below
-    
-    
-    # if user-defined outlets are searched, find nested subids in 'outlets', ie check if any of subids in outlets are an upstream 
-    # subbasin of another subid in outlets
-    if (!is.null(outlets)) {
-      
-      te <- unlist(lapply(lapply(outup, function(x) x[-1]), function(x, y) y[y %in% x], y = outs))
-      
-      ## check if any nested subids exist in downstream sequences of observations, and add any existing to 'outdown'
-      if (length(te) > 0) {
-        
-        # initialise list with downstream sequences of nested outlets
-        outdown.nested <- list()
-        
-        if (verbose) {
-          cat("Extract downstream sequences of nested outlet SUBIDs.")
-          pbar <- txtProgressBar(min = 0, max = length(te), initial = 0) 
-        }
-        
-        # iterate through identified nested subids
-        for (i in 1:length(te)) {
-          
-          if (verbose) {
-            setTxtProgressBar(pbar, i)
-          }
-          
-          # only proceed if nested subid exists in downstream sequences of obs sites
-          if (te[i] %in% unlist(outdown)) {
-            
-            # find position(s) in downstream sequences (duplicates possible if obs sites in tributaries of nested outlet subid)
-            pos.nested <- sapply(outdown, function (x, y) which(x == y), y = te[i])
-            # pick the first one (any duplicates above are identitical), and select downstream sequence from nested subid to outlet
-            pos.outd <- which(sapply(pos.nested, length) == 1)
-            outdown.nested <- c(outdown.nested, lapply(1:length(pos.outd), function (x, y, z) z[[x]][1:y[[x]]], y = pos.nested[pos.outd], z = outdown[pos.outd]))
-            
-          } else {
-            next
-          }
-        }
-        
-        # if any were found, append new downstream sequences to the list
-        if (length(outdown.nested) > 0) {
-          outdown <- c(outdown, outdown.nested)
-        }
-      }
-    }
-    
-    
-    # outlet and observation basins (can contain duplicated obs basins if nested outlet basins exist)
-    sbd.out <- sapply(outdown, function(x) x[length(x)])
-    sbd.obs <- sapply(outdown, function(x) x[1])
-    
     
     # upstream areas and area fraction at obs
     
     if (verbose) {
-      cat("Calculating upstream area of outlet subbasins\n")
+      cat("\nCalculating upstream area of outlet subbasins.")
     }
-    outarea <- SumUpstreamArea(sbd.out, gd = gd.sel, progbar = verbose)
+    outs.area <- SumUpstreamArea(outs, gd = gd.sel, progbar = verbose)
     
     if (verbose) {
-      cat("Calculating upstream area of observation site subbasins\n")
+      cat("\nCalculating upstream area of observation site subbasins")
     }
-    obsarea <- SumUpstreamArea(sbd.obs, gd = gd.sel, progbar = verbose)
+    obs.area <- SumUpstreamArea(sbd.obs, gd = gd.sel, progbar = verbose)
     
-    obsfrac <- obsarea[, 2] / outarea[, 2]
     
-    # combine and select results according to frac.drain
-    res <- data.frame(subid.outlet = sbd.out, subid.obs = sbd.obs, area.fraction = obsfrac, area.outlet = outarea[, 2] * 10^-6, area.obs = obsarea[, 2] * 10^-6)
-    res <- res[res$area.fraction >= frac.drain, ]
     
-    # order results by outlet subid and area fraction (decreasing)
-    res <- res[order(res$subid.outlet, res$area.fraction, decreasing = TRUE), ]
+    ## iterate through outlet subids and identify upstream observations
     
-    # conditional, keep only obs sites nearest to outlet
-    if (nearest.only) {
+    # return table
+    res <- list(outlet.no.match = data.frame(subid.outlet = numeric(), 
+                                             area.outlet = numeric(), 
+                                             drain.frac.max = numeric()
+    ), 
+    upstream.obs = data.frame(subid.outlet = numeric(), 
+                              subid.obs = numeric(), 
+                              area.fraction = numeric(), 
+                              area.outlet = numeric(), 
+                              area.obs = numeric()
+    )
+    )
+    
+    # initialise progress bar
+    if (verbose) {
+      cat("\nIdentifying upstream observations for all outlet subbasins.\n")
+      pbar <- timerProgressBar(min = 0, max = length(outs), initial = 0, char = "+", width = 50, 
+                               style = 6) 
+    }
+    
+    for (i in 1:length(outs)) {
       
-      # remove outlet subid duplicates, retaining the first occurrence with the largest area fraction
-      res <- res[!duplicated(res$subid.outlet), ]
+      # update progress bar
+      if (verbose) {
+        setTimerProgressBar(pbar, value = i)
+      }
+      
+      # find all upstream subids of current outlet
+      te.upstream <- AllUpstreamSubids(outs[i], gd = gd, sort = FALSE, get.weights = FALSE)
+      
+      # match upstream observations
+      te.match <- sbd.obs %in% te.upstream
+      
+      if (!any(te.match)) {
+        
+        # no matches, return subid to no-match results
+        res$outlet.no.match[nrow(res$outlet.no.match) + 1, 1] <- outs.area$SUBID[i]
+        res$outlet.no.match[nrow(res$outlet.no.match), 2] <- outs.area$UPSTREAMAREA[i] * 10^-6
+        res$outlet.no.match[nrow(res$outlet.no.match), 3] <- NA
+        
+      } else {
+        
+        # one or more matches, return a row for each 
+        te.obs.area <- obs.area[te.match, ]
+        te.res <- data.frame(subid.outlet = rep(outs[i], nrow(te.obs.area)), 
+                             subid.obs = te.obs.area$SUBID, 
+                             area.fraction = rep(NA, nrow(te.obs.area)), 
+                             area.outlet = rep(outs.area[i, 2], nrow(te.obs.area)), 
+                             area.obs = te.obs.area$UPSTREAMAREA)
+        
+        # calculate area fraction and convert area to km2 from m2
+        te.res$area.fraction <- te.res$area.obs / te.res$area.outlet
+        te.res$area.outlet <- te.res$area.outlet * 10^-6
+        te.res$area.obs <- te.res$area.obs * 10^-6
+        
+        # identfy fractions under threshold 
+        te.frac <- which(te.res$area.fraction < frac.drain)
+        
+        if (length(te.frac) == nrow(te.res)) {
+          
+          # if all matches are under threshold, add current outlet subid to no-match results
+          res$outlet.no.match[nrow(res$outlet.no.match) + 1, 1] <- outs.area$SUBID[i]
+          res$outlet.no.match[nrow(res$outlet.no.match), 2] <- outs.area$UPSTREAMAREA[i] * 10^-6
+          res$outlet.no.match[nrow(res$outlet.no.match), 3] <- max(te.res$area.fraction)
+          
+          
+        } else {
+          
+          # remove fractions under threshold
+          te.res <- te.res[-te.frac, ]
+          
+          # if requested, keep only nearest observation subid
+          if (nearest.only) {
+            te.res <- te.res[which.max(te.res$area.fraction), ]
+          }
+          
+          # return results over area fraction threshold to result table
+          res$upstream.obs <- rbind(res$upstream.obs, te.res)
+          
+        }
+      }
     }
-    
-    # clean row names
-    row.names(res) <- 1:nrow(res)
     
     return(res)
+    
   }
 }

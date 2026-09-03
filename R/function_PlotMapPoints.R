@@ -836,12 +836,16 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
           plot <- plot +
             geom_sf(data = bg, color = bg.color, fill = bg.fillColor, alpha = bg.fillOpacity)
         }
+        
+        # Convert color to factor with all levels so that they all get added to the legend
+        x <- x %>%
+          mutate(color = factor(.data[["color"]], levels = lcol))
 
         # Add points
         plot <- plot +
           geom_sf(data = x, aes(color = .data[["color"]], fill = .data[["color"]]), size = radius, show.legend = plot.legend) +
-          scale_color_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
-          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
+          scale_color_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label, drop = FALSE) +
+          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label, drop = FALSE) +
           theme(axis.title = element_blank())
         
         # Add background labels
@@ -1159,11 +1163,10 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
         
         # Add various basemaps
         leafmap <- leafmap %>%
-          leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
+          leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map") %>%
           leaflet::addTiles(group = "Street") %>%
           leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
-          leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
-          leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
+          leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite")
         
         # Save Image
         if (!file == "") {

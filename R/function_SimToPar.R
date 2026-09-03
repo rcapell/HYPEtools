@@ -38,9 +38,14 @@ NULL
 #' @rdname SimToPar
 AllSimToPar <- function(simfile, row, par){
   
+  # Ensure that row is an integer
+  if (!is.numeric(row) || row %% 1 != 0)  {
+    stop("`row` must be an integer.")
+  }
+  
   # Allsim column names from: http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:allsim.txt&s[]=jpop
   # Bestsim column names from: http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:bestsims.txt
-  stat_cols  <- c("NO", "CRIT", "rr2", "sr2", "mr2", "rmae", "sre", "rre", "mre", "rra", "sra", "mra", "tau", "md2", "mda", "mrs", "mcc", "mdkg", "akg", "asckg", "mar", "mdnr", "mnw", "snr", "smb", "numrc", "nummc", "jpop", "igen", "iacc")
+  stat_cols  <- c("NO", "CRIT", "rr2", "sr2", "mr2", "rmae", "sre", "rre", "mre", "rra", "sra", "mra", "tau", "md2", "mda", "mrs", "mcc", "mdkg", "akg", "asckg", "mar", "mdnr", "mnw", "snr", "smb", "numrc", "nummc", "jpop", "igen", "iacc", "igens", "jpops")
   
   # Get parameters from allsims or bestsims file
   pars_df <- data.table::transpose(simfile[row,], keep.names = "par") %>% # Get row from simfile

@@ -16,6 +16,7 @@
 #         ReadCropData(), ReadBranchData()
 #     - ReadPmsf()
 #     - ReadAllsim()
+#     - ReadBestsims()
 #     - ReadOptpar()
 #     - ReadSubass()
 #     - ReadDescription()
@@ -1788,6 +1789,7 @@ ReadPTQobs <- ReadObs
 #' @param verbose Logical, display message if columns contain \code{NA} values.
 #' @param header \code{\link{read.table}} or \code{\link[data.table]{fread}} argument, with appropriate default for HYPE data file import.
 #' @param na.strings See \code{header}.
+#' @param check.names See [data.table::fread]
 #' @param sep See \code{header}.
 #' @param stringsAsFactors See \code{header}.
 #' @param quote See \code{header}.
@@ -1810,6 +1812,7 @@ ReadPTQobs <- ReadObs
 #' * [BranchData.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:branchdata.txt)
 #' * [Outregions.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:outregions.txt)
 #' * [allsim.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:allsim.txt)
+#' * [bestsims.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:bestsims.txt)
 #' * [update.txt](http://hype.smhi.net//wiki/doku.php?id=start:hype_file_reference:update.txt)
 #' 
 #' In most files, HYPE requires \code{NA}-free input in required columns, but empty values are 
@@ -1999,10 +2002,17 @@ ReadPointSourceData <- function(filename = "PointSourceData.txt", verbose = TRUE
 }
 
 #' @rdname HypeDataImport
-#' @importFrom utils read.table
+#' @importFrom data.table fread
 #' @export
-ReadAllsim <- function(filename = "allsim.txt", na.strings="-9999") {
-  read.table(file = filename, header = TRUE, sep = ",", na.strings = na.strings)
+ReadAllsim <- function(filename = "allsim.txt", na.strings="-9999", check.names = FALSE) {
+  fread(file = filename, header = TRUE, sep = ",", na.strings = na.strings, check.names = check.names, data.table = TRUE)
+}
+
+#' @rdname HypeDataImport
+#' @importFrom data.table fread
+#' @export
+ReadBestsims <- function(filename = "bestsims.txt", na.strings="-9999", check.names = FALSE) {
+  fread(file = filename, header = TRUE, sep = ",", na.strings = na.strings, check.names = check.names, data.table = TRUE)
 }
 
 #' @rdname HypeDataImport

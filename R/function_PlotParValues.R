@@ -3,6 +3,7 @@
 #' Plot parameter values for HYPE par.txt files.
 #'
 #' @param par A HYPE par.txt file read in with \code{\link{ReadPar}} or a named list of par.txt files read in with \code{\link{ReadPar}}. E.g. \code{par <- list("par_1" = par1, "par2" = par2)}.
+#' @param geom.type String indicating the geometry type used to generate the plots. One of \code{boxplot}, \code{violin}, \code{dotplot}, or \code{point}.
 #' @param ignore_parameters A list containing HYPE parameter names that should be ignored while plotting. E.g. \code{ignore_pars <- c("par1", "par2")}.
 #' @param n_plots Integer, if greater than 1, then the HYPE parameters will be split among *n* plots. Useful if plotting many parameters.
 #' @param col.values A list containing color values to set custom colors. Length of \code{col.values} should match length of \code{par}. See [ggplot2::scale_color_manual].
@@ -11,13 +12,14 @@
 #' @param height Height in inches for output plot. See [ggplot2::ggsave].
 #'
 #' @details
-#' \code{PlotParValues} generates a set of faceted boxplots to show the parameter values for a given HYPE par.txt file or list of par.txt files. The plots can be used to
+#' \code{PlotParValues} generates a set of faceted plots to show the parameter values for a given HYPE par.txt file or list of par.txt files. The plots can be used to
 #' compare parameter values between models.
 #'
 #' @return
 #' Returns an list of plot objects
 #'
 #' @examples
+#' \dontrun{
 #' par <- ReadPar(
 #'   system.file(
 #'     "demo_model", "par.txt",
@@ -25,16 +27,20 @@
 #'   )
 #' )
 #' PlotParValues(par)
+#' }
 #'
-#' @importFrom dplyr %>% filter arrange
-#' @importFrom ggplot2 facet_wrap ggplot ggsave geom_boxplot xlab ylab theme
+#' @importFrom dplyr %>% filter arrange ungroup summarize
+#' @importFrom ggplot2 facet_wrap ggplot ggsave xlab ylab theme geom_boxplot geom_violin geom_count geom_point after_stat scale_size_area position_jitterdodge guides guide_legend expansion
 #' @importFrom rlang .data
 #' @importFrom stringr str_starts
 #' @importFrom tidyr pivot_longer unnest
 #' @importFrom tools file_path_sans_ext file_ext
 #' @export
 
-PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values = NULL, file = NULL, width = NULL, height = NULL){
+PlotParValues <- function(par, geom.type = c("boxplot", "violin", "dotplot", "point"), ignore_parameters = NULL, n_plots = 1, col.values = NULL, file = NULL, width = NULL, height = NULL){
+  
+  # Check geometry type
+  geom.type <- match.arg(geom.type)
   
   # Get parameter names
   if(is_nested_list(par)){
@@ -77,8 +83,87 @@ PlotParValues <- function(par, ignore_parameters = NULL, n_plots = 1, col.values
   for(i in 1:length(par_chunks)){
 
     # Create plot
-    plot <- ggplot(par_data %>% filter(.data$parameter %in% par_chunks[[i]])) +
-      geom_boxplot(aes(x = .data$parameter, y = .data$value, color = .data$Model))
+    plot <- ggplot(par_data %>% filter(.data$parameter %in% par_chunks[[i]]))
+    
+    if (geom.type == "boxplot") {
+      plot <- plot + geom_boxplot(aes(x = .data$parameter, y = .data$value, color = .data$Model))
+    
+    } else if (geom.type == "violin") {
+      
+      # Format data
+      violin_data <- par_data %>%
+        filter(.data$parameter %in% par_chunks[[i]], !is.na(.data$value)) %>%
+        group_by(.data$parameter, .data$Model) %>%
+        mutate(n_group = n()) %>%
+        ungroup()
+
+      # Plot violin when multiple values and points when single values
+      plot <- plot +
+        geom_violin(
+          data = violin_data %>% filter(.data$n_group > 1),
+          aes(x = .data$parameter, y = .data$value, color = .data$Model),
+          trim = FALSE
+        ) +
+        geom_point(
+          data = violin_data %>% filter(.data$n_group == 1),
+          aes(x = .data$parameter, y = .data$value, color = .data$Model),
+          position = position_jitterdodge(
+            dodge.width = 0.6,
+            jitter.width = 0
+          ),
+          size = 2
+        )
+    
+    } else if (geom.type == "dotplot") {
+      
+      # Format data
+      point_counts <- par_data %>%
+        filter(.data$parameter %in% par_chunks[[i]]) %>%
+        group_by(.data$parameter, .data$Model, .data$value) %>%
+        arrange(.data$value, .by_group = TRUE) %>%
+        mutate(
+          idx = row_number(),
+          n = n(),
+          stack_offset = .data$idx - (n + 1) / 2
+        ) %>%
+        ungroup() %>%
+        mutate(
+          parameter = factor(.data$parameter),
+          x_base = as.numeric(.data$parameter),
+          x = .data$x_base +
+            (as.numeric(factor(.data$Model)) - (length(unique(.data$Model)) + 1) / 2) * 0.25 +
+            .data$stack_offset * 0.05
+        )
+
+      # Plot data
+      plot <- plot +
+        geom_point(
+          data = point_counts,
+          aes(x = .data$x, y = .data$value, color = .data$Model),
+          size = 2
+        ) +
+        scale_x_continuous(
+          breaks = seq_along(levels(point_counts$parameter)),
+          labels = levels(point_counts$parameter),
+          expand = expansion(mult = 0.05)
+        )
+     
+    } else if (geom.type == "point") {
+      plot <- plot + geom_count(
+        aes(
+          x = .data$parameter,
+          y = .data$value,
+          size = after_stat(n),
+          color = .data$Model
+        ),
+        position = position_jitterdodge(
+          dodge.width = 0.6,
+          jitter.width = 0
+        )
+      ) +
+        scale_size_area(name = "Frequency", max_size = 5) +
+        guides(color = guide_legend(order = 1), size = guide_legend(order = 2))
+    }
 
     # Apply custom colors
     if(!is.null(col.values)){

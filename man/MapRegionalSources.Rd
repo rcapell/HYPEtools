@@ -35,7 +35,7 @@ MapRegionalSources(
 irrigation target and source sub-catchments, respectively. Typically a HYPE 'MgmtData.txt' file, imported with \code{\link{ReadMgmtData}}.}
 
 \item{map}{A \code{sf}, \code{SpatialPointsDataFrame}, or \code{SpatialPolygonsDataFrame} object providing sub-catchment locations as points or polygons. Typically an imported SUBID
-center-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link[sf:geos_unary]{sf::st_centroid()}}). Spatial data import requires additional packages, e.g. \code{sf}.}
+center-point shape file or geopackage. If provided polygon data, then the polygon centroids will be calculated and used as the point locations (See \code{\link[sf:st_centroid]{sf::st_centroid()}}). Spatial data import requires additional packages, e.g. \code{sf}.}
 
 \item{map.subid.column}{Integer, index of the column in \code{map} holding SUBIDs (sub-catchment IDs).}
 
@@ -54,19 +54,19 @@ Default \code{NULL} will produce maps using random colors for all groups.}
 
 \item{plot.scale}{Logical, include a scale bar on Leaflet maps.}
 
-\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included on Leaflet maps. See \code{\link[leaflet.extras:search-features]{leaflet.extras::addSearchFeatures()}}.}
+\item{plot.searchbar}{Logical, if \code{TRUE}, then a search bar will be included on Leaflet maps. See \code{\link[leaflet.extras:addSearchFeatures]{leaflet.extras::addSearchFeatures()}}.}
 
-\item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{weight}{Numeric, weight of subbasin boundary lines in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
-\item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{opacity}{Numeric, opacity of subbasin boundary lines in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
-\item{fillColor}{String, color of subbasin polygons in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{fillColor}{String, color of subbasin polygons in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
-\item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:map-layers]{leaflet::addPolygons()}}.}
+\item{fillOpacity}{Numeric, opacity of subbasin polygons in Leaflet maps. Used if \code{map} contains polygon data. See \code{\link[leaflet:addPolygons]{leaflet::addPolygons()}}.}
 
-\item{line.weight}{Numeric, weight of connection lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
+\item{line.weight}{Numeric, weight of connection lines in Leaflet maps. See \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}.}
 
-\item{line.opacity}{Numeric, opacity of connection lines in Leaflet maps. See \code{\link[leaflet:map-layers]{leaflet::addPolylines()}}.}
+\item{line.opacity}{Numeric, opacity of connection lines in Leaflet maps. See \code{\link[leaflet:addPolylines]{leaflet::addPolylines()}}.}
 
 \item{seed}{Integer, seed number to to produce repeatable color palette.}
 

@@ -382,49 +382,93 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
       # truncate user-defined colors
       col <- col[1:(length(cbrks) - 1)]
     }
-    # discretise the modeled values in x into classed groups, add to x as new column (of type factor)
-    x[, 3] <- cut(x[, 2], breaks = cbrks, include.lowest = TRUE)
+
+    # discretise the modeled values in x into classed groups
+    # NA values are handled as a separate factor level so that they
+    # do not affect the number of data classes/colors.
     
-    # For leaflet mapping add NA Factor Level if any MapOutput data is NA
-    if (map.type == "leaflet" & any(is.na(x[[2]]))) {
+    # Number of actual color classes
+    n.classes <- length(cbrks) - 1
+    
+    # Classify values; NA remains NA
+    x[, 3] <- cut(
+      x[, 2],
+      breaks = cbrks,
+      include.lowest = TRUE
+    )
+    
+    # Check whether NA values are present in the original data
+    has.na <- any(is.na(x[[2]]))
+    
+    # For default and leaflet maps, add an explicit NA class
+    if (has.na && map.type %in% c("default", "leaflet")) {
+      
+      # Add NA as an explicit factor level
       x[, 3] <- addNA(x[, 3])
+      
+      # Rename the NA level so it can be handled explicitly below
+      lev <- levels(x[, 3])
+      lev[is.na(lev)] <- "NA"
+      levels(x[, 3]) <- lev
     }
     
-    # replace the factor levels with color codes using the color ramp function assigned above or user-defined colors
+    # Generate colors for the actual data classes
     if (is.null(crfun)) {
-      if (map.type %in% c("default", "leaflet") & any(is.na(x[[2]]))) {
-        if (col.rev == FALSE) {
-          levels(x[, 3]) <- c(col, na.color) # Add extra color for NA in leaflet maps
-        } else if (col.rev == TRUE) {
-          levels(x[, 3]) <- c(rev(col), na.color) # Add extra color for NA in leaflet maps
-        }
+      
+      # User supplied a vector of colors
+      if (col.rev) {
+        class.col <- rev(col)
       } else {
-        if (col.rev == FALSE) {
-          levels(x[, 3]) <- col
-        } else if (col.rev == TRUE) {
-          levels(x[, 3]) <- rev(col) # Reverse color palette
-        }
+        class.col <- col
       }
+      
+      # Make sure there are exactly enough colors for the
+      # actual intervals represented by cbrks.
+      if (length(class.col) < n.classes) {
+        stop(
+          paste0(
+            "Not enough colors supplied in 'col'. ",
+            "There are ", n.classes,
+            " color classes defined by 'col.breaks', but only ",
+            length(class.col), " colors were supplied."
+          )
+        )
+      }
+      
+      class.col <- class.col[seq_len(n.classes)]
+      
     } else {
-      if (map.type %in% c("default", "leaflet") & any(is.na(x[[2]]))) {
-        if (col.rev == FALSE) {
-          levels(x[, 3]) <- crfun(length(cbrks)) # Add extra legend break for NA in leaflet maps
-        } else if (col.rev == TRUE) {
-          rev.col <- rev(crfun(length(cbrks))) # Add extra legend break for NA in leaflet maps, reverse color palette
-          levels(x[, 3]) <- rev.col[c(2:length(rev.col), 1)] # Reorder colors so that NA color is still last
-        }
-      } else {
-        if (col.rev == FALSE) {
-          levels(x[, 3]) <- crfun(length(cbrks) - 1)
-        } else if (col.rev == TRUE) {
-          levels(x[, 3]) <- rev(crfun(length(cbrks) - 1)) # Reverse color palette
-        }
+      
+      # Generate exactly one color per interval
+      class.col <- crfun(n.classes)
+      
+      if (col.rev) {
+        class.col <- rev(class.col)
       }
     }
     
-    # convert to character to make it conform to plotting requirements below
+    # Add NA color separately
+    if (has.na && map.type %in% c("default", "leaflet")) {
+      plot.col <- c(class.col, na.color)
+    } else {
+      plot.col <- class.col
+    }
+    
+    # Assign colors to factor levels.
+    # The interval levels correspond exactly to the n.classes colors.
+    if (has.na && map.type %in% c("default", "leaflet")) {
+      
+      levels(x[, 3]) <- plot.col
+      
+    } else {
+      
+      levels(x[, 3]) <- class.col
+    }
+    
+    # Convert to character for the plotting code below
     x[, 3] <- as.character(x[, 3])
-    # give it a name
+    
+    # Give it a name
     names(x)[3] <- "color"
     
     if (map.type == "legacy") {
@@ -472,9 +516,9 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
     if (is.null(crfun)) {
       if (map.type %in% c("default", "leaflet") & any(is.na(x[[2]]))) {
         if (col.rev == FALSE) {
-          lcol <- c(col, na.color) # Add extra legend color for NA for leaflet maps
+          lcol <- c(col, na.color) # Add extra legend color for NA
         } else if (col.rev == TRUE) {
-          lcol <- c(rev(col), na.color) # Add extra legend color for NA for leaflet maps and reverse color palette
+          lcol <- c(rev(col), na.color) # Add extra legend color for NA
         }
       } else {
         if (col.rev == FALSE) {
@@ -486,10 +530,9 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
     } else {
       if (map.type %in% c("default", "leaflet") & any(is.na(x[[2]]))) {
         if (col.rev == FALSE) {
-          lcol <- crfun(length(cbrks)) # Add extra legend color for NA for leaflet maps
+          lcol <- c(crfun(length(cbrks) - 1), na.color) # Add extra legend color for NA
         } else if (col.rev == TRUE) {
-          rev.col <- rev(crfun(length(cbrks))) # Add extra legend color for NA for leaflet maps, reverse color palette
-          lcol <- rev.col[c(2:length(rev.col), 1)] # Reorder colors so that NA color is still last
+          lcol <- c(rev(crfun(length(cbrks) - 1)), na.color) # Add extra legend color for NA, reverse color palette
         }
       } else {
         if (col.rev == FALSE) {
@@ -763,7 +806,7 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
         x[which(is.na(x[[2]])), "color"] <- na.color
       } else {
         l.label <- unlist(lapply(1:(length(cbrks) - 1), function(X) {
-          paste(signif(cbrks[X], legend.signif), "-", signif(cbrks[X + 1], legend.signif))
+          paste(signif(cbrks[X], legend.signif), "to", signif(cbrks[X + 1], legend.signif))
         }))
       }
       
@@ -775,10 +818,14 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
       # Create ggplot static map
       if(map.type == "default"){
         
+        # Convert color to factor with all levels so that they all get added to the legend
+        x <- x %>%
+          mutate(color = factor(.data[["color"]], levels = lcol))
+        
         # Create plot and add polygons
         plot <- ggplot() +
           geom_sf(data = x, aes(fill = .data[["color"]]), color = outline.color, size = weight, show.legend = plot.legend) +
-          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label) +
+          scale_fill_manual(name = legend.title, breaks = lcol, values = lcol, labels = l.label, drop = FALSE) +
           theme(axis.title = element_blank())
         
         # Add labels
@@ -923,11 +970,10 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
         
         # Add various basemaps
         leafmap <- leafmap %>%
-          leaflet::addProviderTiles("CartoDB.Positron", group = "Map") %>%
+          leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map") %>%
           leaflet::addTiles(group = "Street") %>%
           leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
-          leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite") %>%
-          leaflet::addProviderTiles("CartoDB.PositronOnlyLabels", group = "Satellite")
+          leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite")
         
         # Save Image
         if (!file == "") {

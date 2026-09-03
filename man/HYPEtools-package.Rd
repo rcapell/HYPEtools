@@ -24,6 +24,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Rene Capell \email{hypetools.rene@smhi.se} (\href{https://orcid.org/0000-0002-7784-1313}{ORCID})
   \item Conrad Brendel \email{conrad.brendel@smhi.se} (\href{https://orcid.org/0000-0002-5199-0580}{ORCID})
 }
 

@@ -93,9 +93,9 @@
 #' )
 #' }
 #' 
-#' @importFrom dplyr group_by sym left_join n rename select summarize n_distinct
-#' @importFrom ggplot2 aes coord_cartesian coord_flip element_text geom_density geom_boxplot geom_point geom_smooth ggplot ggsave guide_legend guides scale_color_manual scale_fill_discrete scale_fill_manual scale_x_continuous
-#' scale_y_continuous theme theme_void unit waiver xlab ylab scale_x_log10 scale_y_log10
+#' @importFrom dplyr group_by sym left_join n rename select summarize n_distinct pull
+#' @importFrom ggplot2 aes coord_cartesian coord_flip element_text geom_density geom_boxplot geom_point geom_smooth ggplot ggsave scale_color_manual scale_fill_manual scale_x_continuous
+#' @importFrom ggplot2 scale_y_continuous theme theme_void unit waiver xlab ylab scale_x_log10 scale_y_log10
 #' @importFrom ggpubr colnames_style get_legend ggarrange ggtexttable tab_add_title tbody_style ttheme
 #' @importFrom grDevices colorRampPalette hcl
 #' @importFrom patchwork plot_layout plot_spacer
@@ -172,6 +172,51 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     }
     plotdata <- cbind(plotdata, attributes %>% select(-"SUBID"))
   }
+  
+  # Define colors
+  if (!is.null(groups)) {
+  
+    # Ensure Group column exists in plotdata (this is what ggplot actually uses)
+    if (!"Group" %in% colnames(plotdata)) {
+      stop("'Group' column is missing from plotdata after joining groups.")
+    }
+    
+    # Get levels from original groups object
+    all_levels <- sort(unique(groups[[2]]))
+  
+    if (length(all_levels) == 0) {
+      stop("No valid group levels found.")
+    }
+  
+    # Ensure factor ordering is consistent
+    plotdata$Group <- factor(plotdata$Group, levels = all_levels)
+  
+    # Build palette
+    if (!is.null(groups.color.pal)) {
+  
+      if (length(all_levels) > length(groups.color.pal)) {
+        stop(paste(length(all_levels), "groups specified but only",
+                   length(groups.color.pal), "colors provided."))
+      }
+  
+      cols <- groups.color.pal[seq_along(all_levels)]
+  
+      if (any(is.na(cols)) || length(cols) == 0) {
+        stop("Color palette is invalid after subsetting.")
+      }
+  
+      group_colors <- setNames(cols, all_levels)
+  
+    } else {
+  
+      gg_color_hue <- function(n) {
+        hues <- seq(15, 375, length = n + 1)
+        hcl(h = hues, l = 65, c = 100)[1:n]
+      }
+  
+      group_colors <- setNames(gg_color_hue(length(all_levels)), all_levels)
+    }
+  }
 
   # Create vector to store plots
   plots <- vector("list")
@@ -234,28 +279,12 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         geom_point(alpha = alpha)
     }
     
-    # Identify groups with values for x-axis plots
-    x_groups <- plotdata %>% filter(complete.cases(!!sym(col)))
-    x_groups <- which(sort(unique(plotdata$Group)) %in% x_groups$Group)
-    
     # Add trendlines
     if (trendline == TRUE) {
       if (!is.null(groups)) {
-        plot <- plot + geom_smooth(aes(color = .data[["Group"]]), method = trendline.method, formula = trendline.formula)
-        
-        # Identify which groups have unique values and thus trendlines
-          trendline_groups <- plotdata %>%
-            group_by(.data[["Group"]]) %>%
-            summarize(unique = n_distinct(!!sym(col))) %>%
-            filter(unique > 1) %>%
-            select(all_of("Group")) %>%
-            unlist()
-          
-          trendline_groups <- which(sort(unique(groups[[2]])) %in% trendline_groups)
-        
+        plot <- plot + geom_smooth(aes(color = .data[["Group"]]), fill = NA, method = trendline.method, formula = trendline.formula)
       } else {
-        plot <- plot + geom_smooth(method = trendline.method, formula = trendline.formula)
-        trendline_groups = 1 # Specify color group for trendline
+        plot <- plot + geom_smooth(fill = NA, method = trendline.method, formula = trendline.formula)
       }
     }
 
@@ -268,64 +297,45 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
     if (!is.null(ylab)) {
       plot <- plot + ylab(ylab)
     }
-
-    # Format colors if color palette specified
-    if (!is.null(groups.color.pal)) {
+    
+    # Format Colors
+    if (!is.null(groups)) {
       
-      # Check that enough colors are provided
-      if(length(unique(groups[[2]])) > length(groups.color.pal)){
-        stop(paste(length(unique(groups[[2]])), "groups specified but only", length(groups.color.pal), "colors provided. Increase the number of colors in groups.color.pal"))
+      # Determine which groups get trendlines
+      if (trendline == TRUE) {
+        trendline_levels <- plotdata %>%
+          group_by(.data[["Group"]]) %>%
+          summarize(n = n_distinct(!!sym(col))) %>%
+          filter(n > 1) %>%
+          pull(.data[["Group"]])
+      } else {
+        trendline_levels <- levels(plotdata$Group)
       }
       
-      # Get colors
-      if(drop == TRUE){
-        manual_colors <- groups.color.pal
-        legend_colors <- manual_colors
-        trendline_groups <- x_groups
-      } else if(drop == FALSE){
-        manual_colors <- groups.color.pal[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
-        legend_colors <- groups.color.pal
-        if(trendline == FALSE){
-          trendline_groups <- 1:length(legend_colors)
-        }
+      # Darkened trendline colors
+      if (length(trendline_levels) == 0) {
+        trendline_colors <- NULL
+      } else {
+        trendline_colors <- sapply(group_colors, function(X) {
+          colorRampPalette(c(X, "black"))(100)[trendline.darken]
+        })
       }
-
+      
       plot <- plot +
-        scale_fill_manual(values = manual_colors, name = group.legend.title, drop = drop) +
-        scale_color_manual(values = unlist(lapply(legend_colors[trendline_groups], function(X) {
-          colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = group.legend.title, drop = drop) + 
-        guides(color = guide_legend(override.aes = list(color = legend_colors[trendline_groups]))) # Override colors in legend to be the original colors
-
-      # Format colors if no color palette specified
-    } else {
-
-      # Function to get ggplot colors
-      gg_color_hue <- function(n) {
-        hues <- seq(15, 375, length = n + 1)
-        hcl(h = hues, l = 65, c = 100)[1:n]
+        scale_fill_manual(
+          values = group_colors,
+          name = group.legend.title,
+          drop = drop
+        )
+      
+      if(trendline == TRUE){
+        plot <- plot +
+          scale_color_manual(
+            values = trendline_colors,
+            name = group.legend.title,
+            drop = drop
+          )
       }
-
-      # Get colors
-      if(drop == TRUE){
-        gg_colors <- gg_color_hue(length(which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))))
-        legend_colors <- gg_colors
-        trendline_groups <- x_groups
-      } else if(drop == FALSE){
-        gg_colors <- gg_color_hue(length(unique(groups[[2]])))[which(sort(unique(groups[[2]])) %in% unique(plotdata$Group))]
-        legend_colors <- gg_color_hue(length(unique(groups[[2]])))
-        if(trendline == FALSE){
-          trendline_groups <- 1:length(legend_colors)
-        }
-      }
-
-      # Adjust colors
-      plot <- plot +
-        scale_fill_manual(values = gg_colors, name = group.legend.title, drop = drop) + # Assign name to palette for points
-        scale_color_manual(values = unlist(lapply(legend_colors[trendline_groups], function(X) {
-          colorRampPalette(c(X, "black"))(100)[trendline.darken] # Add darker colors for trendlines
-        })), name = group.legend.title, drop = drop) + 
-        guides(color = guide_legend(override.aes = list(color = legend_colors[trendline_groups]))) # Override colors in legend to be the original colors
     }
     
     # Scale x axis
@@ -389,15 +399,15 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
           if(density.plot.type == "density"){
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
-              geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = manual_colors[x_groups], name = group.legend.title) +
+              geom_density(linewidth = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
-              geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = manual_colors, name = group.legend.title) +
+              geom_density(linewidth = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -405,14 +415,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = manual_colors[x_groups], name = group.legend.title) +
+              scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-a.xis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = manual_colors, name = group.legend.title) +
+              scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -421,15 +431,15 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
           if(density.plot.type == "density"){
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
-              geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = gg_colors[x_groups], name = group.legend.title) +
+              geom_density(linewidth = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
-              geom_density(size = 0.2, alpha = 0.4) +
-              scale_fill_manual(values = gg_colors, name = group.legend.title) +
+              geom_density(linewidth = 0.2, alpha = 0.4) +
+              scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -437,14 +447,14 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
             # Create density plot for x-axis
             densx <- ggplot(plotdata, aes(x = !!sym(col), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = gg_colors[x_groups], name = group.legend.title) +
+              scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none")
             
             # Create density plot for y-axis
             densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]), fill = !!sym("Group"))) +
               geom_boxplot(size = 0.2, alpha = 0.4, outlier.shape = NA) +
-              scale_fill_manual(values = gg_colors, name = group.legend.title) +
+              scale_fill_manual(values = group_colors, name = group.legend.title) +
               theme_void()+
               theme(legend.position = "none") +
               coord_flip()
@@ -454,23 +464,23 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         if(density.plot.type == "density"){
           # Create density plot for x-axis
           densx <- ggplot(plotdata, aes(x = !!sym(col))) +
-            geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
+            geom_density(fill = "#619CFF", linewidth = 0.2, alpha = 1) +
             theme_void()
           
           # Create density plot for y-axis
           densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
-            geom_density(fill = "#619CFF", size = 0.2, alpha = 1) +
+            geom_density(fill = "#619CFF", linewidth = 0.2, alpha = 1) +
             theme_void() +
             coord_flip()
         } else if(density.plot.type == "boxplot"){
           # Create density plot for x-axis
           densx <- ggplot(plotdata, aes(x = !!sym(col))) +
-            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1, outlier.shape = NA) +
+            geom_boxplot(fill = "#619CFF", linewidth = 0.2, alpha = 1, outlier.shape = NA) +
             theme_void()
           
           # Create density plot for y-axis
           densy <- ggplot(plotdata, aes(x = !!sym(colnames(subass)[subass.column]))) +
-            geom_boxplot(fill = "#619CFF", size = 0.2, alpha = 1, outlier.shape = NA) +
+            geom_boxplot(fill = "#619CFF", linewidth = 0.2, alpha = 1, outlier.shape = NA) +
             theme_void() +
             coord_flip()
         }
@@ -632,7 +642,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         theme = ttheme(
           colnames.style = colnames_style(color = "Black", fill = "grey"),
           padding = unit(c(2, 2), "mm"),
-          tbody.style = tbody_style(size = 8, color = "black", fill = manual_colors)
+          tbody.style = tbody_style(size = 8, color = "black", fill = group_colors[as.character(table$Group)])
         )
       )
     } else { # No color ramp specified
@@ -640,7 +650,7 @@ PlotPerformanceByAttribute <- function(subass, subass.column = 2, groups = NULL,
         rows = NULL,
         theme = ttheme(
           colnames.style = colnames_style(color = "Black", fill = "grey"),
-          tbody.style = tbody_style(size = 8, color = "black", fill = gg_colors)
+          tbody.style = tbody_style(size = 8, color = "black", fill = group_colors[as.character(table$Group)])
         )
       )
     }

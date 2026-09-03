@@ -6,6 +6,7 @@
 \usage{
 PlotParValues(
   par,
+  geom.type = c("boxplot", "violin", "dotplot", "point"),
   ignore_parameters = NULL,
   n_plots = 1,
   col.values = NULL,
@@ -17,11 +18,13 @@ PlotParValues(
 \arguments{
 \item{par}{A HYPE par.txt file read in with \code{\link{ReadPar}} or a named list of par.txt files read in with \code{\link{ReadPar}}. E.g. \code{par <- list("par_1" = par1, "par2" = par2)}.}
 
+\item{geom.type}{String indicating the geometry type used to generate the plots. One of \code{boxplot}, \code{violin}, \code{dotplot}, or \code{point}.}
+
 \item{ignore_parameters}{A list containing HYPE parameter names that should be ignored while plotting. E.g. \code{ignore_pars <- c("par1", "par2")}.}
 
 \item{n_plots}{Integer, if greater than 1, then the HYPE parameters will be split among \emph{n} plots. Useful if plotting many parameters.}
 
-\item{col.values}{A list containing color values to set custom colors. Length of \code{col.values} should match length of \code{par}. See \link[ggplot2:scale_manual]{ggplot2::scale_color_manual}.}
+\item{col.values}{A list containing color values to set custom colors. Length of \code{col.values} should match length of \code{par}. See \link[ggplot2:scale_color_manual]{ggplot2::scale_color_manual}.}
 
 \item{file}{Optional filename used to save plot(s) to file. See \link[ggplot2:ggsave]{ggplot2::ggsave}.}
 
@@ -36,10 +39,11 @@ Returns an list of plot objects
 Plot parameter values for HYPE par.txt files.
 }
 \details{
-\code{PlotParValues} generates a set of faceted boxplots to show the parameter values for a given HYPE par.txt file or list of par.txt files. The plots can be used to
+\code{PlotParValues} generates a set of faceted plots to show the parameter values for a given HYPE par.txt file or list of par.txt files. The plots can be used to
 compare parameter values between models.
 }
 \examples{
+\dontrun{
 par <- ReadPar(
   system.file(
     "demo_model", "par.txt",
@@ -47,5 +51,6 @@ par <- ReadPar(
   )
 )
 PlotParValues(par)
+}
 
 }
