@@ -4,7 +4,7 @@
 *Development Version*
 
 #### Highlights
-*
+* Fix bug in PlotSubbasinRouting() when plotting branches
 
 ## HYPEtools 1.6.8 (2026-09-02)
 *Enhancements and bug fixes*
