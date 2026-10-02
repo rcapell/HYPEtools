@@ -647,7 +647,7 @@ references:
   title: leaflet.extras
   abstract: 'leaflet.extras: Extra Functionality for ''leaflet'' Package'
   notes: Suggests
-  url: https://github.com/sebastien-plutniak/leaflet.extras
+  url: https://trafficonese.github.io/leaflet.extras/
   repository: https://CRAN.R-project.org/package=leaflet.extras
   authors:
   - family-names: Gatscha
