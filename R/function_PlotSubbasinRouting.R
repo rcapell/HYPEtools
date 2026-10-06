@@ -247,7 +247,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
     # Create Leaflet Plot
     message("Creating Map")
-    leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
+    leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE, maxZoom = 18)) %>%
       leaflet::addTiles() %>%
       leaflet::addLayersControl(
         baseGroups = c("Map", "Street", "Topo", "Satellite"),
@@ -346,7 +346,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
     # Add various basemaps
     leafmap <- leafmap %>%
-      leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map") %>%
+      leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map", options = leaflet::tileOptions(maxNativeZoom = 16)) %>%
       leaflet::addTiles(group = "Street") %>%
       leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
       leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite")

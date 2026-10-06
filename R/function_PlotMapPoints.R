@@ -908,7 +908,7 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
         message("Generating Map")
         
         # Setup map
-        leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
+        leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE, maxZoom = 18)) %>%
           leaflet::addTiles() %>%
           leaflet.extras::addResetMapButton()
         
@@ -1163,7 +1163,7 @@ PlotMapPoints <- function(x, sites = NULL, sites.subid.column = 1, sites.groups 
         
         # Add various basemaps
         leafmap <- leafmap %>%
-          leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map") %>%
+          leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map", options = leaflet::tileOptions(maxNativeZoom = 16)) %>%
           leaflet::addTiles(group = "Street") %>%
           leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
           leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite")
