@@ -1682,9 +1682,11 @@ ReadObs <- function(filename, variable = "",
   # Check if first row is a comment row
   if (startsWith(xattr, "!!")) {
     skip <- 1
+    comment <- xattr
     xattr <- readLines(filename, n = 2)[2]
   } else {
     skip <- 0
+    comment <- NULL
   }
   
   # Extract obsids
@@ -1749,6 +1751,11 @@ ReadObs <- function(filename, variable = "",
   
   ## add attributes
   obsid(x) <- sbd
+  
+  # comment attribute
+  if(!is.null(comment)){
+    comment(x) <- comment
+  }
   
   # conditional: timestep attribute identified by difference between first two rows
   if(type == "df"){

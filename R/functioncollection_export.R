@@ -801,6 +801,13 @@ WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif 
     stop("No information available from 'obsid' argument or 'obsid' attribute to construct export header.")
   }
   
+  # Prepare comment line, comment argument takes precedence before attribute
+  if(!is.null(comment) & !is.null(attr(x, which = "comment"))) {
+    warning("Comment argument specified, but 'x' already contains a comment attribute. Comment argument supersedes comment attribute.")
+  } else if (!is.null(attr(x, which = "comment"))) {
+    comment <- attr(x, which = "comment")
+  }
+  
   # append to existing data
   if(append == TRUE & file.exists(filename)){
     
@@ -844,6 +851,7 @@ WriteObs <- function (x, filename, dt.format = "%Y-%m-%d", round = NULL, signif 
   
   # Add comment
   if(append == FALSE & !is.null(comment)){
+    comment <- sub("^[[:space:]]*!![[:space:]]*", "", comment) # Remove '!!' and whitespace from beginning of comment
     contents <- readLines(filename)
     newcontents <- c(paste("!!", comment), contents)
     writeLines(newcontents, filename)
