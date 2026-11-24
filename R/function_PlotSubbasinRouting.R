@@ -87,7 +87,8 @@
 #' }
 #' 
 #'
-#' @importFrom dplyr full_join right_join %>% filter across rename_with
+#' @importFrom dplyr full_join right_join %>% filter across rename_with bind_rows
+#' @importFrom purrr reduce
 #' @importFrom tidyselect matches
 #' @importFrom rlang .data
 #' @importFrom stats setNames
@@ -201,6 +202,9 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
     # Get Downstream Subbasin Points for Branches
     if (!is.null(bd)) {
       message("Finding Branch Subbasins")
+      
+      branch_points <- vector("list") # Create vector to store data
+      
       for (i in 1:nrow(bd)) {
 
         # Get row of data for source subbasin and change MAINDOWN to Branch subbasin
@@ -214,12 +218,23 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
           } else {
             branch$ds_geometry <- sf::st_sfc(sf::st_point(c(0, 0))) # Assign Point 0,0 and remove later
           }
-
-          # Add row to map_point
-          map_point <- map_point %>%
-            rbind(branch)
+          
+          # Save data to vector
+          branch_points[[i]] <- branch
         }
       }
+      
+      if(length(branch_points) > 0){
+        
+        # Merge branch point data
+        branch_points <- branch_points %>%
+          reduce(bind_rows)
+        
+        # Add rows to map_point
+        map_point <- map_point %>%
+          rbind(branch_points)
+      }
+
     }
 
     # Remove Subbasins where downstream subbasin doesn't exist
@@ -232,7 +247,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
     # Create Leaflet Plot
     message("Creating Map")
-    leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
+    leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE, maxZoom = 18)) %>%
       leaflet::addTiles() %>%
       leaflet::addLayersControl(
         baseGroups = c("Map", "Street", "Topo", "Satellite"),
@@ -331,7 +346,7 @@ PlotSubbasinRouting <- function(map, map.subid.column = 1, gd = NULL, bd = NULL,
 
     # Add various basemaps
     leafmap <- leafmap %>%
-      leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map") %>%
+      leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map", options = leaflet::tileOptions(maxNativeZoom = 16)) %>%
       leaflet::addTiles(group = "Street") %>%
       leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
       leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite")

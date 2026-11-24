@@ -1676,9 +1676,20 @@ ReadObs <- function(filename, variable = "",
   }
   
   ## import file header, extract obsid attribute
-  # import
+  # Read first line
   xattr <- readLines(filename, n = 1)
-  # extract obsids
+  
+  # Check if first row is a comment row
+  if (startsWith(xattr, "!!")) {
+    skip <- 1
+    comment <- xattr
+    xattr <- readLines(filename, n = 2)[2]
+  } else {
+    skip <- 0
+    comment <- NULL
+  }
+  
+  # Extract obsids
   sbd <- as.integer(strsplit(xattr, split = "\t")[[1]][-1])
   
   # check and if needed add date column to selection
@@ -1722,7 +1733,7 @@ ReadObs <- function(filename, variable = "",
   # import file
   x <- fread(filename, 
              na.strings = c("-9999", "****************", "-1.0E+04", "-1.00E+04", "-9.999E+03", "-9.9990E+03", "-9.99900E+03", "-9.999000E+03", "-9.9990000E+03", "-9.99900000E+03", "-9.999000000E+03"), 
-             sep = "\t", header = TRUE, data.table = d.t, nrows = nrows, select = select, colClasses = cC, check.names = TRUE)
+             sep = "\t", header = TRUE, skip = skip, data.table = d.t, nrows = nrows, select = select, colClasses = cC, check.names = TRUE)
   
   # Rename first column to DATE
   colnames(x)[1] <- "DATE"
@@ -1740,6 +1751,11 @@ ReadObs <- function(filename, variable = "",
   
   ## add attributes
   obsid(x) <- sbd
+  
+  # comment attribute
+  if(!is.null(comment)){
+    comment(x) <- comment
+  }
   
   # conditional: timestep attribute identified by difference between first two rows
   if(type == "df"){

@@ -877,7 +877,7 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
         message("Generating Map")
         
         # Setup map
-        leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE)) %>%
+        leafmap <- leaflet::leaflet(options = leaflet::leafletOptions(preferCanvas = TRUE, maxZoom = 18)) %>%
           leaflet::addTiles() %>%
           leaflet::addLayersControl(
             baseGroups = c("Map", "Street", "Topo", "Satellite"),
@@ -970,7 +970,7 @@ PlotMapOutput <- function(x, map = NULL, map.subid.column = 1, var.name = "", ma
         
         # Add various basemaps
         leafmap <- leafmap %>%
-          leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map") %>%
+          leaflet::addProviderTiles("Esri.WorldGrayCanvas", group = "Map", options = leaflet::tileOptions(maxNativeZoom = 16)) %>%
           leaflet::addTiles(group = "Street") %>%
           leaflet::addProviderTiles("Esri.WorldTopoMap", group = "Topo") %>%
           leaflet::addProviderTiles("Esri.WorldImagery", group = "Satellite")

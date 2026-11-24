@@ -88,7 +88,7 @@ devtools::release()
 # Add date to release heading in NEWS.md:
 #     ## HYPEtools 1.2.0 (2023-02-10)
 
-# Merge dev branch into master branch
+# Merge dev branch into master branch: https://github.com/rcapell/HYPEtools/pulls
 
 # Create version tag in GitHub repo
 usethis::use_github_release()
