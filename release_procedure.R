@@ -90,7 +90,8 @@ usethis::use_release_issue() # This is untested, so update as needed.
 #     ## HYPEtools 1.2.0 (2023-02-10)
 
 # Merge dev branch into master branch: https://github.com/rcapell/HYPEtools/pulls
-# - NOTE: Do NOT squash and merge, because then Git won't realize that those commits were already merged next time!
+# - NOTE: Do NOT squash and merge because Git won't realize that those commits were already merged the next time we make a new release!
+#   Instead, merge the branches using a "merge commit"
 
 # Create version tag in GitHub repo
 usethis::use_github_release()
