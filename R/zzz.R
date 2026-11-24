@@ -8,7 +8,7 @@
                                '- To suppress this message use: "suppressPackageStartupMessages(library(HYPEtools))"'))
 }
 
-# Questions to ask when running devtools::release()
+# Questions to ask when running usethis::use_release_issue()
 release_questions <- function() {
   c(
     "Have you updated the internal package data for the VariableLookup() function? Use the code at the bottom of function_VariableLookup.R",

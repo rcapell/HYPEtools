@@ -81,7 +81,8 @@ devtools::check_built(path = ".")
 # Commit any changes to GitHub
 
 # Submit to CRAN, includes checks
-devtools::release()
+# devtools::release() - This is deprecated now so switch to use_release_issue()
+usethis::use_release_issue() # This is untested, so update as needed.
 
 # AFTER CRAN APPROVAL --------------------------------------------------------------------------------------------------------------------
 
@@ -89,9 +90,16 @@ devtools::release()
 #     ## HYPEtools 1.2.0 (2023-02-10)
 
 # Merge dev branch into master branch: https://github.com/rcapell/HYPEtools/pulls
+# - NOTE: Do NOT squash and merge, because then Git won't realize that those commits were already merged next time!
 
 # Create version tag in GitHub repo
 usethis::use_github_release()
+
+# Wait for CITATION.cff to get updated on master branch, then merge changes back into dev
+# git checkout dev
+# git pull origin dev
+# git merge master
+# git push origin dev
 
 # Add Date & Zenodo badge to GitHub Release
 
