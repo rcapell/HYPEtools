@@ -1,6 +1,6 @@
 # HYPEtools NEWS
 
-## HYPEtools 1.6.9
+## HYPEtools 1.6.9 (2026-11-24)
 *Enhancements and bug fixes*
 
 #### Highlights
