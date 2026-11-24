@@ -9,7 +9,7 @@ type: software
 license: LGPL-3.0-only
 title: 'HYPEtools: Tools for Processing and Analyzing Files from the Hydrological
   Catchment Model HYPE'
-version: 1.6.8.9000
+version: 1.6.9
 doi: 10.32614/CRAN.package.HYPEtools
 abstract: 'Work with model files (setup, input, output) from the hydrological catchment
   model HYPE: Streamlined file import and export, standard evaluation plot routines,
@@ -49,8 +49,7 @@ references:
   doi: 10.32614/R.manuals
   version: '>= 3.5.0'
 - type: software
-  title: clipr
-  abstract: 'clipr: Read and Write from the System Clipboard'
+  title: 'clipr: Read and Write from the System Clipboard'
   notes: Imports
   url: http://matthewlincoln.net/clipr/
   repository: https://CRAN.R-project.org/package=clipr
@@ -62,10 +61,9 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.clipr
 - type: software
-  title: colorspace
-  abstract: 'colorspace: A Toolbox for Manipulating and Assessing Colors and Palettes'
+  title: 'colorspace: A Toolbox for Manipulating and Assessing Colors and Palettes'
   notes: Imports
-  url: https://colorspace.R-Forge.R-project.org/
+  url: https://zeileis.codeberg.page/colorspace/
   repository: https://CRAN.R-project.org/package=colorspace
   authors:
   - family-names: Ihaka
@@ -102,8 +100,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.colorspace
 - type: software
-  title: data.table
-  abstract: 'data.table: Extension of `data.frame`'
+  title: 'data.table: Extension of `data.frame`'
   notes: Imports
   url: https://r-datatable.com
   repository: https://CRAN.R-project.org/package=data.table
@@ -140,8 +137,7 @@ references:
   doi: 10.32614/CRAN.package.data.table
   version: '>= 1.9.8'
 - type: software
-  title: dplyr
-  abstract: 'dplyr: A Grammar of Data Manipulation'
+  title: 'dplyr: A Grammar of Data Manipulation'
   notes: Imports
   url: https://dplyr.tidyverse.org
   repository: https://CRAN.R-project.org/package=dplyr
@@ -165,8 +161,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.dplyr
 - type: software
-  title: ggplot2
-  abstract: 'ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics'
+  title: 'ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics'
   notes: Imports
   url: https://ggplot2.tidyverse.org
   repository: https://CRAN.R-project.org/package=ggplot2
@@ -205,8 +200,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.ggplot2
 - type: software
-  title: ggpubr
-  abstract: 'ggpubr: ''ggplot2'' Based Publication Ready Plots'
+  title: 'ggpubr: ''ggplot2'' Based Publication Ready Plots'
   notes: Imports
   url: https://rpkgs.datanovia.com/ggpubr/
   repository: https://CRAN.R-project.org/package=ggpubr
@@ -217,8 +211,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.ggpubr
 - type: software
-  title: ggrepel
-  abstract: 'ggrepel: Automatically Position Non-Overlapping Text Labels with ''ggplot2'''
+  title: 'ggrepel: Automatically Position Non-Overlapping Text Labels with ''ggplot2'''
   notes: Imports
   url: https://ggrepel.slowkow.com/
   repository: https://CRAN.R-project.org/package=ggrepel
@@ -230,8 +223,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.ggrepel
 - type: software
-  title: grDevices
-  abstract: 'R: A Language and Environment for Statistical Computing'
+  title: 'R: A Language and Environment for Statistical Computing'
   notes: Imports
   authors:
   - name: R Core Team
@@ -243,21 +235,7 @@ references:
   year: '2026'
   doi: 10.32614/R.manuals
 - type: software
-  title: graphics
-  abstract: 'R: A Language and Environment for Statistical Computing'
-  notes: Imports
-  authors:
-  - name: R Core Team
-    website: https://ror.org/02zz1nj61
-  institution:
-    name: R Foundation for Statistical Computing
-    website: https://ror.org/05qewa988
-    address: Vienna, Austria
-  year: '2026'
-  doi: 10.32614/R.manuals
-- type: software
-  title: lubridate
-  abstract: 'lubridate: Make Dealing with Dates a Little Easier'
+  title: 'lubridate: Make Dealing with Dates a Little Easier'
   notes: Imports
   url: https://lubridate.tidyverse.org
   repository: https://CRAN.R-project.org/package=lubridate
@@ -272,22 +250,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.lubridate
 - type: software
-  title: methods
-  abstract: 'R: A Language and Environment for Statistical Computing'
-  notes: Imports
-  authors:
-  - name: R Core Team
-    website: https://ror.org/02zz1nj61
-  institution:
-    name: R Foundation for Statistical Computing
-    website: https://ror.org/05qewa988
-    address: Vienna, Austria
-  year: '2026'
-  doi: 10.32614/R.manuals
-- type: software
-  title: ncdf4
-  abstract: 'ncdf4: Interface to Unidata netCDF (Version 4 or Earlier) Format Data
-    Files'
+  title: 'ncdf4: Interface to Unidata netCDF (Version 4 or Earlier) Format Data Files'
   notes: Imports
   url: https://cirrus.ucsd.edu/~pierce/ncdf/
   repository: https://CRAN.R-project.org/package=ncdf4
@@ -296,24 +259,10 @@ references:
     given-names: David
     email: dpierce@ucsd.edu
     orcid: https://orcid.org/0000-0002-2453-9030
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.ncdf4
 - type: software
-  title: parallel
-  abstract: 'R: A Language and Environment for Statistical Computing'
-  notes: Imports
-  authors:
-  - name: R Core Team
-    website: https://ror.org/02zz1nj61
-  institution:
-    name: R Foundation for Statistical Computing
-    website: https://ror.org/05qewa988
-    address: Vienna, Austria
-  year: '2026'
-  doi: 10.32614/R.manuals
-- type: software
-  title: patchwork
-  abstract: 'patchwork: The Composer of Plots'
+  title: 'patchwork: The Composer of Plots'
   notes: Imports
   url: https://patchwork.data-imaginist.com
   repository: https://CRAN.R-project.org/package=patchwork
@@ -322,11 +271,10 @@ references:
     given-names: Thomas Lin
     email: thomasp85@gmail.com
     orcid: https://orcid.org/0000-0002-5147-4711
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.patchwork
 - type: software
-  title: pbapply
-  abstract: 'pbapply: Adding Progress Bar to ''*apply'' Functions'
+  title: 'pbapply: Adding Progress Bar to ''*apply'' Functions'
   notes: Imports
   url: https://peter.solymos.org/pbapply/
   repository: https://CRAN.R-project.org/package=pbapply
@@ -341,8 +289,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.pbapply
 - type: software
-  title: purrr
-  abstract: 'purrr: Functional Programming Tools'
+  title: 'purrr: Functional Programming Tools'
   notes: Imports
   url: https://purrr.tidyverse.org/
   repository: https://CRAN.R-project.org/package=purrr
@@ -357,8 +304,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.purrr
 - type: software
-  title: rlang
-  abstract: 'rlang: Functions for Base Types and Core R and ''Tidyverse'' Features'
+  title: 'rlang: Functions for Base Types and Core R and ''Tidyverse'' Features'
   notes: Imports
   url: https://rlang.r-lib.org
   repository: https://CRAN.R-project.org/package=rlang
@@ -372,8 +318,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.rlang
 - type: software
-  title: scales
-  abstract: 'scales: Scale Functions for Visualization'
+  title: 'scales: Scale Functions for Visualization'
   notes: Imports
   url: https://scales.r-lib.org
   repository: https://CRAN.R-project.org/package=scales
@@ -387,24 +332,10 @@ references:
     orcid: https://orcid.org/0000-0002-5147-4711
   - family-names: Seidel
     given-names: Dana
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.scales
 - type: software
-  title: stats
-  abstract: 'R: A Language and Environment for Statistical Computing'
-  notes: Imports
-  authors:
-  - name: R Core Team
-    website: https://ror.org/02zz1nj61
-  institution:
-    name: R Foundation for Statistical Computing
-    website: https://ror.org/05qewa988
-    address: Vienna, Austria
-  year: '2026'
-  doi: 10.32614/R.manuals
-- type: software
-  title: stringr
-  abstract: 'stringr: Simple, Consistent Wrappers for Common String Operations'
+  title: 'stringr: Simple, Consistent Wrappers for Common String Operations'
   notes: Imports
   url: https://stringr.tidyverse.org
   repository: https://CRAN.R-project.org/package=stringr
@@ -412,11 +343,10 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@posit.co
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.stringr
 - type: software
-  title: tidyr
-  abstract: 'tidyr: Tidy Messy Data'
+  title: 'tidyr: Tidy Messy Data'
   notes: Imports
   url: https://tidyr.tidyverse.org
   repository: https://CRAN.R-project.org/package=tidyr
@@ -429,11 +359,10 @@ references:
     email: davis@posit.co
   - family-names: Girlich
     given-names: Maximilian
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.tidyr
 - type: software
-  title: tidyselect
-  abstract: 'tidyselect: Select from a Set of Strings'
+  title: 'tidyselect: Select from a Set of Strings'
   notes: Imports
   url: https://tidyselect.r-lib.org
   repository: https://CRAN.R-project.org/package=tidyselect
@@ -444,37 +373,10 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@posit.co
-  year: '2026'
+  year: '2024'
   doi: 10.32614/CRAN.package.tidyselect
 - type: software
-  title: tools
-  abstract: 'R: A Language and Environment for Statistical Computing'
-  notes: Imports
-  authors:
-  - name: R Core Team
-    website: https://ror.org/02zz1nj61
-  institution:
-    name: R Foundation for Statistical Computing
-    website: https://ror.org/05qewa988
-    address: Vienna, Austria
-  year: '2026'
-  doi: 10.32614/R.manuals
-- type: software
-  title: utils
-  abstract: 'R: A Language and Environment for Statistical Computing'
-  notes: Imports
-  authors:
-  - name: R Core Team
-    website: https://ror.org/02zz1nj61
-  institution:
-    name: R Foundation for Statistical Computing
-    website: https://ror.org/05qewa988
-    address: Vienna, Austria
-  year: '2026'
-  doi: 10.32614/R.manuals
-- type: software
-  title: zoo
-  abstract: 'zoo: S3 Infrastructure for Regular and Irregular Time Series (Z''s Ordered
+  title: 'zoo: S3 Infrastructure for Regular and Irregular Time Series (Z''s Ordered
     Observations)'
   notes: Imports
   url: https://zeileis.codeberg.page/zoo/
@@ -493,8 +395,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.zoo
 - type: software
-  title: rmarkdown
-  abstract: 'rmarkdown: Dynamic Documents for R'
+  title: 'rmarkdown: Dynamic Documents for R'
   notes: Suggests
   url: https://pkgs.rstudio.com/rmarkdown/
   repository: https://CRAN.R-project.org/package=rmarkdown
@@ -537,8 +438,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.rmarkdown
 - type: software
-  title: knitr
-  abstract: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
+  title: 'knitr: A General-Purpose Package for Dynamic Report Generation in R'
   notes: Suggests
   url: https://yihui.org/knitr/
   repository: https://CRAN.R-project.org/package=knitr
@@ -550,8 +450,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.knitr
 - type: software
-  title: beepr
-  abstract: 'beepr: Easily Play Notification Sounds on any Platform'
+  title: 'beepr: Easily Play Notification Sounds on any Platform'
   notes: Suggests
   url: https://github.com/rasmusab/beepr
   repository: https://CRAN.R-project.org/package=beepr
@@ -562,8 +461,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.beepr
 - type: software
-  title: curl
-  abstract: 'curl: A Modern and Flexible Web Client for R'
+  title: 'curl: A Modern and Flexible Web Client for R'
   notes: Suggests
   url: https://jeroen.r-universe.dev/curl
   repository: https://CRAN.R-project.org/package=curl
@@ -575,8 +473,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.curl
 - type: software
-  title: DT
-  abstract: 'DT: A Wrapper of the JavaScript Library ''DataTables'''
+  title: 'DT: A Wrapper of the JavaScript Library ''DataTables'''
   notes: Suggests
   url: https://github.com/rstudio/DT
   repository: https://CRAN.R-project.org/package=DT
@@ -592,11 +489,10 @@ references:
     given-names: Garrick
     email: garrick@posit.co
     orcid: https://orcid.org/0000-0002-7111-0077
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.DT
 - type: software
-  title: htmlwidgets
-  abstract: 'htmlwidgets: HTML Widgets for R'
+  title: 'htmlwidgets: HTML Widgets for R'
   notes: Suggests
   url: https://github.com/ramnathv/htmlwidgets
   repository: https://CRAN.R-project.org/package=htmlwidgets
@@ -616,12 +512,10 @@ references:
     orcid: https://orcid.org/0000-0002-4958-2844
   - family-names: Russell
     given-names: Kenton
-  year: '2026'
+  year: '2023'
   doi: 10.32614/CRAN.package.htmlwidgets
 - type: software
-  title: leaflet
-  abstract: 'leaflet: Create Interactive Web Maps with the JavaScript ''Leaflet''
-    Library'
+  title: 'leaflet: Create Interactive Web Maps with the JavaScript ''Leaflet'' Library'
   notes: Suggests
   url: https://rstudio.github.io/leaflet/
   repository: https://CRAN.R-project.org/package=leaflet
@@ -641,11 +535,10 @@ references:
     given-names: Garrick
     email: garrick@posit.co
     orcid: https://orcid.org/0000-0002-7111-0077
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.leaflet
 - type: software
-  title: leaflet.extras
-  abstract: 'leaflet.extras: Extra Functionality for ''leaflet'' Package'
+  title: 'leaflet.extras: Extra Functionality for ''leaflet'' Package'
   notes: Suggests
   url: https://trafficonese.github.io/leaflet.extras/
   repository: https://CRAN.R-project.org/package=leaflet.extras
@@ -662,8 +555,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.leaflet.extras
 - type: software
-  title: mapview
-  abstract: 'mapview: Interactive Viewing of Spatial Data in R'
+  title: 'mapview: Interactive Viewing of Spatial Data in R'
   notes: Suggests
   url: https://r-spatial.github.io/mapview/
   repository: https://CRAN.R-project.org/package=mapview
@@ -680,11 +572,10 @@ references:
   - family-names: Woellauer
     given-names: Stefan
     email: stephan.woellauer@geo.uni-marburg.de
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.mapview
 - type: software
-  title: plotly
-  abstract: 'plotly: Create Interactive Web Graphics via ''plotly.js'''
+  title: 'plotly: Create Interactive Web Graphics via ''plotly.js'''
   notes: Suggests
   url: https://plotly-r.com
   repository: https://CRAN.R-project.org/package=plotly
@@ -715,8 +606,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.plotly
 - type: software
-  title: rnaturalearth
-  abstract: 'rnaturalearth: World Map Data from Natural Earth'
+  title: 'rnaturalearth: World Map Data from Natural Earth'
   notes: Suggests
   url: https://docs.ropensci.org/rnaturalearth/
   repository: https://CRAN.R-project.org/package=rnaturalearth
@@ -731,8 +621,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.rnaturalearth
 - type: software
-  title: sf
-  abstract: 'sf: Simple Features for R'
+  title: 'sf: Simple Features for R'
   notes: Suggests
   url: https://r-spatial.github.io/sf/
   repository: https://CRAN.R-project.org/package=sf
@@ -744,8 +633,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.sf
 - type: software
-  title: shiny
-  abstract: 'shiny: Web Application Framework for R'
+  title: 'shiny: Web Application Framework for R'
   notes: Suggests
   url: https://shiny.posit.co/
   repository: https://CRAN.R-project.org/package=shiny
@@ -787,8 +675,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.shiny
 - type: software
-  title: shinyalert
-  abstract: 'shinyalert: Easily Create Pretty Popup Messages (Modals) in ''Shiny'''
+  title: 'shinyalert: Easily Create Pretty Popup Messages (Modals) in ''Shiny'''
   notes: Suggests
   url: https://daattali.com/shiny/shinyalert-demo/
   repository: https://CRAN.R-project.org/package=shinyalert
@@ -799,13 +686,12 @@ references:
     orcid: https://orcid.org/0000-0002-5645-3493
   - family-names: Edwards
     given-names: Tristan
-  year: '2026'
+  year: '2024'
   doi: 10.32614/CRAN.package.shinyalert
 - type: software
-  title: shinyFiles
-  abstract: 'shinyFiles: A Server-Side File System Viewer for Shiny'
+  title: 'shinyFiles: A Server-Side File System Viewer for Shiny'
   notes: Suggests
-  url: https://github.com/thomasp85/shinyFiles
+  url: https://github.com/shinyFiles/shinyFiles
   repository: https://CRAN.R-project.org/package=shinyFiles
   authors:
   - family-names: Pedersen
@@ -821,8 +707,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.shinyFiles
 - type: software
-  title: shinyWidgets
-  abstract: 'shinyWidgets: Custom Inputs Widgets for Shiny'
+  title: 'shinyWidgets: Custom Inputs Widgets for Shiny'
   notes: Suggests
   url: https://dreamrs.github.io/shinyWidgets/
   repository: https://CRAN.R-project.org/package=shinyWidgets
@@ -837,8 +722,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.shinyWidgets
 - type: software
-  title: terra
-  abstract: 'terra: Spatial Data Analysis'
+  title: 'terra: Spatial Data Analysis'
   notes: Suggests
   url: https://rspatial.org/
   repository: https://CRAN.R-project.org/package=terra
@@ -862,8 +746,7 @@ references:
   year: '2026'
   doi: 10.32614/CRAN.package.terra
 - type: software
-  title: webshot
-  abstract: 'webshot: Take Screenshots of Web Pages'
+  title: 'webshot: Take Screenshots of Web Pages'
   notes: Suggests
   url: https://wch.github.io/webshot/
   repository: https://CRAN.R-project.org/package=webshot
@@ -871,6 +754,6 @@ references:
   - family-names: Chang
     given-names: Winston
     email: winston@rstudio.com
-  year: '2026'
+  year: '2023'
   doi: 10.32614/CRAN.package.webshot
 
