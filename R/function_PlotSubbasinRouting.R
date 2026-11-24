@@ -87,7 +87,7 @@
 #' }
 #' 
 #'
-#' @importFrom dplyr full_join right_join %>% filter across rename_with
+#' @importFrom dplyr full_join right_join %>% filter across rename_with bind_rows
 #' @importFrom purrr reduce
 #' @importFrom tidyselect matches
 #' @importFrom rlang .data
