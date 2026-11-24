@@ -259,7 +259,7 @@ references:
     given-names: David
     email: dpierce@ucsd.edu
     orcid: https://orcid.org/0000-0002-2453-9030
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.ncdf4
 - type: software
   title: 'patchwork: The Composer of Plots'
@@ -271,7 +271,7 @@ references:
     given-names: Thomas Lin
     email: thomasp85@gmail.com
     orcid: https://orcid.org/0000-0002-5147-4711
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.patchwork
 - type: software
   title: 'pbapply: Adding Progress Bar to ''*apply'' Functions'
@@ -332,7 +332,7 @@ references:
     orcid: https://orcid.org/0000-0002-5147-4711
   - family-names: Seidel
     given-names: Dana
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.scales
 - type: software
   title: 'stringr: Simple, Consistent Wrappers for Common String Operations'
@@ -343,7 +343,7 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@posit.co
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.stringr
 - type: software
   title: 'tidyr: Tidy Messy Data'
@@ -359,7 +359,7 @@ references:
     email: davis@posit.co
   - family-names: Girlich
     given-names: Maximilian
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.tidyr
 - type: software
   title: 'tidyselect: Select from a Set of Strings'
@@ -373,7 +373,7 @@ references:
   - family-names: Wickham
     given-names: Hadley
     email: hadley@posit.co
-  year: '2026'
+  year: '2024'
   doi: 10.32614/CRAN.package.tidyselect
 - type: software
   title: 'zoo: S3 Infrastructure for Regular and Irregular Time Series (Z''s Ordered
@@ -489,7 +489,7 @@ references:
     given-names: Garrick
     email: garrick@posit.co
     orcid: https://orcid.org/0000-0002-7111-0077
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.DT
 - type: software
   title: 'htmlwidgets: HTML Widgets for R'
@@ -512,7 +512,7 @@ references:
     orcid: https://orcid.org/0000-0002-4958-2844
   - family-names: Russell
     given-names: Kenton
-  year: '2026'
+  year: '2023'
   doi: 10.32614/CRAN.package.htmlwidgets
 - type: software
   title: 'leaflet: Create Interactive Web Maps with the JavaScript ''Leaflet'' Library'
@@ -535,7 +535,7 @@ references:
     given-names: Garrick
     email: garrick@posit.co
     orcid: https://orcid.org/0000-0002-7111-0077
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.leaflet
 - type: software
   title: 'leaflet.extras: Extra Functionality for ''leaflet'' Package'
@@ -572,7 +572,7 @@ references:
   - family-names: Woellauer
     given-names: Stefan
     email: stephan.woellauer@geo.uni-marburg.de
-  year: '2026'
+  year: '2025'
   doi: 10.32614/CRAN.package.mapview
 - type: software
   title: 'plotly: Create Interactive Web Graphics via ''plotly.js'''
@@ -686,7 +686,7 @@ references:
     orcid: https://orcid.org/0000-0002-5645-3493
   - family-names: Edwards
     given-names: Tristan
-  year: '2026'
+  year: '2024'
   doi: 10.32614/CRAN.package.shinyalert
 - type: software
   title: 'shinyFiles: A Server-Side File System Viewer for Shiny'
@@ -754,6 +754,6 @@ references:
   - family-names: Chang
     given-names: Winston
     email: winston@rstudio.com
-  year: '2026'
+  year: '2023'
   doi: 10.32614/CRAN.package.webshot
 
